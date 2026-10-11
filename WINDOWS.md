@@ -5,6 +5,21 @@ GPU (RTX 5090 here). Everything else works the same as on the Mac. `RUNBOOK.md` 
 the pipeline itself; this page is the one-time setup. Not yet tested end to end on Windows, so expect a small
 fix or two on the first run.
 
+## Quick setup: one script
+
+In PowerShell (no need to run it as administrator):
+
+```powershell
+irm https://raw.githubusercontent.com/kondrat52/lada-tk-analytics/main/setup_windows.ps1 | iex
+```
+
+`setup_windows.ps1` does steps 1–6 below: it checks the NVIDIA driver, installs Git and Claude Code, turns on
+Developer Mode and adds the Defender exclusion (Windows asks once for admin rights), clones the repo to
+`~\lada-tk-analytics`, sets the git identity and builds the Python environment. It ends with a list of anything
+that needs attention, and it is safe to run again. Then go on with step 7.
+
+The steps by hand:
+
 ## 1. NVIDIA driver
 
 In PowerShell:
