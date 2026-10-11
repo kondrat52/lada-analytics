@@ -38,7 +38,7 @@
   "notes": [
     "Home game at Snoqualmie: we wore white and had the left bench. The rink's video now shows the camera's whole fisheye frame (3824x2160) instead of the 3840x1536 strip of September, so the pipeline has new geometry for it (rink snoqualmie2). The picture is dim and grey, so our white jerseys were told from TTT's navy by how little dark they show; referees passed as ours and the reviewers dropped them.",
     "Periods, goals and the penalty come from the arena scoreboard (Lada TK was HOME) and the video. Goals at 5:01 (TTT), 11:57, 17:00, 27:27, 37:30 (power play), 38:06 (TTT) and 62:32 of the video. The video runs to the final horn. Shots on goal: Lada TK 49, TTT 22.",
-    "Penalty kill: Petrov #18, 3 minutes from 33:13 to 36:45 of the video (P2), solved with 4 skaters on the ice. He was seen skating into the penalty box; what the call was isn't clear on the video. TTT's #27 sat from 35:17, so part of it was 4 on 4, and we scored on the power play at 37:30.",
+    "Penalty kill: Petrov #18, 3 minutes for hooking at 5:05 of the 2nd (the call from the team; the hook is at 33:09 of the video by the TTT bench), on the ice with 4 from 33:13 to 36:45 of the video. TTT's #27 sat from 35:17, so part of it was 4 on 4, and we scored on the power play at 37:30.",
     "Didn't play: Sokolov #4, Belousenko #13, Unuchek #49, Bronnikov #74. No subs.",
     "Labeled by hand: Prozhogin #61 in ten stretches (his number rarely faces the camera; he was told by black shorts, banded socks and red gloves, with no other defenceman on with Petrov), Vasyliev #31 and Belov #64 in the scramble before the 5-2 goal, and two opponent tracks dropped that the solver had joined to Kondratenko #12. Prozhogin's ice time is probably still a little low."
   ],
@@ -252,10 +252,10 @@
     {
       "type": "penalty",
       "player": 18,
-      "t": 1990,
+      "t": 1989,
       "clip": "clips/penalty-18.mp4",
       "poster": "clips/penalty-18.jpg",
-      "note": "3-minute minor; the infraction isn't clear on the video (he was by the TTT bench right before the whistle)"
+      "note": "Hooking a TTT player by their bench; 3-minute minor at 5:05 of the 2nd"
     },
     {
       "type": "goal",
