@@ -43,6 +43,9 @@ $PY pipeline/run_game.py fetch "<url>" $W --rink <renton|snoqualmie|kirkland> [-
 
 A sleeping Mac stalls everything: detection crawls, and subagents die mid-review ("your computer went to sleep").
 
+On the Windows PC (RTX 5090, set up with `pipeline\setup_env.ps1`, see RUNBOOK.md) detection runs on CUDA and is
+much faster: `PY=~/.venvs/hockey/Scripts/python.exe`, and skip `caffeinate` (`run_game.py` keeps Windows awake).
+
 `--jersey` picks the colour tests in `rink.JERSEYS` (default light blue). If you find out after detection that we
 wore another jersey (prepare makes only a handful of review rows; the roster card is nearly empty), run
 `$PY pipeline/run_game.py jersey $W white`: it records the jersey, cuts the missing crops from the video
@@ -54,7 +57,10 @@ before `solve` (it decides which track ends count as line changes).
 
 Each rink films from a different spot, so the camera geometry lives in `pipeline/rink.py` (detection crop, where
 the far boards are, our bench, nets). Renton has both benches behind the far boards. Snoqualmie has them on the
-near side at the frame edges, ours at the right. Kirkland films through a fisheye lens from low at center ice: the
+near side at the frame edges: home left, away right. Its video changed in Oct 2026 from a 3840x1536 strip
+(`snoqualmie`) to the camera's whole fisheye frame, 3824x2160 (`--rink snoqualmie2`); check frame600.png's size.
+That video is dim and grey, so a rink can set its own brightness levels (`white_v`, `dark_v`) and jersey tests
+(`jerseys`) in `rink.py`: check the jersey test on a few frames whenever the picture looks different. Kirkland films through a fisheye lens from low at center ice: the
 far boards bow up toward center, both benches are behind them (home right of center, away left), and the penalty
 boxes are the near corners at the bottom of the frame. For a rink not in `rink.py`, stop before detection. You
 don't have to wait for the download: grab 4K frames straight from the stream,

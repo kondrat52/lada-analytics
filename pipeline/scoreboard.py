@@ -16,11 +16,11 @@ def scan(W):
     p = subprocess.Popen([imageio_ffmpeg.get_ffmpeg_exe(), "-nostdin", "-loglevel", "error", "-threads", "0",
                           "-i", f"{W}/video.webm", "-vf", f"crop={w}:{h}:{x}:{y}", "-f", "rawvideo", "-pix_fmt", "bgr24",
                           "-"], stdout=subprocess.PIPE, bufsize=w * h * 3 * 64)
-    fps = 24  # the wide cuts are 24 fps
+    fps = next(imageio_ffmpeg.read_frames(f"{W}/video.webm"))["fps"]   # 24 at first, 30 since Oct 2026
     best, lit, n = [], [], 0
     while len(buf := p.stdout.read(w * h * 3)) == w * h * 3:
         f = np.frombuffer(buf, np.uint8).reshape(h, w, 3)
-        s, v = n // fps, int((f[..., 2].astype(np.int16) - f[..., 1] > 60).sum())   # lit red LEDs
+        s, v = int(n / fps), int((f[..., 2].astype(np.int16) - f[..., 1] > 60).sum())   # lit red LEDs
         if s == len(best):
             best.append(f.copy()); lit.append(v)
         elif v > lit[s]:

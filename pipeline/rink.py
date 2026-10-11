@@ -27,6 +27,8 @@ class Renton:
     bench_side = "left"           # our usual bench; rink.json "bench" can pick the other one
     scoreboard = (3290, 690, 130, 80)  # x, y, w, h of the arena scoreboard (scoreboard.py)
     shots_boxes = {"home": (47, 39, 59, 50), "guest": (65, 40, 78, 51)}   # shots-on-goal digits, in that crop (shots.py)
+    white_v, dark_v = 160, 60     # process.py's torso colours: "white" = unsaturated and at least this bright, "dark" below
+    jerseys = {}                  # this rink's own colour tests for a jersey, in place of JERSEYS'
 
     def __init__(self, board_poly, bench=None):
         self.P = board_poly
@@ -115,6 +117,39 @@ class Snoqualmie(Renton):
         return self.at_bench(x, rel)
 
 
+class Snoqualmie2(Snoqualmie):
+    """Snoqualmie from Oct 2026: the same camera spot, but the video is its whole fisheye frame (3824x2160), not a
+    3840x1536 strip. The far boards bow up to y ~870 at center and dip to ~1170 at the frame edges; the near boards
+    run along the bottom (y ~2100 at center). Benches at the frame edges as before: home left (we wore white), away
+    right."""
+    crop_top = 720 / 2160
+    board_band = (0.38, 0.57)
+    center_x = 1935
+    nets = {"left": 680, "right": 3270}
+    ICE = Path([(100, 0), (3750, 0), (3750, 1200), (3664, 1220), (3254, 1600), (3000, 1840), (2500, 2040),
+                (1935, 2095), (1500, 2040), (1000, 1840), (560, 1500), (195, 1160), (100, 1150)])
+    # top of the boards between the ice and each bench, ordered so that bench_depth's normal points into the bench
+    BENCHES = {"left": ((560, 1500), (195, 1160)), "right": ((3664, 1220), (3254, 1600))}
+    BENCH_Y = (1100, 1750)
+    SCALE = 3.3                           # a skater at the bench boards is ~250 px tall
+    # the video is dim and grey: the ice is V ~150, white jerseys no brighter, and blue numbers barely show. So
+    # "white" counts the ice behind a player too, and what tells our white jerseys from TTT's navy is how little
+    # dark there is (referees' stripes pass as ours; reviewers drop them)
+    white_v, dark_v = 115, 45
+    jerseys = {"white": dict(ours=lambda c: (c["white"] >= 0.15) & (c["dark"] < 0.4) & (c["red"] < 0.1),
+                             crop=lambda c: (c["white"] >= 0.1) & (c["dark"] < 0.5) & (c["red"] < 0.1))}
+    scoreboard = (1810, 640, 270, 110)
+    shots_boxes = {"home": (124, 68, 156, 91), "guest": (168, 68, 200, 91)}
+
+    def __init__(self, board_poly, bench=None):
+        self.P = board_poly
+        self.BENCH = self.BENCHES[bench or self.bench_side]
+
+    def open_ice(self, x, rel):
+        x = np.asarray(x, float)
+        return Renton.open_ice(self, x, rel) & (x > 750) & (x < 3100)   # clear of both bench doors
+
+
 class Kirkland(Renton):
     """Camera low at center ice on the near side with a fisheye lens (3840x1536): the far boards bow up to y ~430
     at center and dip to ~700 at the frame edges, where the end boards run down the sides. Both benches are behind
@@ -155,7 +190,7 @@ class Kirkland(Renton):
         return (x > x0 - 40) & (x < x1 + 40) & (rel > -80)
 
 
-RINKS = {"renton": Renton, "snoqualmie": Snoqualmie, "kirkland": Kirkland}
+RINKS = {"renton": Renton, "snoqualmie": Snoqualmie, "snoqualmie2": Snoqualmie2, "kirkland": Kirkland}
 
 # Our jersey that game, as tests on process.py's torso colour fractions (the dets.csv columns, or a dict of them):
 # `ours` picks our players for tracking, the looser `crop` which detections get a 4K crop for OCR and review.
@@ -188,7 +223,8 @@ def rink_name(folder):
 
 def jersey(folder):
     """Our jersey's colour tests (JERSEYS) for this video: rink.json's "jersey", light blue unless set."""
-    return JERSEYS[_config(folder).get("jersey", "light blue")]
+    name = _config(folder).get("jersey", "light blue")
+    return RINKS[rink_name(folder)].jerseys.get(name) or JERSEYS[name]
 
 
 def rink(folder):

@@ -21,7 +21,8 @@ DUR = float(sys.argv[5]) if len(sys.argv) > 5 else None
 _meta = next(imageio_ffmpeg.read_frames(VID))
 W, FULL_H = _meta["size"]
 # rink band: the wide-cut camera shows ceiling above the far boards; keep far boards + ice
-Y0, Y1 = int(round(rink(OUT).crop_top * FULL_H)), FULL_H
+R = rink(OUT)
+Y0, Y1 = int(round(R.crop_top * FULL_H)), FULL_H
 H = Y1 - Y0
 os.makedirs(f"{OUT}/crops", exist_ok=True); os.makedirs(f"{OUT}/ov", exist_ok=True)
 
@@ -44,6 +45,8 @@ def reader():
 threading.Thread(target=reader, daemon=True).start()
 
 model = YOLO(os.environ.get("YOLO_MODEL", "yolo11m.pt"))  # downloads on first use
+import torch
+DEVICE = "cuda" if torch.cuda.is_available() else "mps" if torch.backends.mps.is_available() else "cpu"
 
 crop_test = jersey(OUT)["crop"]
 
@@ -60,10 +63,10 @@ def color_stats(img, b):
     n = len(hsv)
     blue = ((Hh >= 90) & (Hh <= 125) & (Ss >= 70) & (Vv >= 70)).sum() / n
     lblue = ((Hh >= 90) & (Hh <= 118) & (Ss >= 50) & (Ss < 200) & (Vv >= 130)).sum() / n
-    white = ((Ss < 45) & (Vv >= 160)).sum() / n
+    white = ((Ss < 45) & (Vv >= R.white_v)).sum() / n
     purple = ((Hh >= 125) & (Hh <= 165) & (Ss >= 60) & (Vv >= 50)).sum() / n
     red = (((Hh <= 8) | (Hh >= 170)) & (Ss >= 100) & (Vv >= 70)).sum() / n
-    dark = (Vv < 60).sum() / n
+    dark = (Vv < R.dark_v).sum() / n
     return [blue, white, purple, red, dark, lblue]
 
 fcsv = open(f"{OUT}/dets.csv", "a")
@@ -78,7 +81,7 @@ while not done:
     if not batch:
         break
     res = model.predict([f for _, f in batch], imgsz=1920, classes=[0], conf=0.15,
-                        device="mps", verbose=False)
+                        device=DEVICE, verbose=False)
     for (n, img), r in zip(batch, res):
         t = START + n / FPS
         n = n + int(round(START * FPS))  # global frame index so crop names/CSV continue across restarts

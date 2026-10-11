@@ -574,6 +574,9 @@ if __name__ == "__main__":
     p.add_argument("--date"); p.add_argument("--title"); p.add_argument("--video")
     p.add_argument("--video-ends-early", action="store_true", help="recording stops before the final horn")
     a = ap.parse_args()
+    if sys.platform == "win32":   # keep Windows awake while this runs (caffeinate does it on the Mac)
+        import ctypes
+        ctypes.windll.kernel32.SetThreadExecutionState(0x80000000 | 0x00000001)   # ES_CONTINUOUS | ES_SYSTEM_REQUIRED
     if a.cmd == "fetch":
         os.makedirs(a.W, exist_ok=True)
         open(f"{a.W}/url.txt", "w").write(a.url)

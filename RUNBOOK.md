@@ -14,6 +14,13 @@ PY=~/.venvs/hockey/bin/python
 W=~/hockey-work/2026-10-04-vs-XX
 ```
 
+On a Windows PC with an NVIDIA GPU, detection runs several times faster (CUDA; `process.py` picks it up by
+itself). Install Git for Windows (Claude Code's Bash tool needs its bash, and these commands are sh), the NVIDIA
+driver and Claude Code, then run `powershell -ExecutionPolicy Bypass -File pipeline\setup_env.ps1` once: it makes
+the same environment with PyTorch for CUDA, sets `PYTHONUTF8=1`, and checks that symlinks are allowed (turn on
+Developer Mode if not). There `PY=~/.venvs/hockey/Scripts/python.exe`; no `caffeinate` is needed, because
+`run_game.py` keeps Windows awake while it runs.
+
 ## 1. Download (5 min)
 
 ```sh
@@ -27,6 +34,8 @@ $PY -m yt_dlp -f 313 -o "$W/video.webm" "https://youtu.be/VIDEO_ID"   # 313 = 21
 FF=$($PY -c "import imageio_ffmpeg; print(imageio_ffmpeg.get_ffmpeg_exe())")
 $FF -loglevel error -ss 600 -i $W/video.webm -frames:v 1 $W/frame600.png
 echo '{"rink": "snoqualmie"}' > $W/full/rink.json   # not for Renton, the default
+# Snoqualmie since Oct 2026 (the camera's whole fisheye frame, 3824x2160; home bench left):
+#   {"rink": "snoqualmie2", "jersey": "white", "bench": "left"}
 # home games (white jerseys, right bench at Renton): {"rink": "renton", "jersey": "white", "bench": "right"}
 # Kirkland (fisheye, benches behind the far boards, home right): {"rink": "kirkland", "jersey": "white", "bench": "right"}
 $PY pipeline/boards.py $W/frame600.png $W/full     # writes boards_poly.npy
