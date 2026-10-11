@@ -19,7 +19,7 @@ itself). Install Git for Windows (Claude Code's Bash tool needs its bash, and th
 driver and Claude Code, then run `powershell -ExecutionPolicy Bypass -File pipeline\setup_env.ps1` once: it makes
 the same environment with PyTorch for CUDA, sets `PYTHONUTF8=1`, and checks that symlinks are allowed (turn on
 Developer Mode if not). There `PY=~/.venvs/hockey/Scripts/python.exe`; no `caffeinate` is needed, because
-`run_game.py` keeps Windows awake while it runs.
+`run_game.py` keeps Windows awake while it runs. `WINDOWS.md` has the setup step by step.
 
 ## 1. Download (5 min)
 
