@@ -1,0 +1,303 @@
+{
+  "id": "2026-10-10-vs-ttt",
+  "date": "2026-10-10",
+  "title": "LADA Turbo Kings vs Tic-Tac-Toes, Oct 10",
+  "eyebrow": "Sat Oct 10, 2026 · 8:45 PM · Snoqualmie",
+  "opponent": "TTT",
+  "video": "https://youtu.be/406X511W3gg",
+  "periods": [
+    {
+      "label": "P1",
+      "start": 2,
+      "end": 1083
+    },
+    {
+      "label": "P2",
+      "start": 1188,
+      "end": 2345
+    },
+    {
+      "label": "P3",
+      "start": 2454,
+      "end": 3984
+    }
+  ],
+  "nets": {
+    "P1": 680,
+    "P2": 3270,
+    "P3": 680
+  },
+  "penalty_kills": [
+    {
+      "period": "P2",
+      "start": 1993,
+      "end": 2205,
+      "player": 18
+    }
+  ],
+  "notes": [
+    "Home game at Snoqualmie: we wore white and had the left bench. The rink's video now shows the camera's whole fisheye frame (3824x2160) instead of the 3840x1536 strip of September, so the pipeline has new geometry for it (rink snoqualmie2). The picture is dim and grey, so our white jerseys were told from TTT's navy by how little dark they show; referees passed as ours and the reviewers dropped them.",
+    "Periods, goals and the penalty come from the arena scoreboard (Lada TK was HOME) and the video. Goals at 5:01 (TTT), 11:57, 17:00, 27:27, 37:30 (power play), 38:06 (TTT) and 62:32 of the video. The video runs to the final horn. Shots on goal: Lada TK 49, TTT 22.",
+    "Penalty kill: Petrov #18, 3 minutes from 33:13 to 36:45 of the video (P2), solved with 4 skaters on the ice. He was seen skating into the penalty box; what the call was isn't clear on the video. TTT's #27 sat from 35:17, so part of it was 4 on 4, and we scored on the power play at 37:30.",
+    "Didn't play: Sokolov #4, Belousenko #13, Unuchek #49, Bronnikov #74. No subs.",
+    "Labeled by hand: Prozhogin #61 in ten stretches (his number rarely faces the camera; he was told by black shorts, banded socks and red gloves, with no other defenceman on with Petrov), Vasyliev #31 and Belov #64 in the scramble before the 5-2 goal, and two opponent tracks dropped that the solver had joined to Kondratenko #12. Prozhogin's ice time is probably still a little low."
+  ],
+  "video_ends_early": false,
+  "fun": {
+    "name_reads": {
+      "31": 409,
+      "89": 371,
+      "18": 320,
+      "14": 278,
+      "26": 246,
+      "64": 202,
+      "90": 162,
+      "78": 107,
+      "61": 60,
+      "12": 36,
+      "82": 34,
+      "33": 19
+    }
+  },
+  "pipeline": {
+    "detections": 726565,
+    "crops": 253182,
+    "reads": 5053,
+    "reviewed": 1614
+  },
+  "lada_game_id": 32971,
+  "stoppages": [
+    [
+      2,
+      4
+    ],
+    [
+      91,
+      147
+    ],
+    [
+      302,
+      327
+    ],
+    [
+      347,
+      373
+    ],
+    [
+      558,
+      578
+    ],
+    [
+      639,
+      663
+    ],
+    [
+      707,
+      746
+    ],
+    [
+      746,
+      775
+    ],
+    [
+      1024,
+      1053
+    ],
+    [
+      1188,
+      1191
+    ],
+    [
+      1191,
+      1213
+    ],
+    [
+      1508,
+      1539
+    ],
+    [
+      1694,
+      1738
+    ],
+    [
+      1750,
+      1808
+    ],
+    [
+      1843,
+      1868
+    ],
+    [
+      1976,
+      2016
+    ],
+    [
+      2073,
+      2118
+    ],
+    [
+      2244,
+      2277
+    ],
+    [
+      2284,
+      2314
+    ],
+    [
+      2489,
+      2525
+    ],
+    [
+      2525,
+      2563
+    ],
+    [
+      2563,
+      2577
+    ],
+    [
+      2577,
+      2595
+    ],
+    [
+      2673,
+      2718
+    ],
+    [
+      2929,
+      2965
+    ],
+    [
+      3070,
+      3095
+    ],
+    [
+      3095,
+      3119
+    ],
+    [
+      3205,
+      3282
+    ],
+    [
+      3399,
+      3427
+    ],
+    [
+      3427,
+      3454
+    ],
+    [
+      3454,
+      3482
+    ],
+    [
+      3482,
+      3525
+    ],
+    [
+      3569,
+      3594
+    ],
+    [
+      3692,
+      3739
+    ],
+    [
+      3767,
+      3779
+    ],
+    [
+      3784,
+      3814
+    ],
+    [
+      3868,
+      3879
+    ]
+  ],
+  "highlights": [
+    {
+      "type": "goal",
+      "team": "against",
+      "t": 301,
+      "clip": "clips/goal-1.mp4",
+      "poster": "clips/goal-1.jpg",
+      "note": "Scramble at our net; TTT open the scoring"
+    },
+    {
+      "type": "goal",
+      "team": "for",
+      "t": 717,
+      "clip": "clips/goal-2.mp4",
+      "poster": "clips/goal-2.jpg",
+      "note": "Scramble at their net ties it 1-1"
+    },
+    {
+      "type": "goal",
+      "team": "for",
+      "t": 1020,
+      "clip": "clips/goal-3.mp4",
+      "poster": "clips/goal-3.jpg",
+      "note": "Rush to their net with a minute left in the 1st: 2-1"
+    },
+    {
+      "type": "goal",
+      "team": "for",
+      "t": 1647,
+      "clip": "clips/goal-4.mp4",
+      "poster": "clips/goal-4.jpg",
+      "note": "Scramble at their net: 3-1"
+    },
+    {
+      "type": "penalty",
+      "player": 18,
+      "t": 1990,
+      "clip": "clips/penalty-18.mp4",
+      "poster": "clips/penalty-18.jpg",
+      "note": "3-minute minor; the infraction isn't clear on the video (he was by the TTT bench right before the whistle)"
+    },
+    {
+      "type": "goal",
+      "team": "for",
+      "t": 2250,
+      "clip": "clips/goal-5.mp4",
+      "poster": "clips/goal-5.jpg",
+      "note": "Power-play goal from a scramble at their net: 4-1"
+    },
+    {
+      "type": "goal",
+      "team": "against",
+      "t": 2286,
+      "clip": "clips/goal-6.mp4",
+      "poster": "clips/goal-6.jpg",
+      "note": "TTT answer 36 seconds later on a rush to our net: 4-2"
+    },
+    {
+      "type": "goal",
+      "team": "for",
+      "t": 3752,
+      "clip": "clips/goal-7.mp4",
+      "poster": "clips/goal-7.jpg",
+      "note": "Scramble at their net seals it 5-2"
+    }
+  ],
+  "shots": {
+    "P1": [
+      11,
+      6
+    ],
+    "P2": [
+      19,
+      4
+    ],
+    "P3": [
+      19,
+      12
+    ]
+  },
+  "zones": {
+    "offence": 0.5158,
+    "defence": 0.2703
+  }
+}
