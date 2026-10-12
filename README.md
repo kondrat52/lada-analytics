@@ -14,6 +14,7 @@ Shift sheets for Lada TK's rec hockey games: shifts, ice time and average shift 
 | `roster.json` | Jersey number → surname, LADA player ids, team name and LADA team id. Add new players here. |
 | `pipeline/` | The scripts that turn a game video into `shifts.csv`, and `build_site.py`, which renders `docs/`. |
 | `RUNBOOK.md` | The manual steps behind the skill, for debugging or running by hand. |
+| `WINDOWS.md`, `setup_windows.ps1` | Setting up a Windows PC with an NVIDIA GPU to run the pipeline (one command). |
 | `.claude/skills/process-game/` | The Claude Code skill for the weekly run. |
 
 ## Adding a game
@@ -22,10 +23,18 @@ The weekly run is driven by Claude Code. Open this repo and run the project skil
 
 > /process-game https://youtu.be/XXXXXXXXXXX vs RR
 
-The skill (`.claude/skills/process-game/SKILL.md`) asks for the opponent, start time and any penalties, then
-runs `pipeline/run_game.py` (fetch → prepare → review → solve → publish) and asks before pushing.
+The skill (`.claude/skills/process-game/SKILL.md`) asks for the opponent, start time, new players and the score,
+finds periods, goals and penalties itself from the arena scoreboard and the video, then runs
+`pipeline/run_game.py` (fetch → prepare → review → solve → publish) and asks before pushing.
 
-It takes about two hours on an M-series Mac: roughly 80 minutes of detection, then number reading, a visual review of the uncertain moments, and the final solve. Tell it about anything the video can't show, such as who took a penalty and when.
+It takes a few hours on an M-series Mac: about two hours of detection, then number reading, a visual review of the uncertain moments, and the final solve.
+
+On a Windows PC with an NVIDIA GPU, detection runs on CUDA and should be much faster. To set one up, run this in
+PowerShell; `WINDOWS.md` has the details and the steps by hand:
+
+```powershell
+irm https://raw.githubusercontent.com/kondrat52/lada-tk-analytics/main/setup_windows.ps1 | iex
+```
 
 To rebuild the site after editing a game's files or the roster:
 
