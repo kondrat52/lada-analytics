@@ -1,17 +1,46 @@
 """build_site.py : render docs/ (GitHub Pages) from each team's teams/<slug>/games/*/game.json + shifts.csv, into
-the team's site folder (roster.json's site_dir: Turbo Kings at the docs root, others in docs/<slug>/).
+the team's site folder docs/<slug>/.
 <site>/index.html            season totals (sortable) + list of games
 <site>/games/<id>/index.html one shift sheet per game
 <site>/api/*.json            JSON feed for apps (see build_feed.py / API.md)
+docs/index.html              the teams, linking to their sites (only when building every team)
 Builds every team with games, or only $TEAM when it is set."""
 import os, sys, json, glob, html, subprocess
 
 if not os.environ.get("TEAM"):   # each team in its own process: roster.py holds one team's names
     sys.path.insert(0, os.path.dirname(os.path.abspath(__file__)))
-    from roster import REPO, teams
+    from roster import REPO, teams, site_of
     for slug in teams():
         subprocess.run([sys.executable, os.path.abspath(__file__)], env=dict(os.environ, TEAM=slug), check=True)
     open(f"{REPO}/docs/.nojekyll", "w").write("")
+    played = sorted(((t, len(glob.glob(f"{REPO}/teams/{t}/games/*/game.json"))) for t in teams()),
+                    key=lambda tn: tn[0] != "tk")   # Turbo Kings first
+    links = "\n".join(f"<li><a href='{t}/'><span class='t'>{html.escape(site_of(t)[0])}</span>"
+                      f"<span class='d'>{n} game{'' if n == 1 else 's'}</span></a></li>" for t, n in played if n)
+    open(f"{REPO}/docs/index.html", "w").write(f"""<!doctype html>
+<html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>LADA Shift Sheets</title>
+<link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Big+Shoulders+Display:wght@700;800&family=Barlow:wght@400;500;600&family=Barlow+Condensed:wght@500;600&display=swap">
+<style>
+:root {{ --ice:#f4f8fb; --board:#fff; --ink:#13243a; --muted:#5b6b7e; --rule:#d6e0ea; --team:#3d8fd6; --redline:#c8323c;
+  --display:"Big Shoulders Display","Arial Narrow",sans-serif; --body:"Barlow","Helvetica Neue",Arial,sans-serif; --data:"Barlow Condensed","Arial Narrow",sans-serif; }}
+@media (prefers-color-scheme: dark) {{ :root {{ --ice:#0d1826; --board:#13233a; --ink:#e6eef7; --muted:#93a6bb; --rule:#243a55; --team:#6cb3f0; --redline:#ef6a72; color-scheme:dark; }} }}
+* {{ box-sizing:border-box; }} body {{ margin:0; background:var(--ice); color:var(--ink); font:400 16px/1.5 var(--body); }}
+.wrap {{ max-width:960px; margin:0 auto; padding-inline:20px; padding-block:28px 56px; display:grid; gap:28px; }}
+header {{ border-bottom:3px solid var(--redline); padding-bottom:14px; display:grid; gap:6px; }}
+.eyebrow {{ font:600 13px/1.2 var(--data); letter-spacing:.12em; text-transform:uppercase; color:var(--muted); }}
+h1 {{ font:800 clamp(34px,6vw,56px)/.95 var(--display); margin:0; }}
+ul {{ list-style:none; margin:0; padding:0; display:grid; gap:8px; }}
+ul a {{ display:flex; flex-wrap:wrap; justify-content:space-between; align-items:baseline; gap:4px 16px; padding:12px 14px; background:var(--board); border:1px solid var(--rule); border-radius:4px; color:var(--ink); text-decoration:none; }}
+ul a:hover, ul a:focus-visible {{ border-color:var(--team); outline:none; }}
+.t {{ font:700 22px/1.1 var(--display); }} .d {{ font:500 15px/1.3 var(--data); letter-spacing:.04em; color:var(--muted); }}
+p.note {{ color:var(--muted); margin:0; max-width:70ch; }}
+</style></head><body><div class="wrap">
+<header><div class="eyebrow">LADA Seattle · Rec hockey</div><h1>Shift sheets</h1>
+<p class="note">Ice time and shifts for every skater, measured from each week's wide-cut game video.</p></header>
+<ul>{links}</ul>
+</div></body></html>""")
     sys.exit()
 
 import numpy as np, pandas as pd

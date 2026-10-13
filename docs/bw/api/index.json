@@ -5,11 +5,11 @@
   "short_name": "LBW",
   "lada_team_id": 10
  },
- "site_url": "https://kondrat52.github.io/lada-tk-analytics/bw/",
+ "site_url": "https://kondrat52.github.io/lada-analytics/bw/",
  "updated": "2026-09-13",
- "season_url": "https://kondrat52.github.io/lada-tk-analytics/bw/api/season.json",
- "roster_url": "https://kondrat52.github.io/lada-tk-analytics/bw/api/roster.json",
- "trends_url": "https://kondrat52.github.io/lada-tk-analytics/bw/api/trends.json",
+ "season_url": "https://kondrat52.github.io/lada-analytics/bw/api/season.json",
+ "roster_url": "https://kondrat52.github.io/lada-analytics/bw/api/roster.json",
+ "trends_url": "https://kondrat52.github.io/lada-analytics/bw/api/trends.json",
  "games": [
   {
    "id": "2026-09-13-vs-db",
@@ -32,8 +32,8 @@
     "against": 38
    },
    "highlights": 3,
-   "page_url": "https://kondrat52.github.io/lada-tk-analytics/bw/games/2026-09-13-vs-db/",
-   "json_url": "https://kondrat52.github.io/lada-tk-analytics/bw/api/games/2026-09-13-vs-db.json"
+   "page_url": "https://kondrat52.github.io/lada-analytics/bw/games/2026-09-13-vs-db/",
+   "json_url": "https://kondrat52.github.io/lada-analytics/bw/api/games/2026-09-13-vs-db.json"
   }
  ]
 }

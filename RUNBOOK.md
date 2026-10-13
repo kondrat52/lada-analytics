@@ -16,7 +16,7 @@ export TEAM=tk                        # the team whose game it is: a folder in t
 ```
 
 Each team's roster, opponents and published games live in `teams/<slug>/` (`roster.json`, `opponents.json`,
-`games/`), and its site in `docs/` (Turbo Kings) or `docs/<slug>/`. The scripts read the team from `TEAM`;
+`games/`), and its site in `docs/<slug>/`. The scripts read the team from `TEAM`;
 `run_game.py` records it in `$W/full/rink.json` (`fetch --team`) and sets it for everything it runs.
 
 On a Windows PC with an NVIDIA GPU, detection runs several times faster (CUDA; `process.py` picks it up by

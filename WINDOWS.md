@@ -10,12 +10,12 @@ fix or two on the first run.
 In PowerShell (no need to run it as administrator):
 
 ```powershell
-irm https://raw.githubusercontent.com/kondrat52/lada-tk-analytics/main/setup_windows.ps1 | iex
+irm https://raw.githubusercontent.com/kondrat52/lada-analytics/main/setup_windows.ps1 | iex
 ```
 
 `setup_windows.ps1` does steps 1–6 below: it checks the NVIDIA driver, installs Git and Claude Code, turns on
 Developer Mode and adds the Defender exclusion (Windows asks once for admin rights), clones the repo to
-`~\lada-tk-analytics`, sets the git identity and builds the Python environment. It ends with a list of anything
+`~\lada-analytics`, sets the git identity and builds the Python environment. It ends with a list of anything
 that needs attention, and it is safe to run again. Then go on with step 7.
 
 The steps by hand:
@@ -56,8 +56,8 @@ Search "developer settings" in Start and turn **Developer Mode** on.
 
 ```powershell
 cd $HOME
-git clone https://github.com/kondrat52/lada-tk-analytics.git
-cd lada-tk-analytics
+git clone https://github.com/kondrat52/lada-analytics.git
+cd lada-analytics
 git config --global user.name "kondrat52"
 git config --global user.email "151690973+kondrat52@users.noreply.github.com"
 ```

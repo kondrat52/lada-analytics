@@ -70,7 +70,7 @@ def team_nav(page):
     """The team selector at the top of a team's index.html or trends.html: every team with games, each linking to
     the same page of its own site. Empty while only one team has games."""
     sites = [(t, *site_of(t)) for t in teams() if t == SLUG or glob.glob(f"{REPO}/teams/{t}/games/*/game.json")]
-    sites.sort(key=lambda s: s[2] != os.path.normpath(f"{REPO}/docs"))   # the docs-root team (Turbo Kings) first
+    sites.sort(key=lambda s: s[0] != "tk")   # Turbo Kings first
     if len(sites) < 2:
         return ""
     links = "".join(

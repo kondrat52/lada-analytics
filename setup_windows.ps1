@@ -1,13 +1,13 @@
 # One-time setup of a Windows 11 PC with an NVIDIA GPU for this pipeline (WINDOWS.md has the same steps by hand).
 # In PowerShell:
-#   irm https://raw.githubusercontent.com/kondrat52/lada-tk-analytics/main/setup_windows.ps1 | iex
+#   irm https://raw.githubusercontent.com/kondrat52/lada-analytics/main/setup_windows.ps1 | iex
 # Safe to run again: each step skips what is already done. Windows asks once for admin rights (Developer Mode and a
 # Defender exclusion for the work folder). The NVIDIA driver is only checked, not installed.
 
 function Install-HockeyPC {
     $ErrorActionPreference = "Stop"
-    $repoUrl = "https://github.com/kondrat52/lada-tk-analytics.git"
-    $repo = if ($env:HOCKEY_REPO) { $env:HOCKEY_REPO } else { Join-Path $HOME "lada-tk-analytics" }
+    $repoUrl = "https://github.com/kondrat52/lada-analytics.git"
+    $repo = if ($env:HOCKEY_REPO) { $env:HOCKEY_REPO } else { Join-Path $HOME "lada-analytics" }
     $work = Join-Path $HOME "hockey-work"
     $problems = @()
 
@@ -68,6 +68,7 @@ function Install-HockeyPC {
 
     Step "Repository in $repo"
     if (Test-Path (Join-Path $repo ".git")) {
+        git -C $repo remote set-url origin $repoUrl   # a clone from before the repo was renamed
         git -C $repo pull --ff-only
     } else {
         git clone $repoUrl $repo

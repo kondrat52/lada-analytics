@@ -1,17 +1,17 @@
-# Lada TK Analytics
+# LADA Analytics
 
 Shift sheets for LADA's rec hockey teams: shifts, ice time and average shift length for every skater, measured from the wide-cut game video on YouTube.
 
 | Team | Folder | Site |
 |---|---|---|
-| LADA Turbo Kings (LADA team 24) | `teams/tk/` | https://kondrat52.github.io/lada-tk-analytics/ |
-| LADA Blue Wings (LADA team 10) | `teams/bw/` | https://kondrat52.github.io/lada-tk-analytics/bw/ |
+| LADA Turbo Kings (LADA team 24) | `teams/tk/` | https://kondrat52.github.io/lada-analytics/tk/ |
+| LADA Blue Wings (LADA team 10) | `teams/bw/` | https://kondrat52.github.io/lada-analytics/bw/ |
 
 ## What's here
 
 | Path | What it is |
 |---|---|
-| `docs/` | The published sites (GitHub Pages): Turbo Kings' at the root, other teams' in `docs/<slug>/`, each with game pages, a trends page (`trends.html`) and a JSON feed in `api/`. Generated; don't edit by hand. |
+| `docs/` | The published sites (GitHub Pages): each team's in `docs/<slug>/`, with game pages, a trends page (`trends.html`) and a JSON feed in `api/`, and a list of the teams at the root. Generated; don't edit by hand. |
 | `API.md` | The JSON feed for apps (e.g. the LADA app): URLs, fields, conventions. |
 | `teams/<slug>/games/<date>-vs-<opp>/` | One folder per game: `game.json` (periods, penalty kills, video link, notes) and `shifts.csv` (one row per shift). |
 | `teams/<slug>/roster.json` | Jersey number → surname, LADA player ids, team name, LADA team id and where its site goes. Add new players here. |
@@ -39,7 +39,7 @@ On a Windows PC with an NVIDIA GPU, detection runs on CUDA and should be much fa
 PowerShell; `WINDOWS.md` has the details and the steps by hand:
 
 ```powershell
-irm https://raw.githubusercontent.com/kondrat52/lada-tk-analytics/main/setup_windows.ps1 | iex
+irm https://raw.githubusercontent.com/kondrat52/lada-analytics/main/setup_windows.ps1 | iex
 ```
 
 To rebuild the sites after editing a game's files or a roster (`TEAM=bw` for one team only):
@@ -51,7 +51,7 @@ python pipeline/build_site.py
 ## Adding a team
 
 1. `teams/<slug>/roster.json`: copy `teams/bw/roster.json` and change the team name, `lada_team_id` (LADA's public
-   `https://api.ladaseattle.com/api/v1/Team/<id>` gives a team's name), `site_dir` and `site_url`, and the players.
+   `https://api.ladaseattle.com/api/v1/Team/<id>` gives a team's name), `site_url` (`https://kondrat52.github.io/lada-analytics/<slug>/`), and the players.
    The players come from the team's SportNinja roster (screenshots of it work): spares go under `subs`, and the
    league's shared account (Agregat Dannikh) stays out.
 2. LADA player ids: `TEAM=<slug> python pipeline/lada_ids.py` (signs in to LADA as you; LADA has to show you the

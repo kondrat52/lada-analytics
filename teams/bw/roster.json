@@ -3,8 +3,7 @@
   "team_short": "LBW",
   "team_name": "LADA Blue Wings",
   "lada_team_id": 10,
-  "site_url": "https://kondrat52.github.io/lada-tk-analytics/bw/",
-  "site_dir": "bw",
+  "site_url": "https://kondrat52.github.io/lada-analytics/bw/",
   "jersey": "light blue",
   "goalies": {},
   "skaters": {

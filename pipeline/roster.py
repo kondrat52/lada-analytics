@@ -11,9 +11,8 @@ def teams():
 
 
 def site_of(slug):
-    """A team's display name and its site folder under docs/ (roster.json's site_dir, else docs/<slug>)."""
-    r = json.load(open(f"{REPO}/teams/{slug}/roster.json"))
-    return r["team"], os.path.normpath(f"{REPO}/docs/{r.get('site_dir', slug)}")
+    """A team's display name and its site folder, docs/<slug>/."""
+    return json.load(open(f"{REPO}/teams/{slug}/roster.json"))["team"], f"{REPO}/docs/{slug}"
 
 
 SLUG = os.environ.get("TEAM") or "tk"

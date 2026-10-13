@@ -7,8 +7,13 @@ Base URL, one feed per team (each `index.json` says whose it is in `team`, with 
 
 | Team | LADA team id | Base URL |
 |---|---|---|
-| LADA Turbo Kings | 24 | `https://kondrat52.github.io/lada-tk-analytics/api/` |
-| LADA Blue Wings | 10 | `https://kondrat52.github.io/lada-tk-analytics/bw/api/` |
+| LADA Turbo Kings | 24 | `https://kondrat52.github.io/lada-analytics/tk/api/` |
+| LADA Blue Wings | 10 | `https://kondrat52.github.io/lada-analytics/bw/api/` |
+
+The feeds used to be at `https://kondrat52.github.io/lada-tk-analytics/api/` (Turbo Kings) and `.../lada-tk-analytics/bw/api/`.
+For LADA app versions that still read them, the repo `kondrat52/lada-tk-analytics` mirrors the new feeds there
+(copied every hour, links inside pointing to the new URLs) and sends the old pages to the new ones. It goes away
+once those versions are gone; don't use the old URLs.
 
 | File | What's in it |
 |---|---|
@@ -43,7 +48,7 @@ Base URL, one feed per team (each `index.json` says whose it is in `team`, with 
 {
   "schema": 1,
   "team": {"name": "LADA Turbo Kings", "short_name": "Lada TK", "lada_team_id": 24},
-  "site_url": "https://kondrat52.github.io/lada-tk-analytics/",
+  "site_url": "https://kondrat52.github.io/lada-analytics/tk/",
   "updated": "2026-09-27",
   "season_url": ".../api/season.json",
   "roster_url": ".../api/roster.json",

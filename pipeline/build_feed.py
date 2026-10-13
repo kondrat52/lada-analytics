@@ -1,4 +1,4 @@
-"""JSON feed for apps (e.g. the LADA app), published with the site under docs/api/.
+"""JSON feed for apps (e.g. the LADA app), published with each team's site under docs/<slug>/api/.
 
   api/index.json          team, games list, links to everything else
   api/games/<id>.json     one game: periods, per-player stats, every shift, highlights, stoppages

@@ -5,12 +5,11 @@ description: Turn a LADA team's game video (Turbo Kings or Blue Wings; YouTube w
 
 # Process a LADA team's game
 
-Turns one wide-cut game video into per-player shift stats and publishes them to the GitHub Pages site in `docs/`.
+Turns one wide-cut game video into per-player shift stats and publishes them to the team's GitHub Pages site in `docs/<slug>/`.
 `RUNBOOK.md` has the details behind each step; this skill is the order of operations and the checks.
 
 Each team has a folder `teams/<slug>/`: `roster.json`, `opponents.json` and `games/`. So far `tk` (LADA Turbo
-Kings, LADA team 24; its site is the root of `docs/`) and `bw` (LADA Blue Wings, LADA team 10; its site is
-`docs/bw/`). "We", "our" and "the roster" below mean the team whose game it is. `fetch --team` records the team in
+Kings, LADA team 24) and `bw` (LADA Blue Wings, LADA team 10), with sites in `docs/tk/` and `docs/bw/`. "We", "our" and "the roster" below mean the team whose game it is. `fetch --team` records the team in
 the work folder and every later `run_game.py` command follows it; a script run by hand takes it from `TEAM`
 (`TEAM=bw $PY pipeline/lada_ids.py`), and `build_site.py` without `TEAM` rebuilds every team.
 
@@ -308,7 +307,7 @@ $PY pipeline/run_game.py publish $W <YYYY-MM-DD>-vs-<opp> --opponent <OPP> --eye
 ```
 
 This writes `teams/<slug>/games/<id>/game.json` + `shifts.csv` (with play time, stoppages and highlights) and
-rebuilds the team's site (`docs/`, or `docs/<slug>/` for teams other than Turbo Kings), including the JSON feed in
+rebuilds the team's site (`docs/<slug>/`), including the JSON feed in
 its `api/` (see API.md) and the trends page `trends.html` (`build_trends.py`). It
 also stores time in offence and defence as `zones` in `game.json` (`zones.py`, from the detections, so it works
 until the work folder is gone and again from an archived one). It also looks up the game's LADA API id (`lada_game_id`, which
