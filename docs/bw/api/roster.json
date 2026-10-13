@@ -1,0 +1,146 @@
+{
+ "schema": 1,
+ "team": {
+  "name": "LADA Blue Wings",
+  "short_name": "LBW",
+  "lada_team_id": 10
+ },
+ "skaters": [
+  {
+   "number": 2,
+   "name": "Zhuk",
+   "lada_player_id": 3424
+  },
+  {
+   "number": 3,
+   "name": "Ilinskaya",
+   "lada_player_id": 20403
+  },
+  {
+   "number": 11,
+   "name": "Belousenko",
+   "lada_player_id": 1395
+  },
+  {
+   "number": 15,
+   "name": "Potepalov",
+   "lada_player_id": 20404
+  },
+  {
+   "number": 16,
+   "name": "Skitsko",
+   "lada_player_id": 20349
+  },
+  {
+   "number": 26,
+   "name": "Babkin",
+   "lada_player_id": 20354
+  },
+  {
+   "number": 35,
+   "name": "Trunov",
+   "lada_player_id": 20424
+  },
+  {
+   "number": 36,
+   "name": "Charnysh",
+   "lada_player_id": 20351
+  },
+  {
+   "number": 43,
+   "name": "Miroshnichenko",
+   "lada_player_id": 20405
+  },
+  {
+   "number": 44,
+   "name": "Tverskoy",
+   "lada_player_id": 5814
+  },
+  {
+   "number": 50,
+   "name": "Dukhno",
+   "lada_player_id": 20408
+  },
+  {
+   "number": 53,
+   "name": "Gareev",
+   "lada_player_id": 20406
+  },
+  {
+   "number": 54,
+   "name": "Semenov",
+   "lada_player_id": 20407
+  },
+  {
+   "number": 55,
+   "name": "Lisenko",
+   "lada_player_id": 11123
+  },
+  {
+   "number": 77,
+   "name": "Horokh",
+   "lada_player_id": 20343
+  },
+  {
+   "number": 88,
+   "name": "Shipachev",
+   "lada_player_id": 20344
+  },
+  {
+   "number": 95,
+   "name": "Antonov",
+   "lada_player_id": 20348
+  }
+ ],
+ "subs": [
+  {
+   "number": 31,
+   "name": "Sourov",
+   "lada_player_id": 20347,
+   "sub": true
+  },
+  {
+   "number": 37,
+   "name": "Akulov",
+   "lada_player_id": null,
+   "sub": true
+  },
+  {
+   "number": 46,
+   "name": "Polyanskiy",
+   "lada_player_id": null,
+   "sub": true
+  },
+  {
+   "number": 51,
+   "name": "Polyanskiy",
+   "lada_player_id": null,
+   "sub": true
+  },
+  {
+   "number": 61,
+   "name": "Prozhogin",
+   "lada_player_id": null,
+   "sub": true
+  },
+  {
+   "number": 71,
+   "name": "Fedotov",
+   "lada_player_id": null,
+   "sub": true
+  },
+  {
+   "number": 74,
+   "name": "Bronnikov",
+   "lada_player_id": 20353,
+   "sub": true
+  },
+  {
+   "number": 82,
+   "name": "Podkorytov",
+   "lada_player_id": null,
+   "sub": true
+  }
+ ],
+ "goalies": []
+}

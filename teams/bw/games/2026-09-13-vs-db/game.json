@@ -1,0 +1,212 @@
+{
+  "id": "2026-09-13-vs-db",
+  "date": "2026-09-13",
+  "title": "LADA Blue Wings vs Disco Bandoleros, Sep 13",
+  "eyebrow": "Sun Sep 13, 2026 · 7:20 PM · Snoqualmie A",
+  "opponent": "DB",
+  "video": "https://youtu.be/DMChkYkdI7g",
+  "periods": [
+    {
+      "label": "P1",
+      "start": 9,
+      "end": 1110
+    },
+    {
+      "label": "P2",
+      "start": 1232,
+      "end": 2315
+    },
+    {
+      "label": "P3",
+      "start": 2410,
+      "end": 3854
+    }
+  ],
+  "nets": {
+    "P1": 630,
+    "P2": 3260,
+    "P3": 630
+  },
+  "penalty_kills": [],
+  "notes": [
+    "Home game at Snoqualmie A (the 3840x1536 strip camera, rink snoqualmie): we wore white and had the left bench, which the pipeline mapped for this game.",
+    "Periods, goals and shots come from the arena scoreboard (we were HOME): periods 0:09-18:30, 20:32-38:35 and 40:10-64:14 of the video, by the clock. The video runs to the final horn. Goals at 13:34 (ours), 23:31 and 55:42 (Disco Bandoleros) of the video. Shots on goal: Blue Wings 19, Disco Bandoleros 38. No penalties: neither penalty panel lit up.",
+    "Played: the 13 skaters of LADA's lineup. Didn't play: Skitsko #16, Trunov #35, Tverskoy #44, Dukhno #50. No spares. Horokh #77 is spelled as on his jersey (Goroh on SportNinja).",
+    "Three short stretches in the 3rd show 4 of us on the ice: 46:30-46:48 is a slow line change, and Lisenko #55 stepped on about 15 s before his shift here starts (47:04); 49:24-49:46 is a timeout with both teams at their benches; at 55:10-55:30 Lisenko #55 was still on the ice until about 55:34, so his last shift before the 1-2 goal is about 20 s short."
+  ],
+  "video_ends_early": false,
+  "fun": {
+    "name_reads": {
+      "88": 539,
+      "53": 375,
+      "15": 273,
+      "3": 256,
+      "11": 206,
+      "36": 186,
+      "26": 143,
+      "55": 127,
+      "43": 100,
+      "2": 82,
+      "95": 48,
+      "54": 30,
+      "77": 23
+    }
+  },
+  "pipeline": {
+    "detections": 903624,
+    "crops": 135802,
+    "reads": 6638,
+    "reviewed": 786
+  },
+  "lada_game_id": 32945,
+  "stoppages": [
+    [
+      9,
+      11
+    ],
+    [
+      97,
+      122
+    ],
+    [
+      239,
+      271
+    ],
+    [
+      386,
+      412
+    ],
+    [
+      412,
+      434
+    ],
+    [
+      482,
+      514
+    ],
+    [
+      704,
+      734
+    ],
+    [
+      746,
+      768
+    ],
+    [
+      785,
+      850
+    ],
+    [
+      1024,
+      1046
+    ],
+    [
+      1232,
+      1234
+    ],
+    [
+      1399,
+      1440
+    ],
+    [
+      1483,
+      1515
+    ],
+    [
+      1591,
+      1617
+    ],
+    [
+      1617,
+      1654
+    ],
+    [
+      1771,
+      1809
+    ],
+    [
+      2041,
+      2077
+    ],
+    [
+      2445,
+      2499
+    ],
+    [
+      2499,
+      2514
+    ],
+    [
+      2540,
+      2591
+    ],
+    [
+      2598,
+      2627
+    ],
+    [
+      2751,
+      2766
+    ],
+    [
+      2900,
+      2983
+    ],
+    [
+      3124,
+      3202
+    ],
+    [
+      3322,
+      3375
+    ],
+    [
+      3728,
+      3755
+    ]
+  ],
+  "highlights": [
+    {
+      "type": "goal",
+      "team": "for",
+      "t": 814,
+      "clip": "clips/goal-1.mp4",
+      "poster": "clips/goal-1.jpg",
+      "note": "Scramble at their net with the goalie down: 1-0"
+    },
+    {
+      "type": "goal",
+      "team": "against",
+      "t": 1411,
+      "clip": "clips/goal-2.mp4",
+      "poster": "clips/goal-2.jpg",
+      "note": "Scramble at our net three minutes into the 2nd ties it 1-1"
+    },
+    {
+      "type": "goal",
+      "team": "against",
+      "t": 3342,
+      "clip": "clips/goal-3.mp4",
+      "poster": "clips/goal-3.jpg",
+      "note": "Disco Bandoleros go ahead from a scramble at our net with 6:49 left: 1-2"
+    }
+  ],
+  "shots": {
+    "P1": [
+      6,
+      11
+    ],
+    "P2": [
+      5,
+      10
+    ],
+    "P3": [
+      8,
+      17
+    ]
+  },
+  "zones": {
+    "offence": 0.3458,
+    "defence": 0.3999
+  }
+}
