@@ -64,8 +64,9 @@ class Renton:
 
 
 class Snoqualmie(Renton):
-    """Camera high on the near side at center, very wide (3840x1536). Both benches are on the near side at the
-    frame edges: ours at the right, theirs at the left. The far boards sit at y 450-610."""
+    """Rink A: camera high on the near side at center, very wide (3840x1536). Both benches are on the near side at
+    the frame edges: away right (Turbo Kings in light blue), home left (Blue Wings in white). The far boards sit at
+    y 450-610."""
     crop_top = 340 / 1536
     board_band = (0.27, 0.45)
     center_x = 1890
@@ -74,8 +75,10 @@ class Snoqualmie(Renton):
     # curve is the top)
     ICE = Path([(130, 0), (3720, 0), (3720, 598), (3395, 1195), (3360, 1200), (3140, 1390), (2970, 1536),
                 (910, 1536), (700, 1290), (410, 990), (130, 545)])
-    BENCH = ((3720, 598), (3395, 1195))   # top of the boards between the ice and our bench
-    BENCH_Y = (560, 1260)                 # the bench's extent down the frame
+    # top of the boards between the ice and each bench, ordered so that bench_depth's normal points into the bench,
+    # and the bench's extent down the frame
+    BENCHES = {"right": ((3720, 598), (3395, 1195)), "left": ((410, 990), (130, 545))}
+    BENCH_YS = {"right": (560, 1260), "left": (510, 1260)}   # down past the bench doors
     SCALE = 1.6                           # a skater at our bench's boards is ~123 px tall; at Renton's, ~75
     # the bench is close to the camera, so its sitters make over half of all crops; their reads are never used
     ocr_skip_depth = 60
@@ -86,9 +89,9 @@ class Snoqualmie(Renton):
     shots_boxes = {"home": (136, 76, 157, 95), "guest": (171, 76, 197, 95)}
 
     def __init__(self, board_poly, bench=None):
-        if bench and bench != self.bench_side:
-            raise NotImplementedError("Snoqualmie's left bench isn't mapped yet")
         super().__init__(board_poly)
+        side = bench or self.bench_side
+        self.BENCH, self.BENCH_Y = self.BENCHES[side], self.BENCH_YS[side]
 
     def _xy(self, x, rel):
         x = np.asarray(x, float); rel = np.asarray(rel, float)
@@ -106,7 +109,7 @@ class Snoqualmie(Renton):
     def bench_depth(self, x, rel):
         x, y = self._xy(x, rel)
         (ax, ay), (bx, by) = self.BENCH
-        nx, ny = by - ay, ax - bx          # normal pointing right, into the bench
+        nx, ny = by - ay, ax - bx          # normal pointing into the bench
         d = ((x - ax) * nx + (y - ay) * ny) / np.hypot(nx, ny) / self.SCALE
         return np.where((y > self.BENCH_Y[0]) & (y < self.BENCH_Y[1]), d, -999.0)
 

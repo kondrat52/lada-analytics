@@ -3,7 +3,12 @@
 Read-only JSON, published with the site on GitHub Pages and rebuilt on every push. No login and no keys. Pages sends
 `Access-Control-Allow-Origin: *` and caches for up to 10 minutes.
 
-Base URL: `https://kondrat52.github.io/lada-tk-analytics/api/`
+Base URL, one feed per team (each `index.json` says whose it is in `team`, with its `lada_team_id`):
+
+| Team | LADA team id | Base URL |
+|---|---|---|
+| LADA Turbo Kings | 24 | `https://kondrat52.github.io/lada-tk-analytics/api/` |
+| LADA Blue Wings | 10 | `https://kondrat52.github.io/lada-tk-analytics/bw/api/` |
 
 | File | What's in it |
 |---|---|
@@ -22,7 +27,8 @@ Base URL: `https://kondrat52.github.io/lada-tk-analytics/api/`
   It's an upper bound, since quick whistles can slip through.
 - **Players** appear as `{number, name, lada_player_id}`. `name` is the surname as printed on the jersey.
   A substitute (a skater who isn't on the team and subbed in) also has `sub: true`.
-  `lada_player_id` is the player's id on the LADA team roster (team 24), or `null` if not matched yet. Join on
+  `lada_player_id` is the player's id on the LADA team roster (the feed's `lada_team_id`: LADA gives a player on
+  two teams a different id on each), or `null` if not matched yet. Join on
   `lada_player_id` when it's there; jersey numbers can differ between the jersey and the LADA roster.
 - **Games** have a date-slug `id` (`2026-09-27-vs-rr`). `lada_game_id` is the LADA API game id (publishing fills
   it in from LADA when it can), or `null`. Match on the date when it's `null`: a team plays at most once a day.
@@ -79,7 +85,7 @@ play, avg_shift, longest_shift, shortest_shift, games[]}`. `games[]` lists that 
 ## `roster.json`
 
 `skaters[]` and `goalies[]`, each `{number, name, lada_player_id}`, and `subs[]`: skaters who have subbed for the
-team without being on it. Edit the repo's `roster.json` to change them.
+team without being on it. Edit the repo's `teams/<slug>/roster.json` to change them.
 
 ## `trends.json`
 

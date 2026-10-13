@@ -2,8 +2,9 @@
 work/
 *.webm
 *.mp4
-# ...except the published highlight clips
+# ...except the published highlight clips (Turbo Kings at the docs root, other teams in docs/<slug>/)
 !docs/games/*/clips/*.mp4
+!docs/*/games/*/clips/*.mp4
 *.pt
 __pycache__/
 .DS_Store

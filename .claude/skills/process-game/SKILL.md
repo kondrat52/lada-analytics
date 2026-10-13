@@ -1,24 +1,34 @@
 ---
 name: process-game
-description: Turn a Lada TK game video (YouTube wide cut) into a shift sheet and publish it on the team site. Use when the user asks to process, analyze or add a game, or gives a YouTube link to a game, e.g. "/process-game https://youtu.be/... vs RR".
+description: Turn a LADA team's game video (Turbo Kings or Blue Wings; YouTube wide cut) into a shift sheet and publish it on that team's site. Use when the user asks to process, analyze or add a game, or gives a YouTube link to a game, e.g. "/process-game https://youtu.be/... vs RR" or "/process-game https://youtu.be/... bw vs DB".
 ---
 
-# Process a Lada TK game
+# Process a LADA team's game
 
 Turns one wide-cut game video into per-player shift stats and publishes them to the GitHub Pages site in `docs/`.
 `RUNBOOK.md` has the details behind each step; this skill is the order of operations and the checks.
+
+Each team has a folder `teams/<slug>/`: `roster.json`, `opponents.json` and `games/`. So far `tk` (LADA Turbo
+Kings, LADA team 24; its site is the root of `docs/`) and `bw` (LADA Blue Wings, LADA team 10; its site is
+`docs/bw/`). "We", "our" and "the roster" below mean the team whose game it is. `fetch --team` records the team in
+the work folder and every later `run_game.py` command follows it; a script run by hand takes it from `TEAM`
+(`TEAM=bw $PY pipeline/lada_ids.py`), and `build_site.py` without `TEAM` rebuilds every team.
 
 Budget about 2 hours of wall time on the Mac (the GPU does the detection; this can't run in the cloud) and a
 fair amount of tokens for the visual review. Keep the user posted with one line per stage.
 
 ## 0. Ask up front (one message, then start)
 
-- The YouTube link (if not given) and the opponent's short name (e.g. RR).
-- Date and start time, rink (Renton, Snoqualmie or Kirkland so far) for the page header. The video title usually
-  has them, e.g. "LTKvsTTT 5:55 PM PDT - SEP 13, 2026 (Snoqualmie) - wide cut".
+- Whose game, if the user didn't say (Turbo Kings unless the video is another team's), the YouTube link (if not
+  given) and the opponent's short name (e.g. RR).
+- Date and start time, rink (Renton, Snoqualmie A or B, or Kirkland so far) for the page header. The video title
+  usually has them, e.g. "LTKvsTTT 5:55 PM PDT - SEP 13, 2026 (Snoqualmie) - wide cut"; Blue Wings' videos are
+  titled "2026/09/13 LADA Blue Wings vs Disco Bandoleros", with the rink in the description and the time in LADA.
 - Home or away. So far the home team has worn white (ours: blue numbers and trim) and, at Renton and Kirkland, sat
   on the bench right of center; away we wear light blue and sit left of center. LADA's API says which:
-  `https://api.ladaseattle.com/api/v1/game/<id>` has `playHome` (the id: `.../api/v1/team/24/game/last`). The
+  `https://api.ladaseattle.com/api/v1/game/<id>` has `playHome` (the id: `.../api/v1/team/<lada_team_id>/game/last`,
+  the team's id in its `roster.json`; `.../game/next/30` for upcoming games, and `.../api/v1/Team/<id>/Schedule/<season>`
+  with the season from `.../api/v1/Season/<id>` for a whole season). The
   pipeline finds our players by jersey colour and their line changes by the bench, so check frame600.png (step 1)
   if unsure.
 - New players, and for each whether they're on the team or a sub (they go in different parts of `roster.json`,
@@ -36,9 +46,9 @@ Don't wait for answers to start step 1; you need them from step 3 on.
 ```sh
 PY=~/.venvs/hockey/bin/python
 [ -x $PY ] || sh pipeline/setup_env.sh
-W=~/hockey-work/<YYYY-MM-DD>-vs-<opp>          # outside the repo; ~5 GB
+W=~/hockey-work/<YYYY-MM-DD>-vs-<opp>          # outside the repo; ~5 GB; prefix other teams' with the slug: bw-2026-09-13-vs-db
 nohup caffeinate -dims -t 28800 >/dev/null 2>&1 &   # keep the Mac awake for the whole run (8 h)
-$PY pipeline/run_game.py fetch "<url>" $W --rink <renton|snoqualmie|kirkland> [--jersey white --bench right]   # run_in_background: true
+$PY pipeline/run_game.py fetch "<url>" $W --team <tk|bw> --rink <renton|snoqualmie|snoqualmie2|kirkland> [--jersey white --bench right]   # run_in_background: true
 ```
 
 A sleeping Mac stalls everything: detection crawls, and subagents die mid-review ("your computer went to sleep").
@@ -57,9 +67,10 @@ before `solve` (it decides which track ends count as line changes).
 
 Each rink films from a different spot, so the camera geometry lives in `pipeline/rink.py` (detection crop, where
 the far boards are, our bench, nets). Renton has both benches behind the far boards. Snoqualmie has them on the
-near side at the frame edges: home left, away right. Its video changed in Oct 2026 from a 3840x1536 strip
-(`snoqualmie`) to the camera's whole fisheye frame, 3824x2160 (`--rink snoqualmie2`); check frame600.png's size.
-That video is dim and grey, so a rink can set its own brightness levels (`white_v`, `dark_v`) and jersey tests
+near side at the frame edges: home left, away right. Its two rinks have given two kinds of video: a 3840x1536 strip
+(`--rink snoqualmie`: Rink A, Blue Wings' home rink, Sep 2026) and the camera's whole fisheye frame, 3824x2160
+(`--rink snoqualmie2`: Rink B, Turbo Kings' Oct 10 game). LADA's schedule names the rink (`rinkName`, "Snoqualmie
+A"), but go by frame600.png's size. The fisheye video is dim and grey, so a rink can set its own brightness levels (`white_v`, `dark_v`) and jersey tests
 (`jerseys`) in `rink.py`: check the jersey test on a few frames whenever the picture looks different. Kirkland films through a fisheye lens from low at center ice: the
 far boards bow up toward center, both benches are behind them (home right of center, away left), and the penalty
 boxes are the near corners at the bottom of the frame. For a rink not in `rink.py`, stop before detection. You
@@ -195,7 +206,7 @@ before writing anything; one file per sheet keeps whatever finished. Prompt (fil
 > color/stripes, pants (black shorts over white socks vs. long black), helmet color, glove color, skate color.
 > Roster: [#N SURNAME list from roster.json]. [(#N and #M probably did not play this game.)] If you clearly see
 > another number on our jersey, report it.
-> #58 is the goalie (big leg pads): report "G" for goalie rows.
+> [#58 is the goalie | Our goalie is not on the card] (big leg pads): report "G" for goalie rows.
 >
 > 2. Then Read ONLY these sheets: [sheet_XXX.jpg, …]. Each sheet has up to 8 rows. Each row = one tracked
 > skater over time; every tile is labeled "R<id> <time>s". The tracker can make mistakes: a row may switch
@@ -296,22 +307,24 @@ audio is silent, so the clips have no sound.
 $PY pipeline/run_game.py publish $W <YYYY-MM-DD>-vs-<opp> --opponent <OPP> --eyebrow "Sun Oct 4, 2026 · 7:50 PM · Renton" [--video-ends-early]
 ```
 
-This writes `games/<id>/game.json` + `shifts.csv` (with play time, stoppages and highlights) and rebuilds `docs/`,
-including the JSON feed in `docs/api/` (see API.md) and the trends page `docs/trends.html` (`build_trends.py`). It
+This writes `teams/<slug>/games/<id>/game.json` + `shifts.csv` (with play time, stoppages and highlights) and
+rebuilds the team's site (`docs/`, or `docs/<slug>/` for teams other than Turbo Kings), including the JSON feed in
+its `api/` (see API.md) and the trends page `trends.html` (`build_trends.py`). It
 also stores time in offence and defence as `zones` in `game.json` (`zones.py`, from the detections, so it works
 until the work folder is gone and again from an archived one). It also looks up the game's LADA API id (`lada_game_id`, which
 the LADA app uses to link the game) from LADA's public "last game" call. If it logs that it couldn't, find the id in
 `https://api.ladaseattle.com/api/v1/game/<LADA id of any game vs this opponent>/opponentGames` (the team's upcoming
-games and their ids: `.../api/v1/team/24/game/next/30`). Add it, and the opponent's full name if you know it, as
+games and their ids: `.../api/v1/team/<lada_team_id>/game/next/30`). Add it, and the opponent's full name if you know it, as
 `"lada_game_id"` / `"opponent_name"` in `game.json`, then re-run `$PY pipeline/build_site.py`. A new opponent's
-code and full name go in `opponents.json` (the user's spelling wins over LADA's; LADA's exact spelling is what
+code and full name go in the team's `opponents.json` (the user's spelling wins over LADA's; LADA's exact spelling is what
 finds the team's logo in the LADA app, so a different one shows initials there). For a new player, ask the user to
-run `$PY pipeline/lada_ids.py` in their own terminal (it signs in to LADA as them) and add the ids it marks NEW to
+run `TEAM=<slug> $PY pipeline/lada_ids.py` in their own terminal (it signs in to LADA as them; give them the exact
+command line, with `cd` to the repo) and add the ids it marks NEW to
 `lada_player_ids` in `roster.json`; fix any it marks WRONG. A sub who isn't on the LADA roster gets no id. Write `notes` in `game.json` (they
 survive a republish): the rink if it's new, who sat and when, where the goal times came from, the subs, and
 anything you labeled by hand or read differently from the scoreboard.
-The clips live in `docs/games/<id>/clips/` (about 5 MB each), served by GitHub Pages. Open the page locally
-(`docs/games/<id>/index.html`) and look it over. Show the user the table and the notable fun stats,
+The clips live in the team site's `games/<id>/clips/` (about 5 MB each), served by GitHub Pages. Open the page
+locally (`games/<id>/index.html` in the team's site) and look it over. Show the user the table and the notable fun stats,
 then ask before committing and pushing: the site is public. After pushing, check that the page is live (Pages
 takes about a minute; add `?v=<random>` to skip the CDN cache).
 

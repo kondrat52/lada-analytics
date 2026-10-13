@@ -11,8 +11,13 @@ Written for Claude Code (or anyone patient). Commands assume the repo root as th
 # one-time: macOS system python is 3.9, which is too old for current yt-dlp
 uv venv --python 3.12 ~/.venvs/hockey && uv pip install --python ~/.venvs/hockey/bin/python -r pipeline/requirements.txt
 PY=~/.venvs/hockey/bin/python
-W=~/hockey-work/2026-10-04-vs-XX
+W=~/hockey-work/2026-10-04-vs-XX      # other teams than Turbo Kings: bw-2026-09-13-vs-db
+export TEAM=tk                        # the team whose game it is: a folder in teams/ (tk, bw)
 ```
+
+Each team's roster, opponents and published games live in `teams/<slug>/` (`roster.json`, `opponents.json`,
+`games/`), and its site in `docs/` (Turbo Kings) or `docs/<slug>/`. The scripts read the team from `TEAM`;
+`run_game.py` records it in `$W/full/rink.json` (`fetch --team`) and sets it for everything it runs.
 
 On a Windows PC with an NVIDIA GPU, detection runs several times faster (CUDA; `process.py` picks it up by
 itself). Install Git for Windows (Claude Code's Bash tool needs its bash, and these commands are sh), the NVIDIA
@@ -33,8 +38,9 @@ $PY -m yt_dlp -f 313 -o "$W/video.webm" "https://youtu.be/VIDEO_ID"   # 313 = 21
 ```sh
 FF=$($PY -c "import imageio_ffmpeg; print(imageio_ffmpeg.get_ffmpeg_exe())")
 $FF -loglevel error -ss 600 -i $W/video.webm -frames:v 1 $W/frame600.png
-echo '{"rink": "snoqualmie"}' > $W/full/rink.json   # not for Renton, the default
-# Snoqualmie since Oct 2026 (the camera's whole fisheye frame, 3824x2160; home bench left):
+echo '{"team": "tk", "rink": "snoqualmie"}' > $W/full/rink.json   # rink: not for Renton, the default
+# Snoqualmie A (a 3840x1536 strip; away bench right, home left): {"rink": "snoqualmie", "jersey": "white", "bench": "left"}
+# Snoqualmie B (the camera's whole fisheye frame, 3824x2160; home bench left):
 #   {"rink": "snoqualmie2", "jersey": "white", "bench": "left"}
 # home games (white jerseys, right bench at Renton): {"rink": "renton", "jersey": "white", "bench": "right"}
 # Kirkland (fisheye, benches behind the far boards, home right): {"rink": "kirkland", "jersey": "white", "bench": "right"}
@@ -101,7 +107,7 @@ Repeat for p2 and p3. Finish OCR (step 4) before this step, and never re-run `ru
 after its review (step 7) has started: review rows point at segment numbers, and a new segmentation scrambles
 them. Look at `roster_card.jpg`. Every row should be one player. The card only has roster numbers, so run
 `run_game.py unknown $W` before tracking to find new or sub players (numbers read hundreds of times that aren't
-in `roster.json`, with a crop sheet each): add ours to `roster.json`, team members under `skaters` and subs under
+in the team's `roster.json`, with a crop sheet each): add ours to it, team members under `skaters` and subs under
 `subs` (ask which); other teams' jerseys are opponents.
 
 ## 7. Visual review (Claude subagents, ~15 min in parallel)
@@ -111,7 +117,7 @@ Split each period's `sheet_*.jpg` across 4–5 subagents (~6 sheets each), with 
 > You are identifying rec-hockey players in image crops. Accuracy matters more than coverage: answer "?"
 > whenever you are not sure. Directory: `$W/rev_pN/`. First Read `roster_card.jpg` (one row per player, "#N" =
 > jersey number) and learn each player's features: number/name on the back and sleeves, socks, pants,
-> helmet, gloves, skates. Roster: (list from roster.json). #58 is the goalie; answer "G" for goalie rows.
+> helmet, gloves, skates. Roster: (list from roster.json). #58 is the goalie (Turbo Kings); answer "G" for goalie rows.
 > Then Read ONLY sheets X–Y. Each row = one tracked skater over time, tiles labeled "R<id> <time>s". A row may
 > switch players partway through (a swap). Give a number only if reasonably confident (high = number or name
 > visible; med = distinctive look with no lookalike); otherwise "?". Report swaps with the switch time.
@@ -137,19 +143,20 @@ them (and goals without 5 of us on the ice) as a lineup check. Labels you decide
 
 `run_game.py solve` runs `pipeline/stoppages.py`, which adds a `play` column to `shifts_all.csv` and writes
 `stoppages.json`. For highlights: `run_game.py goals` lists candidate goals, `run_game.py frames` renders frames
-to check them, and `run_game.py clip` cuts a zoomed clip into `docs/games/<id>/clips/` (last argument: an x
+to check them, and `run_game.py clip` cuts a zoomed clip into the team site's `games/<id>/clips/` (last argument: an x
 position or `#N` to follow player N). List the clips in `$W/highlights.json`; see the skill for the format.
 
 ## 10. Publish
 
 ```sh
 (cd $W && $PY $OLDPWD/pipeline/final_stats.py p1:P1 p2:P2 p3:P3)    # writes $W/shifts_all.csv, prints the table
-mkdir -p games/<date>-vs-<opp> && cp $W/shifts_all.csv games/<date>-vs-<opp>/shifts.csv
-# write games/<date>-vs-<opp>/game.json (copy the previous game's and edit periods, video, PKs, notes).
+G=teams/$TEAM/games/<date>-vs-<opp>
+mkdir -p $G && cp $W/shifts_all.csv $G/shifts.csv
+# write $G/game.json (copy the previous game's and edit periods, video, PKs, notes).
 # Optional extras for the Fun stats section: "fun": {"name_reads": {number: count}} from load_reads()'s
 # name reads, and "pipeline": {"detections", "crops", "reads", "reviewed"} counts from this run.
-$PY pipeline/zones.py $W games/<date>-vs-<opp>/game.json   # time in offence/defence: add as "zones" in game.json
-$PY pipeline/build_site.py                                  # also writes docs/trends.html
+$PY pipeline/zones.py $W $G/game.json   # time in offence/defence: add as "zones" in game.json
+$PY pipeline/build_site.py              # this team's site, with its trends.html (unset TEAM: every team)
 git add -A && git commit -m "Add <date> vs <opp>" && git push
 ```
 

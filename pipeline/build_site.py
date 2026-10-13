@@ -1,21 +1,34 @@
-"""build_site.py : render docs/ (GitHub Pages) from games/*/game.json + shifts.csv.
-docs/index.html            season totals (sortable) + list of games
-docs/games/<id>/index.html one shift sheet per game
-docs/api/*.json            JSON feed for apps (see build_feed.py / API.md)"""
-import os, sys, json, glob, html
+"""build_site.py : render docs/ (GitHub Pages) from each team's teams/<slug>/games/*/game.json + shifts.csv, into
+the team's site folder (roster.json's site_dir: Turbo Kings at the docs root, others in docs/<slug>/).
+<site>/index.html            season totals (sortable) + list of games
+<site>/games/<id>/index.html one shift sheet per game
+<site>/api/*.json            JSON feed for apps (see build_feed.py / API.md)
+Builds every team with games, or only $TEAM when it is set."""
+import os, sys, json, glob, html, subprocess
+
+if not os.environ.get("TEAM"):   # each team in its own process: roster.py holds one team's names
+    sys.path.insert(0, os.path.dirname(os.path.abspath(__file__)))
+    from roster import REPO, teams
+    for slug in teams():
+        subprocess.run([sys.executable, os.path.abspath(__file__)], env=dict(os.environ, TEAM=slug), check=True)
+    open(f"{REPO}/docs/.nojekyll", "w").write("")
+    sys.exit()
+
 import numpy as np, pandas as pd
 sys.path.insert(0, os.path.dirname(os.path.abspath(__file__)))
 from build_report import build
 from build_feed import season_table, game_doc, write_feed
 import build_trends
-from roster import SKATERS, SUBS, TEAM, opponent_name
+from roster import SKATERS, SUBS, TEAM, SLUG, GAMES_DIR, SITE_DIR, opponent_name
 
-ROOT = os.path.join(os.path.dirname(os.path.abspath(__file__)), "..")
 fmt = lambda s: f"{int(round(s)) // 60}:{int(round(s)) % 60:02d}"
 
+if not glob.glob(f"{GAMES_DIR}/*/game.json"):
+    print(f"{SLUG}: no games yet, no site")
+    sys.exit()
 games, allsh, docs = [], [], {}
-for gd in sorted(glob.glob(f"{ROOT}/games/*/")):
-    game, A, data = build(gd, f"{ROOT}/docs/games/{os.path.basename(gd.rstrip('/'))}/index.html")
+for gd in sorted(glob.glob(f"{GAMES_DIR}/*/")):
+    game, A, data = build(gd, f"{SITE_DIR}/games/{os.path.basename(gd.rstrip('/'))}/index.html")
     docs[game["id"]] = game_doc(game, A, data["players"], data["highlights"])
     A = A.assign(game=game["id"])
     # shifts cut off by the recording ending mid-play don't count as short shifts
@@ -99,16 +112,20 @@ td {{ font:500 16px/1.2 var(--data); }} .l {{ text-align:left; }} td.num {{ font
 .sub {{ font:600 11px/1 var(--data); letter-spacing:.1em; text-transform:uppercase; color:var(--muted); margin-left:6px; }}
 p.note {{ color:var(--muted); margin:0; max-width:70ch; }}
 .eyebrow a {{ color:var(--blueline); }}
+.teams {{ display:inline-flex; flex-wrap:wrap; justify-self:start; margin-bottom:10px; border:1px solid var(--rule); border-radius:4px; overflow:hidden; background:var(--board); }}
+.teams a {{ font:600 13px/1 var(--data); letter-spacing:.08em; text-transform:uppercase; padding:9px 14px; color:var(--muted); text-decoration:none; }}
+.teams a + a {{ border-left:1px solid var(--rule); }} .teams a:hover {{ color:var(--ink); }}
+.teams a[aria-current="page"] {{ background:var(--team); color:var(--board); }}
+.teams a:focus-visible {{ outline:2px solid var(--blueline); outline-offset:-2px; }}
 </style></head><body><div class="wrap">
-<header><div class="eyebrow">LADA Seattle · Rec hockey · <a href="trends.html">Trends</a></div><h1><span>{html.escape(TEAM)}</span> shift sheets</h1>
+<header>{build_trends.team_nav("index.html")}<div class="eyebrow">LADA Seattle · Rec hockey · <a href="trends.html">Trends</a></div><h1><span>{html.escape(TEAM)}</span> shift sheets</h1>
 <p class="note">Ice time and shifts for every skater, measured from each week's wide-cut game video.</p></header>
 <section><h2>Games</h2><ul class="games">{cards}</ul></section>
 <section><h2>Season</h2><div class="tablebox"><table id="season"><thead><tr><th class="l" tabindex="0">#</th><th class="l" tabindex="0" data-text="1">Player</th><th tabindex="0">GP</th><th tabindex="0">Shifts</th><th tabindex="0">Ice time</th><th tabindex="0" aria-sort="descending">Per game</th><th tabindex="0">Play time</th><th tabindex="0">Avg shift</th><th tabindex="0">Longest</th><th tabindex="0">Shortest</th></tr></thead>
 <tbody>{rows}</tbody></table></div></section>
 </div>
 {SORT_JS}</body></html>"""
-open(f"{ROOT}/docs/index.html", "w").write(page)
-open(f"{ROOT}/docs/.nojekyll", "w").write("")
-write_feed(ROOT, games, docs, season)
-build_trends.build(ROOT)
-print(f"built {len(games)} game(s) -> docs/ (+ api/ feed, trends.html)")
+open(f"{SITE_DIR}/index.html", "w").write(page)
+write_feed(SITE_DIR, games, docs, season)
+build_trends.build(GAMES_DIR, SITE_DIR)
+print(f"{SLUG}: built {len(games)} game(s) -> {os.path.relpath(SITE_DIR)}/ (+ api/ feed, trends.html)")

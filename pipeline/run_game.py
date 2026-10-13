@@ -1,9 +1,10 @@
 """Driver for processing one game. Run with the hockey env's python (see setup_env.sh).
 
-  run_game.py fetch   URL W [--rink NAME] [--jersey NAME] [--bench SIDE] [--limit SEC]   download, calibrate,
-                                             detect (auto-restart), OCR, propose periods; --rink: camera geometry
-                                             from rink.py (renton); --jersey: our jersey that game (light blue,
-                                             white); --bench: left or right, our bench (the rink's usual one unless set)
+  run_game.py fetch   URL W [--team SLUG] [--rink NAME] [--jersey NAME] [--bench SIDE] [--limit SEC]   download,
+                                             calibrate, detect (auto-restart), OCR, propose periods; --team: whose
+                                             game, a folder in teams/ (tk); --rink: camera geometry from rink.py
+                                             (renton); --jersey: our jersey that game (light blue, white); --bench:
+                                             left or right, our bench (the rink's usual one unless set)
   run_game.py jersey  W NAME                 we wore another jersey than fetch was told: switch to it, cut its
                                              crops from the video (~5 min) and OCR them
   run_game.py skaters W T0 T1               our skaters detected on the ice per 5 s (find penalty kills)
@@ -12,14 +13,15 @@
   run_game.py solve   W                      per period: apply reviews + solve; gantt charts; stats table
   run_game.py goals   W                      candidate goals: center-ice faceoffs + long stoppages (verify by eye)
   run_game.py frames  W OUT.jpg X0 X1 Y0 Y1 TILE_W COLS t1 t2 ...   4K frames (cropped) as a sheet, for verifying
-  run_game.py clip    W GAME_ID NAME T0 T1 POSTER_T [FOCUS]          zoomed clip into docs/games/<id>/clips;
+  run_game.py clip    W GAME_ID NAME T0 T1 POSTER_T [FOCUS]          zoomed clip into <site>/games/<id>/clips;
                                              FOCUS = x px (a net x from rink.py) or #N to follow player N
   run_game.py publish W GAME_ID --opponent RR --eyebrow "Sun Sep 27, 2026 · 7:50 PM · Renton" [--date ...]
   run_game.py archive W                      after publishing: drop the video, crops and sheets (~5 GB), keep the
                                              game's data (detections, reads, tracks, reviews; ~100 MB)
 
 W is the per-game work folder (outside the repo). Every step skips work that is already done, so re-running
-after an interruption continues where it stopped. W/periods.json holds the period windows; fetch writes a
+after an interruption continues where it stopped. W/full/rink.json records the team (fetch --team), and every
+command works on that team's roster, games and site (roster.py). W/periods.json holds the period windows; fetch writes a
 proposal, which you check and edit (add penalty kills) before prepare/solve.
 """
 import argparse, glob, json, os, re, shutil, signal, subprocess, sys, time
@@ -205,7 +207,7 @@ def propose_periods(W):
 
 
 def set_config(W, **kw):
-    """Store rink/jersey choices in W/full/rink.json, which every later step reads (rink.py)."""
+    """Store team/rink/jersey choices in W/full/rink.json, which every later step reads (rink.py, team: __main__)."""
     from rink import RINKS, JERSEYS
     for k, known in (("rink", RINKS), ("jersey", JERSEYS), ("bench", ("left", "right"))):
         if kw.get(k) and kw[k] not in known:
@@ -219,7 +221,7 @@ def set_config(W, **kw):
 
 def cmd_fetch(a):
     W = os.path.abspath(a.W); os.makedirs(f"{W}/full", exist_ok=True)
-    set_config(W, rink=a.rink, jersey=a.jersey, bench=a.bench)
+    set_config(W, team=a.team, rink=a.rink, jersey=a.jersey, bench=a.bench)
     vid = download(a.url, W)
     download_audio(a.url, W)
     calibrate(vid, W)
@@ -380,8 +382,9 @@ def cmd_frames(a):
 
 
 def cmd_clip(a):
+    from roster import SITE_DIR
     W = os.path.abspath(a.W)
-    out = f"{ROOT}/docs/games/{a.game_id}/clips/{a.name}.mp4"
+    out = f"{SITE_DIR}/games/{a.game_id}/clips/{a.name}.mp4"
     os.makedirs(os.path.dirname(out), exist_ok=True)
     cmd = [PY, f"{HERE}/clip.py", f"{W}/full", f"{W}/video.webm", f"{W}/audio.m4a", out, a.t0, a.t1, a.poster]
     focus = a.focus
@@ -480,7 +483,8 @@ def lada_game_id(date):
 def cmd_publish(a):
     W = os.path.abspath(a.W)
     from reads import load_reads
-    gd = f"{ROOT}/games/{a.game_id}"; os.makedirs(gd, exist_ok=True)
+    from roster import GAMES_DIR
+    gd = f"{GAMES_DIR}/{a.game_id}"; os.makedirs(gd, exist_ok=True)
     shutil.copy(f"{W}/shifts_all.csv", f"{gd}/shifts.csv")
     Ps = periods(W)
     from roster import TEAM, OPPONENTS
@@ -520,7 +524,7 @@ def cmd_publish(a):
     game["zones"] = zone_shares(f"{W}/full", game) or game.get("zones")
     json.dump(game, open(gj, "w"), indent=2, ensure_ascii=False)
     sh(PY, f"{HERE}/build_site.py")
-    log(f"wrote {gd}; site rebuilt in docs/. Review, then commit and push to publish.")
+    log(f"wrote {gd}; the team's site rebuilt in docs/. Review, then commit and push to publish.")
 
 
 def _size(path):
@@ -553,6 +557,7 @@ if __name__ == "__main__":
     ap = argparse.ArgumentParser(description=__doc__, formatter_class=argparse.RawDescriptionHelpFormatter)
     sub = ap.add_subparsers(dest="cmd", required=True)
     f = sub.add_parser("fetch"); f.add_argument("url"); f.add_argument("W"); f.add_argument("--limit", type=float)
+    f.add_argument("--team", help="whose game: a folder in teams/ (tk, bw); default the work folder's, else tk")
     f.add_argument("--rink", help="camera geometry (see rink.py); default renton")
     f.add_argument("--jersey", help="our jersey that game (rink.JERSEYS); default light blue")
     f.add_argument("--bench", help="left or right: the side of the frame our bench is on (rink.py); default the rink's usual one")
@@ -580,6 +585,12 @@ if __name__ == "__main__":
     if a.cmd == "fetch":
         os.makedirs(a.W, exist_ok=True)
         open(f"{a.W}/url.txt", "w").write(a.url)
+    # the team, before anything imports roster.py: fetch's --team, else the one fetch stored, else Turbo Kings
+    cfg = f"{a.W}/full/rink.json"
+    team = getattr(a, "team", None) or (json.load(open(cfg)).get("team") if os.path.exists(cfg) else None) or "tk"
+    if not os.path.exists(f"{ROOT}/teams/{team}/roster.json"):
+        sys.exit(f"unknown team {team!r}: no teams/{team}/roster.json")
+    os.environ["TEAM"] = team
     {"fetch": cmd_fetch, "skaters": cmd_skaters, "prepare": cmd_prepare, "solve": cmd_solve, "goals": cmd_goals,
      "frames": cmd_frames, "clip": cmd_clip, "publish": cmd_publish, "unknown": cmd_unknown,
      "archive": cmd_archive, "jersey": cmd_jersey}[a.cmd](a)

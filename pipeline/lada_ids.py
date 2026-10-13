@@ -5,7 +5,7 @@ GET team/<lada_team_id>/Player and matches every roster.json player by jersey nu
 surname. Prints, per player: same, NEW (an id to add), DIFFERS, no match (a sub off the
 roster has none), and WRONG for an id LADA gives to someone else. Changes nothing.
 
-    $PY pipeline/lada_ids.py
+    TEAM=<slug> $PY pipeline/lada_ids.py      (the team's teams/<slug>/roster.json; tk unless set)
 """
 import getpass, json, os, sys, unicodedata, urllib.request
 

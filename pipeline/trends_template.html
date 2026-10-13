@@ -34,6 +34,11 @@ h2 { font:700 26px/1.1 var(--display); letter-spacing:.02em; text-transform:uppe
 h3 { font:600 14px/1.2 var(--data); letter-spacing:.08em; text-transform:uppercase; color:var(--muted); margin:0; }
 p.note { color:var(--muted); margin:0; max-width:72ch; }
 .eyebrow a { color:var(--blueline); }
+.teams { display:inline-flex; flex-wrap:wrap; justify-self:start; margin-bottom:10px; border:1px solid var(--rule); border-radius:4px; overflow:hidden; background:var(--board); }
+.teams a { font:600 13px/1 var(--data); letter-spacing:.08em; text-transform:uppercase; padding:9px 14px; color:var(--muted); text-decoration:none; }
+.teams a + a { border-left:1px solid var(--rule); } .teams a:hover { color:var(--ink); }
+.teams a[aria-current="page"] { background:var(--team); color:var(--board); }
+.teams a:focus-visible { outline:2px solid var(--blueline); outline-offset:-2px; }
 section { display:grid; gap:14px; min-width:0; }
 .card { background:var(--board); border:1px solid var(--rule); border-radius:4px; padding:14px 16px; min-width:0; }
 
@@ -92,7 +97,7 @@ td .dim { color:var(--faint); }
 
 <div class="wrap">
   <header>
-    <div class="eyebrow"><a href="./">All games</a> · Trends</div>
+    __NAV__<div class="eyebrow"><a href="./">All games</a> · Trends</div>
     <h1><span>__TEAM__</span> trends</h1>
     <p class="note" id="intro"></p>
   </header>
@@ -178,8 +183,9 @@ function spark(vals, { w = 96, hgt = 26, lo, hi } = {}) {
 }
 
 /* ---------- intro ---------- */
-const span = `${fdateY(games[0].date)} – ${fdateY(games[games.length - 1].date)}`;
-$("#intro").textContent = `${games.length} tracked games, ${span}`;
+const n = (k, word) => `${k} ${word}${k === 1 ? "" : "s"}`;   // "1 game", "5 games"
+const span = games.length > 1 ? `${fdateY(games[0].date)} – ${fdateY(games[games.length - 1].date)}` : fdateY(games[0].date);
+$("#intro").textContent = `${n(games.length, "tracked game")}, ${span}`;
 
 /* ---------- form tiles ---------- */
 function deltaInfo(vals, goodDir, fmt) {
@@ -212,13 +218,13 @@ const shotG = games.filter(g => g.sf != null), nShots = shotG.length;
 const sum = (a, k) => a.reduce((s, g) => s + g[k], 0);
 const shotGF = sum(shotG, "gf"), shotGA = sum(shotG, "ga");
 const tiles = [
-  tile({ label: "Record", value: `${W}–${L}${T ? "–" + T : ""}`, chips, sub: `${gf} goals for, ${ga} against` }),
-  tile({ label: "Time in offence", value: pct(mean(off.filter(x => x != null))), vals: off, goodDir: 1, fmt: d => signed(d * 100) + " pts", sub: `${nZone} games` }),
-  tile({ label: "Time in defence", value: pct(mean(dfc.filter(x => x != null))), vals: dfc, goodDir: -1, fmt: d => signed(d * 100) + " pts", sub: `${nZone} games` }),
+  tile({ label: "Record", value: `${W}–${L}${T ? "–" + T : ""}`, chips, sub: `${n(gf, "goal")} for, ${ga} against` }),
+  tile({ label: "Time in offence", value: pct(mean(off.filter(x => x != null))), vals: off, goodDir: 1, fmt: d => signed(d * 100) + " pts", sub: n(nZone, "game") }),
+  tile({ label: "Time in defence", value: pct(mean(dfc.filter(x => x != null))), vals: dfc, goodDir: -1, fmt: d => signed(d * 100) + " pts", sub: n(nZone, "game") }),
   ...(nShots ? [
-  tile({ label: "Shots per game", value: `${mean(shotG.map(g => g.sf)).toFixed(0)}–${mean(shotG.map(g => g.sa)).toFixed(0)}`, vals: games.map(g => g.sf == null ? null : g.sf - g.sa), goodDir: 1, fmt: d => signed(d, 0) + " shots", sub: `${nShots} games` }),
-  tile({ label: "Shooting %", value: (shotGF / sum(shotG, "sf") * 100).toFixed(1) + "%", vals: games.map(g => g.sf ? g.gf / g.sf : null), goodDir: 1, fmt: d => signed(d * 100, 1) + " pts", sub: `${shotGF} goals on ${sum(shotG, "sf")} shots` }),
-  tile({ label: "Save %", value: (1 - shotGA / sum(shotG, "sa")).toFixed(3).replace(/^0/, ""), vals: games.map(g => g.sa ? 1 - g.ga / g.sa : null), goodDir: 1, fmt: d => signed(d * 1000, 0) + " pts", sub: `${shotGA} goals on ${sum(shotG, "sa")} shots` }),
+  tile({ label: "Shots per game", value: `${mean(shotG.map(g => g.sf)).toFixed(0)}–${mean(shotG.map(g => g.sa)).toFixed(0)}`, vals: games.map(g => g.sf == null ? null : g.sf - g.sa), goodDir: 1, fmt: d => signed(d, 0) + " shots", sub: n(nShots, "game") }),
+  tile({ label: "Shooting %", value: (shotGF / sum(shotG, "sf") * 100).toFixed(1) + "%", vals: games.map(g => g.sf ? g.gf / g.sf : null), goodDir: 1, fmt: d => signed(d * 100, 1) + " pts", sub: `${n(shotGF, "goal")} on ${n(sum(shotG, "sf"), "shot")}` }),
+  tile({ label: "Save %", value: (1 - shotGA / sum(shotG, "sa")).toFixed(3).replace(/^0/, ""), vals: games.map(g => g.sa ? 1 - g.ga / g.sa : null), goodDir: 1, fmt: d => signed(d * 1000, 0) + " pts", sub: `${n(shotGA, "goal")} on ${n(sum(shotG, "sa"), "shot")}` }),
   ] : []),
   tile({ label: "Penalties per game", value: (mean(games.map(g => g.penalties))).toFixed(1), vals: games.map(g => g.penalties), goodDir: -1, fmt: d => signed(d, 1), sub: `Goals against on the kill: ${games.reduce((s, g) => s + g.pk_ga, 0)}` }),
   tile({ label: "Average shift", value: mmss(mean(games.map(g => g.avg_shift))), vals: games.map(g => g.avg_shift), goodDir: 0, fmt: d => signed(d) + " s", sub: `Puck in play ${pct(mean(games.map(g => g.live_pct)))} of game time` }),
@@ -260,7 +266,7 @@ const Xc = i => M.l + band * (i + .5);
 // goals: for up, against down
 (() => {
   const svg = chartCard("Goals", [["For", "var(--s-for)"], ["Against", "var(--s-against)"]]);
-  const mx = Math.max(3, ...games.map(g => Math.max(g.gf, g.ga)));
+  const mx = Math.max(3, ...games.map(g => Math.max(g.gf, g.ga + 1)));   // + 1: room for the label under a bar
   const mid = M.t + (CH - M.t - M.b) / 2, k = (CH - M.t - M.b) / 2 / mx;
   const Y = v => mid - v * k;
   frame(svg, Array.from({ length: 2 * mx + 1 }, (_, i) => i - mx), Y, v => String(Math.abs(v)));
@@ -303,7 +309,7 @@ function lineChart({ title, series, lo, hi, ticks, fmtTick, fmtVal, ref, refLabe
 
 if (nShots) (() => {
   const svg = chartCard("Shots on goal", [["Ours", "var(--s-for)"], ["Theirs", "var(--s-against)"]]);
-  const mx = Math.max(10, ...shotG.map(g => Math.max(g.sf, g.sa))), step = mx > 30 ? 20 : 10;
+  const mx = Math.max(10, ...shotG.map(g => Math.max(g.sf, g.sa * 1.15))), step = mx > 30 ? 20 : 10;   // 1.15: room for the label under a bar
   const top = Math.ceil(mx / step) * step, mid = M.t + (CH - M.t - M.b) / 2, k = (CH - M.t - M.b) / 2 / top;
   const Y = v => mid - v * k;
   const ticks = []; for (let v = -top; v <= top; v += step) ticks.push(v);
@@ -392,7 +398,7 @@ function callout(title, p, why) {
 const lastDate = p => fdate(games.find(g => g.id === p.games[p.games.length - 1].game).date);
 if (fastest) callout("Changing faster", fastest, `Shifts ${Math.abs(Math.round(fastest.change))} s shorter on ${lastDate(fastest)} than in earlier games.`);
 if (slowest) callout("Changing slower", slowest, `Shifts ${Math.round(slowest.change)} s longer on ${lastDate(slowest)} than in earlier games.`);
-if (pmBest) callout("Best +/−", pmBest, `${signed(pmBest.pm)} over ${pmBest.gp} games on the ice for goals.`);
+if (pmBest) callout("Best +/−", pmBest, `${signed(pmBest.pm)} over ${n(pmBest.gp, "game")} on the ice for goals.`);
 if (fadeMost) callout("Longest late shifts", fadeMost, `Third-period shifts ${Math.round(fadeMost.fade)} s longer than first-period ones.`);
 
 const COLS = [

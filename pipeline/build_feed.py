@@ -152,8 +152,8 @@ def _per_game(docs_by_game, games):
     return out
 
 
-def write_feed(root, games, docs_by_game, season):
-    api = f"{root}/docs/api"
+def write_feed(site_dir, games, docs_by_game, season):
+    api = f"{site_dir}/api"
     os.makedirs(f"{api}/games", exist_ok=True)
     site = SITE_URL.rstrip("/")
     updated = max((g["date"] for g in games), default=None)
