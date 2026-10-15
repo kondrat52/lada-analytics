@@ -3,7 +3,7 @@
 Usage: process.py VIDEO OUTDIR FPS [START_SEC DUR_SEC]
   (restart after a crash with START_SEC = last t in dets.csv; frame numbers stay global)
 Outputs:
-  OUTDIR/dets.csv    frame,t,x1,y1,x2,y2,conf,blue,white,purple,red,dark,lblue
+  OUTDIR/dets.csv    frame,t,x1,y1,x2,y2,conf,blue,white,purple,red,dark,lblue,bhue (bhue from Oct 2026)
   OUTDIR/crops/      f{frame:06d}_{i:02d}.jpg  (candidates in our jersey)
   OUTDIR/ov/         ov_{sec:05d}.jpg overview frames every 10 s
 """
@@ -11,7 +11,7 @@ import os, sys, time, threading, queue, subprocess
 import numpy as np, cv2
 from ultralytics import YOLO
 from rink import rink, jersey
-from crops import wants_crop, save_crop
+from crops import wants_crop, save_crop, torso, blue_hue
 
 import imageio_ffmpeg
 FF = imageio_ffmpeg.get_ffmpeg_exe()
@@ -57,13 +57,9 @@ DEVICE = "cuda" if torch.cuda.is_available() else "mps" if torch.backends.mps.is
 crop_test = jersey(OUT)["crop"]
 
 def color_stats(img, b):
-    x1, y1, x2, y2 = b
-    w, h = x2 - x1, y2 - y1
-    tx1, tx2 = int(x1 + 0.2 * w), int(x2 - 0.2 * w)
-    ty1, ty2 = int(y1 + 0.15 * h), int(y1 + 0.5 * h)
-    t = img[max(ty1, 0):max(ty2, ty1 + 1), max(tx1, 0):max(tx2, tx1 + 1)]
+    t = torso(img, b)
     if t.size == 0:
-        return [0] * 6
+        return [0] * 7
     hsv = cv2.cvtColor(t, cv2.COLOR_BGR2HSV).reshape(-1, 3).astype(np.int16)
     Hh, Ss, Vv = hsv[:, 0], hsv[:, 1], hsv[:, 2]
     n = len(hsv)
@@ -73,7 +69,7 @@ def color_stats(img, b):
     purple = ((Hh >= 125) & (Hh <= 165) & (Ss >= 60) & (Vv >= 50)).sum() / n
     red = (((Hh <= 8) | (Hh >= 170)) & (Ss >= 100) & (Vv >= 70)).sum() / n
     dark = (Vv < R.dark_v).sum() / n
-    return [blue, white, purple, red, dark, lblue]
+    return [blue, white, purple, red, dark, lblue, blue_hue(Hh, Ss, Vv)]
 
 fcsv = open(f"{OUT}/dets.csv", "a")
 t0 = time.time(); done = False; BATCH = 8

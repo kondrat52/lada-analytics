@@ -31,7 +31,8 @@ def apply(S, tr, review, manifest, R):
     """S: segments (post-link, index = seg_idx); R: the rink (rink.py). Returns new segment table with review labels:
     columns num (label), nreads (weight), src ('ocr'|'review'), goalie flag rows removed."""
     S = S.copy(); S["src"] = np.where(S.num >= 0, "ocr", "")
-    m = manifest.merge(review, on="row_id", how="inner")
+    # one answer per row: a later file (review_zfix.txt sorts last) overrides; applying both would split a row twice
+    m = manifest.merge(review.drop_duplicates("row_id", keep="last"), on="row_id", how="inner")
     new_rows, drop = [], []
     for _, r in m.iterrows():
         i = r.seg_idx

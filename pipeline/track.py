@@ -10,7 +10,7 @@ def load(path):
     sit next to the real file. `ours` = wearing our jersey that game (rink.jersey)."""
     full = os.path.dirname(os.path.realpath(path))
     P = np.load(os.path.join(full, "boards_poly.npy"))
-    d = pd.read_csv(path, header=None, names="frame t x1 y1 x2 y2 conf blue white purple red dark lblue".split())
+    d = pd.read_csv(path, header=None, names="frame t x1 y1 x2 y2 conf blue white purple red dark lblue bhue".split())
     d["i"] = d.groupby("frame").cumcount()
     d["fx"] = (d.x1 + d.x2) / 2; d["fy"] = d.y2; d["h"] = d.y2 - d.y1
     d["board"] = np.polyval(P, d.fx)

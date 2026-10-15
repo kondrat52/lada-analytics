@@ -3,11 +3,28 @@
 Usage: crops.py VIDEO OUTDIR FPS : cut the crops process.py would have saved for OUTDIR/dets.csv with the jersey
 now in OUTDIR/rink.json, without detecting again (for when the jersey was set after detection). Crops that exist
 are kept; frame numbers match process.py's (the same fps filter from t=0).
+       crops.py VIDEO OUTDIR FPS --hue : add the bhue column to a dets.csv made before process.py wrote it.
 """
 import os, sys, threading, queue, subprocess, time
 import numpy as np, cv2
 
-COLORS = ["blue", "white", "purple", "red", "dark", "lblue"]   # color_stats order, as in dets.csv
+COLORS = ["blue", "white", "purple", "red", "dark", "lblue", "bhue"]   # color_stats order, as in dets.csv
+
+
+def torso(img, b):
+    """The part of box b that process.py takes colours from: the middle 60% across, 15-50% of the way down."""
+    x1, y1, x2, y2 = b
+    w, h = x2 - x1, y2 - y1
+    tx1, tx2 = int(x1 + 0.2 * w), int(x2 - 0.2 * w)
+    ty1, ty2 = int(y1 + 0.15 * h), int(y1 + 0.5 * h)
+    return img[max(ty1, 0):max(ty2, ty1 + 1), max(tx1, 0):max(tx2, tx1 + 1)]
+
+
+def blue_hue(Hh, Ss, Vv):
+    """Median hue (OpenCV's 0-180) of the torso's blue pixels, 0 if fewer than 20: what tells our blue jersey from
+    another team's lighter one (at Kirkland ours ~113, Teamy McTeamface's sky blue ~107)."""
+    b = (Hh >= 90) & (Hh <= 125) & (Ss >= 70) & (Vv >= 70)
+    return float(np.median(Hh[b])) if b.sum() >= 20 else 0.0
 
 
 def wants_crop(test, cs, h, n):
@@ -71,6 +88,45 @@ def recrop(vid, out, fps):
     print(f"cut {done} crops in {time.time() - t0:.0f}s", flush=True)
 
 
+def add_hue(vid, out, fps):
+    """Append bhue to every row of out/dets.csv (one pass over the video, the same frames process.py read)."""
+    import imageio_ffmpeg
+    from rink import rink
+    lines = open(f"{out}/dets.csv").read().splitlines()
+    if lines and lines[0].count(",") >= 7 + len(COLORS) - 1:
+        print("dets.csv has bhue already"); return
+    rows = {}
+    for k, l in enumerate(lines):
+        p = l.split(",")
+        rows.setdefault(int(p[0]), []).append((k, *map(int, p[2:6])))
+    W, FULL_H = next(imageio_ffmpeg.read_frames(vid))["size"]
+    Y0 = int(round(rink(out).crop_top * FULL_H)); H = FULL_H - Y0
+    proc = subprocess.Popen([imageio_ffmpeg.get_ffmpeg_exe(), "-loglevel", "error", "-threads", "0", "-i", vid, "-vf",
+                             f"fps={fps},crop={W}:{H}:0:{Y0}", "-f", "rawvideo", "-pix_fmt", "bgr24", "-"],
+                            stdout=subprocess.PIPE, bufsize=0)
+    hue = [None] * len(lines); last = max(rows); n = 0; t0 = shown = time.time()
+    buf = bytearray(W * H * 3); mv = memoryview(buf)
+    while n <= last:
+        got = 0
+        while got < len(buf) and (k := proc.stdout.readinto(mv[got:])):
+            got += k
+        if got < len(buf):
+            break
+        img = np.frombuffer(buf, np.uint8).reshape(H, W, 3)
+        for k, x1, y1, x2, y2 in rows.get(n, ()):
+            hsv = cv2.cvtColor(torso(img, (x1, y1 - Y0, x2, y2 - Y0)), cv2.COLOR_BGR2HSV).reshape(-1, 3).astype(np.int16)
+            hue[k] = blue_hue(*hsv.T)
+        n += 1
+        if time.time() - shown > 60:
+            shown = time.time(); print(f"frame {n} of {last + 1}, {time.time() - t0:.0f}s", flush=True)
+    proc.kill()
+    if any(h is None for h in hue):
+        sys.exit(f"the video ended at frame {n}, before dets.csv's last frame {last}")
+    open(f"{out}/dets.tmp", "w").write("".join(f"{l},{h:.3f}\n" for l, h in zip(lines, hue)))
+    os.replace(f"{out}/dets.tmp", f"{out}/dets.csv")
+    print(f"bhue for {len(lines)} detections in {time.time() - t0:.0f}s", flush=True)
+
+
 if __name__ == "__main__":
     sys.path.insert(0, os.path.dirname(os.path.abspath(__file__)))
-    recrop(sys.argv[1], sys.argv[2], float(sys.argv[3]))
+    (add_hue if "--hue" in sys.argv else recrop)(sys.argv[1], sys.argv[2], float(sys.argv[3]))

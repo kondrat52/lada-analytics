@@ -162,6 +162,7 @@ class Kirkland(Renton):
     crop_top = 320 / 1536
     board_band = (0.25, 0.49)
     board_lowest = True           # the HOCKEY sign at the right has yellow letters
+    size = (3840, 1536)           # fetch scales a smaller video of this view up to it (run_game.fit_size)
     center_x = 1930
     nets = {"left": 605, "right": 3255}
     min_break = 25
@@ -205,6 +206,10 @@ JERSEYS = {
     "white": dict(ours=lambda c: (c["red"] < 0.1) & (((c["white"] >= 0.35) & (c["dark"] < 0.3)) |
                                                     ((c["white"] >= 0.25) & (c["dark"] < 0.2) & (c["red"] < 0.05))),
                   crop=lambda c: (c["white"] >= 0.25) & (c["dark"] < 0.35) & (c["red"] < 0.1)),
+    # our light blue against an opponent whose white jerseys have big sky-blue panels (Teamy McTeamface): half of
+    # theirs pass the plain light-blue test. Hue tells them apart (bhue at Kirkland: ours ~113, theirs ~107)
+    "light blue vs sky blue": dict(ours=lambda c: (c["blue"] >= 0.3) & (c["bhue"] >= 111),
+                                   crop=lambda c: (c["blue"] >= 0.12) & (c["bhue"] >= 110)),
 }
 
 

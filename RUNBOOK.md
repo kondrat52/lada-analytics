@@ -33,6 +33,9 @@ mkdir -p $W/full
 $PY -m yt_dlp -f 313 -o "$W/video.webm" "https://youtu.be/VIDEO_ID"   # 313 = 2160p VP9; the pipeline expects 3840 px wide
 ```
 
+A rink with a `size` in `rink.py` (Kirkland: 3840x1536) gets a smaller video of the same view scaled up to it by
+`fetch` (`run_game.fit_size`; Y's Sep 14 game came as 3600x1440). The original stays as `video_<W>x<H>.webm`.
+
 ## 2. Calibrate the far boards (1 min)
 
 ```sh
@@ -54,7 +57,8 @@ expects them, by viewing a crop of the frame. Yellow lettering on signs above th
 detection crop (`crop_top`) must include the heads of players standing at the far boards.
 
 Our players are told apart by jersey colour (`JERSEYS` in `rink.py`: light blue by default, or white with blue
-numbers). Detection only saves crops of players in that jersey, so set it before detecting. The bench we had
+numbers). Against white jerseys with big sky-blue panels (Teamy McTeamface) half of theirs pass for light blue; use
+`light blue vs sky blue`, which also checks the hue (`bhue` in `dets.csv`: ours ~113, theirs ~107 at Kirkland). Detection only saves crops of players in that jersey, so set it before detecting. The bench we had
 (`"bench": "right"` mirrors Renton's left bench about center ice) decides which track ends count as line changes. If it was wrong,
 `run_game.py jersey $W white` fixes it afterwards: `crops.py` cuts the missing crops from the video using the
 detections already in `dets.csv`, then OCR reads them.

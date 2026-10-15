@@ -54,6 +54,26 @@ def download(url, W):
     return vid
 
 
+def fit_size(vid, W):
+    """rink.py's geometry is in pixels of the rink's usual frame (`size`). A video of the same view at a lower
+    resolution (Kirkland once came as 3600x1440, not 3840x1536) is scaled up once and the original kept beside it.
+    As H.264 (in Matroska, under the same name): ffmpeg decodes it ~5x faster than AV1, which it has no fast
+    decoder for here."""
+    import imageio_ffmpeg
+    size = getattr(rink(f"{W}/full"), "size", None)
+    have = tuple(next(imageio_ffmpeg.read_frames(vid))["size"])
+    if not size or have == tuple(size):
+        return
+    if abs(have[0] / size[0] - have[1] / size[1]) > 0.01:
+        sys.exit(f"video is {have[0]}x{have[1]}, not a scaled {size[0]}x{size[1]}: new framing, see rink.py")
+    log(f"video is {have[0]}x{have[1]}; scaling it to {size[0]}x{size[1]}")
+    enc = ["h264_nvenc", "-preset", "p5", "-cq", "21"] if sys.platform == "win32" else ["libx264", "-crf", "20"]
+    sh(imageio_ffmpeg.get_ffmpeg_exe(), "-loglevel", "error", "-y", "-i", vid, "-vf",
+       f"scale={size[0]}:{size[1]}:flags=bicubic", "-c:v", *enc, "-an", "-f", "matroska", f"{W}/video_up.webm")
+    os.replace(vid, f"{W}/video_{have[0]}x{have[1]}.webm")
+    os.replace(f"{W}/video_up.webm", vid)
+
+
 def download_audio(url, W):
     if not os.path.exists(f"{W}/audio.m4a"):
         sh(PY, "-m", "yt_dlp", "-q", "--no-progress", "-f", "140/bestaudio[ext=m4a]", "-o", f"{W}/audio.m4a", url)
@@ -223,6 +243,7 @@ def cmd_fetch(a):
     W = os.path.abspath(a.W); os.makedirs(f"{W}/full", exist_ok=True)
     set_config(W, team=a.team, rink=a.rink, jersey=a.jersey, bench=a.bench)
     vid = download(a.url, W)
+    fit_size(vid, W)
     download_audio(a.url, W)
     calibrate(vid, W)
     detect(vid, W, a.limit)
@@ -234,6 +255,7 @@ def cmd_fetch(a):
 def cmd_jersey(a):
     W = os.path.abspath(a.W)
     set_config(W, jersey=a.name)
+    sh(PY, f"{HERE}/crops.py", f"{W}/video.webm", f"{W}/full", FPS, "--hue")   # a dets.csv made before bhue
     sh(PY, f"{HERE}/crops.py", f"{W}/video.webm", f"{W}/full", FPS)
     ocr(W)
     log(f"crops and reads for {a.name} done; now `unknown` and `prepare` (delete {W}/p* and {W}/rev_p* if an "
@@ -418,7 +440,7 @@ def cmd_solve(a):
     labels = []
     for P in periods(W):
         p = P["label"].lower()
-        tgt = [[k["start"], k["end"], 4] for k in P.get("pk", [])]
+        tgt = [[k["start"], k["end"], 4, k.get("player")] for k in P.get("pk", [])]   # player: off, in the box
         sh(PY, f"{HERE}/run2.py", f"{W}/{p}", f"{W}/rev_{p}", P["end"], json.dumps([[P["start"], P["end"]]]), json.dumps(tgt))
         sh(PY, f"{HERE}/gantt.py", f"{W}/{p}/shifts_final.csv", f"{W}/{p}/segs_final.csv", f"{W}/gantt_{p}.png",
            P["start"], P["end"])

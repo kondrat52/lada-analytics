@@ -117,7 +117,8 @@ $PY pipeline/scoreboard.py $W                                   # one pass over 
 $PY pipeline/scoreboard.py $W $W/sb.jpg $(seq 30 60 4000)        # the board every 60 s, as a sheet
 ```
 
-From that sheet: which side we are (home/guest; LADA's `playHome` says too), when the score changed, which
+From that sheet: which side we are (home/guest; usually LADA's `playHome`, but go by the final score: Y were away
+in LADA but HOME on Kirkland's board on Sep 14), when the score changed, which
 penalty panels lit up and for whom, and the clock at the end.
 
 Shots on goal come from the same board (after `periods.json` is right):
@@ -155,7 +156,9 @@ $PY pipeline/run_game.py skaters $W <t0> <t1>     # seconds of video around the 
 
 It counts the goalie before `prepare`, so look for 5 → 4+goalie. A stopped-clock 2-minute penalty often
 takes 3+ minutes of real time. Add it to that period in `periods.json`:
-`"pk": [{"start": 3602, "end": 3798, "player": 4}]`.
+`"pk": [{"start": 3602, "end": 3798, "player": 4}]`. `solve` keeps `player` off the ice for that span (the box isn't
+our bench, so otherwise his shift runs on through it). A power-play goal against ends a minor even when the board
+keeps counting: end the `pk` just after the goal (the player is back on the ice a few seconds later).
 
 ## 4. Prepare the review
 

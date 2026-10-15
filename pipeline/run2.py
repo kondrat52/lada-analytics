@@ -8,7 +8,7 @@ from solver import solve, to_shifts
 from rink import rink
 out, rev, tmax = sys.argv[1], sys.argv[2], float(sys.argv[3])
 active_spans = json.loads(sys.argv[4]) if len(sys.argv) > 4 else None
-# optional [[t0, t1, n_skaters], ...] e.g. a penalty kill
+# optional [[t0, t1, n_skaters(, player in the box)], ...] e.g. a penalty kill
 target_spans = json.loads(sys.argv[5]) if len(sys.argv) > 5 else []
 tr = pd.read_csv(f"{out}/tracks_v1.csv"); S = pd.read_csv(f"{out}/segs_v1.csv")
 rk = rink(out)
@@ -35,9 +35,12 @@ active = None
 if active_spans:
     active = np.zeros(T, bool)
     for a, b in active_spans: active[int(a):int(b)] = True
-target = np.full(T, 5.0)
-for a, b, n in target_spans: target[int(a):int(b)] = n
-st, viol = solve(S2, players, T, ev, target=target, active=active)
+target = np.full(T, 5.0); boxed = []
+for a, b, n, *p in target_spans:
+    target[int(a):int(b)] = n
+    if p and p[0] is not None:
+        boxed.append((int(p[0]), int(a), int(b)))
+st, viol = solve(S2, players, T, ev, target=target, active=active, boxed=boxed)
 Rsh = to_shifts(st, players)
 Rsh.to_csv(f"{out}/shifts_final.csv", index=False)
 print("constraint violations (player-seconds):", viol)
