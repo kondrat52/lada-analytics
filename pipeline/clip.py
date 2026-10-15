@@ -66,7 +66,7 @@ def main():
     focus = None
     if len(sys.argv) > 8:
         if sys.argv[8].startswith("track:"):
-            _, path, tids = sys.argv[8].split(":")
+            path, tids = sys.argv[8][len("track:"):].rsplit(":", 1)   # the path may hold a drive colon (C:\...)
             tr = pd.read_csv(path)
             parts = [tr[tr.tid == int(x)].groupby("t").fx.first().sort_index() for x in tids.split(",")]
 
