@@ -5,24 +5,65 @@
   "short_name": "LBW",
   "lada_team_id": 10
  },
- "updated": "2026-09-13",
+ "updated": "2026-09-27",
  "games": [
+  "2026-09-27-vs-up",
   "2026-09-13-vs-db"
  ],
  "players": [
   {
+   "number": 74,
+   "name": "Bronnikov",
+   "lada_player_id": 20353,
+   "sub": true,
+   "games_played": 1,
+   "shifts": 16,
+   "toi": 1970,
+   "toi_per_game": 1970,
+   "play": 1361,
+   "avg_shift": 123.1,
+   "longest_shift": 277,
+   "shortest_shift": 40,
+   "games": [
+    {
+     "id": "2026-09-27-vs-up",
+     "date": "2026-09-27",
+     "opponent": {
+      "code": "UP",
+      "name": "Ugly Pucklings"
+     },
+     "toi": 1970,
+     "shifts": 16,
+     "avg_shift": 123.1,
+     "play": 1361
+    }
+   ]
+  },
+  {
    "number": 53,
    "name": "Gareev",
    "lada_player_id": 20406,
-   "games_played": 1,
-   "shifts": 15,
-   "toi": 2092,
-   "toi_per_game": 2092,
-   "play": 1494,
-   "avg_shift": 139.5,
+   "games_played": 2,
+   "shifts": 28,
+   "toi": 3865,
+   "toi_per_game": 1932.5,
+   "play": 2588,
+   "avg_shift": 138.0,
    "longest_shift": 323,
-   "shortest_shift": 72,
+   "shortest_shift": 67,
    "games": [
+    {
+     "id": "2026-09-27-vs-up",
+     "date": "2026-09-27",
+     "opponent": {
+      "code": "UP",
+      "name": "Ugly Pucklings"
+     },
+     "toi": 1773,
+     "shifts": 13,
+     "avg_shift": 136.4,
+     "play": 1094
+    },
     {
      "id": "2026-09-13-vs-db",
      "date": "2026-09-13",
@@ -38,18 +79,108 @@
    ]
   },
   {
+   "number": 55,
+   "name": "Lisenko",
+   "lada_player_id": 11123,
+   "games_played": 2,
+   "shifts": 27,
+   "toi": 3562,
+   "toi_per_game": 1781,
+   "play": 2635,
+   "avg_shift": 131.9,
+   "longest_shift": 284,
+   "shortest_shift": 48,
+   "games": [
+    {
+     "id": "2026-09-27-vs-up",
+     "date": "2026-09-27",
+     "opponent": {
+      "code": "UP",
+      "name": "Ugly Pucklings"
+     },
+     "toi": 2121,
+     "shifts": 14,
+     "avg_shift": 151.5,
+     "play": 1423
+    },
+    {
+     "id": "2026-09-13-vs-db",
+     "date": "2026-09-13",
+     "opponent": {
+      "code": "DB",
+      "name": "Disco Bandoleros"
+     },
+     "toi": 1441,
+     "shifts": 13,
+     "avg_shift": 110.8,
+     "play": 1212
+    }
+   ]
+  },
+  {
+   "number": 11,
+   "name": "Belousenko",
+   "lada_player_id": 1395,
+   "games_played": 2,
+   "shifts": 33,
+   "toi": 3507,
+   "toi_per_game": 1753.5,
+   "play": 2510,
+   "avg_shift": 106.3,
+   "longest_shift": 193,
+   "shortest_shift": 29,
+   "games": [
+    {
+     "id": "2026-09-27-vs-up",
+     "date": "2026-09-27",
+     "opponent": {
+      "code": "UP",
+      "name": "Ugly Pucklings"
+     },
+     "toi": 1754,
+     "shifts": 18,
+     "avg_shift": 97.4,
+     "play": 1111
+    },
+    {
+     "id": "2026-09-13-vs-db",
+     "date": "2026-09-13",
+     "opponent": {
+      "code": "DB",
+      "name": "Disco Bandoleros"
+     },
+     "toi": 1753,
+     "shifts": 15,
+     "avg_shift": 116.9,
+     "play": 1399
+    }
+   ]
+  },
+  {
    "number": 2,
    "name": "Zhuk",
    "lada_player_id": 3424,
-   "games_played": 1,
-   "shifts": 15,
-   "toi": 1910,
-   "toi_per_game": 1910,
-   "play": 1363,
-   "avg_shift": 127.3,
+   "games_played": 2,
+   "shifts": 28,
+   "toi": 3494,
+   "toi_per_game": 1747,
+   "play": 2336,
+   "avg_shift": 124.8,
    "longest_shift": 234,
    "shortest_shift": 55,
    "games": [
+    {
+     "id": "2026-09-27-vs-up",
+     "date": "2026-09-27",
+     "opponent": {
+      "code": "UP",
+      "name": "Ugly Pucklings"
+     },
+     "toi": 1584,
+     "shifts": 13,
+     "avg_shift": 121.8,
+     "play": 973
+    },
     {
      "id": "2026-09-13-vs-db",
      "date": "2026-09-13",
@@ -65,18 +196,57 @@
    ]
   },
   {
-   "number": 11,
-   "name": "Belousenko",
-   "lada_player_id": 1395,
+   "number": 44,
+   "name": "Tverskoy",
+   "lada_player_id": 5814,
    "games_played": 1,
-   "shifts": 15,
-   "toi": 1753,
-   "toi_per_game": 1753,
-   "play": 1399,
-   "avg_shift": 116.9,
-   "longest_shift": 193,
-   "shortest_shift": 29,
+   "shifts": 12,
+   "toi": 1644,
+   "toi_per_game": 1644,
+   "play": 1048,
+   "avg_shift": 137,
+   "longest_shift": 212,
+   "shortest_shift": 64,
    "games": [
+    {
+     "id": "2026-09-27-vs-up",
+     "date": "2026-09-27",
+     "opponent": {
+      "code": "UP",
+      "name": "Ugly Pucklings"
+     },
+     "toi": 1644,
+     "shifts": 12,
+     "avg_shift": 137,
+     "play": 1048
+    }
+   ]
+  },
+  {
+   "number": 43,
+   "name": "Miroshnichenko",
+   "lada_player_id": 20405,
+   "games_played": 2,
+   "shifts": 26,
+   "toi": 3273,
+   "toi_per_game": 1636.5,
+   "play": 2196,
+   "avg_shift": 125.9,
+   "longest_shift": 217,
+   "shortest_shift": 79,
+   "games": [
+    {
+     "id": "2026-09-27-vs-up",
+     "date": "2026-09-27",
+     "opponent": {
+      "code": "UP",
+      "name": "Ugly Pucklings"
+     },
+     "toi": 1767,
+     "shifts": 14,
+     "avg_shift": 126.2,
+     "play": 1123
+    },
     {
      "id": "2026-09-13-vs-db",
      "date": "2026-09-13",
@@ -84,10 +254,10 @@
       "code": "DB",
       "name": "Disco Bandoleros"
      },
-     "toi": 1753,
-     "shifts": 15,
-     "avg_shift": 116.9,
-     "play": 1399
+     "toi": 1506,
+     "shifts": 12,
+     "avg_shift": 125.5,
+     "play": 1073
     }
    ]
   },
@@ -115,6 +285,123 @@
      "shifts": 14,
      "avg_shift": 115.4,
      "play": 1263
+    }
+   ]
+  },
+  {
+   "number": 3,
+   "name": "Ilinskaya",
+   "lada_player_id": 20403,
+   "games_played": 2,
+   "shifts": 25,
+   "toi": 3179,
+   "toi_per_game": 1589.5,
+   "play": 2272,
+   "avg_shift": 127.2,
+   "longest_shift": 233,
+   "shortest_shift": 21,
+   "games": [
+    {
+     "id": "2026-09-27-vs-up",
+     "date": "2026-09-27",
+     "opponent": {
+      "code": "UP",
+      "name": "Ugly Pucklings"
+     },
+     "toi": 2041,
+     "shifts": 15,
+     "avg_shift": 136.1,
+     "play": 1346
+    },
+    {
+     "id": "2026-09-13-vs-db",
+     "date": "2026-09-13",
+     "opponent": {
+      "code": "DB",
+      "name": "Disco Bandoleros"
+     },
+     "toi": 1138,
+     "shifts": 10,
+     "avg_shift": 113.8,
+     "play": 926
+    }
+   ]
+  },
+  {
+   "number": 15,
+   "name": "Potepalov",
+   "lada_player_id": 20404,
+   "games_played": 2,
+   "shifts": 23,
+   "toi": 3132,
+   "toi_per_game": 1566,
+   "play": 2250,
+   "avg_shift": 136.2,
+   "longest_shift": 260,
+   "shortest_shift": 42,
+   "games": [
+    {
+     "id": "2026-09-27-vs-up",
+     "date": "2026-09-27",
+     "opponent": {
+      "code": "UP",
+      "name": "Ugly Pucklings"
+     },
+     "toi": 2033,
+     "shifts": 15,
+     "avg_shift": 135.5,
+     "play": 1423
+    },
+    {
+     "id": "2026-09-13-vs-db",
+     "date": "2026-09-13",
+     "opponent": {
+      "code": "DB",
+      "name": "Disco Bandoleros"
+     },
+     "toi": 1099,
+     "shifts": 8,
+     "avg_shift": 137.4,
+     "play": 827
+    }
+   ]
+  },
+  {
+   "number": 54,
+   "name": "Semenov",
+   "lada_player_id": 20407,
+   "games_played": 2,
+   "shifts": 27,
+   "toi": 3076,
+   "toi_per_game": 1538,
+   "play": 2224,
+   "avg_shift": 113.9,
+   "longest_shift": 182,
+   "shortest_shift": 48,
+   "games": [
+    {
+     "id": "2026-09-27-vs-up",
+     "date": "2026-09-27",
+     "opponent": {
+      "code": "UP",
+      "name": "Ugly Pucklings"
+     },
+     "toi": 2039,
+     "shifts": 19,
+     "avg_shift": 107.3,
+     "play": 1411
+    },
+    {
+     "id": "2026-09-13-vs-db",
+     "date": "2026-09-13",
+     "opponent": {
+      "code": "DB",
+      "name": "Disco Bandoleros"
+     },
+     "toi": 1037,
+     "shifts": 8,
+     "avg_shift": 129.6,
+     "play": 813
     }
    ]
   },
@@ -173,114 +460,6 @@
    ]
   },
   {
-   "number": 43,
-   "name": "Miroshnichenko",
-   "lada_player_id": 20405,
-   "games_played": 1,
-   "shifts": 12,
-   "toi": 1506,
-   "toi_per_game": 1506,
-   "play": 1073,
-   "avg_shift": 125.5,
-   "longest_shift": 217,
-   "shortest_shift": 81,
-   "games": [
-    {
-     "id": "2026-09-13-vs-db",
-     "date": "2026-09-13",
-     "opponent": {
-      "code": "DB",
-      "name": "Disco Bandoleros"
-     },
-     "toi": 1506,
-     "shifts": 12,
-     "avg_shift": 125.5,
-     "play": 1073
-    }
-   ]
-  },
-  {
-   "number": 55,
-   "name": "Lisenko",
-   "lada_player_id": 11123,
-   "games_played": 1,
-   "shifts": 13,
-   "toi": 1441,
-   "toi_per_game": 1441,
-   "play": 1212,
-   "avg_shift": 110.8,
-   "longest_shift": 242,
-   "shortest_shift": 66,
-   "games": [
-    {
-     "id": "2026-09-13-vs-db",
-     "date": "2026-09-13",
-     "opponent": {
-      "code": "DB",
-      "name": "Disco Bandoleros"
-     },
-     "toi": 1441,
-     "shifts": 13,
-     "avg_shift": 110.8,
-     "play": 1212
-    }
-   ]
-  },
-  {
-   "number": 3,
-   "name": "Ilinskaya",
-   "lada_player_id": 20403,
-   "games_played": 1,
-   "shifts": 10,
-   "toi": 1138,
-   "toi_per_game": 1138,
-   "play": 926,
-   "avg_shift": 113.8,
-   "longest_shift": 182,
-   "shortest_shift": 21,
-   "games": [
-    {
-     "id": "2026-09-13-vs-db",
-     "date": "2026-09-13",
-     "opponent": {
-      "code": "DB",
-      "name": "Disco Bandoleros"
-     },
-     "toi": 1138,
-     "shifts": 10,
-     "avg_shift": 113.8,
-     "play": 926
-    }
-   ]
-  },
-  {
-   "number": 15,
-   "name": "Potepalov",
-   "lada_player_id": 20404,
-   "games_played": 1,
-   "shifts": 8,
-   "toi": 1099,
-   "toi_per_game": 1099,
-   "play": 827,
-   "avg_shift": 137.4,
-   "longest_shift": 203,
-   "shortest_shift": 88,
-   "games": [
-    {
-     "id": "2026-09-13-vs-db",
-     "date": "2026-09-13",
-     "opponent": {
-      "code": "DB",
-      "name": "Disco Bandoleros"
-     },
-     "toi": 1099,
-     "shifts": 8,
-     "avg_shift": 137.4,
-     "play": 827
-    }
-   ]
-  },
-  {
    "number": 36,
    "name": "Charnysh",
    "lada_player_id": 20351,
@@ -304,33 +483,6 @@
      "shifts": 9,
      "avg_shift": 119.3,
      "play": 751
-    }
-   ]
-  },
-  {
-   "number": 54,
-   "name": "Semenov",
-   "lada_player_id": 20407,
-   "games_played": 1,
-   "shifts": 8,
-   "toi": 1037,
-   "toi_per_game": 1037,
-   "play": 813,
-   "avg_shift": 129.6,
-   "longest_shift": 182,
-   "shortest_shift": 55,
-   "games": [
-    {
-     "id": "2026-09-13-vs-db",
-     "date": "2026-09-13",
-     "opponent": {
-      "code": "DB",
-      "name": "Disco Bandoleros"
-     },
-     "toi": 1037,
-     "shifts": 8,
-     "avg_shift": 129.6,
-     "play": 813
     }
    ]
   },

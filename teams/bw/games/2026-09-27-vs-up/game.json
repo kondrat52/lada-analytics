@@ -1,0 +1,259 @@
+{
+  "id": "2026-09-27-vs-up",
+  "date": "2026-09-27",
+  "title": "LADA Blue Wings vs Ugly Pucklings, Sep 27",
+  "eyebrow": "Sun Sep 27, 2026 · 10:40 PM · Renton",
+  "opponent": "UP",
+  "video": "https://youtu.be/edMnJdR-kZ8",
+  "periods": [
+    {
+      "label": "P1",
+      "start": 15,
+      "end": 1096
+    },
+    {
+      "label": "P2",
+      "start": 1194,
+      "end": 2311
+    },
+    {
+      "label": "P3",
+      "start": 2398,
+      "end": 3887
+    }
+  ],
+  "nets": {
+    "P1": 540,
+    "P2": 3245,
+    "P3": 540
+  },
+  "penalty_kills": [],
+  "notes": [
+    "Away game at Renton: we wore blue and had the left bench (the pipeline's defaults). First game processed on the Windows PC (RTX 5090).",
+    "Periods, goals and shots come from the arena scoreboard (we were GUEST): periods 0:15-18:16, 19:54-38:31 and 39:58-64:47 of the video, by the clock. The clock stopped at whistles in the 3rd, so it ran 24:49 of video. The video runs to the final horn.",
+    "Goals at 15:37, 28:36, 36:18 and 50:26 of the video (ours; clock 2:35 1st, 9:15 and ~1:30 2nd, 9:06 3rd) and 56:13 and 62:52 (Ugly Pucklings; clock 5:17 and 0:43 3rd), matching the goal times from the team. Shots on goal: Blue Wings 15, Ugly Pucklings 31. No penalties: neither penalty panel lit up.",
+    "Played: the 10 skaters of LADA's lineup, with sub Bronnikov #74. Didn't play: Skitsko #16, Babkin #26, Trunov #35, Charnysh #36, Dukhno #50, Horokh #77, Shipachev #88, Antonov #95. Ugly Pucklings' white #95 (Kloppmann) passed our jersey test and was read as our #95, so #95 was left out of the roster for the solve.",
+    "Labeled by hand: P1 rows R152 and R154 (Ilinskaya #3 stayed on for the first goal) and P3 row R185 (Zhuk #2, number visible at 60:53). Two short gaps remain: P1 17:11-17:28 (Tverskoy #44 stood by our bench at a stoppage, so the solver took him off) and P3 63:39-63:58, both 4 on the ice for under 20 s."
+  ],
+  "video_ends_early": false,
+  "fun": {
+    "name_reads": {
+      "3": 868,
+      "15": 639,
+      "43": 531,
+      "53": 459,
+      "44": 330,
+      "11": 247,
+      "2": 235,
+      "55": 217,
+      "54": 122,
+      "74": 91
+    }
+  },
+  "pipeline": {
+    "detections": 774633,
+    "crops": 125582,
+    "reads": 14354,
+    "reviewed": 575
+  },
+  "lada_game_id": 32975,
+  "stoppages": [
+    [
+      15,
+      50
+    ],
+    [
+      117,
+      145
+    ],
+    [
+      171,
+      226
+    ],
+    [
+      273,
+      318
+    ],
+    [
+      428,
+      465
+    ],
+    [
+      465,
+      492
+    ],
+    [
+      492,
+      518
+    ],
+    [
+      559,
+      585
+    ],
+    [
+      648,
+      725
+    ],
+    [
+      746,
+      767
+    ],
+    [
+      848,
+      877
+    ],
+    [
+      933,
+      976
+    ],
+    [
+      1041,
+      1064
+    ],
+    [
+      1382,
+      1415
+    ],
+    [
+      1420,
+      1444
+    ],
+    [
+      1631,
+      1684
+    ],
+    [
+      1716,
+      1753
+    ],
+    [
+      1758,
+      1812
+    ],
+    [
+      2013,
+      2080
+    ],
+    [
+      2128,
+      2163
+    ],
+    [
+      2172,
+      2213
+    ],
+    [
+      2232,
+      2263
+    ],
+    [
+      2268,
+      2297
+    ],
+    [
+      2398,
+      2400
+    ],
+    [
+      2568,
+      2620
+    ],
+    [
+      2770,
+      2811
+    ],
+    [
+      3028,
+      3063
+    ],
+    [
+      3098,
+      3131
+    ],
+    [
+      3204,
+      3277
+    ],
+    [
+      3352,
+      3402
+    ],
+    [
+      3459,
+      3478
+    ],
+    [
+      3533,
+      3594
+    ]
+  ],
+  "highlights": [
+    {
+      "type": "goal",
+      "team": "for",
+      "t": 937,
+      "clip": "clips/goal-1.mp4",
+      "poster": "clips/goal-1.jpg",
+      "note": "1st period, clock 2:35: scramble at their net, 0-1"
+    },
+    {
+      "type": "goal",
+      "team": "for",
+      "t": 1716,
+      "clip": "clips/goal-2.mp4",
+      "poster": "clips/goal-2.jpg",
+      "note": "2nd period, clock 9:15: 0-2"
+    },
+    {
+      "type": "goal",
+      "team": "for",
+      "t": 2178,
+      "clip": "clips/goal-3.mp4",
+      "poster": "clips/goal-3.jpg",
+      "note": "2nd period, clock ~1:30: scramble at their net, 0-3"
+    },
+    {
+      "type": "goal",
+      "team": "for",
+      "t": 3026,
+      "clip": "clips/goal-4.mp4",
+      "poster": "clips/goal-4.jpg",
+      "note": "3rd period, clock 9:06: in alone on the goalie, 0-4"
+    },
+    {
+      "type": "goal",
+      "team": "against",
+      "t": 3373,
+      "clip": "clips/goal-5.mp4",
+      "poster": "clips/goal-5.jpg",
+      "note": "3rd period, clock 5:17: 1-4"
+    },
+    {
+      "type": "goal",
+      "team": "against",
+      "t": 3772,
+      "clip": "clips/goal-6.mp4",
+      "poster": "clips/goal-6.jpg",
+      "note": "3rd period, clock 0:43: 2-4"
+    }
+  ],
+  "shots": {
+    "P1": [
+      6,
+      7
+    ],
+    "P2": [
+      6,
+      6
+    ],
+    "P3": [
+      3,
+      18
+    ]
+  },
+  "zones": {
+    "offence": 0.281,
+    "defence": 0.391
+  },
+  "opponent_name": "Ugly Pucklings"
+}
