@@ -56,7 +56,7 @@ fmt = lambda s: f"{int(round(s)) // 60}:{int(round(s)) % 60:02d}"
 
 games, allsh, docs = [], [], {}
 for gd in sorted(glob.glob(f"{GAMES_DIR}/*/")):
-    game, A, data = build(gd, f"{SITE_DIR}/games/{os.path.basename(gd.rstrip('/'))}/index.html")
+    game, A, data = build(gd, f"{SITE_DIR}/games/{os.path.basename(os.path.normpath(gd))}/index.html")
     docs[game["id"]] = game_doc(game, A, data["players"], data["highlights"])
     A = A.assign(game=game["id"])
     # shifts cut off by the recording ending mid-play don't count as short shifts

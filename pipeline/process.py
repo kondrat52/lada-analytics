@@ -31,14 +31,20 @@ if START: cmd += ["-ss", str(START)]
 cmd += ["-i", VID]
 if DUR: cmd += ["-t", str(DUR)]
 cmd += ["-vf", f"fps={FPS},crop={W}:{H}:0:{Y0}", "-f", "rawvideo", "-pix_fmt", "bgr24", "-"]
-proc = subprocess.Popen(cmd, stdout=subprocess.PIPE, bufsize=W * H * 3 * 4)
+# unbuffered, read with readinto: on Windows a buffered read() of a 13 MB frame tops out at ~18 fps
+proc = subprocess.Popen(cmd, stdout=subprocess.PIPE, bufsize=0)
 q = queue.Queue(maxsize=32)
 
 def reader():
-    n = 0
+    n = 0; size = W * H * 3
     while True:
-        buf = proc.stdout.read(W * H * 3)
-        if len(buf) < W * H * 3:
+        buf = bytearray(size); mv = memoryview(buf); got = 0
+        while got < size:
+            k = proc.stdout.readinto(mv[got:])
+            if not k:
+                break
+            got += k
+        if got < size:
             q.put(None); return
         q.put((n, np.frombuffer(buf, np.uint8).reshape(H, W, 3)))
         n += 1

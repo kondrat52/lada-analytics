@@ -74,7 +74,7 @@ def team_nav(page):
     if len(sites) < 2:
         return ""
     links = "".join(
-        f'<a href="{escape(os.path.relpath(d, SITE_DIR))}/{"" if page == "index.html" else page}"'
+        f'<a href="{escape(os.path.relpath(d, SITE_DIR).replace(os.sep, "/"))}/{"" if page == "index.html" else page}"'
         f'{" aria-current=" + chr(34) + "page" + chr(34) if t == SLUG else ""}>{escape(name.removeprefix("LADA "))}</a>'
         for t, name, d in sites)
     return f'<nav class="teams" aria-label="Team">{links}</nav>'
