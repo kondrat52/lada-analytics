@@ -6,9 +6,34 @@
   "lada_team_id": 20
  },
  "site_url": "https://kondrat52.github.io/lada-analytics/y/",
- "updated": null,
+ "updated": "2026-09-14",
  "season_url": "https://kondrat52.github.io/lada-analytics/y/api/season.json",
  "roster_url": "https://kondrat52.github.io/lada-analytics/y/api/roster.json",
  "trends_url": "https://kondrat52.github.io/lada-analytics/y/api/trends.json",
- "games": []
+ "games": [
+  {
+   "id": "2026-09-14-vs-tm",
+   "date": "2026-09-14",
+   "title": "LADA Y vs Teamy McTeamface, Sep 14",
+   "subtitle": "Mon Sep 14, 2026 · 9:45 PM · Kirkland",
+   "time": "9:45 PM",
+   "rink": "Kirkland",
+   "opponent": {
+    "code": "TM",
+    "name": "Teamy McTeamface"
+   },
+   "lada_game_id": 32939,
+   "goals_on_video": {
+    "for": 3,
+    "against": 5
+   },
+   "shots": {
+    "for": 22,
+    "against": 27
+   },
+   "highlights": 12,
+   "page_url": "https://kondrat52.github.io/lada-analytics/y/games/2026-09-14-vs-tm/",
+   "json_url": "https://kondrat52.github.io/lada-analytics/y/api/games/2026-09-14-vs-tm.json"
+  }
+ ]
 }
