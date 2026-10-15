@@ -1,0 +1,110 @@
+{
+ "schema": 1,
+ "team": {
+  "name": "LADA R",
+  "short_name": "LR",
+  "lada_team_id": 2
+ },
+ "skaters": [
+  {
+   "number": 8,
+   "name": "Shanygin",
+   "lada_player_id": 5683
+  },
+  {
+   "number": 9,
+   "name": "Soubochev",
+   "lada_player_id": 3425
+  },
+  {
+   "number": 10,
+   "name": "Bogdanov",
+   "lada_player_id": 2
+  },
+  {
+   "number": 11,
+   "name": "Belousenko",
+   "lada_player_id": 1
+  },
+  {
+   "number": 12,
+   "name": "Sergeev",
+   "lada_player_id": 5761
+  },
+  {
+   "number": 36,
+   "name": "Makhalov",
+   "lada_player_id": 5867
+  },
+  {
+   "number": 39,
+   "name": "Vorobyov",
+   "lada_player_id": 4436
+  },
+  {
+   "number": 57,
+   "name": "Moshchuk",
+   "lada_player_id": 196
+  },
+  {
+   "number": 64,
+   "name": "Shtin",
+   "lada_player_id": 259
+  },
+  {
+   "number": 66,
+   "name": "Bekker",
+   "lada_player_id": 20413
+  },
+  {
+   "number": 70,
+   "name": "Shikhanov",
+   "lada_player_id": 5827
+  },
+  {
+   "number": 72,
+   "name": "Shanygin",
+   "lada_player_id": 20333
+  },
+  {
+   "number": 79,
+   "name": "Rabotyagov",
+   "lada_player_id": 5725
+  },
+  {
+   "number": 80,
+   "name": "Fateev",
+   "lada_player_id": 34
+  },
+  {
+   "number": 81,
+   "name": "Dotsenko",
+   "lada_player_id": 56
+  },
+  {
+   "number": 84,
+   "name": "Severtokov",
+   "lada_player_id": 123
+  },
+  {
+   "number": 92,
+   "name": "Shachak",
+   "lada_player_id": 5690
+  }
+ ],
+ "subs": [
+  {
+   "number": 99,
+   "name": "Perry",
+   "lada_player_id": null,
+   "sub": true
+  }
+ ],
+ "goalies": [
+  {
+   "number": 35,
+   "name": "Willis",
+   "lada_player_id": 15240
+  }
+ ]
+}

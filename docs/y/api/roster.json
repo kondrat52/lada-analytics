@@ -1,0 +1,108 @@
+{
+ "schema": 1,
+ "team": {
+  "name": "LADA Y",
+  "short_name": "LY",
+  "lada_team_id": 20
+ },
+ "skaters": [
+  {
+   "number": 4,
+   "name": "Sokolov",
+   "lada_player_id": 20414
+  },
+  {
+   "number": 11,
+   "name": "Belousenko",
+   "lada_player_id": 5928
+  },
+  {
+   "number": 12,
+   "name": "Kondratenko",
+   "lada_player_id": 20415
+  },
+  {
+   "number": 14,
+   "name": "Ber",
+   "lada_player_id": 11166
+  },
+  {
+   "number": 18,
+   "name": "Petrov",
+   "lada_player_id": 20416
+  },
+  {
+   "number": 29,
+   "name": "Yafunyaev",
+   "lada_player_id": 20417
+  },
+  {
+   "number": 32,
+   "name": "Lisitsyn",
+   "lada_player_id": 20326
+  },
+  {
+   "number": 37,
+   "name": "Akulov",
+   "lada_player_id": 11110
+  },
+  {
+   "number": 49,
+   "name": "Unuchek",
+   "lada_player_id": 20418
+  },
+  {
+   "number": 67,
+   "name": "Beregovoy",
+   "lada_player_id": 20381
+  },
+  {
+   "number": 70,
+   "name": "Lisitsyn",
+   "lada_player_id": 11129
+  },
+  {
+   "number": 72,
+   "name": "Mischenko",
+   "lada_player_id": 5945
+  },
+  {
+   "number": 78,
+   "name": "Shakhov",
+   "lada_player_id": 20419
+  },
+  {
+   "number": 82,
+   "name": "Podkorytov",
+   "lada_player_id": 20420
+  },
+  {
+   "number": 83,
+   "name": "Lisitsyn",
+   "lada_player_id": 5942
+  },
+  {
+   "number": 87,
+   "name": "Beregovoy",
+   "lada_player_id": null
+  },
+  {
+   "number": 89,
+   "name": "Olyanich",
+   "lada_player_id": 20421
+  },
+  {
+   "number": 97,
+   "name": "Barkov",
+   "lada_player_id": 18293
+  }
+ ],
+ "subs": [],
+ "goalies": [
+  {
+   "number": 31,
+   "name": "Hilfer",
+   "lada_player_id": 9080
+  }
+ ]
+}

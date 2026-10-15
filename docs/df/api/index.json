@@ -1,0 +1,14 @@
+{
+ "schema": 1,
+ "team": {
+  "name": "LADA Doofers",
+  "short_name": "LDF",
+  "lada_team_id": 17
+ },
+ "site_url": "https://kondrat52.github.io/lada-analytics/df/",
+ "updated": null,
+ "season_url": "https://kondrat52.github.io/lada-analytics/df/api/season.json",
+ "roster_url": "https://kondrat52.github.io/lada-analytics/df/api/roster.json",
+ "trends_url": "https://kondrat52.github.io/lada-analytics/df/api/trends.json",
+ "games": []
+}

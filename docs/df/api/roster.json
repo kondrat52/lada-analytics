@@ -1,0 +1,154 @@
+{
+ "schema": 1,
+ "team": {
+  "name": "LADA Doofers",
+  "short_name": "LDF",
+  "lada_team_id": 17
+ },
+ "skaters": [
+  {
+   "number": 6,
+   "name": "Zaychikov",
+   "lada_player_id": 5874
+  },
+  {
+   "number": 11,
+   "name": "Belousenko",
+   "lada_player_id": 5872
+  },
+  {
+   "number": 13,
+   "name": "Komashinsky",
+   "lada_player_id": 14216
+  },
+  {
+   "number": 29,
+   "name": "Albantov",
+   "lada_player_id": 20327
+  },
+  {
+   "number": 31,
+   "name": "Sourov",
+   "lada_player_id": 15242
+  },
+  {
+   "number": 37,
+   "name": "Akulov",
+   "lada_player_id": 14218
+  },
+  {
+   "number": 38,
+   "name": "Tislenok",
+   "lada_player_id": 5890
+  },
+  {
+   "number": 46,
+   "name": "Polyanskiy",
+   "lada_player_id": 5876
+  },
+  {
+   "number": 52,
+   "name": "Polyanskiy",
+   "lada_player_id": 5901
+  },
+  {
+   "number": 71,
+   "name": "Fedotov",
+   "lada_player_id": 11114
+  },
+  {
+   "number": 75,
+   "name": "Panova",
+   "lada_player_id": 5880
+  },
+  {
+   "number": 76,
+   "name": "Panov",
+   "lada_player_id": 5881
+  },
+  {
+   "number": 97,
+   "name": "Zakharankau",
+   "lada_player_id": 14185
+  },
+  {
+   "number": 98,
+   "name": "Tislenok",
+   "lada_player_id": 5898
+  }
+ ],
+ "subs": [
+  {
+   "number": 4,
+   "name": "Sokolov",
+   "lada_player_id": 5905,
+   "sub": true
+  },
+  {
+   "number": 12,
+   "name": "Kondratenko",
+   "lada_player_id": 11113,
+   "sub": true
+  },
+  {
+   "number": 16,
+   "name": "Skitsko",
+   "lada_player_id": 20388,
+   "sub": true
+  },
+  {
+   "number": 25,
+   "name": "Whisman",
+   "lada_player_id": null,
+   "sub": true
+  },
+  {
+   "number": 26,
+   "name": "Babkin",
+   "lada_player_id": 11153,
+   "sub": true
+  },
+  {
+   "number": 27,
+   "name": "Joye",
+   "lada_player_id": null,
+   "sub": true
+  },
+  {
+   "number": 44,
+   "name": "Tverskoy",
+   "lada_player_id": 5899,
+   "sub": true
+  },
+  {
+   "number": 54,
+   "name": "Pfeifer",
+   "lada_player_id": null,
+   "sub": true
+  },
+  {
+   "number": 61,
+   "name": "Prozhogin",
+   "lada_player_id": 14187,
+   "sub": true
+  },
+  {
+   "number": 69,
+   "name": "Kleiman",
+   "lada_player_id": 20329,
+   "sub": true
+  }
+ ],
+ "goalies": [
+  {
+   "number": 1,
+   "name": "Mayorov",
+   "lada_player_id": 20392
+  },
+  {
+   "number": 20,
+   "name": "Starodubtsev",
+   "lada_player_id": 5894
+  }
+ ]
+}

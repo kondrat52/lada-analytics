@@ -4,7 +4,8 @@ the team's site folder docs/<slug>/.
 <site>/games/<id>/index.html one shift sheet per game
 <site>/api/*.json            JSON feed for apps (see build_feed.py / API.md)
 docs/index.html              the teams, linking to their sites (only when building every team)
-Builds every team with games, or only $TEAM when it is set."""
+Builds every team, or only $TEAM when it is set. A team without games yet gets a page saying so and an empty feed,
+so an app can list its feed before the first game."""
 import os, sys, json, glob, html, subprocess
 
 if not os.environ.get("TEAM"):   # each team in its own process: roster.py holds one team's names
@@ -14,9 +15,10 @@ if not os.environ.get("TEAM"):   # each team in its own process: roster.py holds
         subprocess.run([sys.executable, os.path.abspath(__file__)], env=dict(os.environ, TEAM=slug), check=True)
     open(f"{REPO}/docs/.nojekyll", "w").write("")
     played = sorted(((t, len(glob.glob(f"{REPO}/teams/{t}/games/*/game.json"))) for t in teams()),
-                    key=lambda tn: tn[0] != "tk")   # Turbo Kings first
+                    key=lambda tn: (not tn[1], tn[0] != "tk", site_of(tn[0])[0]))   # Turbo Kings first, no games last
     links = "\n".join(f"<li><a href='{t}/'><span class='t'>{html.escape(site_of(t)[0])}</span>"
-                      f"<span class='d'>{n} game{'' if n == 1 else 's'}</span></a></li>" for t, n in played if n)
+                      f"<span class='d'>{f'{n} game' + ('' if n == 1 else 's') if n else 'No games yet'}</span></a></li>"
+                      for t, n in played)
     open(f"{REPO}/docs/index.html", "w").write(f"""<!doctype html>
 <html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
 <title>LADA Shift Sheets</title>
@@ -52,9 +54,6 @@ from roster import SKATERS, SUBS, TEAM, SLUG, GAMES_DIR, SITE_DIR, opponent_name
 
 fmt = lambda s: f"{int(round(s)) // 60}:{int(round(s)) % 60:02d}"
 
-if not glob.glob(f"{GAMES_DIR}/*/game.json"):
-    print(f"{SLUG}: no games yet, no site")
-    sys.exit()
 games, allsh, docs = [], [], {}
 for gd in sorted(glob.glob(f"{GAMES_DIR}/*/")):
     game, A, data = build(gd, f"{SITE_DIR}/games/{os.path.basename(gd.rstrip('/'))}/index.html")
@@ -64,8 +63,7 @@ for gd in sorted(glob.glob(f"{GAMES_DIR}/*/")):
     cut = game["periods"][-1]["end"] if game.get("video_ends_early") else None
     A["cut"] = (A.t1 >= cut - 1) if cut else False
     games.append(game); allsh.append(A)
-A = pd.concat(allsh)
-season = season_table(A)
+season = season_table(pd.concat(allsh)) if games else pd.DataFrame()
 
 
 def cell(v, text=None):
@@ -111,6 +109,12 @@ SORT_JS = """<script>
 </script>
 """
 
+main = (f"""<section><h2>Games</h2><ul class="games">{cards}</ul></section>
+<section><h2>Season</h2><div class="tablebox"><table id="season"><thead><tr><th class="l" tabindex="0">#</th><th class="l" tabindex="0" data-text="1">Player</th><th tabindex="0">GP</th><th tabindex="0">Shifts</th><th tabindex="0">Ice time</th><th tabindex="0" aria-sort="descending">Per game</th><th tabindex="0">Play time</th><th tabindex="0">Avg shift</th><th tabindex="0">Longest</th><th tabindex="0">Shortest</th></tr></thead>
+<tbody>{rows}</tbody></table></div></section>""" if games else
+        "<section><h2>Games</h2><p class='note'>No games yet. Shift sheets show up here once a game video is "
+        "processed.</p></section>")
+
 page = f"""<!doctype html>
 <html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
 <title>{html.escape(TEAM)} Shift Sheets</title>
@@ -147,14 +151,13 @@ p.note {{ color:var(--muted); margin:0; max-width:70ch; }}
 .teams a[aria-current="page"] {{ background:var(--team); color:var(--board); }}
 .teams a:focus-visible {{ outline:2px solid var(--blueline); outline-offset:-2px; }}
 </style></head><body><div class="wrap">
-<header>{build_trends.team_nav("index.html")}<div class="eyebrow">LADA Seattle · Rec hockey · <a href="trends.html">Trends</a></div><h1><span>{html.escape(TEAM)}</span> shift sheets</h1>
+<header>{build_trends.team_nav("index.html")}<div class="eyebrow">LADA Seattle · Rec hockey{' · <a href="trends.html">Trends</a>' if games else ''}</div><h1><span>{html.escape(TEAM)}</span> shift sheets</h1>
 <p class="note">Ice time and shifts for every skater, measured from each week's wide-cut game video.</p></header>
-<section><h2>Games</h2><ul class="games">{cards}</ul></section>
-<section><h2>Season</h2><div class="tablebox"><table id="season"><thead><tr><th class="l" tabindex="0">#</th><th class="l" tabindex="0" data-text="1">Player</th><th tabindex="0">GP</th><th tabindex="0">Shifts</th><th tabindex="0">Ice time</th><th tabindex="0" aria-sort="descending">Per game</th><th tabindex="0">Play time</th><th tabindex="0">Avg shift</th><th tabindex="0">Longest</th><th tabindex="0">Shortest</th></tr></thead>
-<tbody>{rows}</tbody></table></div></section>
+{main}
 </div>
-{SORT_JS}</body></html>"""
+{SORT_JS if games else ''}</body></html>"""
+os.makedirs(SITE_DIR, exist_ok=True)
 open(f"{SITE_DIR}/index.html", "w").write(page)
 write_feed(SITE_DIR, games, docs, season)
 build_trends.build(GAMES_DIR, SITE_DIR)
-print(f"{SLUG}: built {len(games)} game(s) -> {os.path.relpath(SITE_DIR)}/ (+ api/ feed, trends.html)")
+print(f"{SLUG}: built {len(games)} game(s) -> {os.path.relpath(SITE_DIR)}/ (+ api/ feed{', trends.html' if games else ''})")

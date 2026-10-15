@@ -1,0 +1,14 @@
+{
+ "schema": 1,
+ "team": {
+  "name": "LADA Y",
+  "short_name": "LY",
+  "lada_team_id": 20
+ },
+ "site_url": "https://kondrat52.github.io/lada-analytics/y/",
+ "updated": null,
+ "season_url": "https://kondrat52.github.io/lada-analytics/y/api/season.json",
+ "roster_url": "https://kondrat52.github.io/lada-analytics/y/api/roster.json",
+ "trends_url": "https://kondrat52.github.io/lada-analytics/y/api/trends.json",
+ "games": []
+}

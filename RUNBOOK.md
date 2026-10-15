@@ -12,7 +12,7 @@ Written for Claude Code (or anyone patient). Commands assume the repo root as th
 uv venv --python 3.12 ~/.venvs/hockey && uv pip install --python ~/.venvs/hockey/bin/python -r pipeline/requirements.txt
 PY=~/.venvs/hockey/bin/python
 W=~/hockey-work/2026-10-04-vs-XX      # other teams than Turbo Kings: bw-2026-09-13-vs-db
-export TEAM=tk                        # the team whose game it is: a folder in teams/ (tk, bw)
+export TEAM=tk                        # the team whose game it is: a folder in teams/ (tk, bw, bt, df, y, r)
 ```
 
 Each team's roster, opponents and published games live in `teams/<slug>/` (`roster.json`, `opponents.json`,

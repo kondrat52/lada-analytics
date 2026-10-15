@@ -84,9 +84,10 @@ def build(games_dir=GAMES_DIR, site_dir=SITE_DIR):
     rows = [game_rows(gd) for gd in sorted(glob.glob(f"{games_dir}/*/"))]
     team = [t for _, t, _ in rows]
     players = [p for _, _, ps in rows for p in ps]
-    html = open(f"{HERE}/trends_template.html").read()
-    html = html.replace("__NAV__", team_nav("trends.html")).replace("__TEAM__", TEAM).replace("__DATA__", json.dumps(dict(team=team, players=players), separators=(",", ":")))
-    open(f"{site_dir}/trends.html", "w").write(html)
+    if rows:   # the page needs a game; a team without one has only the feed's empty trends.json
+        html = open(f"{HERE}/trends_template.html").read()
+        html = html.replace("__NAV__", team_nav("trends.html")).replace("__TEAM__", TEAM).replace("__DATA__", json.dumps(dict(team=team, players=players), separators=(",", ":")))
+        open(f"{site_dir}/trends.html", "w").write(html)
     os.makedirs(f"{site_dir}/api", exist_ok=True)
     json.dump(trends_doc(rows), open(f"{site_dir}/api/trends.json", "w"), ensure_ascii=False, separators=(",", ":"))
     return len(team)

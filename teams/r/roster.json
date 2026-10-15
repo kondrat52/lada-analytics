@@ -1,0 +1,52 @@
+{
+  "team": "LADA R",
+  "team_short": "LR",
+  "team_name": "LADA R",
+  "lada_team_id": 2,
+  "site_url": "https://kondrat52.github.io/lada-analytics/r/",
+  "goalies": {
+    "35": "Willis"
+  },
+  "skaters": {
+    "8": "Shanygin",
+    "9": "Soubochev",
+    "10": "Bogdanov",
+    "11": "Belousenko",
+    "12": "Sergeev",
+    "36": "Makhalov",
+    "39": "Vorobyov",
+    "57": "Moshchuk",
+    "64": "Shtin",
+    "66": "Bekker",
+    "70": "Shikhanov",
+    "72": "Shanygin",
+    "79": "Rabotyagov",
+    "80": "Fateev",
+    "81": "Dotsenko",
+    "84": "Severtokov",
+    "92": "Shachak"
+  },
+  "subs": {
+    "99": "Perry"
+  },
+  "lada_player_ids": {
+    "8": 5683,
+    "9": 3425,
+    "10": 2,
+    "11": 1,
+    "12": 5761,
+    "35": 15240,
+    "36": 5867,
+    "39": 4436,
+    "57": 196,
+    "64": 259,
+    "66": 20413,
+    "70": 5827,
+    "72": 20333,
+    "79": 5725,
+    "80": 34,
+    "81": 56,
+    "84": 123,
+    "92": 5690
+  }
+}

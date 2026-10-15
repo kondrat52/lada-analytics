@@ -9,6 +9,13 @@ Base URL, one feed per team (each `index.json` says whose it is in `team`, with 
 |---|---|---|
 | LADA Turbo Kings | 24 | `https://kondrat52.github.io/lada-analytics/tk/api/` |
 | LADA Blue Wings | 10 | `https://kondrat52.github.io/lada-analytics/bw/api/` |
+| LADA Beerteam | 5 | `https://kondrat52.github.io/lada-analytics/bt/api/` |
+| LADA Doofers | 17 | `https://kondrat52.github.io/lada-analytics/df/api/` |
+| LADA Y | 20 | `https://kondrat52.github.io/lada-analytics/y/api/` |
+| LADA R | 2 | `https://kondrat52.github.io/lada-analytics/r/api/` |
+
+A team's feed is there from the day it's added, before its first filmed game: `games` and `players` are then empty
+and `updated` is `null`.
 
 The feeds used to be at `https://kondrat52.github.io/lada-tk-analytics/api/` (Turbo Kings) and `.../lada-tk-analytics/bw/api/`.
 For LADA app versions that still read them, the repo `kondrat52/lada-tk-analytics` mirrors the new feeds there

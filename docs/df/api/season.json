@@ -1,0 +1,11 @@
+{
+ "schema": 1,
+ "team": {
+  "name": "LADA Doofers",
+  "short_name": "LDF",
+  "lada_team_id": 17
+ },
+ "updated": null,
+ "games": [],
+ "players": []
+}

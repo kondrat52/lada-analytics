@@ -1,0 +1,51 @@
+{
+  "team": "LADA Y",
+  "team_short": "LY",
+  "team_name": "LADA Y",
+  "lada_team_id": 20,
+  "site_url": "https://kondrat52.github.io/lada-analytics/y/",
+  "goalies": {
+    "31": "Hilfer"
+  },
+  "skaters": {
+    "4": "Sokolov",
+    "11": "Belousenko",
+    "12": "Kondratenko",
+    "14": "Ber",
+    "18": "Petrov",
+    "29": "Yafunyaev",
+    "32": "Lisitsyn",
+    "37": "Akulov",
+    "49": "Unuchek",
+    "67": "Beregovoy",
+    "70": "Lisitsyn",
+    "72": "Mischenko",
+    "78": "Shakhov",
+    "82": "Podkorytov",
+    "83": "Lisitsyn",
+    "87": "Beregovoy",
+    "89": "Olyanich",
+    "97": "Barkov"
+  },
+  "subs": {},
+  "lada_player_ids": {
+    "4": 20414,
+    "11": 5928,
+    "12": 20415,
+    "14": 11166,
+    "18": 20416,
+    "29": 20417,
+    "31": 9080,
+    "32": 20326,
+    "37": 11110,
+    "49": 20418,
+    "67": 20381,
+    "70": 11129,
+    "72": 5945,
+    "78": 20419,
+    "82": 20420,
+    "83": 5942,
+    "89": 20421,
+    "97": 18293
+  }
+}

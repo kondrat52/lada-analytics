@@ -557,7 +557,7 @@ if __name__ == "__main__":
     ap = argparse.ArgumentParser(description=__doc__, formatter_class=argparse.RawDescriptionHelpFormatter)
     sub = ap.add_subparsers(dest="cmd", required=True)
     f = sub.add_parser("fetch"); f.add_argument("url"); f.add_argument("W"); f.add_argument("--limit", type=float)
-    f.add_argument("--team", help="whose game: a folder in teams/ (tk, bw); default the work folder's, else tk")
+    f.add_argument("--team", help="whose game: a folder in teams/ (tk, bw, bt, df, y, r); default the work folder's, else tk")
     f.add_argument("--rink", help="camera geometry (see rink.py); default renton")
     f.add_argument("--jersey", help="our jersey that game (rink.JERSEYS); default light blue")
     f.add_argument("--bench", help="left or right: the side of the frame our bench is on (rink.py); default the rink's usual one")

@@ -1,6 +1,6 @@
 ---
 name: process-game
-description: Turn a LADA team's game video (Turbo Kings or Blue Wings; YouTube wide cut) into a shift sheet and publish it on that team's site. Use when the user asks to process, analyze or add a game, or gives a YouTube link to a game, e.g. "/process-game https://youtu.be/... vs RR" or "/process-game https://youtu.be/... bw vs DB".
+description: Turn a LADA team's game video (Turbo Kings, Blue Wings, Beerteam, Doofers, Y or R; YouTube wide cut) into a shift sheet and publish it on that team's site. Use when the user asks to process, analyze or add a game, or gives a YouTube link to a game, e.g. "/process-game https://youtu.be/... vs RR" or "/process-game https://youtu.be/... bw vs DB".
 ---
 
 # Process a LADA team's game
@@ -9,7 +9,10 @@ Turns one wide-cut game video into per-player shift stats and publishes them to 
 `RUNBOOK.md` has the details behind each step; this skill is the order of operations and the checks.
 
 Each team has a folder `teams/<slug>/`: `roster.json`, `opponents.json` and `games/`. So far `tk` (LADA Turbo
-Kings, LADA team 24) and `bw` (LADA Blue Wings, LADA team 10), with sites in `docs/tk/` and `docs/bw/`. "We", "our" and "the roster" below mean the team whose game it is. `fetch --team` records the team in
+Kings, LADA team 24), `bw` (LADA Blue Wings, 10), `bt` (LADA Beerteam, 5), `df` (LADA Doofers, 17), `y` (LADA Y, 20)
+and `r` (LADA R, 2), each with its site in `docs/<slug>/`. A team's first game: check its roster has players (if
+`roster.json` is empty, ask the user to run `$PY pipeline/lada_ids.py --write <slug>`, as below) and its jersey
+colour against `rink.JERSEYS` on a frame. "We", "our" and "the roster" below mean the team whose game it is. `fetch --team` records the team in
 the work folder and every later `run_game.py` command follows it; a script run by hand takes it from `TEAM`
 (`TEAM=bw $PY pipeline/lada_ids.py`), and `build_site.py` without `TEAM` rebuilds every team.
 
@@ -47,7 +50,7 @@ PY=~/.venvs/hockey/bin/python
 [ -x $PY ] || sh pipeline/setup_env.sh
 W=~/hockey-work/<YYYY-MM-DD>-vs-<opp>          # outside the repo; ~5 GB; prefix other teams' with the slug: bw-2026-09-13-vs-db
 nohup caffeinate -dims -t 28800 >/dev/null 2>&1 &   # keep the Mac awake for the whole run (8 h)
-$PY pipeline/run_game.py fetch "<url>" $W --team <tk|bw> --rink <renton|snoqualmie|snoqualmie2|kirkland> [--jersey white --bench right]   # run_in_background: true
+$PY pipeline/run_game.py fetch "<url>" $W --team <tk|bw|bt|df|y|r> --rink <renton|snoqualmie|snoqualmie2|kirkland> [--jersey white --bench right]   # run_in_background: true
 ```
 
 A sleeping Mac stalls everything: detection crawls, and subagents die mid-review ("your computer went to sleep").
@@ -317,9 +320,9 @@ games and their ids: `.../api/v1/team/<lada_team_id>/game/next/30`). Add it, and
 `"lada_game_id"` / `"opponent_name"` in `game.json`, then re-run `$PY pipeline/build_site.py`. A new opponent's
 code and full name go in the team's `opponents.json` (the user's spelling wins over LADA's; LADA's exact spelling is what
 finds the team's logo in the LADA app, so a different one shows initials there). For a new player, ask the user to
-run `TEAM=<slug> $PY pipeline/lada_ids.py` in their own terminal (it signs in to LADA as them; give them the exact
-command line, with `cd` to the repo) and add the ids it marks NEW to
-`lada_player_ids` in `roster.json`; fix any it marks WRONG. A sub who isn't on the LADA roster gets no id. Write `notes` in `game.json` (they
+run `$PY pipeline/lada_ids.py --write <slug>` in their own terminal (it signs in to LADA as them; give them the exact
+command line, with `cd` to the repo). It adds the ids it marks NEW, and LADA's players whose numbers `roster.json`
+lacks, to `roster.json`; fix any it marks WRONG or DIFFERS by hand. A sub who isn't on the LADA roster gets no id. Write `notes` in `game.json` (they
 survive a republish): the rink if it's new, who sat and when, where the goal times came from, the subs, and
 anything you labeled by hand or read differently from the scoreboard.
 The clips live in the team site's `games/<id>/clips/` (about 5 MB each), served by GitHub Pages. Open the page

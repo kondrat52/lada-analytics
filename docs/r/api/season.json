@@ -1,0 +1,11 @@
+{
+ "schema": 1,
+ "team": {
+  "name": "LADA R",
+  "short_name": "LR",
+  "lada_team_id": 2
+ },
+ "updated": null,
+ "games": [],
+ "players": []
+}

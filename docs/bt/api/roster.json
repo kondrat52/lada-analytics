@@ -1,0 +1,146 @@
+{
+ "schema": 1,
+ "team": {
+  "name": "LADA Beerteam",
+  "short_name": "LBT",
+  "lada_team_id": 5
+ },
+ "skaters": [
+  {
+   "number": 5,
+   "name": "Zhaksilikov",
+   "lada_player_id": 17267
+  },
+  {
+   "number": 7,
+   "name": "Khristoforov",
+   "lada_player_id": 254
+  },
+  {
+   "number": 10,
+   "name": "Bogdanov",
+   "lada_player_id": 81
+  },
+  {
+   "number": 11,
+   "name": "Belousenko",
+   "lada_player_id": 80
+  },
+  {
+   "number": 23,
+   "name": "Zhaksilikov",
+   "lada_player_id": 3423
+  },
+  {
+   "number": 24,
+   "name": "Papusha",
+   "lada_player_id": 20384
+  },
+  {
+   "number": 25,
+   "name": "Papusha",
+   "lada_player_id": 5795
+  },
+  {
+   "number": 27,
+   "name": "Egiazarov",
+   "lada_player_id": 11101
+  },
+  {
+   "number": 34,
+   "name": "Zakharov",
+   "lada_player_id": 248
+  },
+  {
+   "number": 41,
+   "name": "Gilderman",
+   "lada_player_id": 5575
+  },
+  {
+   "number": 44,
+   "name": "Tverskoy",
+   "lada_player_id": 5812
+  },
+  {
+   "number": 68,
+   "name": "Chernih",
+   "lada_player_id": 120
+  },
+  {
+   "number": 69,
+   "name": "Kleiman",
+   "lada_player_id": 20355
+  },
+  {
+   "number": 70,
+   "name": "Shikhanov",
+   "lada_player_id": 5796
+  },
+  {
+   "number": 87,
+   "name": "Solovyov",
+   "lada_player_id": 297
+  },
+  {
+   "number": 94,
+   "name": "Volkov",
+   "lada_player_id": 237
+  }
+ ],
+ "subs": [
+  {
+   "number": 12,
+   "name": "Kondratenko",
+   "lada_player_id": 20428,
+   "sub": true
+  },
+  {
+   "number": 16,
+   "name": "Skitsko",
+   "lada_player_id": 20426,
+   "sub": true
+  },
+  {
+   "number": 37,
+   "name": "Akulov",
+   "lada_player_id": 20379,
+   "sub": true
+  },
+  {
+   "number": 54,
+   "name": "Semenov",
+   "lada_player_id": 20425,
+   "sub": true
+  },
+  {
+   "number": 56,
+   "name": "Filimonov",
+   "lada_player_id": 11146,
+   "sub": true
+  },
+  {
+   "number": 61,
+   "name": "Prozhogin",
+   "lada_player_id": 14184,
+   "sub": true
+  },
+  {
+   "number": 76,
+   "name": "Panov",
+   "lada_player_id": 253,
+   "sub": true
+  }
+ ],
+ "goalies": [
+  {
+   "number": 1,
+   "name": "Mayorov",
+   "lada_player_id": 20324
+  },
+  {
+   "number": 20,
+   "name": "Starodubtsev",
+   "lada_player_id": 258
+  }
+ ]
+}

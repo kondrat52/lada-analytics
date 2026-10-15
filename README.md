@@ -6,6 +6,10 @@ Shift sheets for LADA's rec hockey teams: shifts, ice time and average shift len
 |---|---|---|
 | LADA Turbo Kings (LADA team 24) | `teams/tk/` | https://kondrat52.github.io/lada-analytics/tk/ |
 | LADA Blue Wings (LADA team 10) | `teams/bw/` | https://kondrat52.github.io/lada-analytics/bw/ |
+| LADA Beerteam (LADA team 5) | `teams/bt/` | https://kondrat52.github.io/lada-analytics/bt/ |
+| LADA Doofers (LADA team 17) | `teams/df/` | https://kondrat52.github.io/lada-analytics/df/ |
+| LADA Y (LADA team 20) | `teams/y/` | https://kondrat52.github.io/lada-analytics/y/ |
+| LADA R (LADA team 2) | `teams/r/` | https://kondrat52.github.io/lada-analytics/r/ |
 
 ## What's here
 
@@ -50,15 +54,19 @@ python pipeline/build_site.py
 
 ## Adding a team
 
-1. `teams/<slug>/roster.json`: copy `teams/bw/roster.json` and change the team name, `lada_team_id` (LADA's public
-   `https://api.ladaseattle.com/api/v1/Team/<id>` gives a team's name), `site_url` (`https://kondrat52.github.io/lada-analytics/<slug>/`), and the players.
-   The players come from the team's SportNinja roster (screenshots of it work): spares go under `subs`, and the
-   league's shared account (Agregat Dannikh) stays out.
-2. LADA player ids: `TEAM=<slug> python pipeline/lada_ids.py` (signs in to LADA as you; LADA has to show you the
-   team's roster).
-3. Process a game with `--team <slug>`. Check the jerseys and benches on a frame first: `rink.py` knows our two
+1. `teams/<slug>/roster.json`: copy another team's, empty its `skaters`, `subs`, `goalies` and `lada_player_ids`
+   (`{}`), and change the team name, `team_short`, `lada_team_id` (LADA's public `https://api.ladaseattle.com/api/v1/Team/<id>` gives a team's name)
+   and `site_url` (`https://kondrat52.github.io/lada-analytics/<slug>/`). `teams/<slug>/opponents.json`: `{}`.
+2. Players and LADA player ids: `python pipeline/lada_ids.py --write <slug>` (several slugs at once is fine). It signs
+   in to LADA as you (LADA has to show you the team's roster) and fills in `skaters`, `subs` (LADA's Sub status),
+   `goalies` (LADA's Goalie position) and `lada_player_ids`; the surname is the last word of LADA's name, so check
+   them against the jerseys. It never changes what's already there. A spare who isn't on LADA's roster goes under
+   `subs` by hand (the team's SportNinja roster has them; screenshots work). Without `--write` it only compares.
+3. `python pipeline/build_site.py`: the team gets its site, listed at the root, and its feed (empty until the first
+   game) right away.
+4. Process a game with `--team <slug>`. Check the jerseys and benches on a frame first: `rink.py` knows our two
    jerseys (light blue, white with blue trim) and each rink's benches.
-4. The LADA app shows a team's shift sheets once its feed URL (`<site_url>api`) is in `shiftSheetFeeds` in the
+5. The LADA app shows a team's shift sheets once its feed URL (`<site_url>api`) is in `shiftSheetFeeds` in the
    app's `lib/src/shared/api_constants.dart`, keyed by LADA team id, and that app version is released.
 
 ## How the numbers are made
