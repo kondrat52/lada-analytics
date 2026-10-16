@@ -1,0 +1,190 @@
+{
+  "id": "2026-10-03-vs-no",
+  "date": "2026-10-03",
+  "title": "LADA Blue Wings vs Night Owls, Oct 3",
+  "eyebrow": "Sat Oct 3, 2026 · 9:15 PM · Renton",
+  "opponent": "NO",
+  "video": "https://www.youtube.com/watch?v=NC4QIa3hdQU",
+  "periods": [
+    {
+      "label": "P1",
+      "start": 12,
+      "end": 1115
+    },
+    {
+      "label": "P2",
+      "start": 1216,
+      "end": 2296
+    },
+    {
+      "label": "P3",
+      "start": 2400,
+      "end": 3772
+    }
+  ],
+  "nets": {
+    "P1": 540,
+    "P2": 3245,
+    "P3": 540
+  },
+  "penalty_kills": [],
+  "notes": [
+    "Away game at Renton: we wore blue and had the left bench (the pipeline's defaults). The video came as 3600x1596, not Renton's usual 3840x1702, so fetch scaled it up first.",
+    "Periods, goals and shots come from the arena scoreboard (we were GUEST) and SKAHL's game sheet: periods 0:12-18:35, 20:16-38:16 and 40:00-62:52 of the video, by the clock. The clock ran without stopping in the 2nd and stopped at whistles in the 3rd. The video runs to the final horn.",
+    "Goals at 20:27 and 29:11 of the video, both ours in the 2nd period: Semenov #54 at clock 17:50 and Charnysh #36 at 9:05 (game sheet times; the board's score changed about 12 s later). Shots from the game sheet (saves plus goals), 39-23, match the board.",
+    "The only penalty was Night Owls' Choi #98 (tripping, 3rd period, clock 4:55), our power play. No penalty kills.",
+    "Played: the 12 skaters of LADA's lineup, with sub goalie Paplinski #0. The game sheet also marks Potepalov #15 as playing, but neither the OCR nor the reviewers found his number or name, so he isn't counted. Ilinskaya #3, Potepalov #15, Babkin #26, Dukhno #50, Shipachev #88 and the subs were left out of the roster for the solve, because partial reads of 43, 53 and 35 came out as 3.",
+    "Labeled by hand: P2 row R90 (Charnysh #36, his number visible as he drove to the net for the second goal). Miroshnichenko #43's track ended mid-ice at 28:56, so the solver ran his shift on through that goal; the video shows Lisenko #55 on in his place from 28:55, so he is kept off from 28:57 (an \"off\" entry in periods.json). The lineup check found no gaps."
+  ],
+  "video_ends_early": false,
+  "fun": {
+    "name_reads": {
+      "53": 465,
+      "43": 456,
+      "95": 262,
+      "2": 247,
+      "16": 223,
+      "35": 215,
+      "44": 185,
+      "77": 162,
+      "54": 152,
+      "11": 123,
+      "36": 106,
+      "55": 55
+    }
+  },
+  "pipeline": {
+    "detections": 595224,
+    "crops": 108793,
+    "reads": 11688,
+    "reviewed": 515
+  },
+  "highlights": [
+    {
+      "type": "goal",
+      "team": "for",
+      "t": 1227,
+      "clip": "clips/goal-1.mp4",
+      "poster": "clips/goal-1.jpg",
+      "note": "2nd period, clock 17:50: scramble at their net, Semenov #54, 0-1"
+    },
+    {
+      "type": "goal",
+      "team": "for",
+      "t": 1751,
+      "clip": "clips/goal-2.mp4",
+      "poster": "clips/goal-2.jpg",
+      "note": "2nd period, clock 9:05: Charnysh #36, 0-2"
+    }
+  ],
+  "lada_game_id": 32976,
+  "opponent_name": "Night Owls",
+  "zones": {
+    "offence": 0.4588,
+    "defence": 0.2619
+  },
+  "shots": {
+    "P1": [
+      12,
+      7
+    ],
+    "P2": [
+      15,
+      6
+    ],
+    "P3": [
+      12,
+      10
+    ]
+  },
+  "stoppages": [
+    [
+      12,
+      14
+    ],
+    [
+      370,
+      395
+    ],
+    [
+      437,
+      474
+    ],
+    [
+      647,
+      695
+    ],
+    [
+      773,
+      818
+    ],
+    [
+      1026,
+      1051
+    ],
+    [
+      1051,
+      1089
+    ],
+    [
+      1216,
+      1258
+    ],
+    [
+      1274,
+      1303
+    ],
+    [
+      1350,
+      1396
+    ],
+    [
+      1576,
+      1609
+    ],
+    [
+      1702,
+      1782
+    ],
+    [
+      2400,
+      2402
+    ],
+    [
+      2695,
+      2743
+    ],
+    [
+      2957,
+      3015
+    ],
+    [
+      3035,
+      3059
+    ],
+    [
+      3262,
+      3300
+    ],
+    [
+      3332,
+      3379
+    ],
+    [
+      3386,
+      3431
+    ],
+    [
+      3506,
+      3559
+    ],
+    [
+      3578,
+      3623
+    ],
+    [
+      3623,
+      3661
+    ]
+  ]
+}
