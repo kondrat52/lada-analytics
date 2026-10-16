@@ -2,8 +2,8 @@
 (player number and time left). Its LEDs flicker, so most single frames show it dark: keep the brightest of each
 second's frames.
 
-  scoreboard.py W                 one pass over the video -> W/scoreboard.npy (~5 min)
-  scoreboard.py W OUT.jpg t1 t2 …  the board at those seconds of video as a sheet, 2.5x
+  scoreboard.py W                 one pass over the video -> W/scoreboard.npy (~5 min; fetch does this)
+  scoreboard.py W OUT.jpg t1 t2 …  the board at those seconds of video as a sheet, 2.5x (scans first if needed)
 """
 import os, subprocess, sys
 import numpy as np, cv2, imageio_ffmpeg
@@ -31,6 +31,8 @@ def scan(W):
 
 
 def sheet(W, out, ts, cols=6):
+    if not os.path.exists(f"{W}/scoreboard.npy"):
+        scan(W)
     a = np.load(f"{W}/scoreboard.npy")
     h, w = a.shape[1:3]
     tw = 325; th = int(tw * h / w)

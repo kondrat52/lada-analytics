@@ -1,242 +1,176 @@
 ---
 name: process-game
-description: Turn a LADA team's game video (Turbo Kings, Blue Wings, Beerteam, Doofers, Y or R; YouTube wide cut) into a shift sheet and publish it on that team's site. Use when the user asks to process, analyze or add a game, or gives a YouTube link to a game, e.g. "/process-game https://youtu.be/... vs RR" or "/process-game https://youtu.be/... bw vs DB".
+description: Turn a LADA team's game video (Turbo Kings, Blue Wings, Beerteam, Doofers, Y or R; the YouTube wide cut) into a shift sheet with goals, penalties and shots, and publish it on that team's site. Use it whenever the user wants a game processed, analyzed, added or published, gives a YouTube link to a game, mentions a shift sheet or a scoresheet for a game, or asks to re-solve or archive a game's work folder, e.g. "/process-game https://youtu.be/... vs RR", "/process-game https://youtu.be/... bw vs DB", "process Saturday's game", "here's the game sheet PDF".
 ---
 
 # Process a LADA team's game
 
-Turns one wide-cut game video into per-player shift stats and publishes them to the team's GitHub Pages site in `docs/<slug>/`.
-`RUNBOOK.md` has the details behind each step; this skill is the order of operations and the checks.
+One wide-cut game video becomes per-player shift stats, goals, penalties and shots on the team's GitHub Pages site
+in `docs/<slug>/`. `pipeline/run_game.py` does the work; this file is the order of operations and the checks.
+Details that only matter sometimes live next to it, read them when their step says so:
 
-Each team has a folder `teams/<slug>/`: `roster.json`, `opponents.json` and `games/`. So far `tk` (LADA Turbo
-Kings, LADA team 24), `bw` (LADA Blue Wings, 10), `bt` (LADA Beerteam, 5), `df` (LADA Doofers, 17), `y` (LADA Y, 20)
-and `r` (LADA R, 2), each with its site in `docs/<slug>/`. A team's first game: check its roster has players (if
-`roster.json` is empty, ask the user to run `$PY pipeline/lada_ids.py --write <slug>`, as below) and its jersey
-colour against `rink.JERSEYS` on a frame. "We", "our" and "the roster" below mean the team whose game it is. `fetch --team` records the team in
-the work folder and every later `run_game.py` command follows it; a script run by hand takes it from `TEAM`
-(`TEAM=bw $PY pipeline/lada_ids.py`), and `build_site.py` without `TEAM` rebuilds every team. Rebuild them all after a new team's first game
-(`publish` does): the root page counts each team's games, and each team's menu lists the teams with games.
+| File | When |
+|---|---|
+| `references/rinks.md` | the rink's camera, benches, jerseys, scoreboard quirks; a rink that isn't in `rink.py` |
+| `references/review.md` | the visual review: how reviewers work, relaunching, re-checks, lessons |
+| `references/highlights.md` | finding goals and penalties by eye, clips, `highlights.json` |
+| `references/lada.md` | LADA's API, SportNinja game sheets, player ids, `roster.json` fields |
+| `RUNBOOK.md` | the same pipeline step by step, for running pieces by hand |
 
-Budget about 2 hours of wall time on the Mac (the GPU does the detection; this can't run in the cloud) and a
-fair amount of tokens for the visual review. Keep the user posted with one line per stage.
+Teams: `tk` LADA Turbo Kings (LADA team 24), `bw` Blue Wings (10), `bt` Beerteam (5), `df` Doofers (17), `y` LADA Y
+(20), `r` LADA R (2). Each has `teams/<slug>/` with `roster.json`, `opponents.json`, `games/` and `lada_games.json`,
+and its site in `docs/<slug>/`. "We", "our" and "the roster" mean the team whose game it is. `fetch --team` records
+the team in the work folder and every later command follows it; a script run by hand takes it from `TEAM`.
 
-## 0. Ask up front (one message, then start)
-
-- Whose game, if the user didn't say (Turbo Kings unless the video is another team's), the YouTube link (if not
-  given) and the opponent's short name (e.g. RR).
-- Date and start time, rink (Renton, Snoqualmie A or B, or Kirkland so far) for the page header. The video title
-  usually has them, e.g. "LTKvsTTT 5:55 PM PDT - SEP 13, 2026 (Snoqualmie) - wide cut"; Blue Wings' videos are
-  titled "2026/09/13 LADA Blue Wings vs Disco Bandoleros", with the rink in the description and the time in LADA.
-- Home or away. So far the home team has worn white (ours: blue numbers and trim) and, at Renton and Kirkland, sat
-  on the bench right of center; away we wear light blue and sit left of center. LADA's API says which:
-  `https://api.ladaseattle.com/api/v1/game/<id>` has `playHome` (the id: `.../api/v1/team/<lada_team_id>/game/last`,
-  the team's id in its `roster.json`; `.../game/next/30` for upcoming games, and `.../api/v1/Team/<id>/Schedule/<season>`
-  with the season from `.../api/v1/Season/<id>` for a whole season). The
-  pipeline finds our players by jersey colour and their line changes by the bench, so check frame600.png (step 1)
-  if unsure.
-- New players, and for each whether they're on the team or a sub (they go in different parts of `roster.json`,
-  step 4). The same game record has `lines`: the planned lines as LADA player ids. An id that isn't in
-  `lada_player_ids` is a new player worth asking about, but the lines aren't attendance (a listed sub may not come)
-  and never say whose id it is: ids come only from `pipeline/lada_ids.py`.
-- The final score, and roughly when goals were scored if they remember. It makes the goal check in step 7 quick.
-
-Don't ask about penalties: find them from the video (step 3) and report what you found.
-
-Don't wait for answers to start step 1; you need them from step 3 on.
-
-## 1. Environment and fetch (~90 min, background)
+## Machine, budget, and what blocks on the user
 
 ```sh
-PY=~/.venvs/hockey/bin/python
+PY=~/.venvs/hockey/Scripts/python.exe; [ -x $PY ] || PY=~/.venvs/hockey/bin/python   # the Windows PC, else the Mac
 [ -x $PY ] || sh pipeline/setup_env.sh
-W=~/hockey-work/<YYYY-MM-DD>-vs-<opp>          # outside the repo; ~5 GB; prefix other teams' with the slug: bw-2026-09-13-vs-db
-nohup caffeinate -dims -t 28800 >/dev/null 2>&1 &   # keep the Mac awake for the whole run (8 h)
-$PY pipeline/run_game.py fetch "<url>" $W --team <tk|bw|bt|df|y|r> --rink <renton|snoqualmie|snoqualmie2|kirkland> [--jersey white --bench right]   # run_in_background: true
+W=~/hockey-work/<slug>-<YYYY-MM-DD>-vs-<opp>      # outside the repo, ~5 GB; Turbo Kings' folders have no slug prefix
 ```
 
-A sleeping Mac stalls everything: detection crawls, and subagents die mid-review ("your computer went to sleep").
+Detection needs the local GPU, so none of this runs in the cloud. On the Windows PC (RTX 5090, set up with
+`pipeline\setup_env.ps1`, see `WINDOWS.md`) fetch takes about 30 minutes and the review 15 to 20, so a game is about
+an hour of session time; `run_game.py` keeps Windows awake. On the Mac fetch takes about 2 hours and needs
+`nohup caffeinate -dims -t 28800 >/dev/null 2>&1 &` first: a sleeping Mac stalls detection and kills reviewers
+mid-sheet. Keep the user posted with one line per stage.
 
-On the Windows PC (RTX 5090, set up with `pipeline\setup_env.ps1`, see RUNBOOK.md) detection runs on CUDA and is
-much faster: `PY=~/.venvs/hockey/Scripts/python.exe`, and skip `caffeinate` (`run_game.py` keeps Windows awake).
+The user often leaves during a run. Only two points need them: confirming the score and highlights before
+publish, and the push itself. Everything else runs to "ready to publish" on sensible assumptions, with each
+assumption written down for the summary. Don't stop to ask about a new player, a sub, a spelling or a penalty.
 
-`--jersey` picks the colour tests in `rink.JERSEYS` (default light blue). If you find out after detection that we
-wore another jersey (prepare makes only a handful of review rows; the roster card is nearly empty), run
-`$PY pipeline/run_game.py jersey $W white`: it records the jersey, cuts the missing crops from the video
-(~5 min, no detection rerun) and OCRs them. Then carry on from step 2. `--bench` picks our bench: at Renton
-`right` mirrors the usual left one about center ice; Kirkland's usual is `right` (home), and `left` is the away
-bench. Check it on frame600.png: our jerseys sit on our bench. If it was wrong, add `"bench": "right"` to
-`$W/full/rink.json` before `prepare` (it decides which detections are tracked at the bench), or at the latest
-before `solve` (it decides which track ends count as line changes).
+Keep the main session small: two of the last three runs were summarized mid-game, mostly from reading images.
+Read a sheet once, crop tight, delegate the by-eye verification of goals and penalties (`references/highlights.md`
+has the brief), and read the Gantt charts only when the lineup check lists something.
 
-Each rink films from a different spot, so the camera geometry lives in `pipeline/rink.py` (detection crop, where
-the far boards are, our bench, nets). Renton has both benches behind the far boards. Snoqualmie has them on the
-near side at the frame edges: home left, away right. Its two rinks have given two kinds of video: a 3840x1536 strip
-(`--rink snoqualmie`: Rink A, Blue Wings' home rink, Sep 2026) and the camera's whole fisheye frame, 3824x2160
-(`--rink snoqualmie2`: Rink B, Turbo Kings' Oct 10 game). LADA's schedule names the rink (`rinkName`, "Snoqualmie
-A"), but go by frame600.png's size. The fisheye video is dim and grey, so a rink can set its own brightness levels (`white_v`, `dark_v`) and jersey tests
-(`jerseys`) in `rink.py`: check the jersey test on a few frames whenever the picture looks different. Kirkland films through a fisheye lens from low at center ice: the
-far boards bow up toward center, both benches are behind them (home right of center, away left), and the penalty
-boxes are the near corners at the bottom of the frame. For a rink not in `rink.py`, stop before detection. You
-don't have to wait for the download: grab 4K frames straight from the stream,
+## 0. Inputs (one message, then start)
+
+If the user gives a scoresheet PDF (SportNinja's, "Game #... scoresheet.pdf"), read it first: it has the score, each
+goal's period and clock time with scorer and assists, every penalty with the player and length, shots per period
+and who played. That answers most of what follows, and it checks the pipeline's goal and penalty times later.
 
 ```sh
-U=$($PY -m yt_dlp -g -f 313 "<url>"); $FF -loglevel error -ss 600 -i "$U" -frames:v 1 $W/frame600.png   # FF: imageio_ffmpeg's ffmpeg
+$PY pipeline/run_game.py schedule --team <slug>     # LADA's view: date, time, opponent, home/away, rink, id, planned lines
 ```
 
-then add a class (crop above the heads of players at the far boards, board band, ice polygon, benches, nets,
-scoreboard box, and `shots_boxes`: the home and guest shot digits inside the scoreboard crop), run `boards.py` on the frame and draw its curve over it. Check it all the way to the frame edges:
-yellow lettering on signs above the boards pulls the fit up (Kirkland's HOCKEY sign), which `board_lowest = True`
-fixes. A wrong crop silently loses the far-side players. Also run YOLO on a few frames and check the jersey
-colour test (`rink.JERSEYS`) under that rink's lighting before starting detection.
+Then ask, in one message, only for what's still missing: whose game if the link or title doesn't say (Blue Wings'
+titles name the team, Turbo Kings' start with LTK), the opponent's short name (e.g. RR; `opponents.json` has the
+known ones), new players and whether each is on the team or a sub (the schedule's "LADA ids not in roster.json"
+are the candidates), and without a scoresheet the final score and roughly when the goals were. Don't ask about
+penalties: the scoreboard shows them. Fetch prints the video's title, which carries the date, time and rink for
+the page header ("LTKvsTTT 5:55 PM PDT - SEP 13, 2026 (Snoqualmie) - wide cut"; Blue Wings' "2026/09/13 LADA
+Blue Wings vs Disco Bandoleros", rink in the description).
 
-Fetch downloads the 4K video, calibrates the far boards, runs detection (it restarts itself from the last frame if
-the Mac slows down), then OCR, then writes `$W/periods.json` with proposed period windows. Watch
-`$W/full/log.txt` with a Monitor that also matches `Traceback|Error`. It is safe to re-run fetch after an
-interruption, because it resumes. A background shell job stops after 2 hours, and detection plus OCR can take
-longer (1 h 46 min of detection at Snoqualmie). If the job is stopped, re-run fetch to finish. Don't run anything heavy on the Mac meanwhile, since OCR or other jobs starve
-the video decoder.
+Home or away decides our jersey and bench: home has worn white (blue numbers and trim), away light blue, and
+`references/rinks.md` says which bench at each rink. LADA's schedule says `playHome`, but go by the video: check
+`frame600.png` once fetch has it. Start step 1 before the answers come; they matter from step 2 on.
 
-## 2. Confirm the periods
-
-Read `$W/break_*.jpg` (each break: the ice empties and both teams sit at their benches for about a minute) and
-`$W/video_end.jpg`. `periods.json` boundaries are usually right to within a few seconds. Fix any that aren't.
-`net` is where our goalie plays that period (`nets` in `rink.py`, e.g. Renton 540 = left, 3245 = right), and it
-switches each period. Check it on a zoom of both creases in each period before `prepare`, which drops our goalie's
-detections at that net: the proposal had all three backwards on BW's Oct 3 game.
-
-If `periods.json` has a single period, the breaks didn't look empty enough. At Kirkland they are about a minute long
-and a referee stays out on the ice, so empty-ice detection can't find them. Take the periods from the scoreboard clock
-instead: it runs down to 00.0 at the end of a period, then shows a 1:00 intermission countdown, then resets to
-18:00. A period starts when the clock first counts down from 18:00 (that rink's clock runs through stoppages,
-except in the last minute or two).
-
-Every rink so far has the arena scoreboard in frame (`scoreboard` in `rink.py`): period clock, score, shots, and the
-home/guest penalty panels with the player's number and the time left. Read it first. Its LEDs flicker (at Renton
-most single frames show it dark), so take the brightest frame of each second:
+## 1. Fetch (background)
 
 ```sh
-$PY pipeline/scoreboard.py $W                                   # one pass over the video, ~5 min
-$PY pipeline/scoreboard.py $W $W/sb.jpg $(seq 30 60 4000)        # the board every 60 s, as a sheet
+$PY pipeline/run_game.py fetch "<url>" $W --team <slug> --rink <renton|snoqualmie|snoqualmie2|kirkland> [--jersey white] [--bench right]
 ```
 
-From that sheet: which side we are (home/guest; usually LADA's `playHome`, but go by the final score: Y were away
-in LADA but HOME on Kirkland's board on Sep 14), when the score changed, which
-penalty panels lit up and for whom, and the clock at the end.
+Run it in the background and watch `$W/full/log.txt` with a Monitor that also matches `Traceback|Error`. Fetch
+downloads the 4K video (and scales a smaller one up to the rink's usual frame), calibrates the far boards, runs
+detection (restarting itself if it slows down), OCRs the crops, proposes periods, and scans the arena scoreboard
+into `$W/sb.jpg` (one tile per minute). It resumes after any interruption, so re-run it if a background job is
+stopped (the Mac's shell jobs stop after 2 hours; detection alone can take longer there). Don't run anything heavy
+meanwhile: OCR and other jobs starve the video decoder.
 
-Shots on goal come from the same board (after `periods.json` is right):
+Pick `--rink` by the frame size and view (`references/rinks.md`); for a rink that isn't in `rink.py`, stop before
+detection and follow the new-rink steps there. `--jersey` picks our colour test (default light blue); if you learn
+after detection that we wore the other jersey (prepare makes a handful of review rows and a nearly empty roster
+card), `run_game.py jersey $W white` cuts the missing crops and OCRs them without detecting again. `--bench` says
+which side of the frame our bench is on; check it on `frame600.png` (our jerseys sit at our bench) and fix it by
+adding `"bench": "right"` to `$W/full/rink.json` before prepare, or at the latest before solve.
+
+## 2. Periods, nets, shots
+
+Read `$W/sb.jpg` first: the period clock, score, shots, and the home and guest penalty panels. From it: which
+side we are (go by the final score, not LADA's `playHome`), every score change, every penalty, and whether the
+clock ran out. Then check `$W/periods.json` against it and against `break_*.jpg` and `video_end.jpg`. The
+empty-ice proposal is right to a few seconds at Renton but has merged periods and reversed every net before: fix
+anything that's off. A finer sheet is one command: `$PY pipeline/scoreboard.py $W $W/sb2.jpg $(seq 1090 2 1130)`.
+
+`net` is where our goalie plays that period (`nets` in `rink.py`; Renton 540 = left, 3245 = right) and switches
+each period. Prepare drops our goalie's detections at that net, so check it on a zoom of both creases in each
+period (`frames --view left-net`). If the proposal has a single period, the breaks weren't empty enough (Kirkland:
+a referee stays out): take the periods from the clock, as `references/rinks.md` describes.
+
+Shots, once `periods.json` is right:
 
 ```sh
-$PY pipeline/shots.py $W --us <home|guest>      # ~5 min: OCR every second -> W/shots.json + W/shots_check.jpg
+$PY pipeline/shots.py $W --us <home|guest>      # ~5 min -> W/shots.json + W/shots_check.jpg
 ```
 
-Read `shots_check.jpg` (the board 25 s after each period, when scorekeepers have caught up): the cumulative shots for
-both sides. The OCR is close at Renton and often wrong at Kirkland, so fix `"periods"` in `W/shots.json` to match the
-board (`[ours, theirs]` per period, not cumulative), then set `"checked": true`. `publish` only takes checked shots. In the last minute it shows tenths, so you can tell
-whether the video reaches the final horn. If it doesn't (play still going in `video_end.jpg` and time left on the
-clock), pass `--video-ends-early` when publishing.
+Read `shots_check.jpg` (the board 25 s after each period, when the scorekeeper has caught up) and make
+`"periods"` in `shots.json` match it, `[ours, theirs]` per period, not cumulative, then set `"checked": true`;
+publish only takes checked shots. In the last minute the
+clock shows tenths, which tells whether the video reaches the final horn; if it doesn't, publish with
+`--video-ends-early`.
 
 ## 3. Penalty kills
 
-The scoreboard sheet shows every penalty: a penalty panel lights with the player's number and counts down. Sheet it
-every 1–2 s around each one: the panel appears at the whistle, and the penalty ends when it reaches 0:00 and goes
-dark (LADA minors have been 2 or 3 minutes; the clock may stop meanwhile). That span is the penalty kill.
+Each penalty lights a panel with the player's number and counts down; sheet the board every 1–2 s around it. The
+kill runs from the whistle to the moment the panel goes dark (LADA minors have been 2 or 3 minutes of clock; a
+power-play goal against ends one early, so end the `pk` just after the goal). Don't trust which panel: watch who
+skates into a penalty box after the whistle (`frames --view rink` 1–3 s apart, then a zoom) and read the number on
+the way in. A penalty that spans an intermission gets a `pk` in both periods. Without a readable board,
+`run_game.py skaters $W t0 t1` shows where only 4 of our skaters are out (5 → 4 plus the goalie before prepare);
+a 2-minute penalty on a stopped clock often takes 3+ minutes of video.
 
-Don't trust which panel it's on. At Kirkland the scorekeeper put our penalties on the guest panel and one of theirs
-on the home panel, while the score was on the right side. For every penalty on either panel, watch who skates into
-a penalty box after the whistle (full-rink `frames` 1–3 s apart, then zoom on the box): our white or light-blue
-jersey means it's ours. At Kirkland the boxes are the near corners, ours bottom-right and theirs bottom-left, and the
-player drops out of the bottom of the frame as he sits. Read his number or name off the back on the way in.
+Add each to its period in `periods.json`: `"pk": [{"start": 3602, "end": 3798, "player": 4}]`. Solve keeps the
+player off for that span, since the box isn't our bench.
 
-A penalty can carry over an intermission. Then add a `pk` entry to both periods, from the whistle to the period's
-end and from the next period's start until the panel goes dark. Use the moment the panel goes dark, not the time it
-showed at the break: Kirkland's penalty clock jumped during the intermission (2:33 → 1:42).
-Without a readable board, find the window where only 4 of our skaters are on the ice:
+## 4. The roster for this game
 
 ```sh
-$PY pipeline/run_game.py skaters $W <t0> <t1>     # seconds of video around the penalty
+$PY pipeline/run_game.py unknown $W                 # numbers read hundreds of times that aren't on the roster
+$PY pipeline/run_game.py absent $W 3 15 26          # roster numbers that didn't play
 ```
 
-It counts the goalie before `prepare`, so look for 5 → 4+goalie. A stopped-clock 2-minute penalty often
-takes 3+ minutes of real time. Add it to that period in `periods.json`:
-`"pk": [{"start": 3602, "end": 3798, "player": 4}]`. `solve` keeps `player` off the ice for that span (the box isn't
-our bench, so otherwise his shift runs on through it). A power-play goal against ends a minor even when the board
-keeps counting: end the `pk` just after the goal (the player is back on the ice a few seconds later).
-
-## 4. Prepare the review
-
-First look for players who aren't in `roster.json`. The roster card only has rows for roster numbers, so a new
-or substitute player never shows up on it:
+`unknown` sheets each candidate (`$W/unknown_<N>.jpg`): our jersey means a new player or sub, another team's
+jersey that passes our colour test is an opponent to ignore. Add ours to `roster.json`, team members under
+`skaters` and subs under `subs` (number → surname as on the back; tell the user the spelling), and put a player in
+`subs` when unsure: moving him later changes only the site. Don't assume a missing number is a sub: the captain's
+was missing once. Then mark absent everyone on the roster who didn't
+play, including the subs who didn't come: a number that didn't play soaks up partial reads of others (a "3" off
+43, 53 and 35 gave #3 ice time she never had). Decide from the scoresheet, LADA's lines, `unknown`'s read counts
+and the roster cards, but keep anyone LADA's lines list unless every period's card and the reads are empty for
+them: a late arrival or a covered number looks the same as absence. A surname two players share (father and son)
+counts for neither, so if only one played, mark the other absent.
 
 ```sh
-$PY pipeline/run_game.py unknown $W
+$PY pipeline/run_game.py prepare $W                 # per period: tracks, review sheets, roster card
 ```
 
-It lists numbers the OCR read hundreds of times that aren't on the roster, with any surname read on the same
-crops and a crop sheet `$W/unknown_<N>.jpg`. Read the sheet. Our jersey is ours (light blue, or white with blue
-numbers and trim when we wear white). Another team's jersey that passes for ours (white with blue lettering against
-our light blue) is an opponent: ignore it. Ask the user whether each new player of ours is on the team or a sub, and
-don't assume: a number missing from `roster.json` can be a long-time player (the captain was). Team members go in
-`skaters`, subs in `subs` (the site tags them "sub", and the feed lists them apart from the team), both as number →
-surname on the back. Tell the user the spelling you used. Don't wait for the answer to prepare: put him in `subs`
-for now, because moving him to `skaters` later changes only the site.
+Read one `roster_card.jpg`: each row should be one player with a consistent look. A player empty on every card
+most likely didn't play (mark absent, then prepare again); empty in one period only is a back turned to the camera,
+which `review` handles. Changing the roster or the absent list after prepare means moving `$W/p*` and `$W/rev_p*`
+aside and preparing again, but never once a period's review has started: its rows point at segment numbers.
 
-A surname two players share (a father and son) doesn't count as a name read for either, so only their digits tell
-them apart. If only one of them played (check the crops read with that name), leave the other out of `roster.json`
-for this game so the name reads count. Then:
+## 5. Visual review (subagents)
 
 ```sh
-$PY pipeline/run_game.py prepare $W
+$PY pipeline/run_game.py review $W [--opp "white jerseys; they also wear #11 and #43"] [--note "#55 LISENKO: a ponytail hides her number"]
 ```
 
-This makes per-period tracks, review sheets and a roster card in `$W/rev_pN/`. Read one `roster_card.jpg`. Each
-row should be one player with a consistent look. A roster player with an empty row on every period's card most
-likely didn't play: say so in the review prompt. Empty in one period only usually means he skated with his back
-away from the camera that period (wingers swap sides): tell that period's reviewers to Read another period's
-`roster_card.jpg` for him. If you add a player after `prepare`, delete `$W/p*` and `$W/rev_p*` and run it again, but
-only before the review starts: never re-run `prepare` for a period once its review started (review rows point at
-segment numbers).
+This writes one filled prompt per chunk of three sheets (`$W/rev_pN/prompt_cNN.md`) with the roster, our jersey,
+the goalie, empty card rows with where to look instead, the opponents' look and your notes, and prints the plan
+with each chunk's state. For every `[todo]` line launch one general-purpose subagent whose whole prompt is
+"Read <that file> and do exactly what it says. Reply with one line: how many rows you wrote.", about six at a time,
+starting the next as each finishes. Three sheets per reviewer and one answer file per sheet is deliberate: bigger
+chunks stall before writing anything. When they're back:
 
-## 5. Visual review (subagents, parallel)
+```sh
+$PY pipeline/run_game.py check $W                   # every manifest row answered? which sheets to redo
+```
 
-For every period, split its `sheet_*.jpg` files into chunks of 3 and launch one general-purpose subagent per
-chunk, about 6 at a time (start the next as each finishes). Bigger chunks or many more at once tend to stall
-before writing anything; one file per sheet keeps whatever finished. Prompt (fill the brackets):
-
-> You are identifying rec-hockey players in image crops. Accuracy matters more than coverage: answer "?"
-> whenever you are not sure.
->
-> Directory: [W]/rev_[pN]/
->
-> 1. First Read `roster_card.jpg`. Each row shows one player of our team, in [light-blue jerseys | white jerseys
-> with blue numbers and blue trim] (label "#N" = jersey number)
-> in several views. Learn distinguishing features: number/name on the back (also sleeve numbers), sock
-> color/stripes, pants (black shorts over white socks vs. long black), helmet color, glove color, skate color.
-> Roster: [#N SURNAME list from roster.json]. [(#N and #M probably did not play this game.)] If you clearly see
-> another number on our jersey, report it.
-> [#58 is the goalie | Our goalie is not on the card] (big leg pads): report "G" for goalie rows.
->
-> 2. Then Read ONLY these sheets: [sheet_XXX.jpg, …]. Each sheet has up to 8 rows. Each row = one tracked
-> skater over time; every tile is labeled "R<id> <time>s". The tracker can make mistakes: a row may switch
-> from one player to another partway through (a "swap"), and single tiles may show an overlapping player.
-> For every row, decide who it is from numbers/names when visible, otherwise appearance matched against the
-> roster card. Only give a number if reasonably confident (high = number/name visible on that player's part
-> of the row, or a very distinctive look; med = appearance only, with no competing lookalike). If appearance
-> fits several players, answer "?". If the row switches players, report both with the switch time in seconds.
-> Tiles showing an opponent ([white | dark/red] jerseys) or a referee (black and white stripes) are noise.
->
-> 3. As soon as you have decided all rows of a sheet, and before reading the next one, Write that sheet's answer
-> to `[W]/rev_[pN]/review_sNNN.txt` (sheet_007.jpg -> review_s007.txt) as CSV, header exactly:
-> `row_id,player,confidence,switch_time,player2,confidence2,note`
-> player/player2: a jersey number, "?" or "G"; confidence: high/med/low; switch fields empty unless the row
-> switches; note: a few words, no commas. One line per row, every row on that sheet.
-> row_id is exactly as on the tile labels, with the R (e.g. R168).
-> If a Read of an image fails, retry it once. Never answer from other review files: they describe other rows.
-> Your final reply should be just one line: how many rows you wrote.
-
-When all are back, check each period's review files together cover every row in its `manifest.csv` (parse them with
-`apply_review.parse_review`, as `solve` does), and relaunch the sheets that are missing. If a reviewer reports that
-images failed to load, redo its sheets with a fresh one: move the old file aside as `old_review_sNNN.txt` (`solve`
-reads only `review_*.txt`).
+`review` again prints only what's left. A reviewer whose notes say images failed to load gets replaced: move its
+file to `old_review_sNNN.txt` (solve reads only `review_*.txt`) and relaunch. `references/review.md` has the
+re-check protocol for rows worth a second opinion and what went wrong before.
 
 ## 6. Solve and check
 
@@ -244,75 +178,41 @@ reads only `review_*.txt`).
 $PY pipeline/run_game.py solve $W
 ```
 
-`solve` also estimates stoppages from player motion and adds live play time per shift (the video has no usable
-audio, so whistles can't be heard). It ends with a lineup check: stretches of 15+ s where the shifts don't put 5 of
-us on the ice (4 inside penalty kills), and goals in `highlights.json` without that many on (`publish` runs it
-again, once the highlights exist). Each one is a missed player, an unlisted penalty or a bad label. Read
-`$W/gantt_pN.png` for where it sits. Then look at the segments in that window (`$W/pN/segs_final.csv`: `num` -1 =
-unlabeled; `$W/rev_pN/manifest.csv` maps a track `tid` to its review row) and their crops (`pipeline/sheet.py`
-makes contact sheets of any crops; `$W/pN/tracks_v1.csv` gives each track's crop files). A whole unit with one
-player missing usually means that player's tracks are unlabeled. The reviewers answer "?" when the back isn't
-visible, but his gear (socks, pants, helmet) and who else is accounted for usually settle it.
+Solve applies the reviews, infers who is on the ice every second, estimates stoppages from player motion for live
+play time (the audio is silent, so no whistles), writes `$W/gantt_pN.png`, prints the stats table, each period's shift seconds against 5 × its length (minus penalty-kill seconds; expect about
+100%), and a lineup check: stretches of 15+ s without 5 of us on (4 in a kill), with who was on, and goals in
+`highlights.json` without 5 on. Each is a missed player, an unlisted penalty or a bad label. Look at the segments
+in that window (`$W/pN/segs_final.csv`, `num` -1 = unlabeled; `$W/rev_pN/manifest.csv` maps a track to its review
+row) and their crops (`pipeline/sheet.py`; `$W/pN/tracks_v1.csv` names each track's crop files). A whole unit with
+one player missing usually means his tracks are unlabeled; the reviewers' "?" plus his gear and who else is
+accounted for usually settle it.
 
-Put what you decide in `$W/rev_pN/review_zfix.txt`, in the review CSV format, with a note starting "checked by hand".
-It sorts after the reviewers' files and overrides their "?" answers, e.g.
-`R326,69,med,3776,90,med,checked by hand: 69 look at the net for the goal; 90 white helmet from 3779`.
-Then `solve` again. Tell the user which rows you labeled by hand.
-
-The lineup check passes whenever 5 are on, so also check who was on for each goal against the game sheet's scorer
-and assists. A label alone can't end a shift: a player whose track ends mid-ice stays on until the next bench
-activity, and the solver drops someone else's labeled seconds to keep 5 on (BW's Oct 3 goal: #43's shift ran on and
-the scorer, #36, lost 10 s at the net). When you've seen who went off, add it to that period in `periods.json`:
-`"off": [{"start": 1737, "end": 1775, "player": 43}]`. `solve` keeps him off then, with 5 still on the ice.
-
-The printed table is the result. Sanity check: each period's total ice time ≈ 5 × period length (minus a skater
-per penalty-kill second).
+Write what you decide to `$W/rev_pN/review_zfix.txt` in the review CSV format with a note starting "checked by
+hand"; it sorts last and overrides the reviewers' "?", e.g.
+`R326,69,med,3776,90,med,checked by hand: 69 looks at the net for the goal; 90 white helmet from 3779`. A player
+whose track ends mid-ice stays on until the next bench activity and the solver drops someone else to keep 5 on, so
+when you've seen who went off add `"off": [{"start": 1737, "end": 1775, "player": 43}]` to that period in
+`periods.json`. Solve again, and tell the user which rows you labeled by hand.
 
 ## 7. Highlights: goals and penalties
 
 ```sh
-$PY pipeline/run_game.py goals $W
+$PY pipeline/run_game.py goals $W                   # candidates: center-ice faceoffs that aren't period starts
 ```
 
-This lists candidate goals: center-ice faceoffs that aren't period starts, and long stoppages that restart at
-center. A goal is always followed by a center faceoff. The scoreboard narrows each one down: the clock stops a
-second or two after the goal, and the score changes soon after. Check each candidate by eye:
+Every goal is followed by a center faceoff, and the board's score changes a few seconds after the clock stops.
+Confirm each candidate by eye, or hand the list to one subagent with the brief in `references/highlights.md`, which
+also covers finding each of our penalties' infraction and framing the clips:
 
 ```sh
-# full rink every 3 s over the minute before the faceoff (Renton rows; Snoqualmie: y 380 1536; Kirkland: y 320 1536)
-$PY pipeline/run_game.py frames $W $W/g.jpg 0 3840 700 1500 1000 2 <t-60> <t-57> ... <t>
-# zoom on a net, 1 s apart (Renton: left net x 150-1450, right net x 2500-3800;
-# Snoqualmie: y 380 760, left net x 200-1400, right net x 2600-3800; Kirkland: y 400 800, left net x 150-1350)
-$PY pipeline/run_game.py frames $W $W/gz.jpg 150 1450 720 1070 660 3 <t1> <t2> ...
+$PY pipeline/run_game.py frames $W $W/g.jpg --view rink --range <t-60> <t> 3        # the minute before the faceoff
+$PY pipeline/run_game.py frames $W $W/gz.jpg --view left-net <t1> <t2> ...          # zoom on a net, 1 s apart
+$PY pipeline/run_game.py clip $W <game-id> goal-1 <t-12> <t+10> <t> [focus-x | #<number>]
 ```
 
-A real goal shows a scramble or shot at one net, the referee pointing at it, and one team celebrating before
-the players drift to center. Most candidates that don't show this are false alarms. `goals` prints which net is
-ours each period, so you can tell goals for from goals against. Tell the user the score you found and ask them
-to confirm it.
-
-For each of our penalties, find the infraction: the referee raises an arm right after it (a delayed penalty),
-play continues until our team touches the puck, then the whistle and the penalty-kill faceoff. The scoreboard
-clock stops at the whistle, so start 10–20 s before that. The referee may signal from the far end, so look at where
-the penalized player was in the seconds before the arm went up (his track in `$W/pN/segs_final.csv`, `plabel` = his
-number, and full-rink `frames` 1 s apart). An opponent going down near him is the usual sign.
-
-Make a clip of about 22 s per event, ending a few seconds after the goal or call:
-
-```sh
-$PY pipeline/run_game.py clip $W <game-id> goal-1 <t-12> <t+10> <t>        # optional last arg: focus x
-```
-
-For a penalty, follow the player who took it: pass `#<number>` as the last argument, and start the clip a few
-seconds before the infraction (the referee's arm goes up right after it; the infraction may be far from where
-the referee stands). For goals the default framing follows the main group of players; a focus x (about 500 =
-left corner, 3300 = right) keeps the camera on one end. A focus x can lock onto someone right by the camera instead
-(at Kirkland, a referee in the near corner fills the frame), so start with the default and check a few frames of
-each clip (cv2 can read the mp4). Then write `$W/highlights.json`:
-`[{"type": "goal", "team": "for", "t": 3828, "clip": "clips/goal-3.mp4", "poster": "clips/goal-3.jpg", "note": "..."},
-{"type": "penalty", "player": 4, "t": 3580, "clip": "clips/penalty-4.mp4", "poster": "clips/penalty-4.jpg", "note": "..."}]`
-(t = seconds of video at the goal or infraction). The page shows who was on the ice for each goal. The recording's
-audio is silent, so the clips have no sound.
+Write `$W/highlights.json` (format in the reference; include `"scorer"` and `"assists"` from the scoresheet so
+the lineup check can verify them). Tell the user the score you found and ask them to confirm it; that and the push
+are the two things that wait for them.
 
 ## 8. Publish
 
@@ -320,40 +220,25 @@ audio is silent, so the clips have no sound.
 $PY pipeline/run_game.py publish $W <YYYY-MM-DD>-vs-<opp> --opponent <OPP> --eyebrow "Sun Oct 4, 2026 · 7:50 PM · Renton" [--video-ends-early]
 ```
 
-This writes `teams/<slug>/games/<id>/game.json` + `shifts.csv` (with play time, stoppages and highlights) and
-rebuilds the team's site (`docs/<slug>/`), including the JSON feed in
-its `api/` (see API.md) and the trends page `trends.html` (`build_trends.py`). It
-also stores time in offence and defence as `zones` in `game.json` (`zones.py`, from the detections, so it works
-until the work folder is gone and again from an archived one). It also looks up the game's LADA API id (`lada_game_id`, which
-the LADA app uses to link the game) from LADA's public "last game" call. If it logs that it couldn't, find the id in
-`https://api.ladaseattle.com/api/v1/game/<LADA id of any game vs this opponent>/opponentGames` (the team's upcoming
-games and their ids: `.../api/v1/team/<lada_team_id>/game/next/30`). Add it, and the opponent's full name if you know it, as
-`"lada_game_id"` / `"opponent_name"` in `game.json`, then re-run `$PY pipeline/build_site.py`. A new opponent's
-code and full name go in the team's `opponents.json` (the user's spelling wins over LADA's; LADA's exact spelling is what
-finds the team's logo in the LADA app, so a different one shows initials there). For a new player, ask the user to
-run `$PY pipeline/lada_ids.py --write <slug>` in their own terminal (it signs in to LADA as them; give them the exact
-command line, with `cd` to the repo). It adds the ids it marks NEW, and LADA's players whose numbers `roster.json`
-lacks, to `roster.json`; fix any it marks WRONG or DIFFERS by hand. A sub who isn't on the LADA roster gets no id.
-A "no match" can also be a player LADA lists under another number. SportNinja's game sheet says who wore what and who
-played: the game's `boxscoreLink` in LADA's game record ends in its id, and
-`https://metal-api.sportninja.net/v1/games/<id>/rosters` (public) lists both teams with `player_number` and `is_playing`.
-Its `is_playing` is the scorekeeper's and can be wrong (Y's Shakhov #78, Sep 14), so go by the video. For such a
-player put the LADA id under his jersey number and `"lada_numbers": {"<jersey>": <LADA's number>}` in `roster.json`. Write `notes` in `game.json` (they
-survive a republish): the rink if it's new, who sat and when, where the goal times came from, the subs, and
-anything you labeled by hand or read differently from the scoreboard.
-The clips live in the team site's `games/<id>/clips/` (about 5 MB each), served by GitHub Pages. Open the page
-locally (`games/<id>/index.html` in the team's site) and look it over. Show the user the table and the notable fun stats,
-then ask before committing and pushing: the site is public. After pushing, check that the page is live (Pages
-takes about a minute; add `?v=<random>` to skip the CDN cache).
+This writes `teams/<slug>/games/<id>/game.json` and `shifts.csv` (with play time, stoppages, highlights, checked
+shots, and time in offence and defence from the detections), finds the game's LADA id in `lada_games.json` (fetch
+keeps it current; `references/lada.md` if it can't), and rebuilds every team's site: game pages, the trends page
+and the JSON feed in `api/` (`API.md`). A new opponent's code
+and full name go in `opponents.json` (the user's spelling wins; LADA's exact spelling finds the logo in the app).
+A new player needs a LADA id, which only the user can fetch: give them the exact `lada_ids.py` line to run.
 
-## 9. Archive
+Write `notes` in `game.json` (they survive a republish): the rink if new, who sat and when, where the goal times
+came from, the subs, absent players, and anything labeled by hand or read differently from the board. Open the
+page locally (`docs/<slug>/games/<id>/index.html`), show the user the table and the notable fun stats, then ask
+before committing and pushing: the site is public. After the push, check the page is live (Pages takes about a
+minute; add `?v=<random>` to skip the cache).
 
-Once the user is happy, offer to free the disk space with
+## 9. Archive, and record what you learned
 
 ```sh
-$PY pipeline/run_game.py archive $W
+$PY pipeline/run_game.py archive $W                 # drops the video, crops and sheets (~5 GB), keeps the data (~100 MB)
 ```
 
-It deletes the video, crops, overview frames and sheets (~5 GB) and keeps the game's data in `$W` (~100 MB:
-detections, OCR reads, tracks, reviews, periods, results, rink), so the game can be re-solved with a later
-pipeline or used as a regression test. Never `rm -rf` the work folder: the user wants every game's data kept.
+Offer it once the user is happy. Never `rm -rf` a work folder: the kept data re-solves with a later pipeline and
+serves as a regression test. Anything this game taught about a rink, a jersey, the scoreboard or the reviewers
+goes into the matching `references/*.md` now, not into memory: memory stays on one machine, the skill travels.

@@ -20,6 +20,7 @@ Shift sheets for LADA's rec hockey teams: shifts, ice time and average shift len
 | `teams/<slug>/games/<date>-vs-<opp>/` | One folder per game: `game.json` (periods, penalty kills, video link, notes) and `shifts.csv` (one row per shift). |
 | `teams/<slug>/roster.json` | Jersey number → surname, LADA player ids, team name, LADA team id and where its site goes. Add new players here. |
 | `teams/<slug>/opponents.json` | Opponent code → full name. |
+| `teams/<slug>/lada_games.json` | The team's games as LADA's API has shown them (ids, home/away, rink, lines, scores); the pipeline keeps it current and takes each game's LADA id from it. |
 | `pipeline/` | The scripts that turn a game video into `shifts.csv`, and `build_site.py`, which renders `docs/`. They work on one team at a time, picked by `TEAM` (`tk` unless set). |
 | `RUNBOOK.md` | The manual steps behind the skill, for debugging or running by hand. |
 | `WINDOWS.md`, `setup_windows.ps1` | Setting up a Windows PC with an NVIDIA GPU to run the pipeline (one command). |
@@ -33,11 +34,13 @@ The weekly run is driven by Claude Code. Open this repo and run the project skil
 
 for Turbo Kings, or name the team: `/process-game https://youtu.be/XXXXXXXXXXX bw vs DB`.
 
-The skill (`.claude/skills/process-game/SKILL.md`) asks for the opponent, start time, new players and the score,
-finds periods, goals and penalties itself from the arena scoreboard and the video, then runs
-`pipeline/run_game.py` (fetch → prepare → review → solve → publish) and asks before pushing.
+The skill (`.claude/skills/process-game/SKILL.md`, with its `references/`) reads the SportNinja scoresheet if you
+give it one, asks for the opponent and any new players, finds periods, goals, penalties and shots from the arena
+scoreboard and the video, then runs `pipeline/run_game.py` (fetch → absent → prepare → review → solve → publish)
+and asks before pushing. Only the score confirmation and the push wait for you.
 
-It takes a few hours on an M-series Mac: about two hours of detection, then number reading, a visual review of the uncertain moments, and the final solve.
+It takes about an hour on the Windows PC (30 minutes of fetch, then the visual review of the uncertain moments and
+the solve), or a few hours on an M-series Mac, where detection alone is about two hours.
 
 On a Windows PC with an NVIDIA GPU, detection runs on CUDA and should be much faster. To set one up, run this in
 PowerShell; `WINDOWS.md` has the details and the steps by hand:

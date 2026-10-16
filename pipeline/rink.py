@@ -30,6 +30,8 @@ class Renton:
     shots_boxes = {"home": (47, 39, 59, 50), "guest": (65, 40, 78, 51)}   # shots-on-goal digits, in that crop (shots.py)
     white_v, dark_v = 160, 60     # process.py's torso colours: "white" = unsaturated and at least this bright, "dark" below
     jerseys = {}                  # this rink's own colour tests for a jersey, in place of JERSEYS'
+    # crops of the 4K frame for checking goals and penalties by eye (run_game.py frames --view): x0, x1, y0, y1
+    views = {"rink": (0, 3840, 700, 1500), "left-net": (150, 1450, 720, 1070), "right-net": (2500, 3800, 720, 1070)}
 
     def __init__(self, board_poly, bench=None):
         self.P = board_poly
@@ -89,6 +91,7 @@ class Snoqualmie(Renton):
     bench_side = "right"
     scoreboard = (1790, 262, 280, 116)
     shots_boxes = {"home": (136, 76, 157, 95), "guest": (171, 76, 197, 95)}
+    views = {"rink": (0, 3840, 380, 1536), "left-net": (200, 1400, 380, 760), "right-net": (2600, 3800, 380, 760)}
 
     def __init__(self, board_poly, bench=None):
         super().__init__(board_poly)
@@ -146,6 +149,9 @@ class Snoqualmie2(Snoqualmie):
                              crop=lambda c: (c["white"] >= 0.1) & (c["dark"] < 0.5) & (c["red"] < 0.1))}
     scoreboard = (1810, 640, 270, 110)
     shots_boxes = {"home": (124, 68, 156, 91), "guest": (168, 68, 200, 91)}
+    # the whole fisheye frame: ice from the far boards (y ~870 at center) to the near boards (~2100). The nets sit at
+    # about (645, 1015) and (3250, 1020) in the frame (checked on the Oct 10 video), centered in the net views
+    views = {"rink": (0, 3824, 800, 2160), "left-net": (80, 1280, 820, 1370), "right-net": (2620, 3820, 820, 1370)}
 
     def __init__(self, board_poly, bench=None):
         self.P = board_poly
@@ -173,6 +179,7 @@ class Kirkland(Renton):
     BENCHES = {"left": (1340, 1720), "right": (2160, 2560)}   # x at the boards, with Renton's ~30 px margins
     scoreboard = (358, 396, 136, 82)
     shots_boxes = {"home": (55, 54, 71, 68), "guest": (73, 52, 90, 65)}
+    views = {"rink": (0, 3840, 320, 1536), "left-net": (150, 1350, 400, 800), "right-net": (2600, 3800, 400, 800)}
     # the ice inside the end and near boards (the far boards curve is the top)
     ICE = Path([(0, 0), (3840, 0), (3840, 690), (3800, 717), (3707, 917), (3653, 1037), (3560, 1277),
                 (3440, 1450), (3400, 1536), (560, 1536), (400, 1317), (333, 1183), (260, 1090), (150, 870),

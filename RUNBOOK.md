@@ -1,7 +1,8 @@
 # Runbook: processing a new game
 
 Normally you run `/process-game <link>` in Claude Code, and `pipeline/run_game.py` chains these steps
-(`fetch`, `prepare`, `solve`, `publish`). This page is the manual version, useful when something needs fixing.
+(`fetch`, `absent`, `prepare`, `review`, `check`, `solve`, `publish`). This page is the manual version, useful when
+something needs fixing; the skill (`.claude/skills/process-game/`) has the checks and the lessons per rink.
 
 Written for Claude Code (or anyone patient). Commands assume the repo root as the working directory,
 `PY` = a Python ≥ 3.10 with `pipeline/requirements.txt` installed, and `W` = a per-game work folder
@@ -51,7 +52,7 @@ echo '{"team": "tk", "rink": "snoqualmie"}' > $W/full/rink.json   # rink: not fo
 $PY pipeline/boards.py $W/frame600.png $W/full     # writes boards_poly.npy
 ```
 
-The camera geometry per rink (detection crop, board band, ice area, our bench, nets) lives in `pipeline/rink.py`.
+The camera geometry per rink (detection crop, board band, ice area, our bench, nets, frame views) lives in `pipeline/rink.py`.
 Check the fitted boards line on the frame all the way to its edges, and that the benches are where the rink's class
 expects them, by viewing a crop of the frame. Yellow lettering on signs above the boards pulls the fit up; a rink's
 `board_lowest = True` makes `boards.py` keep only the lowest yellow run in each column (Kirkland). If the camera moved, or it's a new rink, adjust or add a class there before detecting: the
@@ -83,20 +84,21 @@ for k in 0 1 2 3; do PYTHONHASHSEED=0 $PY pipeline/ocr_worker.py $W/full 1000000
 
 ## 5. Find the periods
 
+The arena scoreboard is in frame at every rink: `pipeline/scoreboard.py $W` keeps its brightest frame per second
+(the LEDs flicker; `run_game.py fetch` does this pass and writes `$W/sb.jpg`, the board every 60 s), and
+`pipeline/scoreboard.py $W out.jpg t1 t2 ...` sheets it at any seconds. It shows the period clock, the score, the
+shots, and each penalty with the player's number and time left, so periods, goals and penalties come from it; don't
+ask the team about penalties. Check which team each penalty belongs to by who skates into a penalty box:
+scorekeepers have put penalties on the wrong panel. When the empty-ice breaks aren't found (Kirkland: short breaks
+with a referee on the ice), take the periods from the clock (00.0, a 1:00 intermission countdown, then 18:00). A
+penalty carried over an intermission is a penalty kill in both periods.
+
 ```sh
-$PY pipeline/ovsheet.py $W/full/ov $W/ov.jpg 0 4000 30 3
+$PY pipeline/ovsheet.py $W/full/ov $W/ov.jpg 0 4000 30 3     # the 10-second overview frames, to see the breaks
 ```
 
 Breaks show the ice empty with both teams at the benches for about a minute. Our goalie switches ends each
-period. Net x: see `nets` in `pipeline/rink.py` (Renton ≈ 540 left, ≈ 3245 right). Narrow each break down to the
-second with finer sheets.
-Ask about penalties: who, and roughly when. A penalty kill shows up as 4 of our skaters on the ice.
-The arena scoreboard is in frame at both rinks: `pipeline/scoreboard.py $W` keeps its brightest frame per second
-(the LEDs flicker), and `pipeline/scoreboard.py $W out.jpg t1 t2 ...` sheets it. It shows the period clock, the
-score, and each penalty with the player's number and time left. Check which team each penalty belongs to by who
-skates into a penalty box: scorekeepers have put penalties on the wrong panel. When the empty-ice breaks aren't
-found (Kirkland: short breaks with a referee on the ice), take the periods from the clock (00.0, a 1:00
-intermission countdown, then 18:00). A penalty carried over an intermission is a penalty kill in both periods.
+period. Net x: see `nets` in `pipeline/rink.py` (Renton ≈ 540 left, ≈ 3245 right).
 `pipeline/shots.py $W --us home|guest` reads shots on goal off the board into `$W/shots.json`; check it against
 `$W/shots_check.jpg`, fix the per-period counts, and set `"checked": true` so publish puts them in game.json.
 
@@ -113,23 +115,24 @@ after its review (step 7) has started: review rows point at segment numbers, and
 them. Look at `roster_card.jpg`. Every row should be one player. The card only has roster numbers, so run
 `run_game.py unknown $W` before tracking to find new or sub players (numbers read hundreds of times that aren't
 in the team's `roster.json`, with a crop sheet each): add ours to it, team members under `skaters` and subs under
-`subs` (ask which); other teams' jerseys are opponents.
+`subs` (ask which); other teams' jerseys are opponents. Roster numbers that didn't play are marked with
+`run_game.py absent $W 3 15 ...` (stored in `$W/full/rink.json`; by hand, `ROSTER_ABSENT=3,15` in the environment
+of every script): a number that didn't play soaks up partial reads of other numbers. Don't edit `roster.json` for
+that.
 
 ## 7. Visual review (Claude subagents, ~15 min in parallel)
 
-Split each period's `sheet_*.jpg` across 4–5 subagents (~6 sheets each), with this prompt:
+```sh
+$PY pipeline/run_game.py review $W [--opp "white jerseys"] [--note "#55 LISENKO: a ponytail hides her number"]
+$PY pipeline/run_game.py check $W        # afterwards: every manifest row answered?
+```
 
-> You are identifying rec-hockey players in image crops. Accuracy matters more than coverage: answer "?"
-> whenever you are not sure. Directory: `$W/rev_pN/`. First Read `roster_card.jpg` (one row per player, "#N" =
-> jersey number) and learn each player's features: number/name on the back and sleeves, socks, pants,
-> helmet, gloves, skates. Roster: (list from roster.json). #58 is the goalie (Turbo Kings); answer "G" for goalie rows.
-> Then Read ONLY sheets X–Y. Each row = one tracked skater over time, tiles labeled "R<id> <time>s". A row may
-> switch players partway through (a swap). Give a number only if reasonably confident (high = number or name
-> visible; med = distinctive look with no lookalike); otherwise "?". Report swaps with the switch time.
-> Opponents (white) and referees in tiles are noise. Write CSV to `$W/rev_pN/review_<letter>.txt` with header
-> `row_id,player,confidence,switch_time,player2,confidence2,note`, one line per row, no commas in notes, row_id
-> as on the tiles (R168).
-> Reply with just the number of rows written.
+`review` fills `pipeline/review_prompt.md` once per chunk of 3 sheets into `$W/rev_pN/prompt_cNN.md` (roster
+minus absent players, jersey, goalie, empty roster-card rows, the opponents' look, your notes) and prints which
+chunks are still to do. Each chunk is one general-purpose subagent told to read its prompt file and do what it says;
+about six at a time. Each reviewer writes one `review_sNNN.txt` per sheet, CSV with the header
+`row_id,player,confidence,switch_time,player2,confidence2,note`. The skill's `references/review.md` has the
+relaunch and re-check protocol.
 
 ## 8. Solve and check
 
@@ -144,14 +147,17 @@ player, a penalty, or a bad label: inspect with crop sheets before trusting the 
 them (and goals without 5 of us on the ice) as a lineup check. Labels you decide by hand go in
 `$W/rev_pN/review_zfix.txt` (same CSV), which overrides the reviewers' "?" answers. A player you saw go off
 whose shift runs on (his track ends mid-ice) goes in that period's `"off"` list in `periods.json`
-(`{"start", "end", "player"}`): `run_game.py solve` passes it to `run2.py` as `[start, end, 5, player]`.
+(`{"start", "end", "player"}`): `run_game.py solve` passes it to `run2.py` as `[start, end, 5, player]`. `solve` also prints each period's shift
+seconds against 5 × its length, and the lineup check names who was on the ice in each gap.
 
 ## 9. Play time and highlights
 
 `run_game.py solve` runs `pipeline/stoppages.py`, which adds a `play` column to `shifts_all.csv` and writes
-`stoppages.json`. For highlights: `run_game.py goals` lists candidate goals, `run_game.py frames` renders frames
-to check them, and `run_game.py clip` cuts a zoomed clip into the team site's `games/<id>/clips/` (last argument: an x
-position or `#N` to follow player N). List the clips in `$W/highlights.json`; see the skill for the format.
+`stoppages.json`. For highlights: `run_game.py goals` lists candidate goals, `run_game.py frames --view rink|left-net|right-net` renders frames
+to check them (`--range T0 T1 STEP`, or the crop by hand), and `run_game.py clip` cuts a zoomed clip into the team
+site's `games/<id>/clips/` (last argument: an x position or `#N` to follow player N). List the clips in
+`$W/highlights.json`, with the scoresheet's `scorer` and `assists` so the lineup check can verify them; see the
+skill's `references/highlights.md` for the format.
 
 ## 10. Publish
 

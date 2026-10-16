@@ -1,9 +1,9 @@
 # Setting up a Windows PC
 
 Detection, the slow step of `/process-game` (~2 h on the Mac's GPU), runs on CUDA on a Windows PC with an NVIDIA
-GPU (RTX 5090 here). Everything else works the same as on the Mac. `RUNBOOK.md` and the process-game skill cover
-the pipeline itself; this page is the one-time setup. Not yet tested end to end on Windows, so expect a small
-fix or two on the first run.
+GPU (RTX 5090 here): about 10 to 25 minutes per game, and fetch as a whole about 30. Everything else works the same
+as on the Mac. `RUNBOOK.md` and the process-game skill cover the pipeline itself; this page is the one-time setup.
+Every game since October 2026 has been processed this way.
 
 ## Quick setup: one script
 

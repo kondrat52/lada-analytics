@@ -9,10 +9,18 @@
                                              crops from the video (~5 min) and OCR them
   run_game.py skaters W T0 T1               our skaters detected on the ice per 5 s (find penalty kills)
   run_game.py unknown W                      numbers/surnames read that aren't on the roster (new players?)
+  run_game.py absent  W [N ...]              roster numbers that didn't play this game (their partial reads would
+                                             label others): recorded in W/full/rink.json, honoured by every step
+  run_game.py schedule W                     the team's games from LADA's public API (ids, home/away, rink, lines)
   run_game.py prepare W                      per period: tracking, review sheets, roster card
-  run_game.py solve   W                      per period: apply reviews + solve; gantt charts; stats table
+  run_game.py review  W [--opp DESC] [--note TEXT] [--chunk N]   write one filled reviewer prompt per chunk of
+                                             sheets (W/rev_pN/prompt_cNN.md) and the plan of what is still to do
+  run_game.py check   W                      which review rows are still missing or unreadable, per sheet
+  run_game.py solve   W                      per period: apply reviews + solve; gantt charts; stats table; checks
   run_game.py goals   W                      candidate goals: center-ice faceoffs + long stoppages (verify by eye)
-  run_game.py frames  W OUT.jpg X0 X1 Y0 Y1 TILE_W COLS t1 t2 ...   4K frames (cropped) as a sheet, for verifying
+  run_game.py frames  W OUT.jpg --view rink|left-net|right-net t1 t2 ...   4K frames (cropped) as a sheet, for
+                                             verifying; --range T0 T1 STEP instead of times; or the crop by hand:
+                                             X0 X1 Y0 Y1 TILE_W COLS t1 t2 ...
   run_game.py clip    W GAME_ID NAME T0 T1 POSTER_T [FOCUS]          zoomed clip into <site>/games/<id>/clips;
                                              FOCUS = x px (a net x from rink.py) or #N to follow player N
   run_game.py publish W GAME_ID --opponent RR --eyebrow "Sun Sep 27, 2026 · 7:50 PM · Renton" [--date ...]
@@ -22,7 +30,8 @@
 W is the per-game work folder (outside the repo). Every step skips work that is already done, so re-running
 after an interruption continues where it stopped. W/full/rink.json records the team (fetch --team), and every
 command works on that team's roster, games and site (roster.py). W/periods.json holds the period windows; fetch writes a
-proposal, which you check and edit (add penalty kills) before prepare/solve.
+proposal, which you check and edit (add penalty kills) before prepare/solve. Every command sets ROSTER_ABSENT from
+rink.json's "absent" list, so roster.py leaves those players out (see `absent`).
 """
 import argparse, glob, json, os, re, shutil, signal, subprocess, sys, time
 import numpy as np, pandas as pd
@@ -45,6 +54,25 @@ def log(msg):
 
 
 # ---------------------------------------------------------------- fetch
+
+def video_info(url, W):
+    """Title, upload date and length of the video (W/video_info.json): LADA titles carry the date, time and rink."""
+    p = f"{W}/video_info.json"
+    if os.path.exists(p):
+        return json.load(open(p))
+    try:
+        out = subprocess.run([PY, "-m", "yt_dlp", "-q", "--no-warnings", "--skip-download", "--print", "%(title)s",
+                              "--print", "%(upload_date)s", "--print", "%(duration)s", url],
+                             capture_output=True, text=True, timeout=120, check=True).stdout.splitlines()
+        dur = int(float(out[2])) if len(out) > 2 and out[2] not in ("", "NA") else None
+        info = dict(url=url, title=out[0], upload_date=out[1] if len(out) > 1 else "", duration=dur)
+    except Exception as e:
+        log(f"video title unavailable ({e})")
+        return {}
+    json.dump(info, open(p, "w", encoding="utf-8"), ensure_ascii=False, indent=2)
+    log(f"video: {info['title']!r} ({dur // 60 if dur else '?'} min, uploaded {info['upload_date']})")
+    return info
+
 
 def download(url, W):
     vid = f"{W}/video.webm"
@@ -239,9 +267,22 @@ def set_config(W, **kw):
         json.dump(cfg, open(p, "w"))
 
 
+def scoreboard_sheet(W):
+    """The arena scoreboard every 60 s (W/sb.jpg) from one pass over the video (W/scoreboard.npy): periods, score,
+    penalties and shots are read off it, since the empty-ice period proposal is often wrong."""
+    from scoreboard import scan, sheet
+    if not os.path.exists(f"{W}/scoreboard.npy"):
+        log("scoreboard: one pass over the video")
+        scan(W)
+    n = len(np.load(f"{W}/scoreboard.npy", mmap_mode="r"))
+    sheet(W, f"{W}/sb.jpg", list(range(30, n, 60)), cols=6)
+
+
 def cmd_fetch(a):
     W = os.path.abspath(a.W); os.makedirs(f"{W}/full", exist_ok=True)
     set_config(W, team=a.team, rink=a.rink, jersey=a.jersey, bench=a.bench)
+    video_info(a.url, W)
+    update_lada_games()
     vid = download(a.url, W)
     fit_size(vid, W)
     download_audio(a.url, W)
@@ -249,7 +290,10 @@ def cmd_fetch(a):
     detect(vid, W, a.limit)
     ocr(W)
     propose_periods(W)
-    log(f"fetch done. Check {W}/periods.json against {W}/break_*.jpg and video_end.jpg")
+    if not a.limit:
+        scoreboard_sheet(W)
+    sb = f"{W}/sb.jpg (the scoreboard every 60 s), " if os.path.exists(f"{W}/sb.jpg") else ""
+    log(f"fetch done. Check {W}/periods.json against {sb}break_*.jpg and video_end.jpg")
 
 
 def cmd_jersey(a):
@@ -387,18 +431,39 @@ def cmd_unknown(a):
 def cmd_frames(a):
     import cv2, imageio_ffmpeg
     FF = imageio_ffmpeg.get_ffmpeg_exe(); vid = f"{a.W}/video.webm"
-    x0, x1, y0, y1 = a.x0, a.x1, a.y0, a.y1
+    if not os.path.exists(vid):
+        sys.exit(f"no {vid}: frames need the video (archived folders have none; fetch downloads it again)")
+    rest = list(a.rest)
+    if a.view:   # a crop the rink knows (rink.py views): the whole rink, or a zoom on one net
+        R = rink(f"{a.W}/full")
+        if a.view not in R.views:
+            sys.exit(f"unknown view {a.view!r}; this rink has: {', '.join(R.views)}")
+        x0, x1, y0, y1 = R.views[a.view]
+        tile_w = a.tile or (1000 if a.view == "rink" else 660)
+        cols = a.cols or (2 if a.view == "rink" else 3)
+    else:
+        if len(rest) < 6:
+            sys.exit("frames: give --view NAME, or X0 X1 Y0 Y1 TILE_W COLS before the times")
+        x0, x1, y0, y1, tile_w, cols = (int(float(x)) for x in rest[:6]); rest = rest[6:]
+    times = [float(t) for t in rest]
+    if a.range:
+        t0, t1, step = a.range
+        times += [float(t) for t in np.arange(t0, t1 + 1e-6, step)]
+    if not times:
+        sys.exit("frames: no times given (list them, or --range T0 T1 STEP)")
     tiles = []
-    for t in a.times:
+    for t in times:
         r = subprocess.run([FF, "-nostdin", "-loglevel", "error", "-ss", str(t), "-i", vid, "-frames:v", "1", "-vf",
                             f"crop={x1 - x0}:{y1 - y0}:{x0}:{y0}", "-f", "rawvideo", "-pix_fmt", "bgr24", "-"],
                            capture_output=True)
+        if len(r.stdout) != (y1 - y0) * (x1 - x0) * 3:
+            sys.exit(f"no frame at {t:.0f} s (past the end of the video?)")
         im = np.frombuffer(r.stdout, np.uint8).reshape(y1 - y0, x1 - x0, 3)
-        im = cv2.resize(im, (a.tile_w, int(a.tile_w * (y1 - y0) / (x1 - x0))), interpolation=cv2.INTER_AREA).copy()
+        im = cv2.resize(im, (tile_w, int(tile_w * (y1 - y0) / (x1 - x0))), interpolation=cv2.INTER_AREA).copy()
         cv2.putText(im, f"{int(t) // 60}:{int(t) % 60:02d}", (8, 30), cv2.FONT_HERSHEY_SIMPLEX, 1.0, (0, 0, 220), 3)
         tiles.append(im)
     blank = np.full_like(tiles[0], 255)
-    rows = [np.hstack(tiles[i:i + a.cols] + [blank] * (a.cols - len(tiles[i:i + a.cols]))) for i in range(0, len(tiles), a.cols)]
+    rows = [np.hstack(tiles[i:i + cols] + [blank] * (cols - len(tiles[i:i + cols]))) for i in range(0, len(tiles), cols)]
     cv2.imwrite(a.out, np.vstack(rows), [cv2.IMWRITE_JPEG_QUALITY, 88])
     print(a.out)
 
@@ -419,6 +484,164 @@ def cmd_clip(a):
         sg = sg[(sg.plabel == num) & (sg.t1 > t0) & (sg.t0 < t1)].sort_values("t0")
         focus = f"track:{pdir}/tracks_v1.csv:" + ",".join(str(int(x)) for x in sg.tid) if len(sg) else None
     sh(*cmd + ([focus] if focus else []))
+
+
+def cmd_absent(a):
+    """Record roster numbers that didn't play (W/full/rink.json "absent"); with no numbers, show the roster as the
+    pipeline sees it. `--clear` forgets the list. Everything after prepare must be redone when it changes."""
+    W = os.path.abspath(a.W)
+    p = f"{W}/full/rink.json"
+    cfg = json.load(open(p)) if os.path.exists(p) else {}
+    if a.clear:
+        cfg.pop("absent", None); json.dump(cfg, open(p, "w"))
+    elif a.numbers:
+        cfg["absent"] = sorted({int(n) for n in a.numbers} | set(cfg.get("absent", []))); json.dump(cfg, open(p, "w"))
+    os.environ["ROSTER_ABSENT"] = ",".join(str(n) for n in cfg.get("absent", []))
+    from roster import MEMBERS, SUBS, GOALIE_NAMES, ALL_SKATERS, TEAM
+    absent = cfg.get("absent", [])
+    print(f"{TEAM}: absent this game: " + (", ".join(f"#{n} {ALL_SKATERS.get(n, '?')}" for n in absent) or "nobody"))
+    print("  skaters:", ", ".join(f"#{n} {v}" for n, v in sorted(MEMBERS.items())))
+    print("  subs:   ", ", ".join(f"#{n} {v}" for n, v in sorted(SUBS.items())) or "-")
+    print("  goalies:", ", ".join(f"#{n} {v}" for n, v in sorted(GOALIE_NAMES.items())) or "-")
+    if absent and any(os.path.exists(f"{W}/rev_{P['label'].lower()}/manifest.csv") for P in periods(W)):
+        print("  prepare has run already: its sheets and roster cards used the old roster. Move W/p* and W/rev_p* "
+              "aside and prepare again, unless the review has started (then solve alone picks the change up).")
+
+
+def _review_options(W, a=None):
+    """Options for the reviewer prompts, kept in W/review.json so a re-run (missing sheets) uses the same ones."""
+    p = f"{W}/review.json"
+    opt = json.load(open(p, encoding="utf-8")) if os.path.exists(p) else {}
+    if a is not None:
+        if a.opp:
+            opt["opp"] = a.opp
+        if a.note:
+            opt["notes"] = opt.get("notes", []) + [n for n in a.note if n not in opt.get("notes", [])]
+        if a.chunk:
+            opt["chunk"] = a.chunk
+        json.dump(opt, open(p, "w", encoding="utf-8"), indent=2, ensure_ascii=False)
+    return opt
+
+
+def _review_coverage(W, P):
+    """Per sheet of a period: rows in the manifest, rows missing an answer, and whether the reviewer's file mentions
+    a failed read. Returns (manifest, dict sheet -> info)."""
+    from apply_review import parse_review
+    rv = f"{W}/rev_{P['label'].lower()}"
+    man = pd.read_csv(f"{rv}/manifest.csv")
+    ans, trouble = {}, {}
+    for f in sorted(glob.glob(f"{rv}/review_*.txt")):
+        txt = open(f, encoding="utf-8", errors="replace").read()
+        for _, r in parse_review(txt).iterrows():
+            ans[r.row_id] = r.player
+        if re.search(r"(fail|could not|couldn't|unable|error|not load|timed out)", txt, re.I):
+            trouble[os.path.basename(f)] = True
+    info = {}
+    for sheet, g in man.groupby("sheet", sort=True):
+        rows = list(g.row_id)
+        fn = f"review_s{sheet[6:9]}.txt"
+        info[sheet] = dict(rows=len(rows), missing=[r for r in rows if r not in ans], file=fn, trouble=trouble.get(fn, False))
+    return man, info
+
+
+def cmd_review(a):
+    """Fill pipeline/review_prompt.md once per chunk of sheets and write it to W/rev_pN/prompt_cNN.md, with the
+    roster (minus absent players), our jersey, the goalie, empty roster-card rows (point at another period's card,
+    or say the player probably didn't play), the opponents' look and any notes. Chunks whose sheets are fully
+    reviewed are marked done, so after a partial run this is the list of what is left to launch."""
+    from roster import SKATERS, GOALIES, ABSENT, ALL_SKATERS
+    from reads import load_reads
+    W = os.path.abspath(a.W).replace("\\", "/")
+    opt = _review_options(W, a)
+    chunk = int(opt.get("chunk", 3))
+    cfg = json.load(open(f"{W}/full/rink.json")) if os.path.exists(f"{W}/full/rink.json") else {}
+    jersey = cfg.get("jersey", "light blue")
+    jersey_desc = "white jerseys with blue numbers and blue trim" if jersey.startswith("white") else "light-blue jerseys"
+    opp_desc = opt.get("opp") or ("dark or red jerseys" if jersey.startswith("white") else "white or dark jerseys")
+    tmpl = open(f"{HERE}/review_prompt.md", encoding="utf-8").read()
+    roster = ", ".join(f"#{n} {v.upper()}" for n, v in sorted(SKATERS.items()))
+    goalie_line = (f"#{GOALIES[0]} is the goalie" if GOALIES else "Our goalie is not on the card") + \
+        ' (big leg pads): report "G" for goalie rows.'
+    Ps = periods(W)
+    empty = {}
+    for P in Ps:
+        p = f"{W}/rev_{P['label'].lower()}/card_empty.json"
+        empty[P["label"]] = set(json.load(open(p))) if os.path.exists(p) else set()
+    reads, _ = load_reads(f"{W}/full")
+    nreads = reads.num.value_counts()
+    notes = "".join(f" {n.rstrip('.')}." for n in opt.get("notes", []))
+    plan, todo = [], 0
+    for P in Ps:
+        lab = P["label"]; rv = f"{W}/rev_{lab.lower()}"
+        if not os.path.exists(f"{rv}/manifest.csv"):
+            log(f"{lab}: not prepared yet"); continue
+        card_notes = ""; out, maybe = [], []
+        for n in sorted(empty[lab]):
+            if n not in SKATERS:
+                continue
+            other = next((Q["label"] for Q in Ps if Q["label"] != lab and n not in empty[Q["label"]]), None)
+            if other:
+                card_notes += (f" #{n} {SKATERS[n].upper()}'s row on this period's card is empty: also Read "
+                               f"{W}/rev_{other.lower()}/roster_card.jpg for his look (that is another period; use only its #{n} row).")
+            elif nreads.get(n, 0) < 30:
+                out.append(f"#{n}")
+            else:
+                maybe.append(f"#{n} ({int(nreads.get(n, 0))} reads)")
+        if out:
+            card_notes += (f" {', '.join(out)} probably did not play this game (no row on any period's card and almost no "
+                           f"reads); give one of these numbers only if you clearly read it.")
+        if maybe:
+            card_notes += (f" {', '.join(maybe)}: no row on any period's card, but the number was read often, so the "
+                           f"player may have played; report the number if you see it.")
+        man, info = _review_coverage(W, P)
+        sheets = sorted(info)
+        for k in range(0, len(sheets), chunk):
+            cs = sheets[k:k + chunk]; cid = f"c{k // chunk:02d}"
+            left = [x for x in cs if info[x]["missing"]]
+            scratch = f"{W}/scratch/{lab.lower()}_{cid}"
+            text = tmpl.format(rev=rv, scratch=scratch, jersey_desc=jersey_desc,
+                               roster=roster, card_notes=card_notes, notes=notes, goalie_line=goalie_line,
+                               sheets=", ".join(left or cs), opp_desc=opp_desc)
+            pf = f"{rv}/prompt_{cid}.md"
+            open(pf, "w", encoding="utf-8").write(text)
+            state = "done" if not left else f"todo ({sum(len(info[x]['missing']) for x in left)} rows)"
+            plan.append(f"{lab} {cid} {' '.join(x[:-4] for x in cs)} -> {pf}  [{state}]")
+            todo += bool(left)
+    open(f"{W}/review_plan.txt", "w", encoding="utf-8").write("\n".join(plan) + "\n")
+    print("\n".join(plan))
+    print(f"{todo} chunk(s) to launch: for each, one general-purpose subagent whose whole prompt is\n"
+          f"  'Read <prompt file> and do exactly what it says. Reply with one line: how many rows you wrote.'\n"
+          f"  About 6 at a time. Then `run_game.py check {a.W}`.")
+    if ABSENT:
+        print("absent (not on the roster above):", ", ".join(f"#{n} {ALL_SKATERS.get(n, '?')}" for n in sorted(ABSENT)))
+
+
+def cmd_check(a):
+    """Review coverage: every manifest row needs an answer in some review_*.txt (apply_review.parse_review, as solve
+    reads them). Lists missing rows per sheet and files whose notes mention failed image reads. Exit status 1 while
+    rows are missing."""
+    W = os.path.abspath(a.W)
+    missing_total = 0
+    for P in periods(W):
+        lab = P["label"]
+        if not os.path.exists(f"{W}/rev_{lab.lower()}/manifest.csv"):
+            continue
+        man, info = _review_coverage(W, P)
+        miss = {s: i["missing"] for s, i in info.items() if i["missing"]}
+        n_miss = sum(len(m) for m in miss.values())
+        missing_total += n_miss
+        print(f"{lab}: {len(man)} rows in {len(info)} sheets, {len(man) - n_miss} answered" +
+              (f", {n_miss} missing" if n_miss else ""))
+        for s, m in miss.items():
+            print(f"  {s}: missing {', '.join(m)}" + ("  (whole sheet)" if len(m) == info[s]["rows"] else ""))
+        for s, i in info.items():
+            if i["trouble"]:
+                print(f"  {i['file']} mentions a failed read: look, and redo the sheet with a fresh reviewer if so "
+                      f"(move the old file to old_{i['file']})")
+    if missing_total:
+        print(f"{missing_total} rows still missing: `run_game.py review {a.W}` lists the chunks to relaunch")
+        sys.exit(1)
+    print("every review row is answered")
 
 
 def cmd_prepare(a):
@@ -450,8 +673,14 @@ def cmd_solve(a):
     sh(PY, f"{HERE}/final_stats.py", *labels, cwd=W)
     # live play vs stoppages -> "play" column in shifts_all.csv + stoppages.json
     sh(PY, f"{HERE}/stoppages.py", f"{W}/full", f"{W}/periods.json", f"{W}/shifts_all.csv")
-    log(f"check {W}/gantt_*.png: the bottom panel should sit at 5 (4 during a penalty kill)")
+    A = pd.read_csv(f"{W}/shifts_all.csv")
+    for P in periods(W):   # shift seconds vs 5 skaters for the whole period (4 inside penalty kills)
+        length = P["end"] - P["start"]; pk = sum(k["end"] - k["start"] for k in P.get("pk", []))
+        want = 5 * length - pk; have = int(A[A.period == P["label"]].dur.sum())
+        print(f"{P['label']}: {have} s of shifts; 5 x {length} s - {pk} s of penalty kill = {want} s ({have / want:.0%})")
     lineup_check(W)
+    log(f"gantt charts: {W}/gantt_*.png (the bottom panel should sit at 5, 4 during a penalty kill); look at them "
+        f"when the lineup check lists something")
 
 
 def lineup_check(W, min_len=15):
@@ -471,37 +700,124 @@ def lineup_check(W, min_len=15):
             d = (len(on(t)) - target(t)) if t < P["end"] else None
             if run and d != run[1]:
                 if t - run[0] >= min_len:
+                    mid = (run[0] + t) // 2
                     bad.append(f"  {P['label']} {run[0]}-{t} ({t - run[0]} s): {target(run[0]) + run[1]} on the ice, "
-                               f"expected {target(run[0])}")
+                               f"expected {target(run[0])}; on at {mid}: {on(mid)}")
                 run = None
             if d and not run:
                 run = (t, d)
     hp = f"{W}/highlights.json"
     for h in (json.load(open(hp)) if os.path.exists(hp) else []):
-        if h["type"] == "goal" and len(on(h["t"])) != target(h["t"]):
+        if h["type"] != "goal":
+            continue
+        if len(on(h["t"])) != target(h["t"]):
             bad.append(f"  goal at {h['t']}: on the ice {on(h['t'])}, expected {target(h['t'])} skaters")
+        # the game sheet's scorer and assists (optional "scorer": 54, "assists": [36]) must be on the ice
+        credited = [int(h["scorer"])] if h.get("scorer") else []
+        credited += [int(x) for x in h.get("assists", [])]
+        for p in credited:
+            if h.get("team", "for") == "for" and p not in on(h["t"]):
+                bad.append(f"  goal at {h['t']}: #{p} is credited on the game sheet but not on the ice ({on(h['t'])})")
     log("lineup check: " + ("OK" if not bad else f"{len(bad)} to look at"))
     for b in bad:
         print(b)
 
 
-def lada_game_id(date):
-    """LADA's id for our game on `date` (YYYY-MM-DD): the team's last game in the league's public API, when it is
-    that game. Best effort: None (and a note to set it by hand) when LADA is unreachable or has had a game since."""
+LADA_API = "https://api.ladaseattle.com/api/v1"
+
+
+def _lada_get(path):
     import urllib.request
+    with urllib.request.urlopen(f"{LADA_API}/{path}", timeout=20) as r:
+        return json.load(r)
+
+
+def lada_games_path():
+    from roster import TEAM_DIR
+    return f"{TEAM_DIR}/lada_games.json"
+
+
+def update_lada_games():
+    """Remember the team's games from LADA's public API in teams/<slug>/lada_games.json: the upcoming ones
+    (`game/next/30`: id, date, opponent, home/away, rink, planned lines) and the last one played (score, game sheet
+    link). LADA only ever shows the single last game, so a game published a week late would have lost its id;
+    the cache keeps every game it has seen. Best effort: a network problem just leaves the file as it is."""
     from roster import LADA_TEAM_ID
-    url = f"https://api.ladaseattle.com/api/v1/team/{LADA_TEAM_ID}/game/last"
-    try:
-        with urllib.request.urlopen(url, timeout=20) as r:
-            games = json.load(r)
-    except Exception as e:
-        log(f"LADA's last game unavailable ({e}); set lada_game_id in game.json by hand")
-        return None
-    for g in games:
-        if str(g.get("date", ""))[:10] == date and g.get("id"):
-            return g["id"]
-    log(f"LADA's last game isn't the {date} one; set lada_game_id in game.json by hand")
+    p = lada_games_path()
+    games = json.load(open(p, encoding="utf-8")) if os.path.exists(p) else {}
+    seen = 0
+    for path in (f"team/{LADA_TEAM_ID}/game/next/30", f"team/{LADA_TEAM_ID}/game/last"):
+        try:
+            got = _lada_get(path)
+        except Exception as e:
+            log(f"LADA {path} unavailable ({e})")
+            continue
+        for g in got if isinstance(got, list) else [got]:
+            if not g.get("id"):
+                continue
+            cur = games.setdefault(str(g["id"]), {})
+            for k in ("date", "opponentName", "playHome", "rinkId", "rinkName", "lines", "teamGoals", "opponentGoals",
+                      "boxscoreLink"):
+                if g.get(k) is not None:
+                    cur[k] = g[k]
+            seen += 1
+    rinks = {g["rinkId"]: g["rinkName"] for g in games.values() if g.get("rinkId") and g.get("rinkName")}
+    for i, g in games.items():   # a game seen only as "last" lacks home/away, rink and lines: the game record has them
+        if "playHome" in g:
+            continue
+        try:
+            rec = _lada_get(f"game/{i}")
+        except Exception:
+            continue
+        for k in ("playHome", "rinkId", "lines", "teamGoals", "opponentGoals", "boxscoreLink"):
+            if rec.get(k) is not None:
+                g[k] = rec[k]
+        if rec.get("rinkId") in rinks:
+            g["rinkName"] = rinks[rec["rinkId"]]
+        seen += 1
+    if seen:
+        games = dict(sorted(games.items(), key=lambda kv: kv[1].get("date", "")))
+        json.dump(games, open(p, "w", encoding="utf-8"), indent=2, ensure_ascii=False)
+    return games
+
+
+def lada_game_id(date):
+    """LADA's id for our game on `date` (YYYY-MM-DD), from the cache (update_lada_games) or the league's "last game"
+    call. None, with a note to set it by hand, when neither knows the game."""
+    games = update_lada_games()
+    hits = [int(i) for i, g in games.items() if str(g.get("date", ""))[:10] == date]
+    if hits:
+        return hits[0]
+    log(f"LADA doesn't list a game on {date} (teams/<slug>/lada_games.json); set lada_game_id in game.json by hand")
     return None
+
+
+def cmd_schedule(a):
+    """The team's games LADA knows (the cache plus a fresh look): date, opponent, home or away, rink, LADA id,
+    whether a shift sheet exists, and the planned lines' players who have no LADA id in roster.json yet."""
+    from roster import GAMES_DIR, LADA_IDS, TEAM
+    games = update_lada_games()
+    have = {os.path.basename(d)[:10] for d in glob.glob(f"{GAMES_DIR}/*")}
+    known = {v: k for k, v in LADA_IDS.items()}
+    print(f"{TEAM}: {len(games)} games in LADA's view (* = shift sheet published)")
+    for i, g in games.items():
+        d = str(g.get("date", ""))[:16].replace("T", " ")
+        side = "HOME" if g.get("playHome") else "away" if g.get("playHome") is False else "?"
+        score = f" {g['teamGoals']}-{g['opponentGoals']}" if g.get("teamGoals") is not None else ""
+        print(f"  {'*' if d[:10] in have else ' '} {d} {side:<4} vs {g.get('opponentName', '?'):<28} {g.get('rinkName', '?'):<13} id {i}{score}")
+        lines = g.get("lines")
+        if isinstance(lines, str):
+            try:
+                lines = json.loads(lines)
+            except ValueError:
+                lines = None
+        if isinstance(lines, dict):
+            ids = [int(x) for grp in ("offence", "defence") for ln in lines.get(grp, []) for x in ln if x]
+            new = [x for x in ids if x not in known]
+            listed = sorted(known[x] for x in ids if x in known)
+            print(f"      lines: {' '.join(f'#{n}' for n in listed)}" + (f"; LADA ids not in roster.json: {new}" if new else ""))
+    print("A LADA id not in roster.json is a player worth asking about (ids come from pipeline/lada_ids.py). The lines "
+          "are the plan, not attendance.")
 
 
 def cmd_publish(a):
@@ -548,7 +864,7 @@ def cmd_publish(a):
     game["zones"] = zone_shares(f"{W}/full", game) or game.get("zones")
     json.dump(game, open(gj, "w"), indent=2, ensure_ascii=False)
     # every team, not just $TEAM: the root page counts each team's games, and each team's menu lists the teams with games
-    sh(PY, f"{HERE}/build_site.py", env={k: v for k, v in os.environ.items() if k != "TEAM"})
+    sh(PY, f"{HERE}/build_site.py", env={k: v for k, v in os.environ.items() if k not in ("TEAM", "ROSTER_ABSENT")})
     log(f"wrote {gd}; the sites rebuilt in docs/. Review, then commit and push to publish.")
 
 
@@ -571,6 +887,7 @@ def cmd_archive(a):
     drop += glob.glob(f"{W}/*.jpg") + glob.glob(f"{W}/*.png") + glob.glob(f"{W}/rev_p*/*.jpg")
     drop += glob.glob(f"{W}/full/ocr_done_*.txt") + glob.glob(f"{W}/p*/crops")
     drop += glob.glob(f"{W}/video_*.webm")   # the download as it came, kept by fit_size when it scaled the video
+    drop += [f"{W}/scratch"]                 # the reviewers' private folders (run_game.py review)
     for p in drop:
         if os.path.islink(p) or os.path.isfile(p):
             os.remove(p)
@@ -593,10 +910,21 @@ if __name__ == "__main__":
     sub.add_parser("goals").add_argument("W")
     sub.add_parser("unknown").add_argument("W")
     sub.add_parser("archive").add_argument("W")
+    sc = sub.add_parser("schedule"); sc.add_argument("W", nargs="?", help="a work folder (its team), or --team")
+    sc.add_argument("--team", help="the team's slug when there is no work folder yet")
+    sub.add_parser("check").add_argument("W")
+    ab = sub.add_parser("absent"); ab.add_argument("W"); ab.add_argument("numbers", type=int, nargs="*")
+    ab.add_argument("--clear", action="store_true", help="forget the absent list")
+    rv = sub.add_parser("review"); rv.add_argument("W")
+    rv.add_argument("--opp", help="the opponents' look, e.g. 'white jerseys; they also wear #11 and #43'")
+    rv.add_argument("--note", action="append", help="a sentence for every reviewer, e.g. a player's look (repeatable)")
+    rv.add_argument("--chunk", type=int, help="sheets per reviewer (3)")
     fr = sub.add_parser("frames"); fr.add_argument("W"); fr.add_argument("out")
-    for k in ("x0", "x1", "y0", "y1", "tile_w", "cols"):
-        fr.add_argument(k, type=int)
-    fr.add_argument("times", type=float, nargs="+")
+    fr.add_argument("--view", help="rink, left-net or right-net (rink.py views) instead of X0 X1 Y0 Y1 TILE_W COLS")
+    fr.add_argument("--tile", type=int, help="tile width in px (1000 for the rink, 660 for a net)")
+    fr.add_argument("--cols", type=int, help="tiles per row (2 for the rink, 3 for a net)")
+    fr.add_argument("--range", type=float, nargs=3, metavar=("T0", "T1", "STEP"), help="times T0, T0+STEP, ... T1")
+    fr.add_argument("rest", nargs="*", help="[X0 X1 Y0 Y1 TILE_W COLS] t1 t2 ...")
     c = sub.add_parser("clip"); c.add_argument("W"); c.add_argument("game_id"); c.add_argument("name")
     c.add_argument("t0"); c.add_argument("t1"); c.add_argument("poster"); c.add_argument("focus", nargs="?")
     sub.add_parser("solve").add_argument("W")
@@ -612,11 +940,15 @@ if __name__ == "__main__":
         os.makedirs(a.W, exist_ok=True)
         open(f"{a.W}/url.txt", "w").write(a.url)
     # the team, before anything imports roster.py: fetch's --team, else the one fetch stored, else Turbo Kings
-    cfg = f"{a.W}/full/rink.json"
+    cfg = f"{a.W}/full/rink.json" if getattr(a, "W", None) else ""
     team = getattr(a, "team", None) or (json.load(open(cfg)).get("team") if os.path.exists(cfg) else None) or "tk"
     if not os.path.exists(f"{ROOT}/teams/{team}/roster.json"):
         sys.exit(f"unknown team {team!r}: no teams/{team}/roster.json")
     os.environ["TEAM"] = team
+    # players marked absent (run_game.py absent) stay out of the roster for every step but the site build
+    absent = json.load(open(cfg)).get("absent", []) if os.path.exists(cfg) else []
+    os.environ["ROSTER_ABSENT"] = ",".join(str(n) for n in absent)
     {"fetch": cmd_fetch, "skaters": cmd_skaters, "prepare": cmd_prepare, "solve": cmd_solve, "goals": cmd_goals,
      "frames": cmd_frames, "clip": cmd_clip, "publish": cmd_publish, "unknown": cmd_unknown,
-     "archive": cmd_archive, "jersey": cmd_jersey}[a.cmd](a)
+     "archive": cmd_archive, "jersey": cmd_jersey, "absent": cmd_absent, "review": cmd_review, "check": cmd_check,
+     "schedule": cmd_schedule}[a.cmd](a)

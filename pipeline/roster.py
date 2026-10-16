@@ -1,5 +1,10 @@
 """Team roster shared by the pipeline. Each team has a folder teams/<slug>/ (roster.json, opponents.json, games/);
-the TEAM environment variable picks one (tk unless set). run_game.py sets it from the work folder's rink.json."""
+the TEAM environment variable picks one (tk unless set). run_game.py sets it from the work folder's rink.json.
+
+ROSTER_ABSENT (comma-separated jersey numbers) drops players from SKATERS for one game: a roster number that
+didn't play soaks up partial reads of other numbers (a "3" read off 43, 53 and 35 gave #3 ice time she never
+had), so the solve must not know it. run_game.py sets it from the work folder's rink.json ("absent", see
+`run_game.py absent`); the site builders never see it, since the published roster is the whole team."""
 import json, os
 
 REPO = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
@@ -27,9 +32,11 @@ TEAM_SHORT = _r.get("team_short", TEAM)
 LADA_TEAM_ID = _r.get("lada_team_id")
 SITE_URL = _r.get("site_url", "")
 SITE_DIR = site_of(SLUG)[1]                                  # the team's pages and api/ under docs/
-MEMBERS = {int(k): v for k, v in _r["skaters"].items()}   # number -> surname: the team's own skaters
-SUBS = {int(k): v for k, v in _r.get("subs", {}).items()}  # skaters who have subbed for us, not on the team
-SKATERS = {**MEMBERS, **SUBS}                               # everyone the pipeline looks for
+ABSENT = {int(x) for x in os.environ.get("ROSTER_ABSENT", "").replace(" ", "").split(",") if x}  # out this game
+MEMBERS = {int(k): v for k, v in _r["skaters"].items() if int(k) not in ABSENT}   # number -> surname: the team's own skaters
+SUBS = {int(k): v for k, v in _r.get("subs", {}).items() if int(k) not in ABSENT}  # skaters who have subbed for us, not on the team
+SKATERS = {**MEMBERS, **SUBS}                               # everyone the pipeline looks for this game
+ALL_SKATERS = {int(k): v for part in ("skaters", "subs") for k, v in _r.get(part, {}).items()}  # the whole roster
 GOALIES = [int(k) for k in _r.get("goalies", {})]
 GOALIE_NAMES = {int(k): v for k, v in _r.get("goalies", {}).items()}
 LADA_IDS = {int(k): v for k, v in _r.get("lada_player_ids", {}).items()}  # number -> LADA player id (team roster)

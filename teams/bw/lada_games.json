@@ -1,0 +1,27 @@
+{
+  "32977": {
+    "date": "2026-10-11T19:20:00",
+    "opponentName": "Gnomies",
+    "teamGoals": 4,
+    "opponentGoals": 4,
+    "boxscoreLink": "https://app.sportninja.com/public/game/YYPpZNNyLfRowC1c",
+    "playHome": false,
+    "rinkId": 2080,
+    "lines": "{\"offence\":[[\"5814\",\"20354\",\"20405\"],[\"20351\",\"20407\",\"20408\"],[null,null,\"11123\"]],\"defence\":[[\"3424\",\"20406\"],[\"1395\",\"20347\"]],\"goalie\":[[\"20409\"]],\"beer\":[\"3424\"]}",
+    "rinkName": "Snoqualmie A"
+  },
+  "33013": {
+    "date": "2026-10-18T16:30:00",
+    "opponentName": "Shaved Ice: Tiger's Blood",
+    "playHome": true,
+    "rinkName": "Snoqualmie A",
+    "rinkId": 2080
+  },
+  "33014": {
+    "date": "2026-10-25T19:20:00",
+    "opponentName": "Gnomies",
+    "playHome": false,
+    "rinkName": "Snoqualmie A",
+    "rinkId": 2080
+  }
+}

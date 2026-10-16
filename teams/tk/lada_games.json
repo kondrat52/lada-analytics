@@ -1,0 +1,27 @@
+{
+  "32971": {
+    "date": "2026-10-10T20:45:00",
+    "opponentName": "Tic-Tac-Toes",
+    "teamGoals": 5,
+    "opponentGoals": 2,
+    "boxscoreLink": "https://app.sportninja.com/public/game/UzpxWpQ8AfLYDq57",
+    "playHome": true,
+    "rinkId": 2085,
+    "lines": "{\"offence\":[[\"19314\",\"20394\",\"11145\"],[\"11140\",\"14208\",\"11144\"],[\"14210\",\"19315\",null]],\"defence\":[[\"14209\",\"12161\"],[\"11138\",\"12165\"]],\"goalie\":[],\"beer\":null}",
+    "rinkName": "Snoqualmie B"
+  },
+  "33015": {
+    "date": "2026-10-17T21:15:00",
+    "opponentName": "Roadrunners",
+    "playHome": false,
+    "rinkId": 2083,
+    "rinkName": "Renton"
+  },
+  "33016": {
+    "date": "2026-10-25T20:25:00",
+    "opponentName": "SEA Otters",
+    "playHome": true,
+    "rinkId": 2085,
+    "rinkName": "Snoqualmie B"
+  }
+}

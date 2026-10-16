@@ -21,8 +21,13 @@ S2 = apply(S, tr, R, man, rk)
 # people sitting behind the bench boards are not on the ice: drop those segments before labels propagate
 med = [tr[(tr.tid == a) & (tr.t >= b) & (tr.t <= c)].depth.median() for a, b, c in zip(S2.tid, S2.t0, S2.t1)]
 S2 = S2[pd.Series(med, index=S2.index).fillna(0) < 15].reset_index(drop=True)
-# numbers the reviewers saw on our skaters join the roster for this game (goalies don't skate shifts)
-SH.ROSTER = sorted(set(SH.ROSTER) | {int(p) for p in R.player if p.isdigit() and int(p) not in SH.GOALIES})
+# numbers the reviewers saw on our skaters join the roster for this game (goalies don't skate shifts), except
+# players marked absent (run_game.py absent): a "3" on an absent #3 is a partial read of 43/53/35
+from roster import ABSENT
+seen = {int(p) for p in R.player if p.isdigit() and int(p) not in SH.GOALIES}
+if seen & ABSENT:
+    print("reviewers named absent players, ignored:", ", ".join(f"#{p} x{(R.player == str(p)).sum()}" for p in sorted(seen & ABSENT)))
+SH.ROSTER = sorted(set(SH.ROSTER) | (seen - ABSENT))
 S2 = SH.link(S2, rk)
 S2.to_csv(f"{out}/segs_final.csv", index=False)
 w = S2[S2.plabel >= 0].groupby("plabel").apply(lambda g: (g.t1 - g.t0).sum(), include_groups=False)
