@@ -17,8 +17,11 @@ keep `teams/<slug>/lada_games.json`, every game the API has shown for the team, 
 from it by date. `run_game.py schedule --team <slug>` prints that view: date, home/away, rink, id, whether a
 shift sheet exists, and the planned lines translated to jersey numbers, with any LADA id that `roster.json`
 doesn't know (a player worth asking about; the lines are a plan, not attendance, and never say whose an id is).
-If publish still can't find the id, look in `opponentGames` of any game against that opponent and put it in
-`game.json` as `"lada_game_id"`, then `$PY pipeline/build_site.py`.
+When neither has the game (a game older than the team's last one, before the cache existed), publish probes
+`game/<id>` around the ids of the other teams' games near that date: LADA hands ids out in schedule order, so
+Beerteam's Sep 13 game (32949) sat four ids past Blue Wings' Sep 13 game (32945). If that fails too, look in
+`opponentGames` of any game against that opponent and put the id in `game.json` as `"lada_game_id"`, then
+`$PY pipeline/build_site.py`.
 
 `lada_game_id` is what the LADA app uses to link a game to its shift sheet; `opponent_name` in `game.json` (or the
 team's `opponents.json`) is the name shown. LADA's exact spelling of an opponent is what finds its logo in the
@@ -42,12 +45,17 @@ Beregovoy is LADA's #67). A team's first game: if `roster.json` has no players, 
 
 ## SportNinja game sheets
 
-LADA's game record has `boxscoreLink`; its last path segment is the SportNinja game id, and
-`https://metal-api.sportninja.net/v1/games/<id>/rosters` (public) lists both teams with `player_number` and
-`is_playing`. The user may also hand you the scoresheet PDF from the SportNinja app ("Game #... scoresheet.pdf"):
-score, goals by period and clock with scorer and assists, penalties, shots, and who played. `is_playing` is the
-scorekeeper's and can be wrong (Y's Shakhov #78 was marked not playing with SHAKHOV 78 on his back all game;
-Potepalov #15 was marked playing and never seen), so the video decides.
+LADA's game record has `boxscoreLink`; its last path segment is the SportNinja game id, and SportNinja's API is
+public: `https://metal-api.sportninja.net/v1/games/<id>` has both teams, the score, the periods with shots per
+side, every goal (`goals`: period, clock, the shot's player id, assists), every penalty (`offenses`: player,
+type, severity, minutes) and both rosters with `player_number` and `is_playing` (`/rosters` alone gives just
+those). `run_game.py sheet $W` turns that into the printed sheet and `W/sheet.json`: `us` (home or visiting),
+`score`, `shots` per period as `[ours, theirs]`, `goals` with `scorer` and `assists` as jersey numbers and a
+`video_t` estimate once `periods.json` exists, `penalties`, `played`, and the roster numbers the sheet doesn't
+mark as playing. The user may also hand you the scoresheet PDF from the SportNinja app ("Game #...
+scoresheet.pdf"), which says the same things. `is_playing` is the scorekeeper's and can be wrong (Y's Shakhov
+#78 was marked not playing with SHAKHOV 78 on his back all game; Potepalov #15 was marked playing and never
+seen), so the video decides.
 
 ## `roster.json`
 

@@ -2,12 +2,14 @@
 
 ## Finding the goals
 
-`run_game.py goals $W` lists candidate goals: center-ice faceoff formations that aren't period starts, and long
-stoppages with where play restarted (a goal is always followed by a center faceoff). It prints which net is ours
-each period, so goals for and against can be told apart. The scoreboard narrows each candidate: the clock stops a
+`run_game.py goals $W` first prints the game sheet's goals (`sheet.json`, from `run_game.py sheet`) with the
+video time each period clock implies: period start plus the clock's elapsed time, exact where the clock runs
+through stoppages and otherwise the earliest the goal can be (every stoppage before it pushes it later). Then it
+lists candidate goals from the video: center-ice faceoff formations that aren't period starts, and long stoppages
+with where play restarted (a goal is always followed by a center faceoff). It prints which net is ours each
+period, so goals for and against can be told apart. The scoreboard narrows each candidate: the clock stops a
 second or two after the goal and the score changes soon after (on Oct 3 the board changed about 12 s after the
-game sheet's time). With a scoresheet, its clock times plus the period's start in `periods.json` give each goal's
-video time within a few seconds; the candidates then only confirm them.
+game sheet's time).
 
 Check each by eye:
 
@@ -38,6 +40,10 @@ one general-purpose subagent:
 Give it the scoresheet's times when you have them and tell it which net is ours.
 
 ## Penalties
+
+A bench minor (too many players) is served by a skater: find who sat by zooming on the box as the panel goes
+dark (he climbs out and his number shows), and put him as the `pk`'s `player` so the solver keeps him off. Two
+penalties at once are two overlapping `pk` entries; the solver and the lineup check expect 3 skaters then.
 
 For each of our penalties, find the infraction: the referee raises an arm right after it (a delayed penalty),
 play goes on until our team touches the puck, then the whistle and the penalty-kill faceoff. The clock stops at

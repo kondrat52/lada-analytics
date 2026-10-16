@@ -1,7 +1,7 @@
 # Runbook: processing a new game
 
 Normally you run `/process-game <link>` in Claude Code, and `pipeline/run_game.py` chains these steps
-(`fetch`, `absent`, `prepare`, `review`, `check`, `solve`, `publish`). This page is the manual version, useful when
+(`fetch`, `sheet`, `absent`, `prepare`, `review`, `check`, `solve`, `publish`). This page is the manual version, useful when
 something needs fixing; the skill (`.claude/skills/process-game/`) has the checks and the lessons per rink.
 
 Written for Claude Code (or anyone patient). Commands assume the repo root as the working directory,
@@ -101,6 +101,8 @@ Breaks show the ice empty with both teams at the benches for about a minute. Our
 period. Net x: see `nets` in `pipeline/rink.py` (Renton ≈ 540 left, ≈ 3245 right).
 `pipeline/shots.py $W --us home|guest` reads shots on goal off the board into `$W/shots.json`; check it against
 `$W/shots_check.jpg`, fix the per-period counts, and set `"checked": true` so publish puts them in game.json.
+`run_game.py sheet $W` prints SportNinja's game sheet (score, shots, goals with scorers, penalties, who played) and
+writes `$W/sheet.json`; `run_game.py goals` then shows each goal's video time from the period clock.
 
 ## 6. Track each period
 

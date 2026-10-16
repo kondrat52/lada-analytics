@@ -12,6 +12,8 @@
   run_game.py absent  W [N ...]              roster numbers that didn't play this game (their partial reads would
                                              label others): recorded in W/full/rink.json, honoured by every step
   run_game.py schedule W                     the team's games from LADA's public API (ids, home/away, rink, lines)
+  run_game.py sheet   W [--sn ID | --lada ID]  the game sheet from SportNinja's public API: score, shots, goals with
+                                             scorers, penalties, who played -> W/sheet.json (goals/solve use it)
   run_game.py prepare W                      per period: tracking, review sheets, roster card
   run_game.py review  W [--opp DESC] [--note TEXT] [--chunk N]   write one filled reviewer prompt per chunk of
                                              sheets (W/rev_pN/prompt_cNN.md) and the plan of what is still to do
@@ -356,6 +358,14 @@ def cmd_goals(a):
     def label(t):
         P = next((P for P in Ps if P["start"] <= t <= P["end"]), None)
         return P["label"] if P else "break"
+    if os.path.exists(f"{W}/sheet.json"):
+        sheet_ = json.load(open(f"{W}/sheet.json", encoding="utf-8"))
+        print("Game sheet (SportNinja) goals, with the video time the period clock implies (exact where the clock runs "
+              "through stoppages, otherwise the earliest possible):")
+        for x in sheet_["goals"]:
+            t_ = x.get("video_t") or (Ps and next((P["start"] for P in Ps if P["label"] == x["period"]), None))
+            print(f"  {x['period']} {x['clock']} {x['team']:<7} #{x['scorer']} {x['scorer_name']}  ~{t_ // 60 if t_ else '?'}:{t_ % 60:02d}" if t_ else
+                  f"  {x['period']} {x['clock']} {x['team']:<7} #{x['scorer']} {x['scorer_name']}")
     print("Long stoppages (our skaters nearly still for 18+ s) and where play restarted:")
     slow = (sp < 0.55) | sp.isna()
     st = None
@@ -689,8 +699,8 @@ def lineup_check(W, min_len=15):
     or a bad label to look at; fix it with a review_zfix.txt (see the skill) and solve again."""
     A = pd.read_csv(f"{W}/shifts_all.csv")
     Ps = periods(W)
-    def target(t):
-        return 4 if any(k["start"] <= t < k["end"] for P in Ps for k in P.get("pk", [])) else 5
+    def target(t):   # each penalty kill takes a skater off; two at once (a 5-on-3) take two
+        return max(3, 5 - sum(k["start"] <= t < k["end"] for P in Ps for k in P.get("pk", [])))
     def on(t):
         return sorted(int(p) for p in A[(A.t0 <= t) & (A.t1 > t)].player)
     bad = []
@@ -788,8 +798,175 @@ def lada_game_id(date):
     hits = [int(i) for i, g in games.items() if str(g.get("date", ""))[:10] == date]
     if hits:
         return hits[0]
+    found = probe_lada_games(date)
+    if found:
+        return found
     log(f"LADA doesn't list a game on {date} (teams/<slug>/lada_games.json); set lada_game_id in game.json by hand")
     return None
+
+
+def probe_lada_games(date, span=40):
+    """LADA hands out game ids in schedule order, so a game that has dropped out of "last" sits near the ids of
+    the other teams' games around that date. Look at the ids every team's cache and published games know, probe
+    `game/<id>` around the nearest ones for this team's games, remember every one found, and return the id of
+    the game on `date` if any."""
+    from roster import LADA_TEAM_ID, REPO
+    known = {}
+    for f in glob.glob(f"{REPO}/teams/*/lada_games.json"):
+        for i, g in json.load(open(f, encoding="utf-8")).items():
+            known[int(i)] = str(g.get("date", ""))[:10]
+    for f in glob.glob(f"{REPO}/teams/*/games/*/game.json"):
+        g = json.load(open(f, encoding="utf-8"))
+        if g.get("lada_game_id"):
+            known[int(g["lada_game_id"])] = g.get("date", "")
+    if not known:
+        return None
+    anchors = sorted(known, key=lambda i: abs(int(known[i][:4] + known[i][5:7] + known[i][8:10]) - int(date.replace("-", ""))) if len(known[i]) >= 10 else 10 ** 9)[:3]
+    p = lada_games_path()
+    games = json.load(open(p, encoding="utf-8")) if os.path.exists(p) else {}
+    found = None; seen = set()
+    for a in anchors:
+        for d in range(-span, span + 1):
+            i = a + d
+            if i in seen or i in known and known[i] != date and i not in [int(k) for k in games]:
+                continue
+            seen.add(i)
+            try:
+                g = _lada_get(f"game/{i}")
+            except Exception:
+                continue
+            if g.get("teamId") != LADA_TEAM_ID:
+                continue
+            cur = games.setdefault(str(i), {})
+            cur["date"] = (g.get("dayTime") or "")[:19]
+            for k in ("playHome", "rinkId", "lines", "teamGoals", "opponentGoals", "boxscoreLink"):
+                if g.get(k) is not None:
+                    cur[k] = g[k]
+            if cur["date"][:10] == date:
+                found = i
+                break
+        if found:
+            break
+    if games:
+        games = dict(sorted(games.items(), key=lambda kv: kv[1].get("date", "")))
+        json.dump(games, open(p, "w", encoding="utf-8"), indent=2, ensure_ascii=False)
+    if found:
+        log(f"LADA game {found} found by probing ids near the other teams' games")
+    return found
+
+
+SN_API = "https://metal-api.sportninja.net/v1"
+
+
+def _clock_s(txt):
+    """'00:17:20' (H:MM:SS of the period clock, counting down) -> seconds."""
+    h, m, sec = (int(x) for x in txt.split(":"))
+    return h * 3600 + m * 60 + sec
+
+
+def sportninja_id(date, lada_id=None):
+    """The SportNinja game id (the last part of LADA's boxscoreLink) for our game on `date`: from the LADA cache,
+    else from LADA's record of `lada_id`."""
+    for i, g in update_lada_games().items():
+        if str(g.get("date", ""))[:10] == date and g.get("boxscoreLink"):
+            return g["boxscoreLink"].rstrip("/").rsplit("/", 1)[-1]
+    if lada_id:
+        try:
+            link = _lada_get(f"game/{lada_id}").get("boxscoreLink") or ""
+            return link.rstrip("/").rsplit("/", 1)[-1] or None
+        except Exception as e:
+            log(f"LADA game {lada_id} unavailable ({e})")
+    return None
+
+
+def cmd_sheet(a):
+    """SportNinja's game sheet, public at metal-api.sportninja.net: which side we were, the score, shots per period,
+    every goal with its period clock, scorer and assists, every penalty with the player, type and minutes, and who
+    played. Prints it and writes W/sheet.json. With periods.json in place, each goal and penalty gets an estimated
+    video time (period start + what the clock had run; exact where the clock runs through stoppages, otherwise the
+    earliest it can be)."""
+    import urllib.request
+    from roster import TEAM_NAME, TEAM, ALL_SKATERS, GOALIE_NAMES, SKATERS
+    from lada_ids import fold
+    W = os.path.abspath(a.W) if a.W else None
+    m = re.search(r"\d{4}-\d{2}-\d{2}", os.path.basename(W or ""))
+    date = a.date or (m.group(0) if m else None)
+    sn = a.sn or (sportninja_id(date, a.lada) if date else None)
+    if not sn:
+        sys.exit("no SportNinja game found: give --sn <id> (the end of LADA's boxscoreLink) or --lada <LADA game id>")
+    with urllib.request.urlopen(f"{SN_API}/games/{sn}", timeout=30) as r:
+        g = json.load(r)["data"]
+    home, vis = g["homeTeam"], g["visitingTeam"]
+    names = {home["id"]: home["name"], vis["id"]: vis["name"]}
+    mine = [t for t in (home, vis) if fold(TEAM_NAME) in fold(t["name"]) or fold(t["name"]) in fold(TEAM_NAME)]
+    if not mine:
+        sys.exit(f"neither {home['name']!r} nor {vis['name']!r} looks like {TEAM_NAME!r}")
+    us = mine[0]["id"]; side = "home" if us == home["id"] else "visiting"; them = vis["id"] if side == "home" else home["id"]
+    ros = {r["team_id"]: {p["id"]: p for p in r["players"]} for r in g.get("playerRosters", [])}
+    def who(team, pid_):
+        p = ros.get(team, {}).get(pid_)
+        return (p["player_number"], p["name_last"]) if p else (None, pid_)
+    pname = {p["id"]: p["period_type"]["name"] for p in g["periods"]}
+    plabel = {p["id"]: f"P{p['period_type']['sort_order']}" for p in g["periods"]}
+    pdur = {p["id"]: int(p["duration"] / 1000) for p in g["periods"]}
+    Ps = {P["label"]: P for P in periods(W)} if W and os.path.exists(f"{W}/periods.json") else {}
+    def video_t(period_id, clock):
+        P = Ps.get(plabel[period_id])
+        if not P:
+            return None
+        return int(P["start"] + pdur[period_id] - _clock_s(clock))
+    out = dict(sportninja_id=sn, us=side, home=home["name"], visiting=vis["name"],
+               score=[g["home_team_score"] if side == "home" else g["visiting_team_score"],
+                      g["visiting_team_score"] if side == "home" else g["home_team_score"]],
+               rink=f"{(g.get('venue') or {}).get('name', '')} {(g.get('facility') or {}).get('name', '')}".strip(),
+               shots={}, goals=[], penalties=[], played=[], played_names=[], not_marked_playing=[])
+    for P in g["periods"]:
+        ours_, theirs_ = (P["shots_home_count"], P["shots_visiting_count"]) if side == "home" else (P["shots_visiting_count"], P["shots_home_count"])
+        out["shots"][plabel[P["id"]]] = [ours_, theirs_]
+    for x in sorted(g["goals"], key=lambda x: (pname[x["period_id"]], -_clock_s(x["period_clock_time"]))):
+        sh = x["shot"]; num, last = who(sh["team_id"], sh["player_id"])
+        assists = [who(sh["team_id"], a_["player"]["id"]) for a_ in x.get("assists", [])]
+        out["goals"].append(dict(period=plabel[x["period_id"]], clock=x["period_clock_time"][3:],
+                                 team="for" if sh["team_id"] == us else "against", scorer=num, scorer_name=last,
+                                 assists=[n for n, _ in assists if n], assist_names=[l for _, l in assists],
+                                 video_t=video_t(x["period_id"], x["period_clock_time"])))
+    for o in sorted(g["offenses"], key=lambda o: (pname[o["period_id"]], -_clock_s(o["period_clock_time"]))):
+        num, last = who(o["team_id"], o["player_id"]) if o.get("player_id") else (None, "bench")
+        served = (o.get("penalty") or {}).get("served_by_player_id")
+        if served and served != o.get("player_id"):   # a bench minor: someone else sits in the box
+            sn_, sl_ = who(o["team_id"], served); last = f"{last}, served by #{sn_} {sl_}"; num = num or sn_
+        out["penalties"].append(dict(period=plabel[o["period_id"]], clock=o["period_clock_time"][3:],
+                                     team="ours" if o["team_id"] == us else "theirs", player=num, name=last,
+                                     type=o["offense_type"]["name"], severity=o["offense_severity"]["name"],
+                                     minutes=o["penalty"]["amount"], video_t=video_t(o["period_id"], o["period_clock_time"])))
+    for p in ros.get(us, {}).values():
+        if p["is_playing"]:
+            out["played"].append(p["player_number"]); out["played_names"].append(f"#{p['player_number']} {p['name_last']}")
+    out["played"] = sorted(n for n in out["played"] if n is not None)
+    known = set(ALL_SKATERS) | set(GOALIE_NAMES)
+    out["not_marked_playing"] = sorted(n for n in SKATERS if n not in out["played"])
+    out["playing_not_in_roster"] = sorted(x for x in out["played_names"] if int(x.split()[0][1:]) not in known)
+    if W:
+        json.dump(out, open(f"{W}/sheet.json", "w", encoding="utf-8"), indent=2, ensure_ascii=False)
+    tm = lambda t: f"{t // 60}:{t % 60:02d}" if t is not None else "?"
+    print(f"{TEAM} were {'HOME' if side == 'home' else 'VISITORS'} vs {names[them]} at {out['rink']}: {out['score'][0]}-{out['score'][1]}")
+    print("shots (ours-theirs):", ", ".join(f"{k} {v[0]}-{v[1]}" for k, v in out["shots"].items()),
+          f"total {sum(v[0] for v in out['shots'].values())}-{sum(v[1] for v in out['shots'].values())}")
+    print("goals:")
+    for x in out["goals"]:
+        a_ = ", ".join(f"#{n}" for n in x["assists"]) or "-"
+        print(f"  {x['period']} {x['clock']} {x['team']:<7} #{x['scorer']} {x['scorer_name']} (A: {a_})  video ~{tm(x['video_t'])}")
+    print("penalties:" if out["penalties"] else "penalties: none")
+    for o in out["penalties"]:
+        print(f"  {o['period']} {o['clock']} {o['team']:<6} #{o['player']} {o['name']} {o['type']} {o['minutes']} min  video ~{tm(o['video_t'])}")
+    print("played (sheet):", ", ".join(out["played_names"]))
+    if out["not_marked_playing"]:
+        print("roster numbers not marked playing (absent candidates; the sheet is the scorekeeper's, so check):",
+              ", ".join(f"#{n} {SKATERS[n]}" for n in out["not_marked_playing"]))
+    if out["playing_not_in_roster"]:
+        print("marked playing but not in roster.json:", ", ".join(out["playing_not_in_roster"]))
+    if W:
+        print(f"wrote {W}/sheet.json" + ("" if Ps else "; video times appear once periods.json exists"))
 
 
 def cmd_schedule(a):
@@ -912,6 +1089,10 @@ if __name__ == "__main__":
     sub.add_parser("archive").add_argument("W")
     sc = sub.add_parser("schedule"); sc.add_argument("W", nargs="?", help="a work folder (its team), or --team")
     sc.add_argument("--team", help="the team's slug when there is no work folder yet")
+    sh_ = sub.add_parser("sheet"); sh_.add_argument("W", nargs="?", help="work folder (named <...>YYYY-MM-DD<...>)")
+    sh_.add_argument("--team"); sh_.add_argument("--date", help="YYYY-MM-DD when the folder name lacks it")
+    sh_.add_argument("--sn", help="SportNinja game id (the end of LADA's boxscoreLink)")
+    sh_.add_argument("--lada", help="LADA game id, to look the SportNinja id up")
     sub.add_parser("check").add_argument("W")
     ab = sub.add_parser("absent"); ab.add_argument("W"); ab.add_argument("numbers", type=int, nargs="*")
     ab.add_argument("--clear", action="store_true", help="forget the absent list")
@@ -951,4 +1132,4 @@ if __name__ == "__main__":
     {"fetch": cmd_fetch, "skaters": cmd_skaters, "prepare": cmd_prepare, "solve": cmd_solve, "goals": cmd_goals,
      "frames": cmd_frames, "clip": cmd_clip, "publish": cmd_publish, "unknown": cmd_unknown,
      "archive": cmd_archive, "jersey": cmd_jersey, "absent": cmd_absent, "review": cmd_review, "check": cmd_check,
-     "schedule": cmd_schedule}[a.cmd](a)
+     "schedule": cmd_schedule, "sheet": cmd_sheet}[a.cmd](a)

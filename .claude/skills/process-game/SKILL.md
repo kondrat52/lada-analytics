@@ -46,21 +46,24 @@ has the brief), and read the Gantt charts only when the lineup check lists somet
 
 ## 0. Inputs (one message, then start)
 
-If the user gives a scoresheet PDF (SportNinja's, "Game #... scoresheet.pdf"), read it first: it has the score, each
-goal's period and clock time with scorer and assists, every penalty with the player and length, shots per period
-and who played. That answers most of what follows, and it checks the pipeline's goal and penalty times later.
-
 ```sh
 $PY pipeline/run_game.py schedule --team <slug>     # LADA's view: date, time, opponent, home/away, rink, id, planned lines
+$PY pipeline/run_game.py sheet $W                   # the game sheet: score, shots, goals with scorers, penalties, who played
 ```
+
+The game sheet comes from SportNinja's public API (the work folder's name gives the date; `--lada <id>` or
+`--sn <id>` when LADA's cache doesn't have the game yet). It answers the score, each goal's period and clock with
+scorer and assists, every penalty with player, type and minutes, shots per period and who the scorekeeper marked
+as playing, and it writes `$W/sheet.json`, which `goals` and the lineup check use later. A scoresheet PDF from the
+user says the same things; read it only when the API has nothing.
 
 Then ask, in one message, only for what's still missing: whose game if the link or title doesn't say (Blue Wings'
 titles name the team, Turbo Kings' start with LTK), the opponent's short name (e.g. RR; `opponents.json` has the
-known ones), new players and whether each is on the team or a sub (the schedule's "LADA ids not in roster.json"
-are the candidates), and without a scoresheet the final score and roughly when the goals were. Don't ask about
-penalties: the scoreboard shows them. Fetch prints the video's title, which carries the date, time and rink for
-the page header ("LTKvsTTT 5:55 PM PDT - SEP 13, 2026 (Snoqualmie) - wide cut"; Blue Wings' "2026/09/13 LADA
-Blue Wings vs Disco Bandoleros", rink in the description).
+known ones), and new players and whether each is on the team or a sub (the schedule's "LADA ids not in
+roster.json" and the sheet's "marked playing but not in roster.json" are the candidates). Don't ask about the
+score, goal times or penalties: the sheet and the scoreboard have them. Fetch prints the video's title, which
+carries the date, time and rink for the page header ("LTKvsTTT 5:55 PM PDT - SEP 13, 2026 (Snoqualmie) - wide
+cut"; Blue Wings' "2026/09/13 LADA Blue Wings vs Disco Bandoleros", rink in the description).
 
 Home or away decides our jersey and bench: home has worn white (blue numbers and trim), away light blue, and
 `references/rinks.md` says which bench at each rink. LADA's schedule says `playHome`, but go by the video: check
@@ -137,9 +140,10 @@ jersey that passes our colour test is an opponent to ignore. Add ours to `roster
 `subs` when unsure: moving him later changes only the site. Don't assume a missing number is a sub: the captain's
 was missing once. Then mark absent everyone on the roster who didn't
 play, including the subs who didn't come: a number that didn't play soaks up partial reads of others (a "3" off
-43, 53 and 35 gave #3 ice time she never had). Decide from the scoresheet, LADA's lines, `unknown`'s read counts
-and the roster cards, but keep anyone LADA's lines list unless every period's card and the reads are empty for
-them: a late arrival or a covered number looks the same as absence. A surname two players share (father and son)
+43, 53 and 35 gave #3 ice time she never had). Decide from the sheet's "not marked playing" list, LADA's lines,
+`unknown`'s read counts and the roster cards, but keep anyone LADA's lines list unless every period's card and
+the reads are empty for them: a late arrival or a covered number looks the same as absence, and the sheet is the
+scorekeeper's (it has marked a player playing who never appeared, and one absent who played all game). A surname two players share (father and son)
 counts for neither, so if only one played, mark the other absent.
 
 ```sh
@@ -200,9 +204,11 @@ when you've seen who went off add `"off": [{"start": 1737, "end": 1775, "player"
 $PY pipeline/run_game.py goals $W                   # candidates: center-ice faceoffs that aren't period starts
 ```
 
-Every goal is followed by a center faceoff, and the board's score changes a few seconds after the clock stops.
-Confirm each candidate by eye, or hand the list to one subagent with the brief in `references/highlights.md`, which
-also covers finding each of our penalties' infraction and framing the clips:
+With `sheet.json` in place it first prints the sheet's goals with the video time the period clock implies (exact
+where the clock runs through stoppages, otherwise the earliest possible). Every goal is followed by a center
+faceoff, and the board's score changes a few seconds after the clock stops. Confirm each by eye, or hand the list
+to one subagent with the brief in `references/highlights.md`, which also covers finding each of our penalties'
+infraction and framing the clips:
 
 ```sh
 $PY pipeline/run_game.py frames $W $W/g.jpg --view rink --range <t-60> <t> 3        # the minute before the faceoff
@@ -210,9 +216,9 @@ $PY pipeline/run_game.py frames $W $W/gz.jpg --view left-net <t1> <t2> ...      
 $PY pipeline/run_game.py clip $W <game-id> goal-1 <t-12> <t+10> <t> [focus-x | #<number>]
 ```
 
-Write `$W/highlights.json` (format in the reference; include `"scorer"` and `"assists"` from the scoresheet so
-the lineup check can verify them). Tell the user the score you found and ask them to confirm it; that and the push
-are the two things that wait for them.
+Write `$W/highlights.json` (format in the reference; include `"scorer"` and `"assists"` from `sheet.json` so the
+lineup check can verify them). Tell the user the score you found and ask them to confirm it; that and the push are
+the two things that wait for them.
 
 ## 8. Publish
 

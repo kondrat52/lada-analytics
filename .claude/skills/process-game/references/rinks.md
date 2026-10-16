@@ -24,10 +24,17 @@ without one is Renton. Pick the rink by the frame size and view of `frame600.png
 
 ## Renton (`renton`, 3840x1702)
 
-Camera high on the near side. Both benches are behind the far boards: away left of center, home right, with the
-penalty boxes between them. Nets at x 540 (left) and 3245 (right). The empty-ice period proposal is right to a few
-seconds here. BW's Oct 3 video came as 3600x1596; fetch scales such a video up to 3840x1702 and keeps the original
-as `video_<W>x<H>.webm`. The clock stops at whistles in some periods and runs through them in others.
+Camera high on the near side. Both benches are behind the far boards: away left of center, home right. The
+away team's penalty box is the glassed compartment just right of the away bench (frame x about 1740–1770, past
+the glass post at x 1712), so a boxed player is tracked as "at the bench"; a player serving a penalty climbs over
+the boards there and skates off when it ends, with his number readable on the way. Nets at x 540 (left) and 3245
+(right). The empty-ice period proposal is right to a few seconds here. BW's Oct 3 video came as 3600x1596; fetch
+scales such a video up to 3840x1702 and keeps the original as `video_<W>x<H>.webm`. The clock stops at whistles
+in some periods and runs through them in others. On Sep 13 (Beerteam) the operator let the 2nd period's clock hit
+00.0, then ran an extra minute on an empty rink: the period ends at the first 00.0, and `break_*.jpg` shows whether
+anyone was still playing. The board has run 3:00 for penalties the game sheet calls 2-minute minors; go by the
+panel. A penalty's clock time on the game sheet is the clock when the scorekeeper entered it, which can be 20 s
+after the whistle.
 
 Views: `rink` 0–3840 × 700–1500; `left-net` 150–1450 × 720–1070; `right-net` 2500–3800 × 720–1070.
 

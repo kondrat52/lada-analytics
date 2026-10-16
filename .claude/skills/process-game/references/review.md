@@ -80,3 +80,10 @@ number). Tell the user which rows you labeled by hand, and say so in `game.json`
 - **A number that never faces the camera.** Prozhogin #61 was labeled by hand in ten stretches from black shorts,
   banded socks and red gloves and the fact that no other defenceman was out with his partner. Gear plus who is
   accounted for settles most "?" rows.
+- **A track that breaks at the bench door.** Several Beerteam gaps were a player's track ending at the bench
+  boards and restarting a second later under a new id that the reviewers labeled: the unlabeled piece is the same
+  player (compare positions and times in `segs_final.csv`), and a zfix line closes the gap. Conversely, a segment
+  that starts behind the bench boards counts as on-ice from its first frame, so players stepping on during a
+  goal can be listed as on; an `"off"` entry until the goal fixes it. Trimming segments to their first on-ice
+  detection in shifts.py would fix this for every line change, but changes every game's numbers, so it waits for a
+  regression pass over the archived folders.

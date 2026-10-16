@@ -42,9 +42,11 @@ if active_spans:
     for a, b in active_spans: active[int(a):int(b)] = True
 target = np.full(T, 5.0); boxed = []
 for a, b, n, *p in target_spans:
-    target[int(a):int(b)] = n
+    if n < 5:   # a penalty kill takes one skater off; two overlapping kills (a 5-on-3) take two
+        target[int(a):int(b)] -= 5 - n
     if p and p[0] is not None:
         boxed.append((int(p[0]), int(a), int(b)))
+target = np.maximum(target, 3)
 st, viol = solve(S2, players, T, ev, target=target, active=active, boxed=boxed)
 Rsh = to_shifts(st, players)
 Rsh.to_csv(f"{out}/shifts_final.csv", index=False)
