@@ -9,7 +9,8 @@ Without --write it changes nothing. With --write it adds to roster.json what LAD
 the NEW ids, and every LADA player whose number isn't in roster.json yet (surname = the last word of LADA's name;
 goalies by LADA's position, spares by its Sub status). It never changes or removes what's already there, so
 check the DIFFERS / WRONG lines by hand, and any number two LADA players share against SportNinja's game sheets
-(who wore it).
+(who wore it). A player LADA lists under another number than his jersey's goes in roster.json under his jersey
+number, with "lada_numbers": {"<jersey>": <LADA's number>}; he is matched by that, and LADA's number isn't added.
 
     $PY pipeline/lada_ids.py [--write] [<slug> ...]   (teams/<slug>/roster.json; $TEAM, else tk, when none named)
     $PY pipeline/lada_ids.py --write bt df y r        (fill in new teams' rosters with one sign-in)
@@ -51,13 +52,15 @@ def check(slug, token, write):
     by_id = {p["id"]: p for p in players}
     ids = {int(k): v for k, v in r.get("lada_player_ids", {}).items()}
     names = {int(k): v for part in ("skaters", "subs", "goalies") for k, v in r.get(part, {}).items()}
+    lada_num = {int(k): v for k, v in r.get("lada_numbers", {}).items()}   # jersey -> LADA's number, where they differ
     print(f"\n{slug}: LADA team {team_id} ({r['team']}), {len(players)} players on the roster\n")
     new_ids = {}
     for num, name in sorted(names.items()):
-        hits = [p for p in players if p.get("number") == num and fold(name) in fold(p.get("name"))]
+        ln = lada_num.get(num, num)
+        hits = [p for p in players if p.get("number") == ln and fold(name) in fold(p.get("name"))]
         mine = ids.get(num)
         owner = by_id.get(mine)
-        if mine and owner and (owner.get("number") != num or fold(name) not in fold(owner.get("name"))):
+        if mine and owner and (owner.get("number") != ln or fold(name) not in fold(owner.get("name"))):
             state = f"WRONG: LADA gives {mine} to #{owner.get('number')} {owner.get('name')}"
         elif len(hits) == 1:
             pid = hits[0]["id"]
@@ -67,6 +70,8 @@ def check(slug, token, write):
         else:
             state = "ambiguous" if hits else "no match"
         lada = ", ".join(f"{p.get('name')} {p['id']}" for p in hits) or "-"
+        if ln != num:
+            state += f" (#{ln} on LADA)"
         print(f"#{num:<3} {name:<14} {lada:<30} {state}")
     if not write:
         return
@@ -75,7 +80,7 @@ def check(slug, token, write):
     added = []
     for p in sorted(players, key=lambda p: (p.get("number") or 0, p.get("status") == "Sub")):
         num, full = p.get("number"), (p.get("name") or "").strip()
-        if not num or not full or num in names or "dannikh" in fold(full):
+        if not num or not full or num in names or num in lada_num.values() or "dannikh" in fold(full):
             if not num and full:
                 print(f"     {full:<14} no number on LADA; left out (LADA id {p['id']})")
             elif num in names and fold(names[num]) not in fold(full):

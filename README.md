@@ -61,7 +61,9 @@ python pipeline/build_site.py
    in to LADA as you (LADA has to show you the team's roster) and fills in `skaters`, `subs` (LADA's Sub status),
    `goalies` (LADA's Goalie position) and `lada_player_ids`; the surname is the last word of LADA's name, so check
    them against the jerseys. It never changes what's already there. A spare who isn't on LADA's roster goes under
-   `subs` by hand (the team's SportNinja roster has them; screenshots work). Without `--write` it only compares.
+   `subs` by hand (the team's SportNinja roster has them; screenshots work). A player LADA lists under another number
+   than his jersey's (Y's #87 Beregovoy is #67 on LADA) goes under his jersey number, with `"lada_numbers": {"87": 67}`
+   so `lada_ids.py` matches him and doesn't add LADA's number. Without `--write` it only compares.
 3. `python pipeline/build_site.py`: the team gets its site, listed at the root, and its feed (empty until the first
    game) right away.
 4. Process a game with `--team <slug>`. Check the jerseys and benches on a frame first: `rink.py` knows our two

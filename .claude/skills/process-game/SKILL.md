@@ -325,7 +325,12 @@ code and full name go in the team's `opponents.json` (the user's spelling wins o
 finds the team's logo in the LADA app, so a different one shows initials there). For a new player, ask the user to
 run `$PY pipeline/lada_ids.py --write <slug>` in their own terminal (it signs in to LADA as them; give them the exact
 command line, with `cd` to the repo). It adds the ids it marks NEW, and LADA's players whose numbers `roster.json`
-lacks, to `roster.json`; fix any it marks WRONG or DIFFERS by hand. A sub who isn't on the LADA roster gets no id. Write `notes` in `game.json` (they
+lacks, to `roster.json`; fix any it marks WRONG or DIFFERS by hand. A sub who isn't on the LADA roster gets no id.
+A "no match" can also be a player LADA lists under another number. SportNinja's game sheet says who wore what and who
+played: the game's `boxscoreLink` in LADA's game record ends in its id, and
+`https://metal-api.sportninja.net/v1/games/<id>/rosters` (public) lists both teams with `player_number` and `is_playing`.
+Its `is_playing` is the scorekeeper's and can be wrong (Y's Shakhov #78, Sep 14), so go by the video. For such a
+player put the LADA id under his jersey number and `"lada_numbers": {"<jersey>": <LADA's number>}` in `roster.json`. Write `notes` in `game.json` (they
 survive a republish): the rink if it's new, who sat and when, where the goal times came from, the subs, and
 anything you labeled by hand or read differently from the scoreboard.
 The clips live in the team site's `games/<id>/clips/` (about 5 MB each), served by GitHub Pages. Open the page
