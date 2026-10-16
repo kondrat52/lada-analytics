@@ -545,8 +545,9 @@ def cmd_publish(a):
     from zones import zone_shares   # time in offence / defence for the trends page (needs the detections)
     game["zones"] = zone_shares(f"{W}/full", game) or game.get("zones")
     json.dump(game, open(gj, "w"), indent=2, ensure_ascii=False)
-    sh(PY, f"{HERE}/build_site.py")
-    log(f"wrote {gd}; the team's site rebuilt in docs/. Review, then commit and push to publish.")
+    # every team, not just $TEAM: the root page counts each team's games, and each team's menu lists the teams with games
+    sh(PY, f"{HERE}/build_site.py", env={k: v for k, v in os.environ.items() if k != "TEAM"})
+    log(f"wrote {gd}; the sites rebuilt in docs/. Review, then commit and push to publish.")
 
 
 def _size(path):

@@ -14,7 +14,8 @@ and `r` (LADA R, 2), each with its site in `docs/<slug>/`. A team's first game: 
 `roster.json` is empty, ask the user to run `$PY pipeline/lada_ids.py --write <slug>`, as below) and its jersey
 colour against `rink.JERSEYS` on a frame. "We", "our" and "the roster" below mean the team whose game it is. `fetch --team` records the team in
 the work folder and every later `run_game.py` command follows it; a script run by hand takes it from `TEAM`
-(`TEAM=bw $PY pipeline/lada_ids.py`), and `build_site.py` without `TEAM` rebuilds every team.
+(`TEAM=bw $PY pipeline/lada_ids.py`), and `build_site.py` without `TEAM` rebuilds every team. Rebuild them all after a new team's first game
+(`publish` does): the root page counts each team's games, and each team's menu lists the teams with games.
 
 Budget about 2 hours of wall time on the Mac (the GPU does the detection; this can't run in the cloud) and a
 fair amount of tokens for the visual review. Keep the user posted with one line per stage.
