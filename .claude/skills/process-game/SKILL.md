@@ -196,7 +196,9 @@ hand"; it sorts last and overrides the reviewers' "?", e.g.
 `R326,69,med,3776,90,med,checked by hand: 69 looks at the net for the goal; 90 white helmet from 3779`. A player
 whose track ends mid-ice stays on until the next bench activity and the solver drops someone else to keep 5 on, so
 when you've seen who went off add `"off": [{"start": 1737, "end": 1775, "player": 43}]` to that period in
-`periods.json`. Solve again, and tell the user which rows you labeled by hand.
+`periods.json`; a player you've seen on the ice whose track was lost gets the same entry under `"on"`. Seeing
+who was on is a frames job: hand the gap windows to a subagent with the roster card and the bench location, as in
+`references/highlights.md`. Solve again, and tell the user which rows you labeled by hand.
 
 ## 7. Highlights: goals and penalties
 

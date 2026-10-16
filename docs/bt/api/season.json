@@ -5,7 +5,282 @@
   "short_name": "LBT",
   "lada_team_id": 5
  },
- "updated": null,
- "games": [],
- "players": []
+ "updated": "2026-09-13",
+ "games": [
+  "2026-09-13-vs-pbog"
+ ],
+ "players": [
+  {
+   "number": 76,
+   "name": "Panov",
+   "lada_player_id": 253,
+   "sub": true,
+   "games_played": 1,
+   "shifts": 16,
+   "toi": 2162,
+   "toi_per_game": 2162,
+   "play": 1379,
+   "avg_shift": 135.1,
+   "longest_shift": 210,
+   "shortest_shift": 27,
+   "games": [
+    {
+     "id": "2026-09-13-vs-pbog",
+     "date": "2026-09-13",
+     "opponent": {
+      "code": "PBOG",
+      "name": "Puck Buddies OG"
+     },
+     "toi": 2162,
+     "shifts": 16,
+     "avg_shift": 135.1,
+     "play": 1379
+    }
+   ]
+  },
+  {
+   "number": 24,
+   "name": "Papusha",
+   "lada_player_id": 20384,
+   "games_played": 1,
+   "shifts": 16,
+   "toi": 2124,
+   "toi_per_game": 2124,
+   "play": 1386,
+   "avg_shift": 132.8,
+   "longest_shift": 240,
+   "shortest_shift": 40,
+   "games": [
+    {
+     "id": "2026-09-13-vs-pbog",
+     "date": "2026-09-13",
+     "opponent": {
+      "code": "PBOG",
+      "name": "Puck Buddies OG"
+     },
+     "toi": 2124,
+     "shifts": 16,
+     "avg_shift": 132.8,
+     "play": 1386
+    }
+   ]
+  },
+  {
+   "number": 27,
+   "name": "Egiazarov",
+   "lada_player_id": 11101,
+   "games_played": 1,
+   "shifts": 15,
+   "toi": 2091,
+   "toi_per_game": 2091,
+   "play": 1268,
+   "avg_shift": 139.4,
+   "longest_shift": 274,
+   "shortest_shift": 43,
+   "games": [
+    {
+     "id": "2026-09-13-vs-pbog",
+     "date": "2026-09-13",
+     "opponent": {
+      "code": "PBOG",
+      "name": "Puck Buddies OG"
+     },
+     "toi": 2091,
+     "shifts": 15,
+     "avg_shift": 139.4,
+     "play": 1268
+    }
+   ]
+  },
+  {
+   "number": 69,
+   "name": "Kleiman",
+   "lada_player_id": 20355,
+   "games_played": 1,
+   "shifts": 14,
+   "toi": 1889,
+   "toi_per_game": 1889,
+   "play": 1330,
+   "avg_shift": 134.9,
+   "longest_shift": 249,
+   "shortest_shift": 53,
+   "games": [
+    {
+     "id": "2026-09-13-vs-pbog",
+     "date": "2026-09-13",
+     "opponent": {
+      "code": "PBOG",
+      "name": "Puck Buddies OG"
+     },
+     "toi": 1889,
+     "shifts": 14,
+     "avg_shift": 134.9,
+     "play": 1330
+    }
+   ]
+  },
+  {
+   "number": 37,
+   "name": "Akulov",
+   "lada_player_id": 20379,
+   "sub": true,
+   "games_played": 1,
+   "shifts": 11,
+   "toi": 1831,
+   "toi_per_game": 1831,
+   "play": 1260,
+   "avg_shift": 166.5,
+   "longest_shift": 264,
+   "shortest_shift": 85,
+   "games": [
+    {
+     "id": "2026-09-13-vs-pbog",
+     "date": "2026-09-13",
+     "opponent": {
+      "code": "PBOG",
+      "name": "Puck Buddies OG"
+     },
+     "toi": 1831,
+     "shifts": 11,
+     "avg_shift": 166.5,
+     "play": 1260
+    }
+   ]
+  },
+  {
+   "number": 87,
+   "name": "Solovyov",
+   "lada_player_id": 297,
+   "games_played": 1,
+   "shifts": 13,
+   "toi": 1712,
+   "toi_per_game": 1712,
+   "play": 1074,
+   "avg_shift": 131.7,
+   "longest_shift": 180,
+   "shortest_shift": 64,
+   "games": [
+    {
+     "id": "2026-09-13-vs-pbog",
+     "date": "2026-09-13",
+     "opponent": {
+      "code": "PBOG",
+      "name": "Puck Buddies OG"
+     },
+     "toi": 1712,
+     "shifts": 13,
+     "avg_shift": 131.7,
+     "play": 1074
+    }
+   ]
+  },
+  {
+   "number": 10,
+   "name": "Bogdanov",
+   "lada_player_id": 81,
+   "games_played": 1,
+   "shifts": 15,
+   "toi": 1699,
+   "toi_per_game": 1699,
+   "play": 1010,
+   "avg_shift": 113.3,
+   "longest_shift": 196,
+   "shortest_shift": 40,
+   "games": [
+    {
+     "id": "2026-09-13-vs-pbog",
+     "date": "2026-09-13",
+     "opponent": {
+      "code": "PBOG",
+      "name": "Puck Buddies OG"
+     },
+     "toi": 1699,
+     "shifts": 15,
+     "avg_shift": 113.3,
+     "play": 1010
+    }
+   ]
+  },
+  {
+   "number": 23,
+   "name": "Zhaksilikov",
+   "lada_player_id": 3423,
+   "games_played": 1,
+   "shifts": 12,
+   "toi": 1664,
+   "toi_per_game": 1664,
+   "play": 1159,
+   "avg_shift": 138.7,
+   "longest_shift": 211,
+   "shortest_shift": 52,
+   "games": [
+    {
+     "id": "2026-09-13-vs-pbog",
+     "date": "2026-09-13",
+     "opponent": {
+      "code": "PBOG",
+      "name": "Puck Buddies OG"
+     },
+     "toi": 1664,
+     "shifts": 12,
+     "avg_shift": 138.7,
+     "play": 1159
+    }
+   ]
+  },
+  {
+   "number": 34,
+   "name": "Zakharov",
+   "lada_player_id": 248,
+   "games_played": 1,
+   "shifts": 14,
+   "toi": 1631,
+   "toi_per_game": 1631,
+   "play": 1021,
+   "avg_shift": 116.5,
+   "longest_shift": 165,
+   "shortest_shift": 70,
+   "games": [
+    {
+     "id": "2026-09-13-vs-pbog",
+     "date": "2026-09-13",
+     "opponent": {
+      "code": "PBOG",
+      "name": "Puck Buddies OG"
+     },
+     "toi": 1631,
+     "shifts": 14,
+     "avg_shift": 116.5,
+     "play": 1021
+    }
+   ]
+  },
+  {
+   "number": 7,
+   "name": "Khristoforov",
+   "lada_player_id": 254,
+   "games_played": 1,
+   "shifts": 13,
+   "toi": 1326,
+   "toi_per_game": 1326,
+   "play": 812,
+   "avg_shift": 102,
+   "longest_shift": 213,
+   "shortest_shift": 57,
+   "games": [
+    {
+     "id": "2026-09-13-vs-pbog",
+     "date": "2026-09-13",
+     "opponent": {
+      "code": "PBOG",
+      "name": "Puck Buddies OG"
+     },
+     "toi": 1326,
+     "shifts": 13,
+     "avg_shift": 102,
+     "play": 812
+    }
+   ]
+  }
+ ]
 }

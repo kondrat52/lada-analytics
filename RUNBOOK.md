@@ -149,7 +149,8 @@ player, a penalty, or a bad label: inspect with crop sheets before trusting the 
 them (and goals without 5 of us on the ice) as a lineup check. Labels you decide by hand go in
 `$W/rev_pN/review_zfix.txt` (same CSV), which overrides the reviewers' "?" answers. A player you saw go off
 whose shift runs on (his track ends mid-ice) goes in that period's `"off"` list in `periods.json`
-(`{"start", "end", "player"}`): `run_game.py solve` passes it to `run2.py` as `[start, end, 5, player]`. `solve` also prints each period's shift
+(`{"start", "end", "player"}`): `run_game.py solve` passes it to `run2.py` as `[start, end, 5, player]`; a player seen on the ice whose track was
+lost goes in the period's `"on"` list the same way (`[start, end, 5, player, "on"]`). `solve` also prints each period's shift
 seconds against 5 × its length, and the lineup check names who was on the ice in each gap.
 
 ## 9. Play time and highlights

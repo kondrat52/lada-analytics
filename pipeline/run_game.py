@@ -675,6 +675,7 @@ def cmd_solve(a):
         p = P["label"].lower()
         # off: a player seen off the ice by hand (his track ends mid-ice, so nothing ends his shift), 5 still on
         tgt = [[k["start"], k["end"], 5, k["player"]] for k in P.get("off", [])]
+        tgt += [[k["start"], k["end"], 5, k["player"], "on"] for k in P.get("on", [])]   # seen on the ice, track lost
         tgt += [[k["start"], k["end"], 4, k.get("player")] for k in P.get("pk", [])]   # player: off, in the box
         sh(PY, f"{HERE}/run2.py", f"{W}/{p}", f"{W}/rev_{p}", P["end"], json.dumps([[P["start"], P["end"]]]), json.dumps(tgt))
         sh(PY, f"{HERE}/gantt.py", f"{W}/{p}/shifts_final.csv", f"{W}/{p}/segs_final.csv", f"{W}/gantt_{p}.png",

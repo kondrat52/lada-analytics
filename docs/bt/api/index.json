@@ -6,9 +6,34 @@
   "lada_team_id": 5
  },
  "site_url": "https://kondrat52.github.io/lada-analytics/bt/",
- "updated": null,
+ "updated": "2026-09-13",
  "season_url": "https://kondrat52.github.io/lada-analytics/bt/api/season.json",
  "roster_url": "https://kondrat52.github.io/lada-analytics/bt/api/roster.json",
  "trends_url": "https://kondrat52.github.io/lada-analytics/bt/api/trends.json",
- "games": []
+ "games": [
+  {
+   "id": "2026-09-13-vs-pbog",
+   "date": "2026-09-13",
+   "title": "LADA Beerteam vs Puck Buddies OG, Sep 13",
+   "subtitle": "Sat Sep 13, 2026 · 10:40 PM · Renton",
+   "time": "10:40 PM",
+   "rink": "Renton",
+   "opponent": {
+    "code": "PBOG",
+    "name": "Puck Buddies OG"
+   },
+   "lada_game_id": 32949,
+   "goals_on_video": {
+    "for": 5,
+    "against": 2
+   },
+   "shots": {
+    "for": 38,
+    "against": 25
+   },
+   "highlights": 10,
+   "page_url": "https://kondrat52.github.io/lada-analytics/bt/games/2026-09-13-vs-pbog/",
+   "json_url": "https://kondrat52.github.io/lada-analytics/bt/api/games/2026-09-13-vs-pbog.json"
+  }
+ ]
 }

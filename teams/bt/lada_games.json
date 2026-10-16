@@ -1,0 +1,51 @@
+{
+  "32937": {
+    "date": "2026-08-30T20:25:00",
+    "playHome": false,
+    "teamGoals": 2,
+    "opponentGoals": 4
+  },
+  "32949": {
+    "date": "2026-09-13T22:40:00",
+    "opponentName": "Puck Buddies OG",
+    "playHome": false,
+    "teamGoals": 5,
+    "opponentGoals": 2,
+    "boxscoreLink": "https://app.sportninja.com/public/game/8wa5kIE4gkAC7OlJ",
+    "rinkId": 23,
+    "lines": "{\"offence\":[[\"297\",\"11101\",\"81\"],[\"20379\",\"3423\",\"20355\"]],\"defence\":[[\"20384\",\"254\"],[\"248\",\"253\"]],\"goalie\":[[\"20324\"]],\"beer\":[]}"
+  },
+  "32950": {
+    "date": "2026-09-20T17:55:00",
+    "playHome": true,
+    "teamGoals": 4,
+    "opponentGoals": 6,
+    "boxscoreLink": "https://app.sportninja.com/public/game/e3jmxlaPbA2H7czB",
+    "rinkId": 2073,
+    "lines": "{\"offence\":[[\"297\",\"11101\",\"81\"],[\"5812\",\"3423\",\"20355\"],[\"120\",\"248\",\"237\"]],\"defence\":[[\"254\",\"14184\"],[\"253\",\"5795\"]],\"goalie\":[],\"beer\":[]}"
+  },
+  "32974": {
+    "date": "2026-10-10T21:15:00",
+    "opponentName": "Jurassic Puck",
+    "teamGoals": 6,
+    "opponentGoals": 3,
+    "boxscoreLink": "https://app.sportninja.com/public/game/2nf9d8P4j8JWNb4E",
+    "playHome": false,
+    "rinkId": 23,
+    "lines": "{\"offence\":[[\"297\",\"17267\",\"81\"],[\"5812\",\"3423\",\"120\"],[null,null,\"20425\"]],\"defence\":[[\"20355\",\"254\"],[\"20384\",\"248\"]],\"goalie\":[],\"beer\":null}"
+  },
+  "33011": {
+    "date": "2026-10-18T16:25:00",
+    "opponentName": "Puck Buddies Ice",
+    "playHome": true,
+    "rinkId": 31,
+    "rinkName": "Kirkland"
+  },
+  "33012": {
+    "date": "2026-10-25T17:55:00",
+    "opponentName": "Cascadiens",
+    "playHome": true,
+    "rinkId": 2073,
+    "rinkName": "Snoqualmie A"
+  }
+}

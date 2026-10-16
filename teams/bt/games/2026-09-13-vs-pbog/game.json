@@ -1,0 +1,364 @@
+{
+  "id": "2026-09-13-vs-pbog",
+  "date": "2026-09-13",
+  "title": "LADA Beerteam vs Puck Buddies OG, Sep 13",
+  "eyebrow": "Sat Sep 13, 2026 · 10:40 PM · Renton",
+  "opponent": "PBOG",
+  "video": "https://www.youtube.com/watch?v=Qv4XqUAC_8M",
+  "periods": [
+    {
+      "label": "P1",
+      "start": 3,
+      "end": 1066
+    },
+    {
+      "label": "P2",
+      "start": 1155,
+      "end": 2240
+    },
+    {
+      "label": "P3",
+      "start": 2343,
+      "end": 3915
+    }
+  ],
+  "nets": {
+    "P1": 540,
+    "P2": 3245,
+    "P3": 540
+  },
+  "penalty_kills": [
+    {
+      "period": "P1",
+      "start": 173,
+      "end": 355,
+      "player": 76
+    },
+    {
+      "period": "P2",
+      "start": 2038,
+      "end": 2240,
+      "player": 37
+    },
+    {
+      "period": "P2",
+      "start": 2165,
+      "end": 2240,
+      "player": 10
+    },
+    {
+      "period": "P3",
+      "start": 2343,
+      "end": 2357,
+      "player": 37
+    },
+    {
+      "period": "P3",
+      "start": 2343,
+      "end": 2461,
+      "player": 10
+    },
+    {
+      "period": "P3",
+      "start": 3728,
+      "end": 3915,
+      "player": 37
+    }
+  ],
+  "notes": [
+    "LADA Beerteam's first processed game. Away game at Renton: we wore blue and had the left bench (the pipeline's defaults). The game sheet (SportNinja, read through its public API) gave the score, the goals with scorers, the penalties, the shots and who played; the video and the arena scoreboard confirmed them.",
+    "Periods by the scoreboard clock and the video (we were GUEST): 0:03-17:46, 19:15-37:16 and 39:03-65:15 of the video. The clock ran through stoppages in the 1st and 2nd and stopped at whistles in the 3rd. Twice the operator let the clock run on an empty rink after play had ended: the last 45 s of the 1st (play ended at 17:46 with 0:45 showing; the board hit 00.0 at 18:33) and an extra minute after the 2nd had already run out at 37:16 (37:24-38:24). Both are left out. The video runs to the final horn.",
+    "Goals at 6:19 (Puck Buddies OG #71 Lee), 25:53 (Egiazarov #27, assist Solovyov #87), 34:50 (Egiazarov #27, assist Khristoforov #7; shorthanded), 46:34 (Lee), 49:30 (Solovyov #87, assist Egiazarov), 53:13 (Kleiman #69, assist Solovyov) and 60:24 (Egiazarov #27, assist Solovyov) of the video, by the game sheet's clock times and the scoreboard. Shots on goal 38-25, as on the sheet and the board.",
+    "Penalty kills: Panov #76 (tripping, 1st period, clock 15:10; the board ran it as 3:00, 2:53-5:55 of the video); Akulov #37 (hooking at their net, 2nd, clock 2:46 when the board posted it, whistle about 33:58; 3:00 on the board, carried 14 s into the 3rd); a bench minor for too many players (2nd, clock 0:30) served by Bogdanov #10, who left the ice at the whistle at 36:05 and sat in the box until 41:01 of the 3rd, so the last 1:11 of the 2nd was played 3 on 5; and Akulov #37 (tripping, 3rd, clock 2:13, 62:08) through the final horn. Puck Buddies OG took two minors (Lee at 11:39 and Longfellow at 3:33 of the 3rd), our power plays.",
+    "Played: the 10 skaters the game sheet marks as playing, Akulov #37 and Panov #76 as subs, with Mayorov #1 in goal. Didn't play (marked absent for the solve): Zhaksilikov #5, Belousenko #11, Papusha #25, Gilderman #41, Tverskoy #44, Chernih #68, Shikhanov #70, Volkov #94 and the other subs; #16's 94 reads are misreads of Bogdanov's 10.",
+    "Labeled by hand: P1 rows R1 (Papusha #24, the fifth starter, number visible at 0:17), R19 (Kleiman #69 standing at the boards by the bench door from 2:08) and R69 (Papusha #24, his track continues as R74); P2 row R105 (Kleiman #69; Akulov was on another track); P3 row R96 (Papusha #24 stepping on at 50:27). Seen by eye and set in periods.json: Papusha #24 on the ice at 27:06-27:26 where his track was lost; Panov #76 off from 6:40 (he had reached the bench) and from 62:25; Khristoforov #7 off from 53:05 (at the bench door as Kleiman scored); Panov #76 off from 46:20 and Akulov #37 from 46:26 (both had gone to the bench door before Puck Buddies OG scored at 46:34; Solovyov #87 came on as the puck went in); Akulov #37 and Zhaksilikov #23 still stepping on when Solovyov scored at 49:30, so kept off until 49:31."
+  ],
+  "video_ends_early": false,
+  "fun": {
+    "name_reads": {
+      "10": 643,
+      "69": 502,
+      "76": 501,
+      "34": 325,
+      "37": 313,
+      "27": 261,
+      "87": 206,
+      "7": 106,
+      "23": 57
+    }
+  },
+  "pipeline": {
+    "detections": 638590,
+    "crops": 103296,
+    "reads": 9498,
+    "reviewed": 552
+  },
+  "highlights": [
+    {
+      "type": "penalty",
+      "player": 76,
+      "t": 168,
+      "clip": "clips/penalty-76-168.mp4",
+      "poster": "clips/penalty-76-168.jpg",
+      "note": "1st period, clock 15:10: tripping, 3 minutes on the board"
+    },
+    {
+      "type": "goal",
+      "team": "against",
+      "t": 379,
+      "clip": "clips/goal-1.mp4",
+      "poster": "clips/goal-1.jpg",
+      "note": "1st period, clock 11:45: Puck Buddies OG #71 Lee, 0-1"
+    },
+    {
+      "type": "goal",
+      "team": "for",
+      "t": 1553,
+      "clip": "clips/goal-2.mp4",
+      "poster": "clips/goal-2.jpg",
+      "scorer": 27,
+      "assists": [
+        87
+      ],
+      "note": "2nd period, clock 11:22: Egiazarov #27 (assist #87), 1-1"
+    },
+    {
+      "type": "penalty",
+      "player": 37,
+      "t": 2034,
+      "clip": "clips/penalty-37-2034.mp4",
+      "poster": "clips/penalty-37-2034.jpg",
+      "note": "2nd period, clock 2:46: hooking at their net, 3 minutes on the board, carried 14 s into the 3rd"
+    },
+    {
+      "type": "goal",
+      "team": "for",
+      "t": 2090,
+      "clip": "clips/goal-3.mp4",
+      "poster": "clips/goal-3.jpg",
+      "scorer": 27,
+      "assists": [
+        7
+      ],
+      "note": "2nd period, clock 2:20: Egiazarov #27 (assist #7), 2-1"
+    },
+    {
+      "type": "goal",
+      "team": "against",
+      "t": 2794,
+      "clip": "clips/goal-4.mp4",
+      "poster": "clips/goal-4.jpg",
+      "note": "3rd period, clock 11:51: Puck Buddies OG #71 Lee, 2-2"
+    },
+    {
+      "type": "goal",
+      "team": "for",
+      "t": 2970,
+      "clip": "clips/goal-5.mp4",
+      "poster": "clips/goal-5.jpg",
+      "scorer": 87,
+      "assists": [
+        27
+      ],
+      "note": "3rd period, clock 10:16: Solovjov #87 (assist #27), 3-2"
+    },
+    {
+      "type": "goal",
+      "team": "for",
+      "t": 3193,
+      "clip": "clips/goal-6.mp4",
+      "poster": "clips/goal-6.jpg",
+      "scorer": 69,
+      "assists": [
+        87
+      ],
+      "note": "3rd period, clock 8:11: Kleiman #69 (assist #87), 4-2"
+    },
+    {
+      "type": "goal",
+      "team": "for",
+      "t": 3624,
+      "clip": "clips/goal-7.mp4",
+      "poster": "clips/goal-7.jpg",
+      "scorer": 27,
+      "assists": [
+        87
+      ],
+      "note": "3rd period, clock 3:03: Egiazarov #27 (assist #87), 5-2"
+    },
+    {
+      "type": "penalty",
+      "player": 37,
+      "t": 3726,
+      "clip": "clips/penalty-37-3726.mp4",
+      "poster": "clips/penalty-37-3726.jpg",
+      "note": "3rd period, clock 2:13: tripping, 2 minutes, through the final horn"
+    }
+  ],
+  "lada_game_id": 32949,
+  "opponent_name": "Puck Buddies OG",
+  "zones": {
+    "offence": 0.3029,
+    "defence": 0.4587
+  },
+  "shots": {
+    "P1": [
+      10,
+      8
+    ],
+    "P2": [
+      10,
+      7
+    ],
+    "P3": [
+      18,
+      10
+    ]
+  },
+  "stoppages": [
+    [
+      3,
+      5
+    ],
+    [
+      49,
+      76
+    ],
+    [
+      88,
+      103
+    ],
+    [
+      143,
+      195
+    ],
+    [
+      378,
+      409
+    ],
+    [
+      440,
+      465
+    ],
+    [
+      556,
+      578
+    ],
+    [
+      879,
+      905
+    ],
+    [
+      989,
+      1026
+    ],
+    [
+      1026,
+      1043
+    ],
+    [
+      1155,
+      1158
+    ],
+    [
+      1169,
+      1184
+    ],
+    [
+      1196,
+      1217
+    ],
+    [
+      1441,
+      1476
+    ],
+    [
+      1489,
+      1525
+    ],
+    [
+      1551,
+      1599
+    ],
+    [
+      1627,
+      1660
+    ],
+    [
+      1689,
+      1720
+    ],
+    [
+      1984,
+      2072
+    ],
+    [
+      2087,
+      2126
+    ],
+    [
+      2162,
+      2208
+    ],
+    [
+      2399,
+      2419
+    ],
+    [
+      2586,
+      2619
+    ],
+    [
+      2662,
+      2682
+    ],
+    [
+      2788,
+      2819
+    ],
+    [
+      2840,
+      2932
+    ],
+    [
+      2961,
+      3007
+    ],
+    [
+      3007,
+      3076
+    ],
+    [
+      3076,
+      3153
+    ],
+    [
+      3194,
+      3222
+    ],
+    [
+      3234,
+      3248
+    ],
+    [
+      3261,
+      3313
+    ],
+    [
+      3488,
+      3519
+    ],
+    [
+      3548,
+      3596
+    ],
+    [
+      3620,
+      3664
+    ],
+    [
+      3851,
+      3897
+    ]
+  ]
+}
