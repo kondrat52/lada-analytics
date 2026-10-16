@@ -28,13 +28,13 @@ td { font:500 16px/1.2 var(--data); } .l { text-align:left; } td.num { font:800 
 .sub { font:600 11px/1 var(--data); letter-spacing:.1em; text-transform:uppercase; color:var(--muted); margin-left:6px; }
 p.note { color:var(--muted); margin:0; max-width:70ch; }
 .eyebrow a { color:var(--blueline); }
-.teams { display:inline-flex; flex-wrap:wrap; justify-self:start; margin-bottom:10px; border:1px solid var(--rule); border-radius:4px; overflow:hidden; background:var(--board); }
+.teams { display:inline-flex; flex-wrap:wrap; justify-self:start; max-width:100%; margin-bottom:10px; border:1px solid var(--rule); border-radius:4px; overflow:hidden; background:var(--board); }
 .teams a { font:600 13px/1 var(--data); letter-spacing:.08em; text-transform:uppercase; padding:9px 14px; color:var(--muted); text-decoration:none; }
-.teams a + a { border-left:1px solid var(--rule); } .teams a:hover { color:var(--ink); }
+.teams a { box-shadow:-1px 0 0 var(--rule), 0 -1px 0 var(--rule); } .teams a:hover { color:var(--ink); }
 .teams a[aria-current="page"] { background:var(--team); color:var(--board); }
 .teams a:focus-visible { outline:2px solid var(--blueline); outline-offset:-2px; }
 </style></head><body><div class="wrap">
-<header><nav class="teams" aria-label="Team"><a href="../tk/">Turbo Kings</a><a href="./" aria-current="page">Beerteam</a><a href="../bw/">Blue Wings</a><a href="../y/">Y</a></nav><div class="eyebrow">LADA Seattle · Rec hockey</div><h1><span>LADA Beerteam</span> shift sheets</h1>
+<header><nav class="teams" aria-label="Team"><a href="../tk/">Turbo Kings</a><a href="./" aria-current="page">Beerteam</a><a href="../bw/">Blue Wings</a><a href="../df/">Doofers</a><a href="../r/">R</a><a href="../y/">Y</a></nav><div class="eyebrow">LADA Seattle · Rec hockey</div><h1><span>LADA Beerteam</span> shift sheets</h1>
 <p class="note">Ice time and shifts for every skater, measured from each week's wide-cut game video.</p></header>
 <section><h2>Games</h2><p class='note'>No games yet. Shift sheets show up here once a game video is processed.</p></section>
 </div>

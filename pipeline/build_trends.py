@@ -67,14 +67,15 @@ def game_rows(gd):
 
 
 def team_nav(page):
-    """The team selector at the top of a team's index.html or trends.html: every team with games, each linking to
-    the same page of its own site. Empty while only one team has games."""
-    sites = [(t, *site_of(t)) for t in teams() if t == SLUG or glob.glob(f"{REPO}/teams/{t}/games/*/game.json")]
+    """The team selector at the top of a team's index.html or trends.html: every team, each linking to the same page
+    of its own site (its index.html while it has no trends.html: no games yet). Empty while there is only one team."""
+    sites = [(t, *site_of(t)) for t in teams()]
     sites.sort(key=lambda s: s[0] != "tk")   # Turbo Kings first
     if len(sites) < 2:
         return ""
+    has_page = lambda t: page == "index.html" or glob.glob(f"{REPO}/teams/{t}/games/*/game.json")
     links = "".join(
-        f'<a href="{escape(os.path.relpath(d, SITE_DIR).replace(os.sep, "/"))}/{"" if page == "index.html" else page}"'
+        f'<a href="{escape(os.path.relpath(d, SITE_DIR).replace(os.sep, "/"))}/{page if page != "index.html" and has_page(t) else ""}"'
         f'{" aria-current=" + chr(34) + "page" + chr(34) if t == SLUG else ""}>{escape(name.removeprefix("LADA "))}</a>'
         for t, name, d in sites)
     return f'<nav class="teams" aria-label="Team">{links}</nav>'

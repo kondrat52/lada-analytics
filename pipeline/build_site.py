@@ -145,9 +145,9 @@ td {{ font:500 16px/1.2 var(--data); }} .l {{ text-align:left; }} td.num {{ font
 .sub {{ font:600 11px/1 var(--data); letter-spacing:.1em; text-transform:uppercase; color:var(--muted); margin-left:6px; }}
 p.note {{ color:var(--muted); margin:0; max-width:70ch; }}
 .eyebrow a {{ color:var(--blueline); }}
-.teams {{ display:inline-flex; flex-wrap:wrap; justify-self:start; margin-bottom:10px; border:1px solid var(--rule); border-radius:4px; overflow:hidden; background:var(--board); }}
+.teams {{ display:inline-flex; flex-wrap:wrap; justify-self:start; max-width:100%; margin-bottom:10px; border:1px solid var(--rule); border-radius:4px; overflow:hidden; background:var(--board); }}
 .teams a {{ font:600 13px/1 var(--data); letter-spacing:.08em; text-transform:uppercase; padding:9px 14px; color:var(--muted); text-decoration:none; }}
-.teams a + a {{ border-left:1px solid var(--rule); }} .teams a:hover {{ color:var(--ink); }}
+.teams a {{ box-shadow:-1px 0 0 var(--rule), 0 -1px 0 var(--rule); }} .teams a:hover {{ color:var(--ink); }}
 .teams a[aria-current="page"] {{ background:var(--team); color:var(--board); }}
 .teams a:focus-visible {{ outline:2px solid var(--blueline); outline-offset:-2px; }}
 </style></head><body><div class="wrap">
