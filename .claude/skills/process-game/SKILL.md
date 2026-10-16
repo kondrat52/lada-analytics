@@ -101,7 +101,8 @@ the video decoder.
 Read `$W/break_*.jpg` (each break: the ice empties and both teams sit at their benches for about a minute) and
 `$W/video_end.jpg`. `periods.json` boundaries are usually right to within a few seconds. Fix any that aren't.
 `net` is where our goalie plays that period (`nets` in `rink.py`, e.g. Renton 540 = left, 3245 = right), and it
-switches each period.
+switches each period. Check it on a zoom of both creases in each period before `prepare`, which drops our goalie's
+detections at that net: the proposal had all three backwards on BW's Oct 3 game.
 
 If `periods.json` has a single period, the breaks didn't look empty enough. At Kirkland they are about a minute long
 and a referee stays out on the ice, so empty-ice detection can't find them. Take the periods from the scoreboard clock
@@ -257,6 +258,12 @@ Put what you decide in `$W/rev_pN/review_zfix.txt`, in the review CSV format, wi
 It sorts after the reviewers' files and overrides their "?" answers, e.g.
 `R326,69,med,3776,90,med,checked by hand: 69 look at the net for the goal; 90 white helmet from 3779`.
 Then `solve` again. Tell the user which rows you labeled by hand.
+
+The lineup check passes whenever 5 are on, so also check who was on for each goal against the game sheet's scorer
+and assists. A label alone can't end a shift: a player whose track ends mid-ice stays on until the next bench
+activity, and the solver drops someone else's labeled seconds to keep 5 on (BW's Oct 3 goal: #43's shift ran on and
+the scorer, #36, lost 10 s at the net). When you've seen who went off, add it to that period in `periods.json`:
+`"off": [{"start": 1737, "end": 1775, "player": 43}]`. `solve` keeps him off then, with 5 still on the ice.
 
 The printed table is the result. Sanity check: each period's total ice time ≈ 5 × period length (minus a skater
 per penalty-kill second).

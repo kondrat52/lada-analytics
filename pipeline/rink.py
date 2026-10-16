@@ -20,6 +20,7 @@ class Renton:
     crop_top = 560 / 1702         # detection band starts here (fraction of frame height); ceiling above
     board_band = (0.41, 0.76)     # rows where boards.py looks for the far boards' yellow kick plate (fractions)
     board_lowest = False          # boards.py: per column, only the lowest yellow run (yellow signs above the boards)
+    size = (3840, 1702)           # fetch scales a smaller video of this view up to it (BW's Oct 3 came as 3600x1596)
     center_x = 1880
     nets = {"left": 540, "right": 3245}
     ocr_skip_depth = None         # OCR skips crops this deep in our bench (None: read everything)
@@ -69,6 +70,7 @@ class Snoqualmie(Renton):
     y 450-610."""
     crop_top = 340 / 1536
     board_band = (0.27, 0.45)
+    size = (3840, 1536)
     center_x = 1890
     nets = {"left": 630, "right": 3260}          # where the goalies stand (same crease size as Renton's)
     # the ice, with the near boards and both benches' boards as its left, right and bottom sides (the far boards
@@ -127,6 +129,7 @@ class Snoqualmie2(Snoqualmie):
     right."""
     crop_top = 720 / 2160
     board_band = (0.38, 0.57)
+    size = (3824, 2160)
     center_x = 1935
     nets = {"left": 680, "right": 3270}
     ICE = Path([(100, 0), (3750, 0), (3750, 1200), (3664, 1220), (3254, 1600), (3000, 1840), (2500, 2040),

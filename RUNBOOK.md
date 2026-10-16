@@ -33,8 +33,9 @@ mkdir -p $W/full
 $PY -m yt_dlp -f 313 -o "$W/video.webm" "https://youtu.be/VIDEO_ID"   # 313 = 2160p VP9; the pipeline expects 3840 px wide
 ```
 
-A rink with a `size` in `rink.py` (Kirkland: 3840x1536) gets a smaller video of the same view scaled up to it by
-`fetch` (`run_game.fit_size`; Y's Sep 14 game came as 3600x1440). The original stays as `video_<W>x<H>.webm`.
+Every rink in `rink.py` has its usual frame `size` (Renton 3840x1702, Kirkland 3840x1536), and `fetch` scales a
+smaller video of the same view up to it (`run_game.fit_size`; Y's Sep 14 game came as 3600x1440, BW's Oct 3 at
+Renton as 3600x1596). The original stays as `video_<W>x<H>.webm`.
 
 ## 2. Calibrate the far boards (1 min)
 
@@ -141,7 +142,9 @@ $PY pipeline/gantt.py $W/p1/shifts_final.csv $W/p1/segs_final.csv $W/gantt_p1.pn
 In the Gantt chart the bottom panel should sit at 5 (4 on a PK). Long stretches at 4 or 6 mean a missed
 player, a penalty, or a bad label: inspect with crop sheets before trusting the numbers. `run_game.py solve` lists
 them (and goals without 5 of us on the ice) as a lineup check. Labels you decide by hand go in
-`$W/rev_pN/review_zfix.txt` (same CSV), which overrides the reviewers' "?" answers.
+`$W/rev_pN/review_zfix.txt` (same CSV), which overrides the reviewers' "?" answers. A player you saw go off
+whose shift runs on (his track ends mid-ice) goes in that period's `"off"` list in `periods.json`
+(`{"start", "end", "player"}`): `run_game.py solve` passes it to `run2.py` as `[start, end, 5, player]`.
 
 ## 9. Play time and highlights
 
