@@ -568,6 +568,7 @@ def cmd_archive(a):
     drop = [f"{W}/{n}" for n in ("video.webm", "audio.m4a", "yolo11m.pt", "scoreboard.npy", "full/crops", "full/ov")]
     drop += glob.glob(f"{W}/*.jpg") + glob.glob(f"{W}/*.png") + glob.glob(f"{W}/rev_p*/*.jpg")
     drop += glob.glob(f"{W}/full/ocr_done_*.txt") + glob.glob(f"{W}/p*/crops")
+    drop += glob.glob(f"{W}/video_*.webm")   # the download as it came, kept by fit_size when it scaled the video
     for p in drop:
         if os.path.islink(p) or os.path.isfile(p):
             os.remove(p)
