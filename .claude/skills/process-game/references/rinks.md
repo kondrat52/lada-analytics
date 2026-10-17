@@ -35,6 +35,12 @@ in some periods and runs through them in others. On Sep 13 (Beerteam) the operat
 anyone was still playing. The board has run 3:00 for penalties the game sheet calls 2-minute minors; go by the
 panel. A penalty's clock time on the game sheet is the clock when the scorekeeper entered it, which can be 20 s
 after the whistle.
+The home team's penalty box is the matching compartment left of the home bench (x about 1945–2055, a boxed
+player at about 2000). On LADA R's Sep 21 game the empty-ice proposal merged the 1st and 2nd periods into one (the
+break wasn't empty enough), so check it against the board's clock even here. That video came as 3246x1440. The
+board's shot count fell well behind the game sheet in the 3rd (about 20–29 against the sheet's 22–39) and
+`shots.py`'s OCR read nonsense, so the shots came from the sheet; the board also showed the guests a goal too many
+for a while and fixed it later.
 
 Views: `rink` 0–3840 × 700–1500; `left-net` 150–1450 × 720–1070; `right-net` 2500–3800 × 720–1070.
 

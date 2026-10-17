@@ -106,3 +106,8 @@ number). Tell the user which rows you labeled by hand, and say so in `game.json`
   player at the bench door settles it.
 - **Shifts under 20 s are dropped** (`final_stats.py`'s `MIN_SHIFT`), including a real shift cut short by the final
   horn: Sep 21's last 16 s show 3 skaters because Ber and Beregovoy came on 17–19 s before the end. That flag stays.
+- **A sub in goal.** On LADA R's Sep 21 game Perry #99, listed under `subs`, played goal instead of #35, but
+  the prompts' goalie line comes from the roster's first goalie and an empty-row line said #79 (a regular who
+  played all game, number rarely readable) probably hadn't played. Both were fixed by hand in every prompt
+  before launch, with `--note`s saying the same. Mark a sub who played goal absent (he isn't a skater) and read the
+  goalie and empty-row lines of one prompt before launching any.

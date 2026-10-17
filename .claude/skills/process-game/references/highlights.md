@@ -22,6 +22,10 @@ A real goal shows a scramble or shot at one net, the referee pointing at it, and
 players drift to center. Most candidates without that are false alarms (icings, offsides, a timeout). The
 scorekeeper can also be slow or wrong: on Sep 14 the board first credited our goal to the other team and fixed it
 minutes later.
+The game sheet can put a goal in the wrong period: on LADA R's Sep 21 game it had Moshchuk's goal at 17:26 of
+the 2nd, but nothing happened then, and 34 s into the 3rd the board's clock stopped at 17:26 and the home score
+and shots went up. A sheet goal with no candidate near its time is worth looking for at the same clock in the
+next or previous period.
 
 ## Delegating the check
 
@@ -48,6 +52,10 @@ penalties at once are two overlapping `pk` entries; the solver and the lineup ch
 A minor the game sheet gives at the same clock as a power-play goal against may never be served: on BW's Oct 11
 game #54's high-sticking at 15:09 never lit the panel and we had 5 skaters again from the faceoff. Check
 `run_game.py skaters` across the span before adding its `pk`.
+On LADA R's Sep 21 game two penalties on the sheet were never served at all (our #39's slashing and their #0's
+tripping): no panel, an empty box, and the player kept playing. A coincidental pair (one each) leaves 4-on-4 with
+a `pk` for ours. A major or misconduct can have another player serve the minor: Sep 21's #81 got boarding plus a
+10-minute misconduct, #10 sat the minor (the `pk`'s `player`), and #81 never came back (an `off` to the end).
 
 For each of our penalties, find the infraction: the referee raises an arm right after it (a delayed penalty),
 play goes on until our team touches the puck, then the whistle and the penalty-kill faceoff. The clock stops at
