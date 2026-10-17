@@ -677,6 +677,7 @@ def cmd_solve(a):
         tgt = [[k["start"], k["end"], 5, k["player"]] for k in P.get("off", [])]
         tgt += [[k["start"], k["end"], 5, k["player"], "on"] for k in P.get("on", [])]   # seen on the ice, track lost
         tgt += [[k["start"], k["end"], 4, k.get("player")] for k in P.get("pk", [])]   # player: off, in the box
+        tgt += [[k["start"], k["end"], 6] for k in P.get("extra", [])]   # our goalie pulled for an extra attacker
         sh(PY, f"{HERE}/run2.py", f"{W}/{p}", f"{W}/rev_{p}", P["end"], json.dumps([[P["start"], P["end"]]]), json.dumps(tgt))
         sh(PY, f"{HERE}/gantt.py", f"{W}/{p}/shifts_final.csv", f"{W}/{p}/segs_final.csv", f"{W}/gantt_{p}.png",
            P["start"], P["end"])
@@ -685,10 +686,12 @@ def cmd_solve(a):
     # live play vs stoppages -> "play" column in shifts_all.csv + stoppages.json
     sh(PY, f"{HERE}/stoppages.py", f"{W}/full", f"{W}/periods.json", f"{W}/shifts_all.csv")
     A = pd.read_csv(f"{W}/shifts_all.csv")
-    for P in periods(W):   # shift seconds vs 5 skaters for the whole period (4 inside penalty kills)
+    for P in periods(W):   # shift seconds vs 5 skaters for the whole period (4 inside penalty kills, 6 with the goalie pulled)
         length = P["end"] - P["start"]; pk = sum(k["end"] - k["start"] for k in P.get("pk", []))
-        want = 5 * length - pk; have = int(A[A.period == P["label"]].dur.sum())
-        print(f"{P['label']}: {have} s of shifts; 5 x {length} s - {pk} s of penalty kill = {want} s ({have / want:.0%})")
+        ex = sum(k["end"] - k["start"] for k in P.get("extra", []))
+        want = 5 * length - pk + ex; have = int(A[A.period == P["label"]].dur.sum())
+        print(f"{P['label']}: {have} s of shifts; 5 x {length} s - {pk} s of penalty kill"
+              + (f" + {ex} s of extra attacker" if ex else "") + f" = {want} s ({have / want:.0%})")
     lineup_check(W)
     log(f"gantt charts: {W}/gantt_*.png (the bottom panel should sit at 5, 4 during a penalty kill); look at them "
         f"when the lineup check lists something")
@@ -700,8 +703,9 @@ def lineup_check(W, min_len=15):
     or a bad label to look at; fix it with a review_zfix.txt (see the skill) and solve again."""
     A = pd.read_csv(f"{W}/shifts_all.csv")
     Ps = periods(W)
-    def target(t):   # each penalty kill takes a skater off; two at once (a 5-on-3) take two
-        return max(3, 5 - sum(k["start"] <= t < k["end"] for P in Ps for k in P.get("pk", [])))
+    def target(t):   # each penalty kill takes a skater off; two at once (a 5-on-3) take two; a pulled goalie adds one
+        return max(3, 5 - sum(k["start"] <= t < k["end"] for P in Ps for k in P.get("pk", []))
+                   + sum(k["start"] <= t < k["end"] for P in Ps for k in P.get("extra", [])))
     def on(t):
         return sorted(int(p) for p in A[(A.t0 <= t) & (A.t1 > t)].player)
     bad = []
