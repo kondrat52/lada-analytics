@@ -59,6 +59,12 @@ the 3rd period at a long power-play-goal stoppage into two. Y's Sep 21 game did 
 about 55 s left): it looks like the rule here, so expect it. On that game the clock ran through stoppages in the
 1st and 2nd (period start + 18:00 minus the clock is the video time, to a second or two) and stopped at whistles
 in the 3rd. In the last minute the board shows seconds and tenths ("45.9"), easy to misread as minutes.
+Beerteam's Sep 20 game (home, white, left bench) broke both rules: play ran to 0:00 in every period, and the board
+then counted a 1:00 intermission down before resetting to 18:00. Players warm up through that minute, so the
+empty-ice proposal merged the 1st and 2nd into one period; take every period from the clock (start when it leaves
+18:00, end at 0:00), as at Kirkland. The clock again ran through stoppages in the 1st and 2nd and stopped at whistles
+in the 3rd. A player of ours (home) going to the box skates to the near-left corner and climbs in at the bottom-left
+of the frame, next to our bench. The board ran 3:00 for a minor in the 2nd and 2:00 for one in the 3rd.
 
 Views: `rink` 0–3840 × 380–1536; `left-net` 200–1400 × 380–760; `right-net` 2600–3800 × 380–760.
 

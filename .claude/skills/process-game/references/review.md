@@ -106,8 +106,17 @@ number). Tell the user which rows you labeled by hand, and say so in `game.json`
   player at the bench door settles it.
 - **Shifts under 20 s are dropped** (`final_stats.py`'s `MIN_SHIFT`), including a real shift cut short by the final
   horn: Sep 21's last 16 s show 3 skaters because Ber and Beregovoy came on 17–19 s before the end. That flag stays.
+- **A timeout with the goalie pulled.** On Beerteam's Sep 20 game Cluster Pucks called a timeout the moment our
+  goalie left the net; both teams stood at their benches for 36 s, and the solver had seven of ours "on" (6 were
+  expected, with an `extra` span). The six who came out of the timeout get it (`on` entries), the rest are `off`.
+- **A regular lost for minutes.** On the same game Kleiman #69 (KLEIMAN nameplate, black helmet; his number rarely
+  faces the camera) was missing from four 2nd-period stretches, and the period came to 94% of its shift seconds.
+  The gap subagent found him at the bench door each time, including a 225 s shift through a penalty kill. A period
+  under ~97% with one player's time far below his other periods points at him.
 - **A sub in goal.** On LADA R's Sep 21 game Perry #99, listed under `subs`, played goal instead of #35, but
   the prompts' goalie line comes from the roster's first goalie and an empty-row line said #79 (a regular who
   played all game, number rarely readable) probably hadn't played. Both were fixed by hand in every prompt
   before launch, with `--note`s saying the same. Mark a sub who played goal absent (he isn't a skater) and read the
-  goalie and empty-row lines of one prompt before launching any.
+  goalie and empty-row lines of one prompt before launching any. On Beerteam's Sep 20 game the goalie was a spare
+  not on `roster.json` at all (David Pfeifer, number never readable), and the prompts' "#1 is the goalie" line was
+  replaced in every prompt with sed before launch.
