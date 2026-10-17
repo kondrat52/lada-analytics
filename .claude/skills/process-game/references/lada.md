@@ -43,6 +43,11 @@ DIFFERS by hand. A sub who isn't on LADA's roster gets no id. A "no match" can b
 another number: put him under his jersey number with `"lada_numbers": {"<jersey>": <LADA's number>}` (Y's #87
 Beregovoy is LADA's #67). A team's first game: if `roster.json` has no players, ask the user to run this first.
 
+A player can wear different numbers on the two jerseys: Beregovoy is BEREGOVOY 87 on Y's light blue and 67 on the
+white. `unknown` finds it (138 reads of 67 with his nameplate). He is in `roster.json` under both numbers with the
+same LADA id, and the number he didn't wear goes on that game's absent list. The trends page then shows two rows
+for him; merging them needs a per-game alias that the pipeline doesn't have yet.
+
 ## SportNinja game sheets
 
 LADA's game record has `boxscoreLink`; its last path segment is the SportNinja game id, and SportNinja's API is
@@ -55,7 +60,9 @@ those). `run_game.py sheet $W` turns that into the printed sheet and `W/sheet.js
 mark as playing. The user may also hand you the scoresheet PDF from the SportNinja app ("Game #...
 scoresheet.pdf"), which says the same things. `is_playing` is the scorekeeper's and can be wrong (Y's Shakhov
 #78 was marked not playing with SHAKHOV 78 on his back all game; Potepalov #15 was marked playing and never
-seen), so the video decides.
+seen; on Sep 21 Mischenko #72 was marked not playing and played from the 2nd period), so the video decides.
+`sheet` run before `periods.json` exists leaves `video_t` empty, and `goals` then prints every goal at its
+period's start: run `sheet` again once the periods are right.
 
 ## `roster.json`
 

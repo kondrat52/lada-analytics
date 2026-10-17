@@ -49,7 +49,10 @@ Periods can end before the clock does. On BW's Oct 11 game the 1st and 2nd perio
 on the clock; the teams changed ends while the board ran the rest off on an empty rink, and the next period began
 about 25 s after the board hit 0:00. So a period ends where `run_game.py skaters` drops from 6, not at 0:00, and
 starts at the faceoff (the clock leaves 18:00), not at the skate-out the proposal picks. The proposal also split
-the 3rd period at a long power-play-goal stoppage into two.
+the 3rd period at a long power-play-goal stoppage into two. Y's Sep 21 game did the same (both periods stopped with
+about 55 s left): it looks like the rule here, so expect it. On that game the clock ran through stoppages in the
+1st and 2nd (period start + 18:00 minus the clock is the video time, to a second or two) and stopped at whistles
+in the 3rd. In the last minute the board shows seconds and tenths ("45.9"), easy to misread as minutes.
 
 Views: `rink` 0–3840 × 380–1536; `left-net` 200–1400 × 380–760; `right-net` 2600–3800 × 380–760.
 

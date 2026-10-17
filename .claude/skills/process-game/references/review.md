@@ -94,3 +94,15 @@ number). Tell the user which rows you labeled by hand, and say so in `game.json`
   goal can be listed as on; an `"off"` entry until the goal fixes it. Trimming segments to their first on-ice
   detection in shifts.py would fix this for every line change, but changes every game's numbers, so it waits for a
   regression pass over the archived folders.
+- **A two-digit number OCR keeps reading as one.** On Y's Sep 21 game #14 Ber had no card row in any period
+  (OCR took his 14 for Sokolov's 4), though 112 confident "14" reads were all him on the ice. A `--note` that he
+  played all game, and to read 14 against 4 carefully, got him labeled. Before review, sheet a few crops of any
+  regular whose card row is empty everywhere but whose number is read often.
+- **The lineup check finds wrong labels, not just gaps.** On Sep 21 a 4-on stretch was a false line change: the
+  solver had #14 off and #32 on at 48:00, but the "32" piece had one OCR read and started where #14's track ended,
+  and two pieces labeled 70 and 37 were #18. A gap's subagent should judge who was on from full frames and the
+  bench door, not trust the labels; the fixes go in as `on`/`off` spans, or as zfix lines when the piece is a
+  review row (`manifest.csv` maps `tid` to row). When a reviewer and a full-frame check disagree, a zoom on the
+  player at the bench door settles it.
+- **Shifts under 20 s are dropped** (`final_stats.py`'s `MIN_SHIFT`), including a real shift cut short by the final
+  horn: Sep 21's last 16 s show 3 skaters because Ber and Beregovoy came on 17–19 s before the end. That flag stays.
