@@ -6,9 +6,34 @@
   "lada_team_id": 2
  },
  "site_url": "https://kondrat52.github.io/lada-analytics/r/",
- "updated": null,
+ "updated": "2026-09-21",
  "season_url": "https://kondrat52.github.io/lada-analytics/r/api/season.json",
  "roster_url": "https://kondrat52.github.io/lada-analytics/r/api/roster.json",
  "trends_url": "https://kondrat52.github.io/lada-analytics/r/api/trends.json",
- "games": []
+ "games": [
+  {
+   "id": "2026-09-21-vs-tbd",
+   "date": "2026-09-21",
+   "title": "LADA R vs T.B.D., Sep 21",
+   "subtitle": "Mon Sep 21, 2026 · 8:45 PM · Renton",
+   "time": "8:45 PM",
+   "rink": "Renton",
+   "opponent": {
+    "code": "TBD",
+    "name": "T.B.D."
+   },
+   "lada_game_id": 32941,
+   "goals_on_video": {
+    "for": 3,
+    "against": 6
+   },
+   "shots": {
+    "for": 22,
+    "against": 39
+   },
+   "highlights": 13,
+   "page_url": "https://kondrat52.github.io/lada-analytics/r/games/2026-09-21-vs-tbd/",
+   "json_url": "https://kondrat52.github.io/lada-analytics/r/api/games/2026-09-21-vs-tbd.json"
+  }
+ ]
 }

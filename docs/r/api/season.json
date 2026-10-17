@@ -5,7 +5,334 @@
   "short_name": "LR",
   "lada_team_id": 2
  },
- "updated": null,
- "games": [],
- "players": []
+ "updated": "2026-09-21",
+ "games": [
+  "2026-09-21-vs-tbd"
+ ],
+ "players": [
+  {
+   "number": 66,
+   "name": "Bekker",
+   "lada_player_id": 20413,
+   "games_played": 1,
+   "shifts": 13,
+   "toi": 2567,
+   "toi_per_game": 2567,
+   "play": 1440,
+   "avg_shift": 197.5,
+   "longest_shift": 455,
+   "shortest_shift": 85,
+   "games": [
+    {
+     "id": "2026-09-21-vs-tbd",
+     "date": "2026-09-21",
+     "opponent": {
+      "code": "TBD",
+      "name": "T.B.D."
+     },
+     "toi": 2567,
+     "shifts": 13,
+     "avg_shift": 197.5,
+     "play": 1440
+    }
+   ]
+  },
+  {
+   "number": 84,
+   "name": "Severtokov",
+   "lada_player_id": 123,
+   "games_played": 1,
+   "shifts": 14,
+   "toi": 2163,
+   "toi_per_game": 2163,
+   "play": 1497,
+   "avg_shift": 154.5,
+   "longest_shift": 271,
+   "shortest_shift": 57,
+   "games": [
+    {
+     "id": "2026-09-21-vs-tbd",
+     "date": "2026-09-21",
+     "opponent": {
+      "code": "TBD",
+      "name": "T.B.D."
+     },
+     "toi": 2163,
+     "shifts": 14,
+     "avg_shift": 154.5,
+     "play": 1497
+    }
+   ]
+  },
+  {
+   "number": 57,
+   "name": "Moshchuk",
+   "lada_player_id": 196,
+   "games_played": 1,
+   "shifts": 16,
+   "toi": 2006,
+   "toi_per_game": 2006,
+   "play": 1273,
+   "avg_shift": 125.4,
+   "longest_shift": 340,
+   "shortest_shift": 40,
+   "games": [
+    {
+     "id": "2026-09-21-vs-tbd",
+     "date": "2026-09-21",
+     "opponent": {
+      "code": "TBD",
+      "name": "T.B.D."
+     },
+     "toi": 2006,
+     "shifts": 16,
+     "avg_shift": 125.4,
+     "play": 1273
+    }
+   ]
+  },
+  {
+   "number": 79,
+   "name": "Rabotyagov",
+   "lada_player_id": 5725,
+   "games_played": 1,
+   "shifts": 13,
+   "toi": 1935,
+   "toi_per_game": 1935,
+   "play": 1175,
+   "avg_shift": 148.8,
+   "longest_shift": 224,
+   "shortest_shift": 68,
+   "games": [
+    {
+     "id": "2026-09-21-vs-tbd",
+     "date": "2026-09-21",
+     "opponent": {
+      "code": "TBD",
+      "name": "T.B.D."
+     },
+     "toi": 1935,
+     "shifts": 13,
+     "avg_shift": 148.8,
+     "play": 1175
+    }
+   ]
+  },
+  {
+   "number": 9,
+   "name": "Soubochev",
+   "lada_player_id": 3425,
+   "games_played": 1,
+   "shifts": 13,
+   "toi": 1843,
+   "toi_per_game": 1843,
+   "play": 1155,
+   "avg_shift": 141.8,
+   "longest_shift": 408,
+   "shortest_shift": 22,
+   "games": [
+    {
+     "id": "2026-09-21-vs-tbd",
+     "date": "2026-09-21",
+     "opponent": {
+      "code": "TBD",
+      "name": "T.B.D."
+     },
+     "toi": 1843,
+     "shifts": 13,
+     "avg_shift": 141.8,
+     "play": 1155
+    }
+   ]
+  },
+  {
+   "number": 92,
+   "name": "Shachak",
+   "lada_player_id": 5690,
+   "games_played": 1,
+   "shifts": 14,
+   "toi": 1763,
+   "toi_per_game": 1763,
+   "play": 1065,
+   "avg_shift": 125.9,
+   "longest_shift": 211,
+   "shortest_shift": 71,
+   "games": [
+    {
+     "id": "2026-09-21-vs-tbd",
+     "date": "2026-09-21",
+     "opponent": {
+      "code": "TBD",
+      "name": "T.B.D."
+     },
+     "toi": 1763,
+     "shifts": 14,
+     "avg_shift": 125.9,
+     "play": 1065
+    }
+   ]
+  },
+  {
+   "number": 64,
+   "name": "Shtin",
+   "lada_player_id": 259,
+   "games_played": 1,
+   "shifts": 13,
+   "toi": 1542,
+   "toi_per_game": 1542,
+   "play": 879,
+   "avg_shift": 118.6,
+   "longest_shift": 193,
+   "shortest_shift": 33,
+   "games": [
+    {
+     "id": "2026-09-21-vs-tbd",
+     "date": "2026-09-21",
+     "opponent": {
+      "code": "TBD",
+      "name": "T.B.D."
+     },
+     "toi": 1542,
+     "shifts": 13,
+     "avg_shift": 118.6,
+     "play": 879
+    }
+   ]
+  },
+  {
+   "number": 81,
+   "name": "Dotsenko",
+   "lada_player_id": 56,
+   "games_played": 1,
+   "shifts": 13,
+   "toi": 1541,
+   "toi_per_game": 1541,
+   "play": 957,
+   "avg_shift": 118.5,
+   "longest_shift": 277,
+   "shortest_shift": 23,
+   "games": [
+    {
+     "id": "2026-09-21-vs-tbd",
+     "date": "2026-09-21",
+     "opponent": {
+      "code": "TBD",
+      "name": "T.B.D."
+     },
+     "toi": 1541,
+     "shifts": 13,
+     "avg_shift": 118.5,
+     "play": 957
+    }
+   ]
+  },
+  {
+   "number": 8,
+   "name": "Shanygin",
+   "lada_player_id": 5683,
+   "games_played": 1,
+   "shifts": 11,
+   "toi": 1536,
+   "toi_per_game": 1536,
+   "play": 935,
+   "avg_shift": 139.6,
+   "longest_shift": 209,
+   "shortest_shift": 63,
+   "games": [
+    {
+     "id": "2026-09-21-vs-tbd",
+     "date": "2026-09-21",
+     "opponent": {
+      "code": "TBD",
+      "name": "T.B.D."
+     },
+     "toi": 1536,
+     "shifts": 11,
+     "avg_shift": 139.6,
+     "play": 935
+    }
+   ]
+  },
+  {
+   "number": 39,
+   "name": "Vorobyov",
+   "lada_player_id": 4436,
+   "games_played": 1,
+   "shifts": 10,
+   "toi": 1418,
+   "toi_per_game": 1418,
+   "play": 1001,
+   "avg_shift": 141.8,
+   "longest_shift": 250,
+   "shortest_shift": 24,
+   "games": [
+    {
+     "id": "2026-09-21-vs-tbd",
+     "date": "2026-09-21",
+     "opponent": {
+      "code": "TBD",
+      "name": "T.B.D."
+     },
+     "toi": 1418,
+     "shifts": 10,
+     "avg_shift": 141.8,
+     "play": 1001
+    }
+   ]
+  },
+  {
+   "number": 36,
+   "name": "Makhalov",
+   "lada_player_id": 5867,
+   "games_played": 1,
+   "shifts": 12,
+   "toi": 1264,
+   "toi_per_game": 1264,
+   "play": 788,
+   "avg_shift": 105.3,
+   "longest_shift": 184,
+   "shortest_shift": 32,
+   "games": [
+    {
+     "id": "2026-09-21-vs-tbd",
+     "date": "2026-09-21",
+     "opponent": {
+      "code": "TBD",
+      "name": "T.B.D."
+     },
+     "toi": 1264,
+     "shifts": 12,
+     "avg_shift": 105.3,
+     "play": 788
+    }
+   ]
+  },
+  {
+   "number": 10,
+   "name": "Bogdanov",
+   "lada_player_id": 2,
+   "games_played": 1,
+   "shifts": 11,
+   "toi": 1052,
+   "toi_per_game": 1052,
+   "play": 729,
+   "avg_shift": 95.6,
+   "longest_shift": 153,
+   "shortest_shift": 48,
+   "games": [
+    {
+     "id": "2026-09-21-vs-tbd",
+     "date": "2026-09-21",
+     "opponent": {
+      "code": "TBD",
+      "name": "T.B.D."
+     },
+     "toi": 1052,
+     "shifts": 11,
+     "avg_shift": 95.6,
+     "play": 729
+    }
+   ]
+  }
+ ]
 }

@@ -1,0 +1,108 @@
+{
+  "32913": {
+    "date": "2026-07-20T21:45:00",
+    "playHome": false,
+    "rinkId": 2089,
+    "lines": "{\"offence\":[[\"5761\",\"196\",\"259\"],[\"3425\",\"5690\",\"5683\"],[\"20380\",null,\"2\"]],\"defence\":[[\"4436\",\"5725\"],[null,\"56\"]],\"goalie\":[[\"15240\"]],\"beer\":[\"56\"]}",
+    "teamGoals": 2,
+    "opponentGoals": 4
+  },
+  "32914": {
+    "date": "2026-07-27T20:00:00",
+    "playHome": true,
+    "rinkId": 1,
+    "lines": "{\"offence\":[[\"3425\",\"196\",\"5761\"],[\"20380\",\"5859\",\"5683\"]],\"defence\":[[\"4436\",\"56\"],[null,\"5690\"]],\"goalie\":[[\"15240\"]],\"beer\":[\"20380\"]}",
+    "teamGoals": 4,
+    "opponentGoals": 4
+  },
+  "32915": {
+    "date": "2026-08-03T20:15:00",
+    "playHome": true,
+    "rinkId": 2089,
+    "lines": "{\"offence\":[[\"3425\",\"5690\",\"5761\"],[\"20380\",\"5859\",\"5683\"]],\"defence\":[[\"4436\",\"56\"]],\"goalie\":[[\"15240\"]],\"beer\":[\"5683\"]}",
+    "teamGoals": 3,
+    "opponentGoals": 4
+  },
+  "32916": {
+    "date": "2026-08-10T20:30:00",
+    "playHome": false,
+    "rinkId": 2,
+    "lines": "{\"offence\":[[\"3425\",null,\"5761\"],[\"20380\",null,\"5683\"]],\"defence\":[[\"4436\",\"5859\"],[null,\"56\"]],\"goalie\":[[\"15240\"]],\"beer\":[\"56\"]}",
+    "teamGoals": 5,
+    "opponentGoals": 8
+  },
+  "32917": {
+    "date": "2026-08-17T21:25:00",
+    "playHome": false,
+    "rinkId": 1,
+    "lines": "{\"offence\":[[\"5761\",\"196\",\"259\"],[\"3425\",\"5859\",\"20380\"]],\"defence\":[[\"4436\",\"5489\"],[\"5725\",null]],\"goalie\":[],\"beer\":[\"20380\"]}",
+    "teamGoals": 5,
+    "opponentGoals": 4
+  },
+  "32932": {
+    "date": "2026-08-24T20:15:00",
+    "playHome": false,
+    "rinkId": 2089,
+    "lines": "{\"offence\":[[\"5859\",\"196\",\"259\"],[\"20380\",\"5489\",\"5683\"]],\"defence\":[[\"4436\",\"5725\"],[null,\"56\"]],\"goalie\":[],\"beer\":[\"56\"]}",
+    "teamGoals": 4,
+    "opponentGoals": 0
+  },
+  "32940": {
+    "date": "2026-09-14T22:15:00",
+    "playHome": false,
+    "rinkId": 1,
+    "lines": "{\"offence\":[[\"5761\",\"5690\",\"259\"],[\"3425\",\"4436\",\"5683\"],[\"5867\",null,\"2\"]],\"defence\":[[\"34\",\"5725\"],[\"20413\",\"56\"]],\"goalie\":[[\"15240\"]],\"beer\":[\"2\"]}",
+    "teamGoals": 3,
+    "opponentGoals": 5,
+    "boxscoreLink": "https://app.sportninja.com/public/game/eNUwVLLAhUdpe0fb"
+  },
+  "32941": {
+    "date": "2026-09-21T20:45:00",
+    "playHome": true,
+    "rinkId": 1,
+    "lines": "{\"offence\":[[\"5867\",\"196\",\"259\"],[\"3425\",\"5690\",\"5683\"],[\"34\",\"4436\",\"2\"]],\"defence\":[[\"20413\",\"5725\"],[\"123\",\"56\"]],\"goalie\":[[\"15240\"]],\"beer\":[\"5683\"]}",
+    "teamGoals": 3,
+    "opponentGoals": 6,
+    "boxscoreLink": "https://app.sportninja.com/public/game/p0NTX64FHGBHHOUW"
+  },
+  "32992": {
+    "date": "2026-10-12T22:10:00",
+    "opponentName": "Flounders",
+    "teamGoals": 2,
+    "opponentGoals": 2,
+    "boxscoreLink": "https://app.sportninja.com/public/game/NswucaqDGfwOkwFk",
+    "playHome": false,
+    "rinkId": 2088,
+    "lines": "{\"offence\":[[\"5761\",\"196\",\"259\"],[\"3425\",\"5690\",\"5867\"],[null,null,\"2\"]],\"defence\":[[\"5827\",\"5725\"],[\"20413\",\"56\"]],\"goalie\":[[\"15240\"]],\"beer\":[\"5827\"]}",
+    "rinkName": "Snoqualmie A"
+  },
+  "33007": {
+    "date": "2026-10-19T20:45:00",
+    "opponentName": "Teamy McTeamface",
+    "playHome": true,
+    "rinkId": 1,
+    "rinkName": "Renton",
+    "lines": "{\"offence\":[],\"defence\":[],\"goalie\":[],\"beer\":[\"56\"]}"
+  },
+  "33008": {
+    "date": "2026-10-26T22:15:00",
+    "opponentName": "Weekday Benders",
+    "playHome": true,
+    "rinkId": 1,
+    "rinkName": "Renton"
+  },
+  "33018": {
+    "date": "2026-11-02T22:10:00",
+    "opponentName": "Strange Brews",
+    "playHome": false,
+    "rinkId": 2088,
+    "rinkName": "Snoqualmie A"
+  },
+  "33019": {
+    "date": "2026-11-09T20:45:00",
+    "opponentName": "BladeRunners",
+    "playHome": false,
+    "rinkId": 1,
+    "rinkName": "Renton"
+  }
+}

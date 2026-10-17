@@ -1,0 +1,394 @@
+{
+  "id": "2026-09-21-vs-tbd",
+  "date": "2026-09-21",
+  "title": "LADA R vs T.B.D., Sep 21",
+  "eyebrow": "Mon Sep 21, 2026 · 8:45 PM · Renton",
+  "opponent": "TBD",
+  "video": "https://www.youtube.com/watch?v=xSBSv5zZ-s4",
+  "periods": [
+    {
+      "label": "P1",
+      "start": 12,
+      "end": 1092
+    },
+    {
+      "label": "P2",
+      "start": 1192,
+      "end": 2369
+    },
+    {
+      "label": "P3",
+      "start": 2474,
+      "end": 4541
+    }
+  ],
+  "nets": {
+    "P1": 3245,
+    "P2": 540,
+    "P3": 3245
+  },
+  "penalty_kills": [
+    {
+      "period": "P2",
+      "start": 1289,
+      "end": 1489,
+      "player": 9
+    },
+    {
+      "period": "P2",
+      "start": 2000,
+      "end": 2252,
+      "player": 81
+    },
+    {
+      "period": "P3",
+      "start": 2984,
+      "end": 3200,
+      "player": 64
+    },
+    {
+      "period": "P3",
+      "start": 3309,
+      "end": 3542,
+      "player": 10
+    }
+  ],
+  "notes": [
+    "LADA R's first processed game. Home game at Renton: we wore white (blue numbers) on the right (home) bench; T.B.D. wore dark green, a few of them navy or royal blue. The video came as 3246x1440 and was scaled up to Renton's usual 3840x1702 for the pipeline.",
+    "Periods from the arena scoreboard: 0:12-18:12, 19:52-39:29 and 41:14-75:41 of the video. The clock ran through stoppages in the 1st and 2nd and stopped at whistles in the 3rd; the video reaches the final horn. Our goalie was at the right net in the 1st and 3rd, the left in the 2nd.",
+    "Goals from SportNinja's game sheet, placed in the video by the scoreboard and checked by eye: T.B.D. at 2:01, 5:43 and 6:42 (all #0 Nanakul, 1st), ours at 9:57 (clock 8:10, 1st, Vorobyov #39 from Rabotyagov #79), T.B.D. at 29:55 (#26 Loch) and 38:52 (#26 Loch, clock 0:08, 2nd), ours at 41:43 (17:26, 3rd, Moshchuk #57 from Vorobyov #39) and 62:50 (6:30, 3rd, Shachak #92 from Shtin #64), T.B.D. at 72:39 (#43 Grudzien, 1:29, 3rd). The sheet puts Moshchuk's goal at 17:26 of the 2nd, but nothing happened then; 34 s into the 3rd the board's clock stopped at 17:26 and the home score went from 1 to 2, so it is in the 3rd here.",
+    "Shots on goal from the game sheet: LADA R 22, T.B.D. 39 (8-12, 6-13, 8-14 by period). The board's shot count fell behind in the 3rd (about 20-29 at the end) and could not be read automatically.",
+    "Penalties: Soubochev #9 high-sticking in the 2nd (21:06 of the video; the board ran 3 minutes); Dotsenko #81 tripping in the 2nd (32:45; 3 minutes, the first part 4-on-4); Shtin #64 interference in the 3rd (49:44), coincidental with their #71, so 4-on-4; Dotsenko #81 boarding plus a 10-minute misconduct in the 3rd (54:32): Bogdanov #10 served the minor and Dotsenko did not play again. Vorobyov #39's slashing on the sheet was never served: no panel lit, the box stayed empty and he kept playing. T.B.D. #0's tripping was not served either.",
+    "Perry #99 (a sub) played goal, so he has no skater time. Absent: Belousenko #11, Sergeev #12, Shikhanov #70, Shanygin #72 and Fateev #80. Rabotyagov #79 played all game though his number was rarely readable.",
+    "About 16 lineup stretches were checked by eye and fixed with on/off entries, among them Shachak #92 on the ice for his own goal (the solver had Rabotyagov). Four short stretches in the 3rd really had 4 of us on without a penalty, one of them an injury stoppage with Vorobyov #39 down while Shtin #64 went off unreplaced."
+  ],
+  "video_ends_early": false,
+  "fun": {
+    "name_reads": {
+      "9": 363,
+      "66": 201,
+      "36": 175,
+      "84": 160,
+      "64": 91,
+      "81": 77,
+      "92": 61,
+      "8": 46,
+      "39": 13,
+      "57": 12,
+      "79": 1
+    }
+  },
+  "pipeline": {
+    "detections": 667161,
+    "crops": 111897,
+    "reads": 4496,
+    "reviewed": 990
+  },
+  "lada_game_id": 32941,
+  "stoppages": [
+    [
+      83,
+      109
+    ],
+    [
+      109,
+      151
+    ],
+    [
+      244,
+      271
+    ],
+    [
+      330,
+      378
+    ],
+    [
+      385,
+      445
+    ],
+    [
+      453,
+      486
+    ],
+    [
+      657,
+      668
+    ],
+    [
+      752,
+      789
+    ],
+    [
+      1192,
+      1194
+    ],
+    [
+      1201,
+      1222
+    ],
+    [
+      1222,
+      1243
+    ],
+    [
+      1268,
+      1307
+    ],
+    [
+      1354,
+      1393
+    ],
+    [
+      1577,
+      1616
+    ],
+    [
+      1643,
+      1672
+    ],
+    [
+      1706,
+      1744
+    ],
+    [
+      1778,
+      1840
+    ],
+    [
+      1846,
+      1878
+    ],
+    [
+      1972,
+      2014
+    ],
+    [
+      2014,
+      2071
+    ],
+    [
+      2102,
+      2123
+    ],
+    [
+      2129,
+      2175
+    ],
+    [
+      2281,
+      2304
+    ],
+    [
+      2331,
+      2363
+    ],
+    [
+      2474,
+      2534
+    ],
+    [
+      2565,
+      2614
+    ],
+    [
+      2627,
+      2663
+    ],
+    [
+      2726,
+      2774
+    ],
+    [
+      2942,
+      3025
+    ],
+    [
+      3191,
+      3236
+    ],
+    [
+      3241,
+      3327
+    ],
+    [
+      3349,
+      3370
+    ],
+    [
+      3378,
+      3395
+    ],
+    [
+      3425,
+      3455
+    ],
+    [
+      3553,
+      3583
+    ],
+    [
+      3622,
+      3642
+    ],
+    [
+      3661,
+      3688
+    ],
+    [
+      3767,
+      3793
+    ],
+    [
+      4015,
+      4119
+    ],
+    [
+      4173,
+      4208
+    ],
+    [
+      4357,
+      4394
+    ],
+    [
+      4435,
+      4468
+    ]
+  ],
+  "highlights": [
+    {
+      "type": "goal",
+      "team": "against",
+      "t": 121,
+      "clip": "clips/goal-1.mp4",
+      "poster": "clips/goal-1.jpg",
+      "note": "1st period, clock 16:05: #0 Nanakul (from #26, #21) in a scramble at our crease, 0-1"
+    },
+    {
+      "type": "goal",
+      "team": "against",
+      "t": 343,
+      "clip": "clips/goal-2.mp4",
+      "poster": "clips/goal-2.jpg",
+      "note": "1st period, clock 12:29: #0 Nanakul (from #4, #14) cuts to the net, 0-2"
+    },
+    {
+      "type": "goal",
+      "team": "against",
+      "t": 402,
+      "clip": "clips/goal-3.mp4",
+      "poster": "clips/goal-3.jpg",
+      "note": "1st period, clock 11:25: #0 Nanakul (from #71) at the net after a point shot, 0-3"
+    },
+    {
+      "type": "goal",
+      "team": "for",
+      "t": 597,
+      "scorer": 39,
+      "assists": [
+        79
+      ],
+      "clip": "clips/goal-4.mp4",
+      "poster": "clips/goal-4.jpg",
+      "note": "1st period, clock 8:10: Vorobyov from Rabotyagov, crashing the net, 1-3"
+    },
+    {
+      "type": "penalty",
+      "player": 9,
+      "t": 1266,
+      "clip": "clips/penalty-2.mp4",
+      "poster": "clips/penalty-2.jpg",
+      "note": "2nd period, clock 16:42: high-sticking, the board ran 3 minutes; no goal against"
+    },
+    {
+      "type": "goal",
+      "team": "against",
+      "t": 1795,
+      "clip": "clips/goal-6.mp4",
+      "poster": "clips/goal-6.jpg",
+      "note": "2nd period, clock 7:51: #26 Loch out of a long scramble at our crease, 1-4"
+    },
+    {
+      "type": "penalty",
+      "player": 81,
+      "t": 1965,
+      "clip": "clips/penalty-3.mp4",
+      "poster": "clips/penalty-3.jpg",
+      "note": "2nd period, clock 4:31: tripping, 3 minutes on the board, the first 2 of them 4-on-4"
+    },
+    {
+      "type": "goal",
+      "team": "against",
+      "t": 2332,
+      "clip": "clips/goal-7.mp4",
+      "poster": "clips/goal-7.jpg",
+      "note": "2nd period, clock 0:08: #26 Loch (from #4) drives the net, 1-5"
+    },
+    {
+      "type": "goal",
+      "team": "for",
+      "t": 2503,
+      "scorer": 57,
+      "assists": [
+        39
+      ],
+      "clip": "clips/goal-5.mp4",
+      "poster": "clips/goal-5.jpg",
+      "note": "3rd period, clock 17:26 (the game sheet has it in the 2nd): Moshchuk from Vorobyov in a scramble at the net, 2-5"
+    },
+    {
+      "type": "penalty",
+      "player": 64,
+      "t": 2984,
+      "clip": "clips/penalty-4.mp4",
+      "poster": "clips/penalty-4.jpg",
+      "note": "3rd period, clock 12:13: interference, coincidental with their #71, so 4-on-4"
+    },
+    {
+      "type": "penalty",
+      "player": 81,
+      "t": 3272,
+      "clip": "clips/penalty-5.mp4",
+      "poster": "clips/penalty-5.jpg",
+      "note": "3rd period, clock 9:20: boarding plus a 10-minute misconduct; Bogdanov served the minor and Dotsenko didn't play again"
+    },
+    {
+      "type": "goal",
+      "team": "for",
+      "t": 3770,
+      "scorer": 92,
+      "assists": [
+        64
+      ],
+      "clip": "clips/goal-8.mp4",
+      "poster": "clips/goal-8.jpg",
+      "note": "3rd period, clock 6:30: Shachak from Shtin at the left post, 3-5"
+    },
+    {
+      "type": "goal",
+      "team": "against",
+      "t": 4359,
+      "clip": "clips/goal-9.mp4",
+      "poster": "clips/goal-9.jpg",
+      "note": "3rd period, clock 1:29: #43 Grudzien alone on the goalie, 3-6"
+    }
+  ],
+  "shots": {
+    "P1": [
+      8,
+      12
+    ],
+    "P2": [
+      6,
+      13
+    ],
+    "P3": [
+      8,
+      14
+    ]
+  },
+  "zones": {
+    "offence": 0.428,
+    "defence": 0.3513
+  }
+}
