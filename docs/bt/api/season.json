@@ -5,39 +5,12 @@
   "short_name": "LBT",
   "lada_team_id": 5
  },
- "updated": "2026-09-13",
+ "updated": "2026-09-20",
  "games": [
+  "2026-09-20-vs-cp",
   "2026-09-13-vs-pb"
  ],
  "players": [
-  {
-   "number": 76,
-   "name": "Panov",
-   "lada_player_id": 253,
-   "sub": true,
-   "games_played": 1,
-   "shifts": 16,
-   "toi": 2162,
-   "toi_per_game": 2162,
-   "play": 1379,
-   "avg_shift": 135.1,
-   "longest_shift": 210,
-   "shortest_shift": 27,
-   "games": [
-    {
-     "id": "2026-09-13-vs-pb",
-     "date": "2026-09-13",
-     "opponent": {
-      "code": "PB",
-      "name": "Puck Buddies OG"
-     },
-     "toi": 2162,
-     "shifts": 16,
-     "avg_shift": 135.1,
-     "play": 1379
-    }
-   ]
-  },
   {
    "number": 24,
    "name": "Papusha",
@@ -66,18 +39,85 @@
    ]
   },
   {
+   "number": 25,
+   "name": "Papusha",
+   "lada_player_id": 5795,
+   "games_played": 1,
+   "shifts": 18,
+   "toi": 1993,
+   "toi_per_game": 1993,
+   "play": 1317,
+   "avg_shift": 110.7,
+   "longest_shift": 225,
+   "shortest_shift": 50,
+   "games": [
+    {
+     "id": "2026-09-20-vs-cp",
+     "date": "2026-09-20",
+     "opponent": {
+      "code": "CP",
+      "name": "Cluster Pucks"
+     },
+     "toi": 1993,
+     "shifts": 18,
+     "avg_shift": 110.7,
+     "play": 1317
+    }
+   ]
+  },
+  {
+   "number": 61,
+   "name": "Prozhogin",
+   "lada_player_id": 14184,
+   "sub": true,
+   "games_played": 1,
+   "shifts": 18,
+   "toi": 1973,
+   "toi_per_game": 1973,
+   "play": 1453,
+   "avg_shift": 109.6,
+   "longest_shift": 184,
+   "shortest_shift": 27,
+   "games": [
+    {
+     "id": "2026-09-20-vs-cp",
+     "date": "2026-09-20",
+     "opponent": {
+      "code": "CP",
+      "name": "Cluster Pucks"
+     },
+     "toi": 1973,
+     "shifts": 18,
+     "avg_shift": 109.6,
+     "play": 1453
+    }
+   ]
+  },
+  {
    "number": 27,
    "name": "Egiazarov",
    "lada_player_id": 11101,
-   "games_played": 1,
-   "shifts": 15,
-   "toi": 2091,
-   "toi_per_game": 2091,
-   "play": 1268,
-   "avg_shift": 139.4,
+   "games_played": 2,
+   "shifts": 32,
+   "toi": 3942,
+   "toi_per_game": 1971,
+   "play": 2502,
+   "avg_shift": 123.2,
    "longest_shift": 274,
    "shortest_shift": 43,
    "games": [
+    {
+     "id": "2026-09-20-vs-cp",
+     "date": "2026-09-20",
+     "opponent": {
+      "code": "CP",
+      "name": "Cluster Pucks"
+     },
+     "toi": 1851,
+     "shifts": 17,
+     "avg_shift": 108.9,
+     "play": 1234
+    },
     {
      "id": "2026-09-13-vs-pb",
      "date": "2026-09-13",
@@ -93,18 +133,31 @@
    ]
   },
   {
-   "number": 69,
-   "name": "Kleiman",
-   "lada_player_id": 20355,
-   "games_played": 1,
-   "shifts": 14,
-   "toi": 1889,
-   "toi_per_game": 1889,
-   "play": 1330,
-   "avg_shift": 134.9,
-   "longest_shift": 249,
-   "shortest_shift": 53,
+   "number": 76,
+   "name": "Panov",
+   "lada_player_id": 253,
+   "sub": true,
+   "games_played": 2,
+   "shifts": 30,
+   "toi": 3909,
+   "toi_per_game": 1954.5,
+   "play": 2572,
+   "avg_shift": 130.3,
+   "longest_shift": 277,
+   "shortest_shift": 27,
    "games": [
+    {
+     "id": "2026-09-20-vs-cp",
+     "date": "2026-09-20",
+     "opponent": {
+      "code": "CP",
+      "name": "Cluster Pucks"
+     },
+     "toi": 1747,
+     "shifts": 14,
+     "avg_shift": 124.8,
+     "play": 1193
+    },
     {
      "id": "2026-09-13-vs-pb",
      "date": "2026-09-13",
@@ -112,10 +165,10 @@
       "code": "PB",
       "name": "Puck Buddies OG"
      },
-     "toi": 1889,
-     "shifts": 14,
-     "avg_shift": 134.9,
-     "play": 1330
+     "toi": 2162,
+     "shifts": 16,
+     "avg_shift": 135.1,
+     "play": 1379
     }
    ]
   },
@@ -148,18 +201,147 @@
    ]
   },
   {
+   "number": 69,
+   "name": "Kleiman",
+   "lada_player_id": 20355,
+   "games_played": 2,
+   "shifts": 27,
+   "toi": 3621,
+   "toi_per_game": 1810.5,
+   "play": 2522,
+   "avg_shift": 134.1,
+   "longest_shift": 322,
+   "shortest_shift": 38,
+   "games": [
+    {
+     "id": "2026-09-20-vs-cp",
+     "date": "2026-09-20",
+     "opponent": {
+      "code": "CP",
+      "name": "Cluster Pucks"
+     },
+     "toi": 1732,
+     "shifts": 13,
+     "avg_shift": 133.2,
+     "play": 1192
+    },
+    {
+     "id": "2026-09-13-vs-pb",
+     "date": "2026-09-13",
+     "opponent": {
+      "code": "PB",
+      "name": "Puck Buddies OG"
+     },
+     "toi": 1889,
+     "shifts": 14,
+     "avg_shift": 134.9,
+     "play": 1330
+    }
+   ]
+  },
+  {
+   "number": 23,
+   "name": "Zhaksilikov",
+   "lada_player_id": 3423,
+   "games_played": 2,
+   "shifts": 29,
+   "toi": 3469,
+   "toi_per_game": 1734.5,
+   "play": 2354,
+   "avg_shift": 119.6,
+   "longest_shift": 296,
+   "shortest_shift": 52,
+   "games": [
+    {
+     "id": "2026-09-20-vs-cp",
+     "date": "2026-09-20",
+     "opponent": {
+      "code": "CP",
+      "name": "Cluster Pucks"
+     },
+     "toi": 1805,
+     "shifts": 17,
+     "avg_shift": 106.2,
+     "play": 1195
+    },
+    {
+     "id": "2026-09-13-vs-pb",
+     "date": "2026-09-13",
+     "opponent": {
+      "code": "PB",
+      "name": "Puck Buddies OG"
+     },
+     "toi": 1664,
+     "shifts": 12,
+     "avg_shift": 138.7,
+     "play": 1159
+    }
+   ]
+  },
+  {
+   "number": 7,
+   "name": "Khristoforov",
+   "lada_player_id": 254,
+   "games_played": 2,
+   "shifts": 32,
+   "toi": 3189,
+   "toi_per_game": 1594.5,
+   "play": 2253,
+   "avg_shift": 99.7,
+   "longest_shift": 253,
+   "shortest_shift": 55,
+   "games": [
+    {
+     "id": "2026-09-20-vs-cp",
+     "date": "2026-09-20",
+     "opponent": {
+      "code": "CP",
+      "name": "Cluster Pucks"
+     },
+     "toi": 1863,
+     "shifts": 19,
+     "avg_shift": 98.1,
+     "play": 1441
+    },
+    {
+     "id": "2026-09-13-vs-pb",
+     "date": "2026-09-13",
+     "opponent": {
+      "code": "PB",
+      "name": "Puck Buddies OG"
+     },
+     "toi": 1326,
+     "shifts": 13,
+     "avg_shift": 102,
+     "play": 812
+    }
+   ]
+  },
+  {
    "number": 87,
    "name": "Solovyov",
    "lada_player_id": 297,
-   "games_played": 1,
-   "shifts": 13,
-   "toi": 1712,
-   "toi_per_game": 1712,
-   "play": 1074,
-   "avg_shift": 131.7,
-   "longest_shift": 180,
-   "shortest_shift": 64,
+   "games_played": 2,
+   "shifts": 25,
+   "toi": 3115,
+   "toi_per_game": 1557.5,
+   "play": 2016,
+   "avg_shift": 124.6,
+   "longest_shift": 226,
+   "shortest_shift": 56,
    "games": [
+    {
+     "id": "2026-09-20-vs-cp",
+     "date": "2026-09-20",
+     "opponent": {
+      "code": "CP",
+      "name": "Cluster Pucks"
+     },
+     "toi": 1403,
+     "shifts": 12,
+     "avg_shift": 116.9,
+     "play": 942
+    },
     {
      "id": "2026-09-13-vs-pb",
      "date": "2026-09-13",
@@ -178,15 +360,27 @@
    "number": 10,
    "name": "Bogdanov",
    "lada_player_id": 81,
-   "games_played": 1,
-   "shifts": 15,
-   "toi": 1699,
-   "toi_per_game": 1699,
-   "play": 1010,
-   "avg_shift": 113.3,
+   "games_played": 2,
+   "shifts": 28,
+   "toi": 2898,
+   "toi_per_game": 1449,
+   "play": 1836,
+   "avg_shift": 103.5,
    "longest_shift": 196,
-   "shortest_shift": 40,
+   "shortest_shift": 25,
    "games": [
+    {
+     "id": "2026-09-20-vs-cp",
+     "date": "2026-09-20",
+     "opponent": {
+      "code": "CP",
+      "name": "Cluster Pucks"
+     },
+     "toi": 1199,
+     "shifts": 13,
+     "avg_shift": 92.2,
+     "play": 826
+    },
     {
      "id": "2026-09-13-vs-pb",
      "date": "2026-09-13",
@@ -202,45 +396,30 @@
    ]
   },
   {
-   "number": 23,
-   "name": "Zhaksilikov",
-   "lada_player_id": 3423,
-   "games_played": 1,
-   "shifts": 12,
-   "toi": 1664,
-   "toi_per_game": 1664,
-   "play": 1159,
-   "avg_shift": 138.7,
-   "longest_shift": 211,
-   "shortest_shift": 52,
-   "games": [
-    {
-     "id": "2026-09-13-vs-pb",
-     "date": "2026-09-13",
-     "opponent": {
-      "code": "PB",
-      "name": "Puck Buddies OG"
-     },
-     "toi": 1664,
-     "shifts": 12,
-     "avg_shift": 138.7,
-     "play": 1159
-    }
-   ]
-  },
-  {
    "number": 34,
    "name": "Zakharov",
    "lada_player_id": 248,
-   "games_played": 1,
-   "shifts": 14,
-   "toi": 1631,
-   "toi_per_game": 1631,
-   "play": 1021,
-   "avg_shift": 116.5,
+   "games_played": 2,
+   "shifts": 27,
+   "toi": 2848,
+   "toi_per_game": 1424,
+   "play": 1839,
+   "avg_shift": 105.5,
    "longest_shift": 165,
-   "shortest_shift": 70,
+   "shortest_shift": 27,
    "games": [
+    {
+     "id": "2026-09-20-vs-cp",
+     "date": "2026-09-20",
+     "opponent": {
+      "code": "CP",
+      "name": "Cluster Pucks"
+     },
+     "toi": 1217,
+     "shifts": 13,
+     "avg_shift": 93.6,
+     "play": 818
+    },
     {
      "id": "2026-09-13-vs-pb",
      "date": "2026-09-13",
@@ -256,29 +435,56 @@
    ]
   },
   {
-   "number": 7,
-   "name": "Khristoforov",
-   "lada_player_id": 254,
+   "number": 44,
+   "name": "Tverskoy",
+   "lada_player_id": 5812,
    "games_played": 1,
-   "shifts": 13,
-   "toi": 1326,
-   "toi_per_game": 1326,
-   "play": 812,
-   "avg_shift": 102,
-   "longest_shift": 213,
-   "shortest_shift": 57,
+   "shifts": 12,
+   "toi": 1327,
+   "toi_per_game": 1327,
+   "play": 874,
+   "avg_shift": 110.6,
+   "longest_shift": 158,
+   "shortest_shift": 74,
    "games": [
     {
-     "id": "2026-09-13-vs-pb",
-     "date": "2026-09-13",
+     "id": "2026-09-20-vs-cp",
+     "date": "2026-09-20",
      "opponent": {
-      "code": "PB",
-      "name": "Puck Buddies OG"
+      "code": "CP",
+      "name": "Cluster Pucks"
      },
-     "toi": 1326,
-     "shifts": 13,
-     "avg_shift": 102,
-     "play": 812
+     "toi": 1327,
+     "shifts": 12,
+     "avg_shift": 110.6,
+     "play": 874
+    }
+   ]
+  },
+  {
+   "number": 68,
+   "name": "Chernih",
+   "lada_player_id": 120,
+   "games_played": 1,
+   "shifts": 10,
+   "toi": 1200,
+   "toi_per_game": 1200,
+   "play": 908,
+   "avg_shift": 120,
+   "longest_shift": 170,
+   "shortest_shift": 94,
+   "games": [
+    {
+     "id": "2026-09-20-vs-cp",
+     "date": "2026-09-20",
+     "opponent": {
+      "code": "CP",
+      "name": "Cluster Pucks"
+     },
+     "toi": 1200,
+     "shifts": 10,
+     "avg_shift": 120,
+     "play": 908
     }
    ]
   }

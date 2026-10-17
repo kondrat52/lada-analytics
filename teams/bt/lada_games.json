@@ -39,7 +39,8 @@
     "opponentName": "Puck Buddies Ice",
     "playHome": true,
     "rinkId": 31,
-    "rinkName": "Kirkland"
+    "rinkName": "Kirkland",
+    "lines": "{\"offence\":[[\"297\",\"17267\",\"81\"],[\"5812\",\"3423\",\"120\"]],\"defence\":[[\"5796\",\"20355\"],[\"20384\",\"5795\"]],\"goalie\":[[\"20324\"]]}"
   },
   "33012": {
     "date": "2026-10-25T17:55:00",
