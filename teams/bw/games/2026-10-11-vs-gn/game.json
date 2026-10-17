@@ -1,0 +1,295 @@
+{
+  "id": "2026-10-11-vs-gn",
+  "date": "2026-10-11",
+  "title": "LADA Blue Wings vs Gnomies, Oct 11",
+  "eyebrow": "Sun Oct 11, 2026 · 7:20 PM · Snoqualmie A",
+  "opponent": "GN",
+  "video": "https://www.youtube.com/watch?v=_HIZjUDl1QE",
+  "periods": [
+    {
+      "label": "P1",
+      "start": 93,
+      "end": 1228
+    },
+    {
+      "label": "P2",
+      "start": 1348,
+      "end": 2458
+    },
+    {
+      "label": "P3",
+      "start": 2575,
+      "end": 4097
+    }
+  ],
+  "nets": {
+    "P1": 3260,
+    "P2": 630,
+    "P3": 3260
+  },
+  "penalty_kills": [
+    {
+      "period": "P3",
+      "start": 2664,
+      "end": 2795,
+      "player": 50
+    }
+  ],
+  "notes": [
+    "Away game at Snoqualmie A: we wore light blue and had the right bench (the pipeline's defaults). The video came as 3440x1376, so fetch scaled it up to the rink's usual 3840x1536 first.",
+    "Periods from the arena scoreboard (we were GUEST) and the video: 1:33-20:28, 22:28-40:58 and 42:55-68:17 of the video. The 1st period's play stopped with about 1:25 left on the clock and the board ran the rest off on an empty rink while the teams changed ends; in the 2nd the clock stayed at 1:03 after Gnomies' goal, play went on to 40:58 and the board ran the last minute off afterwards. So those two periods end when play stopped, not at the board's 0:00. The 3rd ran to 0:00 and the video reaches the final horn.",
+    "Goals from SportNinja's game sheet, each confirmed on the video and against the board: ours at 2:07 (Tverskoy #44), 8:12 (Sourov #31) and 17:21 (Babkin #26) of the video; Gnomies' at 30:40, 39:26, 46:31 (power play) and 62:15; Tverskoy #44 put us back ahead at 50:51. Shots 34-29 from the board's shots-on-goal counter, which matches the game sheet in every period.",
+    "Penalties: Dukhno #50, interference along the far boards at 44:20 of the video (3rd period, clock 16:33), killed until Gnomies' power-play goal at 15:09. The game sheet also gives Semenov #54 a high-sticking minor at 15:09, at the stoppage for that goal, but the board never showed it, we had 5 skaters again from the faceoff and no high stick by him is visible, so it wasn't served and has no kill. Gnomies' Teets #17 (tripping, clock 9:23) gave us our only power play.",
+    "Played: 10 skaters, with sub Sourov #31 and sub goalie Paplinski #0. Dukhno #50 wore a jersey with the DERKACHEV nameplate. Lisenko #55 is on LADA's lineup and the game sheet, but OCR read her number 7 times all game (regulars: 1,000+), she has no row on any period's card, none of the 483 reviewed rows found her, and the other 10 fill all five spots in every period, so she isn't counted. Didn't play: Ilinskaya #3, Potepalov #15, Skitsko #16, Trunov #35, Horokh #77, Shipachev #88, Antonov #95 and the other subs.",
+    "Checked by hand: the lineup check flagged 9 short stretches and two goals with the wrong number of us on the ice. Watching them showed tracks that ended mid-ice, tracks that started on players still sitting on the bench, and two pairs of tracks that swapped ids; they're fixed with on/off entries in periods.json, plus P2 row R102 (Miroshnichenko #43) and P3 row R49 (Gareev #53 until the swap at 50:04, then Babkin #26). The lineup check then found no gaps."
+  ],
+  "video_ends_early": false,
+  "fun": {
+    "name_reads": {
+      "44": 1426,
+      "2": 655,
+      "43": 599,
+      "31": 543,
+      "26": 482,
+      "36": 481,
+      "54": 388,
+      "53": 263,
+      "11": 179
+    }
+  },
+  "pipeline": {
+    "detections": 803878,
+    "crops": 277920,
+    "reads": 17556,
+    "reviewed": 483
+  },
+  "highlights": [
+    {
+      "type": "goal",
+      "team": "for",
+      "t": 127,
+      "scorer": 44,
+      "assists": [
+        26
+      ],
+      "clip": "clips/goal-1.mp4",
+      "poster": "clips/goal-1.jpg",
+      "note": "1st period, clock 17:20: Tverskoy #44 crashes the crease with their goalie down, 0-1"
+    },
+    {
+      "type": "goal",
+      "team": "for",
+      "t": 492,
+      "scorer": 31,
+      "assists": [
+        43,
+        44
+      ],
+      "clip": "clips/goal-2.mp4",
+      "poster": "clips/goal-2.jpg",
+      "note": "1st period, clock 11:19: Sourov #31 in a crease scramble, 0-2"
+    },
+    {
+      "type": "goal",
+      "team": "for",
+      "t": 1041,
+      "scorer": 26,
+      "assists": [
+        53,
+        36
+      ],
+      "clip": "clips/goal-3.mp4",
+      "poster": "clips/goal-3.jpg",
+      "note": "1st period, clock 2:55: Babkin #26 from a scramble in front, 0-3"
+    },
+    {
+      "type": "goal",
+      "team": "against",
+      "t": 1840,
+      "clip": "clips/goal-4.mp4",
+      "poster": "clips/goal-4.jpg",
+      "note": "2nd period, clock 9:47: shot from the high slot and a scramble at our net, #91 Bicknese, 1-3"
+    },
+    {
+      "type": "goal",
+      "team": "against",
+      "t": 2366,
+      "clip": "clips/goal-5.mp4",
+      "poster": "clips/goal-5.jpg",
+      "note": "2nd period, clock 1:03: crease scramble at our net, #91 Bicknese, 2-3"
+    },
+    {
+      "type": "penalty",
+      "player": 50,
+      "t": 2660,
+      "clip": "clips/penalty-50.mp4",
+      "poster": "clips/penalty-50.jpg",
+      "note": "3rd period, clock 16:33: interference along the far boards, 2 minutes, ended by their power-play goal at 15:09"
+    },
+    {
+      "type": "goal",
+      "team": "against",
+      "t": 2791,
+      "clip": "clips/goal-6.mp4",
+      "poster": "clips/goal-6.jpg",
+      "note": "3rd period, clock 15:09: power-play goal in a scramble at our net, #91 Bicknese's hat trick, 3-3"
+    },
+    {
+      "type": "goal",
+      "team": "for",
+      "t": 3051,
+      "scorer": 44,
+      "assists": [
+        50
+      ],
+      "clip": "clips/goal-7.mp4",
+      "poster": "clips/goal-7.jpg",
+      "note": "3rd period, clock 12:13: Tverskoy #44 drives the net, Dukhno #50 at the far post, 3-4"
+    },
+    {
+      "type": "goal",
+      "team": "against",
+      "t": 3735,
+      "clip": "clips/goal-8.mp4",
+      "poster": "clips/goal-8.jpg",
+      "note": "3rd period, clock 4:44: crash on our net, #34 Hill, 4-4"
+    }
+  ],
+  "lada_game_id": 32977,
+  "zones": {
+    "offence": 0.3829,
+    "defence": 0.3889
+  },
+  "shots": {
+    "P1": [
+      10,
+      10
+    ],
+    "P2": [
+      1,
+      11
+    ],
+    "P3": [
+      23,
+      8
+    ]
+  },
+  "stoppages": [
+    [
+      93,
+      95
+    ],
+    [
+      124,
+      159
+    ],
+    [
+      382,
+      416
+    ],
+    [
+      442,
+      467
+    ],
+    [
+      654,
+      674
+    ],
+    [
+      838,
+      864
+    ],
+    [
+      994,
+      1072
+    ],
+    [
+      1348,
+      1353
+    ],
+    [
+      1363,
+      1385
+    ],
+    [
+      1385,
+      1413
+    ],
+    [
+      1490,
+      1527
+    ],
+    [
+      1549,
+      1572
+    ],
+    [
+      1769,
+      1794
+    ],
+    [
+      1831,
+      1872
+    ],
+    [
+      1886,
+      1944
+    ],
+    [
+      2036,
+      2123
+    ],
+    [
+      2283,
+      2356
+    ],
+    [
+      2356,
+      2399
+    ],
+    [
+      2399,
+      2430
+    ],
+    [
+      2575,
+      2578
+    ],
+    [
+      2663,
+      2708
+    ],
+    [
+      2781,
+      2843
+    ],
+    [
+      2889,
+      2941
+    ],
+    [
+      3044,
+      3085
+    ],
+    [
+      3179,
+      3238
+    ],
+    [
+      3699,
+      3719
+    ],
+    [
+      3735,
+      3767
+    ],
+    [
+      3888,
+      3929
+    ],
+    [
+      4013,
+      4055
+    ]
+  ]
+}
