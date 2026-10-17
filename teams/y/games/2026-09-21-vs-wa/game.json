@@ -1,0 +1,303 @@
+{
+  "id": "2026-09-21-vs-wa",
+  "date": "2026-09-21",
+  "title": "LADA Y vs Warriors, Sep 21",
+  "eyebrow": "Mon Sep 21, 2026 · 10:10 PM · Snoqualmie A",
+  "opponent": "WA",
+  "video": "https://www.youtube.com/watch?v=8P9SN7a5emc",
+  "periods": [
+    {
+      "label": "P1",
+      "start": 14,
+      "end": 1106
+    },
+    {
+      "label": "P2",
+      "start": 1205,
+      "end": 2306
+    },
+    {
+      "label": "P3",
+      "start": 2402,
+      "end": 3978
+    }
+  ],
+  "nets": {
+    "P1": 630,
+    "P2": 3260,
+    "P3": 630
+  },
+  "penalty_kills": [],
+  "notes": [
+    "Home game at Snoqualmie A (the 3840x1536 strip camera): we wore white and had the left (home) bench. The video came as 3438x1374, so fetch scaled it up to the rink's usual 3840x1536 first.",
+    "Periods from the arena scoreboard (we were HOME) and the video: 0:14-18:26, 20:05-38:26 and 40:02-66:18 of the video. Play in the 1st and 2nd periods stopped with about 55 s left on the clock and the board ran the rest off on an empty rink while the teams changed ends, so those two periods end when play stopped. The clock ran through stoppages in the 1st and 2nd and stopped at whistles in the 3rd, which ran to 0:00; the video reaches the final horn.",
+    "Goals from SportNinja's game sheet, placed in the video by the period clock and checked by eye: Warriors at 8:53 (clock 9:16, 1st), ours at 22:26 (15:35, 2nd, Lisitsyn #70 from Yafunyaev #29), Warriors at 27:46 (10:19), 28:32 (9:30) and 34:30 (3:33, 2nd), ours at 41:10 (17:09, 3rd, Akulov #37), 52:22 (10:00, Barkov #97 from Lisitsyn #83) and 62:30 (2:38, Lisitsyn #70). Shots on goal from the board, matching the sheet: LADA Y 23, Warriors 35. No penalties.",
+    "Played: 14 skaters. Beregovoy wore #67 on the home white jersey (BEREGOVOY 67; he wore #87 on Sep 14's light blue), so he is #67 in this game; roster.json has him under both numbers. Mischenko #72 played although SportNinja's sheet has him as not playing; he wasn't seen in the 1st period and first came on at about 25:25 of the video. Didn't play: Belousenko #11, Unuchek #49 and Shakhov #78 (0-3 number reads all game; the sheet agrees).",
+    "Labeled by hand: P2 rows R208 (#32: LISITSYN 32 read in full frames, where the solver had #82) and R215 (#12 KONDRATENKO to 34:46, then #18). Lineup gaps checked in full frames and fixed with on/off spans in periods.json: P1 around 4:58, 10:00 and 16:45; P2 around our 22:26 goal, 26:51-27:40 and 34:26-35:18 (#32, not #82, was on for Warriors' 34:30 goal); P3 46:35-49:11 (a false line change at 48:00: #12, #14, #18, #37 and #70 stayed on), 57:19, 59:30 and the last 40 s. The last 16 s show 3 of us: Ber #14 and Beregovoy #67 came on at about 66:00 for 17-19 s, under the 20 s a shift needs to count."
+  ],
+  "video_ends_early": false,
+  "fun": {
+    "name_reads": {
+      "37": 669,
+      "29": 281,
+      "89": 191,
+      "97": 109,
+      "12": 106,
+      "72": 86,
+      "18": 75,
+      "4": 63,
+      "67": 25,
+      "82": 9,
+      "14": 1
+    }
+  },
+  "pipeline": {
+    "detections": 799464,
+    "crops": 129040,
+    "reads": 5142,
+    "reviewed": 928
+  },
+  "lada_game_id": 32942,
+  "stoppages": [
+    [
+      14,
+      45
+    ],
+    [
+      172,
+      197
+    ],
+    [
+      218,
+      237
+    ],
+    [
+      535,
+      558
+    ],
+    [
+      758,
+      779
+    ],
+    [
+      907,
+      936
+    ],
+    [
+      1205,
+      1207
+    ],
+    [
+      1349,
+      1380
+    ],
+    [
+      1450,
+      1492
+    ],
+    [
+      1519,
+      1540
+    ],
+    [
+      1667,
+      1692
+    ],
+    [
+      1702,
+      1742
+    ],
+    [
+      1780,
+      1808
+    ],
+    [
+      1817,
+      1838
+    ],
+    [
+      1891,
+      1919
+    ],
+    [
+      2005,
+      2033
+    ],
+    [
+      2065,
+      2096
+    ],
+    [
+      2119,
+      2163
+    ],
+    [
+      2163,
+      2185
+    ],
+    [
+      2197,
+      2226
+    ],
+    [
+      2231,
+      2269
+    ],
+    [
+      2402,
+      2435
+    ],
+    [
+      2464,
+      2499
+    ],
+    [
+      2541,
+      2567
+    ],
+    [
+      2678,
+      2709
+    ],
+    [
+      2935,
+      3007
+    ],
+    [
+      3029,
+      3047
+    ],
+    [
+      3109,
+      3173
+    ],
+    [
+      3173,
+      3195
+    ],
+    [
+      3296,
+      3328
+    ],
+    [
+      3338,
+      3363
+    ],
+    [
+      3401,
+      3426
+    ],
+    [
+      3456,
+      3486
+    ],
+    [
+      3530,
+      3550
+    ],
+    [
+      3726,
+      3780
+    ],
+    [
+      3791,
+      3817
+    ]
+  ],
+  "highlights": [
+    {
+      "type": "goal",
+      "team": "against",
+      "t": 533,
+      "clip": "clips/goal-1.mp4",
+      "poster": "clips/goal-1.jpg",
+      "note": "1st period, clock 9:16: Warriors jam the crease with our goalie down, #12 Bussiere, 0-1"
+    },
+    {
+      "type": "goal",
+      "team": "for",
+      "t": 1346,
+      "scorer": 70,
+      "assists": [
+        29
+      ],
+      "clip": "clips/goal-2.mp4",
+      "poster": "clips/goal-2.jpg",
+      "note": "2nd period, clock 15:35: Lisitsyn #70 shoots from the slot, 1-1"
+    },
+    {
+      "type": "goal",
+      "team": "against",
+      "t": 1666,
+      "clip": "clips/goal-3.mp4",
+      "poster": "clips/goal-3.jpg",
+      "note": "2nd period, clock 10:19: a scramble in our crease, #12 Bussiere, 1-2"
+    },
+    {
+      "type": "goal",
+      "team": "against",
+      "t": 1712,
+      "clip": "clips/goal-4.mp4",
+      "poster": "clips/goal-4.jpg",
+      "note": "2nd period, clock 9:30: a pile-up in our crease, #9 Torres, 1-3"
+    },
+    {
+      "type": "goal",
+      "team": "against",
+      "t": 2070,
+      "clip": "clips/goal-5.mp4",
+      "poster": "clips/goal-5.jpg",
+      "note": "2nd period, clock 3:33: a shot from the right at our crease, #28 Heck, 1-4"
+    },
+    {
+      "type": "goal",
+      "team": "for",
+      "t": 2470,
+      "scorer": 37,
+      "assists": [],
+      "clip": "clips/goal-6.mp4",
+      "poster": "clips/goal-6.jpg",
+      "note": "3rd period, clock 17:09: Akulov #37 out of a long crease scramble, 2-4"
+    },
+    {
+      "type": "goal",
+      "team": "for",
+      "t": 3142,
+      "scorer": 97,
+      "assists": [
+        83
+      ],
+      "clip": "clips/goal-7.mp4",
+      "poster": "clips/goal-7.jpg",
+      "note": "3rd period, clock 10:00: Barkov #97 in a crease scramble with their goalie down, 3-4"
+    },
+    {
+      "type": "goal",
+      "team": "for",
+      "t": 3750,
+      "scorer": 70,
+      "assists": [],
+      "clip": "clips/goal-8.mp4",
+      "poster": "clips/goal-8.jpg",
+      "note": "3rd period, clock 2:38: Lisitsyn #70 from the scramble in front, 4-4"
+    }
+  ],
+  "shots": {
+    "P1": [
+      5,
+      10
+    ],
+    "P2": [
+      3,
+      13
+    ],
+    "P3": [
+      15,
+      12
+    ]
+  },
+  "zones": {
+    "offence": 0.3379,
+    "defence": 0.3869
+  }
+}

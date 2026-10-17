@@ -1,0 +1,79 @@
+{
+  "32910": {
+    "date": "2026-08-03T20:30:00",
+    "playHome": true,
+    "rinkId": 2069,
+    "teamGoals": 1,
+    "opponentGoals": 4
+  },
+  "32911": {
+    "date": "2026-08-10T21:25:00",
+    "playHome": true,
+    "rinkId": 2070,
+    "teamGoals": 1,
+    "opponentGoals": 4
+  },
+  "32912": {
+    "date": "2026-08-17T20:00:00",
+    "playHome": false,
+    "rinkId": 2070,
+    "lines": "{\"offence\":[[null,null,null],[null,null,null],[null,null,null]],\"defence\":[[null,null],[null,null]],\"goalie\":[[null]],\"beer\":[\"11110\"]}",
+    "teamGoals": 2,
+    "opponentGoals": 7
+  },
+  "32933": {
+    "date": "2026-08-24T20:30:00",
+    "playHome": true,
+    "rinkId": 2069,
+    "teamGoals": 7,
+    "opponentGoals": 6
+  },
+  "32942": {
+    "date": "2026-09-21T22:10:00",
+    "playHome": true,
+    "rinkId": 2071,
+    "lines": "{\"offence\":[[\"11129\",\"11166\",\"20326\"],[\"20421\",\"18293\",\"11110\"],[\"20381\",\"20414\",\"20420\"]],\"defence\":[[\"5942\",\"20415\"],[\"20417\",\"20416\"],[\"5945\",null]],\"goalie\":[[\"9080\"]]}",
+    "teamGoals": 4,
+    "opponentGoals": 4,
+    "boxscoreLink": "https://app.sportninja.com/public/game/M3fbr5Vt4D93e6FX"
+  },
+  "32993": {
+    "date": "2026-10-12T20:45:00",
+    "opponentName": "Weekday Benders",
+    "teamGoals": 0,
+    "opponentGoals": 6,
+    "boxscoreLink": "https://app.sportninja.com/public/game/GLyKExEGF6mvTpTN",
+    "playHome": false,
+    "rinkId": 2070,
+    "lines": "{\"offence\":[[\"11129\",\"18293\",\"20326\"],[\"20421\",\"11166\",\"20416\"],[null,\"20420\",null]],\"defence\":[[\"20418\",\"20415\"],[\"20417\",\"5942\"]],\"goalie\":[[\"9080\"]]}",
+    "rinkName": "Renton"
+  },
+  "32994": {
+    "date": "2026-10-19T20:45:00",
+    "opponentName": "Flounders",
+    "playHome": true,
+    "rinkId": 2071,
+    "rinkName": "Snoqualmie A"
+  },
+  "32995": {
+    "date": "2026-10-26T21:45:00",
+    "opponentName": "Strange Brews",
+    "playHome": true,
+    "rinkId": 2069,
+    "rinkName": "Kirkland"
+  },
+  "32996": {
+    "date": "2026-11-02T22:15:00",
+    "opponentName": "Best Vibes",
+    "playHome": false,
+    "rinkId": 2070,
+    "rinkName": "Renton"
+  },
+  "32997": {
+    "date": "2026-11-09T22:10:00",
+    "opponentName": "T.B.D.",
+    "playHome": false,
+    "rinkId": 2071,
+    "rinkName": "Snoqualmie A"
+  }
+}
