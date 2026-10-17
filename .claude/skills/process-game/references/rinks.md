@@ -43,7 +43,13 @@ Views: `rink` 0–3840 × 700–1500; `left-net` 150–1450 × 720–1070; `righ
 Blue Wings' home rink. Camera high on the near side at center, very wide. Both benches are on the near side at the
 frame edges: home left, away right, so the bench sitters are close to the camera and make over half of all crops
 (their reads are skipped: `ocr_skip_depth`). Nets at 630 and 3260. Intermissions are short (`min_break` 10 s):
-players stand at the bench doors, then skate out to warm up.
+players stand at the bench doors, then skate out to warm up. Videos have come as 3440x1376 and get scaled up.
+
+Periods can end before the clock does. On BW's Oct 11 game the 1st and 2nd periods stopped with about 1:25 and 1:03
+on the clock; the teams changed ends while the board ran the rest off on an empty rink, and the next period began
+about 25 s after the board hit 0:00. So a period ends where `run_game.py skaters` drops from 6, not at 0:00, and
+starts at the faceoff (the clock leaves 18:00), not at the skate-out the proposal picks. The proposal also split
+the 3rd period at a long power-play-goal stoppage into two.
 
 Views: `rink` 0–3840 × 380–1536; `left-net` 200–1400 × 380–760; `right-net` 2600–3800 × 380–760.
 

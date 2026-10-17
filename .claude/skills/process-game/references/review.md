@@ -69,12 +69,19 @@ number). Tell the user which rows you labeled by hand, and say so in `game.json`
   empty and OCR had read her number 29 times (a ponytail hides it), so 30+ reviewers were told she hadn't played.
   One reviewer caught the LISENKO nameplate. Keep anyone LADA's lines list on the roster unless every period's
   card and the reads are empty; `review` now words the empty-row note by read count.
+- **The empty-row line contradicts a note.** On BW's Oct 11 game #55 Lisenko again had no card row (7 reads), and
+  `review` wrote "#55 probably did not play" right before the `--note` saying she was on the lineup; the line was
+  reworded by hand in every prompt. This time she really hadn't played: no reviewer found her, and the other 10
+  filled 102% of the spots in every period. Solve's shift-seconds line is the cleanest test of a missing player.
 - **A non-player's number soaks up partial reads.** On Oct 3, #3 Ilinskaya didn't play, but "3" read off 43, 53
   and 35 labeled ~35 rows as #3, and a reviewer's "?" keeps the OCR label. That's what `run_game.py absent` is
   for; set it before prepare.
 - **Borrowed jerseys.** Dukhno #50 played in a jersey with the DERKACHEV nameplate; a `--note` tells reviewers.
 - **Opponents with our numbers.** Night Owls wore white #11, #35 and #43 against our light blue; the `--opp` text
   said a white jersey is an opponent whatever its number.
+- **Our goalie as a skater.** At Snoqualmie A our goalie (light blue, red pads) was sometimes tracked as a skater
+  away from the crease and kept a skater's shift running (Oct 11: a track labeled #11 parked by our net). Whoever
+  checks the lineup gaps should be told which net is ours each period.
 - **Referees as ours.** In Snoqualmie B's dim video referees' stripes passed the white-jersey test; reviewers
   mark them noise.
 - **A number that never faces the camera.** Prozhogin #61 was labeled by hand in ten stretches from black shorts,

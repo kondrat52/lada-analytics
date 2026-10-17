@@ -45,6 +45,10 @@ A bench minor (too many players) is served by a skater: find who sat by zooming 
 dark (he climbs out and his number shows), and put him as the `pk`'s `player` so the solver keeps him off. Two
 penalties at once are two overlapping `pk` entries; the solver and the lineup check expect 3 skaters then.
 
+A minor the game sheet gives at the same clock as a power-play goal against may never be served: on BW's Oct 11
+game #54's high-sticking at 15:09 never lit the panel and we had 5 skaters again from the faceoff. Check
+`run_game.py skaters` across the span before adding its `pk`.
+
 For each of our penalties, find the infraction: the referee raises an arm right after it (a delayed penalty),
 play goes on until our team touches the puck, then the whistle and the penalty-kill faceoff. The clock stops at
 the whistle, so start 10–20 s before it. The referee may signal from the far end, so look where the penalized
