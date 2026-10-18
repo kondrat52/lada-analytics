@@ -28,6 +28,14 @@ the 2nd, but nothing happened then, and 34 s into the 3rd the board's clock stop
 and shots went up. A sheet goal with no candidate near its time is worth looking for at the same clock in the
 next or previous period.
 
+The recording itself can skip. LADA R's Sep 14 video loses about two minutes of the 3rd at 44:37: from one second to
+the next the board's clock jumps from 13:59 to 11:58, the home score and shots go up during live play, and every
+player is somewhere else (three tracks end at 2677.4 s and two begin at 2677.5 s). The sheet's 13:11 goal fell in
+the gap. A board score change with no stoppage or center faceoff before it is the sign; frames half a second apart
+confirm the cut. Such a goal stays out of `highlights.json` (the page counts goals on video, and there is nothing to
+clip), and the notes give the final score and the gap. In that game the clock ran through most goals and each goal
+came 1–6 s before the board's score changed, not 6–13 s before the sheet's time.
+
 ## Delegating the check
 
 The frames are mechanical and cost the main session a few thousand tokens each, so hand a batch of candidates to

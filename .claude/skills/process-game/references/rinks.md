@@ -44,7 +44,10 @@ player at about 2000). On LADA R's Sep 21 game the empty-ice proposal merged the
 break wasn't empty enough), so check it against the board's clock even here. That video came as 3246x1440. The
 board's shot count fell well behind the game sheet in the 3rd (about 20–29 against the sheet's 22–39) and
 `shots.py`'s OCR read nonsense, so the shots came from the sheet; the board also showed the guests a goal too many
-for a while and fixed it later.
+for a while and fixed it later. On LADA R's Sep 14 game (10:15 PM) the proposal merged the 2nd and 3rd instead, and
+the board again ran a 1:00 intermission countdown after the 1st and 2nd: periods are 18:00, and every edge came from
+the clock (18:00 starting to count, the first 00.0). `shots.py` read 25-5 there while the board plainly said 29-38;
+read `shots_check.jpg` yourself every time.
 
 Views: `rink` 0–3840 × 700–1500; `left-net` 150–1450 × 720–1070; `right-net` 2500–3800 × 720–1070.
 
