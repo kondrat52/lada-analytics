@@ -1,0 +1,262 @@
+{
+  "id": "2026-09-13-vs-jp",
+  "date": "2026-09-13",
+  "title": "LADA Doofers vs Jurassic Puck, Sep 13",
+  "eyebrow": "Sun Sep 13, 2026 · 9:15 PM · Renton",
+  "opponent": "JP",
+  "video": "https://www.youtube.com/watch?v=2uh6RSaoWhQ",
+  "periods": [
+    {
+      "label": "P1",
+      "start": 1,
+      "end": 1096
+    },
+    {
+      "label": "P2",
+      "start": 1204,
+      "end": 2285
+    },
+    {
+      "label": "P3",
+      "start": 2385,
+      "end": 3947
+    }
+  ],
+  "nets": {
+    "P1": 540,
+    "P2": 3245,
+    "P3": 540
+  },
+  "penalty_kills": [],
+  "notes": [
+    "LADA Doofers' first game of the season, processed after the Sep 19 one. Away at Renton: we wore light blue and had the left bench. LADA's schedule view didn't show the game; its id (32947) was found by probing the ids next to the other teams' Sep 13 games.",
+    "The game sheet (SportNinja, read through its public API) gave the score, the scorers, the shots and who played; each goal was found on the video and against the arena scoreboard, 6 to 13 s before the time the sheet's clock implies.",
+    "Periods from the board's clock: the empty-ice proposal ran each period on through a short intermission countdown (about 1:00) that the board showed after the 1st and the 2nd, so each period ends at the board's first 00.0 and starts when the clock leaves 18:00. The clock ran through stoppages in the 1st and 2nd and stopped at whistles in the 3rd.",
+    "Wheeler #0 in goal (#1 Mayorov and #20 Starodubtsev absent). Ten skaters, the same ten as LADA's lines and the game sheet. Absent: #4, #11, #12, #13, #16, #25, #26, #27, #31, #44, #54, #61, #69, #97.",
+    "No penalties on either side. Shots from the board, matching the game sheet (19-51).",
+    "Nothing labeled by hand: the lineup check passed on the reviewers' labels alone. Reads of 86 and 18 were Tislenok's 98."
+  ],
+  "video_ends_early": false,
+  "fun": {
+    "name_reads": {
+      "37": 773,
+      "29": 340,
+      "6": 255,
+      "71": 24,
+      "75": 16
+    }
+  },
+  "pipeline": {
+    "detections": 756699,
+    "crops": 118726,
+    "reads": 10507,
+    "reviewed": 583
+  },
+  "lada_game_id": 32947,
+  "stoppages": [
+    [
+      1,
+      3
+    ],
+    [
+      46,
+      78
+    ],
+    [
+      87,
+      112
+    ],
+    [
+      288,
+      303
+    ],
+    [
+      366,
+      390
+    ],
+    [
+      571,
+      593
+    ],
+    [
+      624,
+      648
+    ],
+    [
+      730,
+      785
+    ],
+    [
+      836,
+      863
+    ],
+    [
+      914,
+      942
+    ],
+    [
+      1041,
+      1068
+    ],
+    [
+      1204,
+      1206
+    ],
+    [
+      1302,
+      1343
+    ],
+    [
+      1407,
+      1439
+    ],
+    [
+      1601,
+      1630
+    ],
+    [
+      1630,
+      1654
+    ],
+    [
+      1654,
+      1693
+    ],
+    [
+      2001,
+      2035
+    ],
+    [
+      2046,
+      2069
+    ],
+    [
+      2442,
+      2477
+    ],
+    [
+      2494,
+      2544
+    ],
+    [
+      2544,
+      2567
+    ],
+    [
+      2567,
+      2641
+    ],
+    [
+      2804,
+      2831
+    ],
+    [
+      2946,
+      2999
+    ],
+    [
+      3063,
+      3093
+    ],
+    [
+      3103,
+      3120
+    ],
+    [
+      3213,
+      3238
+    ],
+    [
+      3299,
+      3326
+    ],
+    [
+      3338,
+      3361
+    ],
+    [
+      3382,
+      3414
+    ],
+    [
+      3426,
+      3465
+    ],
+    [
+      3477,
+      3501
+    ],
+    [
+      3613,
+      3689
+    ],
+    [
+      3689,
+      3774
+    ],
+    [
+      3885,
+      3914
+    ]
+  ],
+  "highlights": [
+    {
+      "type": "goal",
+      "team": "against",
+      "t": 47,
+      "clip": "clips/goal-1.mp4",
+      "poster": "clips/goal-1.jpg",
+      "note": "1st period, clock 17:08: Jurassic Puck #55 Cudiamat, unassisted, 0-1"
+    },
+    {
+      "type": "goal",
+      "team": "against",
+      "t": 754,
+      "clip": "clips/goal-2.mp4",
+      "poster": "clips/goal-2.jpg",
+      "note": "1st period, clock 5:25: Jurassic Puck #13 Cotton from #7 Iverson, 0-2"
+    },
+    {
+      "type": "goal",
+      "team": "against",
+      "t": 2442,
+      "clip": "clips/goal-3.mp4",
+      "poster": "clips/goal-3.jpg",
+      "note": "3rd period, clock 17:00: Jurassic Puck #44 Wilson from #55 Cudiamat, 0-3"
+    },
+    {
+      "type": "goal",
+      "team": "against",
+      "t": 3744,
+      "clip": "clips/goal-4.mp4",
+      "poster": "clips/goal-4.jpg",
+      "note": "3rd period, clock 2:30: Jurassic Puck #44 Wilson from #25 Bishop, 0-4"
+    },
+    {
+      "type": "goal",
+      "team": "against",
+      "t": 3885,
+      "clip": "clips/goal-5.mp4",
+      "poster": "clips/goal-5.jpg",
+      "note": "3rd period, clock 0:34: Jurassic Puck #6 Wellnitz from #74 Atkinson, 0-5"
+    }
+  ],
+  "shots": {
+    "P1": [
+      10,
+      17
+    ],
+    "P2": [
+      1,
+      17
+    ],
+    "P3": [
+      8,
+      17
+    ]
+  },
+  "zones": {
+    "offence": 0.3011,
+    "defence": 0.4138
+  }
+}

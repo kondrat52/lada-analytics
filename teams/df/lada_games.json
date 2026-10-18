@@ -1,4 +1,15 @@
 {
+  "32947": {
+    "date": "2026-09-13T21:15:00",
+    "opponentName": "Jurassic Puck",
+    "teamGoals": 0,
+    "opponentGoals": 5,
+    "boxscoreLink": "https://app.sportninja.com/public/game/aioe8TXnLIrFmOVD",
+    "playHome": false,
+    "rinkId": 1062,
+    "lines": "{\"offence\":[[\"5874\",\"5881\",\"14218\"],[\"20327\",\"11114\",\"5898\"]],\"defence\":[[\"5880\",\"5901\"],[\"5890\",\"5876\"]],\"goalie\":[[\"20356\"]],\"beer\":[\"5876\"]}",
+    "rinkName": "Renton"
+  },
   "32948": {
     "date": "2026-09-19T20:45:00",
     "opponentName": "Sentinels",
