@@ -185,6 +185,7 @@ document.getElementById("facts").innerHTML = [
   const H = DATA.highlights || [];
   if (!H.length) { document.getElementById("hlsec").hidden = true; return; }
   const name = n => (DATA.players.find(p => p.num === n) || {}).name || "";
+  const periodName = l => /^P\d+$/.test(l) ? `Period ${l.slice(1)}` : l;   // "Period 1" for P1; OT as written
   const gf = H.filter(h => h.type === "goal" && h.team === "for").length, ga = H.filter(h => h.type === "goal" && h.team === "against").length;
   document.getElementById("score").textContent = `Goals on video: ${DATA.team} ${gf} · ${DATA.opponent} ${ga}`;
   document.getElementById("hls").innerHTML = H.map(h => {
@@ -193,7 +194,7 @@ document.getElementById("facts").innerHTML = [
     const on = h.on_ice && h.on_ice.length ? `<div class="on">On the ice: ${h.on_ice.map(n => `<b>#${n}</b> ${name(n)}`).join(", ")}</div>` : "";
     return `<div class="hl"><video controls playsinline preload="none" poster="${h.poster}"><source src="${h.clip}" type="video/mp4"></video>
       <div class="cap"><div class="kind ${cls}">${kind}</div>
-      <div class="meta">${h.period} · <a href="${at(h.t - 10)}" target="_blank" rel="noopener">${fmt(h.t)} in the full video</a>${h.note ? ` · ${h.note}` : ""}</div>${on}</div></div>`;
+      <div class="meta">${periodName(h.period)} · <a href="${at(h.t - 10)}" target="_blank" rel="noopener">${fmt(h.t)} in the full video</a>${h.note ? ` · ${h.note}` : ""}</div>${on}</div></div>`;
   }).join("");
 })();
 
@@ -235,7 +236,7 @@ const COLS = {
   game: [
     { k: "shifts", l: "Shifts", f: p => p.shifts },
     { k: "toi", l: "Ice time", f: p => `${fmt(p.toi)}<span class="bar-in" style="width:${Math.round(60 * p.toi / maxToi)}px"></span>` },
-    ...(hasPlay ? [{ k: "play", l: "Play time", f: p => t_(p.play) }] : []),
+    ...(hasPlay ? [{ k: "play", l: "Live play", f: p => t_(p.play) }] : []),
     { k: "avg", l: "Avg shift", f: p => fmt(p.avg) },
     { k: "median", l: "Median", f: p => fmt(p.median) },
     { k: "longest", l: "Longest", f: p => fmt(p.longest) },

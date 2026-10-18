@@ -110,7 +110,7 @@ SORT_JS = """<script>
 """
 
 main = (f"""<section><h2>Games</h2><ul class="games">{cards}</ul></section>
-<section><h2>Season</h2><div class="tablebox"><table id="season"><thead><tr><th class="l" tabindex="0">#</th><th class="l" tabindex="0" data-text="1">Player</th><th tabindex="0">GP</th><th tabindex="0">Shifts</th><th tabindex="0">Ice time</th><th tabindex="0" aria-sort="descending">Per game</th><th tabindex="0">Play time</th><th tabindex="0">Avg shift</th><th tabindex="0">Longest</th><th tabindex="0">Shortest</th></tr></thead>
+<section><h2>Season</h2><div class="tablebox"><table id="season"><thead><tr><th class="l" tabindex="0">#</th><th class="l" tabindex="0" data-text="1">Player</th><th tabindex="0">GP</th><th tabindex="0">Shifts</th><th tabindex="0">Ice time</th><th tabindex="0" aria-sort="descending">Per game</th><th tabindex="0">Live play</th><th tabindex="0">Avg shift</th><th tabindex="0">Longest</th><th tabindex="0">Shortest</th></tr></thead>
 <tbody>{rows}</tbody></table></div></section>""" if games else
         "<section><h2>Games</h2><p class='note'>No games yet. Shift sheets show up here once a game video is "
         "processed.</p></section>")

@@ -219,12 +219,12 @@ const sum = (a, k) => a.reduce((s, g) => s + g[k], 0);
 const shotGF = sum(shotG, "gf"), shotGA = sum(shotG, "ga");
 const tiles = [
   tile({ label: "Record", value: `${W}–${L}${T ? "–" + T : ""}`, chips, sub: `${n(gf, "goal")} for, ${ga} against` }),
-  tile({ label: "Time in offence", value: pct(mean(off.filter(x => x != null))), vals: off, goodDir: 1, fmt: d => signed(d * 100) + " pts", sub: n(nZone, "game") }),
-  tile({ label: "Time in defence", value: pct(mean(dfc.filter(x => x != null))), vals: dfc, goodDir: -1, fmt: d => signed(d * 100) + " pts", sub: n(nZone, "game") }),
+  tile({ label: "Time in offence", value: pct(mean(off.filter(x => x != null))), vals: off, goodDir: 1, fmt: d => signed(d * 100) + "%", sub: n(nZone, "game") }),
+  tile({ label: "Time in defence", value: pct(mean(dfc.filter(x => x != null))), vals: dfc, goodDir: -1, fmt: d => signed(d * 100) + "%", sub: n(nZone, "game") }),
   ...(nShots ? [
   tile({ label: "Shots per game", value: `${mean(shotG.map(g => g.sf)).toFixed(0)}–${mean(shotG.map(g => g.sa)).toFixed(0)}`, vals: games.map(g => g.sf == null ? null : g.sf - g.sa), goodDir: 1, fmt: d => signed(d, 0) + " shots", sub: n(nShots, "game") }),
-  tile({ label: "Shooting %", value: (shotGF / sum(shotG, "sf") * 100).toFixed(1) + "%", vals: games.map(g => g.sf ? g.gf / g.sf : null), goodDir: 1, fmt: d => signed(d * 100, 1) + " pts", sub: `${n(shotGF, "goal")} on ${n(sum(shotG, "sf"), "shot")}` }),
-  tile({ label: "Save %", value: (1 - shotGA / sum(shotG, "sa")).toFixed(3).replace(/^0/, ""), vals: games.map(g => g.sa ? 1 - g.ga / g.sa : null), goodDir: 1, fmt: d => signed(d * 1000, 0) + " pts", sub: `${n(shotGA, "goal")} on ${n(sum(shotG, "sa"), "shot")}` }),
+  tile({ label: "Shooting %", value: (shotGF / sum(shotG, "sf") * 100).toFixed(1) + "%", vals: games.map(g => g.sf ? g.gf / g.sf : null), goodDir: 1, fmt: d => signed(d * 100, 1) + "%", sub: `${n(shotGF, "goal")} on ${n(sum(shotG, "sf"), "shot")}` }),
+  tile({ label: "Save %", value: (1 - shotGA / sum(shotG, "sa")).toFixed(3).replace(/^0/, ""), vals: games.map(g => g.sa ? 1 - g.ga / g.sa : null), goodDir: 1, fmt: d => signed(d, 3).replace("0.", "."), sub: `${n(shotGA, "goal")} on ${n(sum(shotG, "sa"), "shot")}` }),
   ] : []),
   tile({ label: "Penalties per game", value: (mean(games.map(g => g.penalties))).toFixed(1), vals: games.map(g => g.penalties), goodDir: -1, fmt: d => signed(d, 1), sub: `Goals against on the kill: ${games.reduce((s, g) => s + g.pk_ga, 0)}` }),
   tile({ label: "Average shift", value: mmss(mean(games.map(g => g.avg_shift))), vals: games.map(g => g.avg_shift), goodDir: 0, fmt: d => signed(d) + " s", sub: `Puck in play ${pct(mean(games.map(g => g.live_pct)))} of game time` }),
@@ -265,7 +265,7 @@ const Xc = i => M.l + band * (i + .5);
 
 // goals: for up, against down
 (() => {
-  const svg = chartCard("Goals", [["For", "var(--s-for)"], ["Against", "var(--s-against)"]]);
+  const svg = chartCard("Goals", [["LADA", "var(--s-for)"], ["Opponent", "var(--s-against)"]]);
   const mx = Math.max(3, ...games.map(g => Math.max(g.gf, g.ga + 1)));   // + 1: room for the label under a bar
   const mid = M.t + (CH - M.t - M.b) / 2, k = (CH - M.t - M.b) / 2 / mx;
   const Y = v => mid - v * k;
@@ -308,7 +308,7 @@ function lineChart({ title, series, lo, hi, ticks, fmtTick, fmtVal, ref, refLabe
 }
 
 if (nShots) (() => {
-  const svg = chartCard("Shots on goal", [["Ours", "var(--s-for)"], ["Theirs", "var(--s-against)"]]);
+  const svg = chartCard("Shots on goal", [["LADA", "var(--s-for)"], ["Opponent", "var(--s-against)"]]);
   const mx = Math.max(10, ...shotG.map(g => Math.max(g.sf, g.sa * 1.15))), step = mx > 30 ? 20 : 10;   // 1.15: room for the label under a bar
   const top = Math.ceil(mx / step) * step, mid = M.t + (CH - M.t - M.b) / 2, k = (CH - M.t - M.b) / 2 / top;
   const Y = v => mid - v * k;
@@ -331,7 +331,7 @@ if (nShots) (() => {
 if (nShots) (() => {
   const np = Math.max(...shotG.map(g => g.sp.length));
   const per = Array.from({ length: np }, (_, i) => { const gs = shotG.filter(g => g.sp[i]); return [mean(gs.map(g => g.sp[i][0])), mean(gs.map(g => g.sp[i][1]))]; });
-  const svg = chartCard("Shots by period", [["Ours", "var(--s-for)"], ["Theirs", "var(--s-against)"]]);
+  const svg = chartCard("Shots per game by period", [["LADA", "var(--s-for)"], ["Opponent", "var(--s-against)"]]);
   const top = Math.max(10, Math.ceil(Math.max(...per.flat()) / 5) * 5);
   const Y = v => CH - M.b - v / top * (CH - M.t - M.b);
   const ticks = []; for (let v = 0; v <= top; v += 5) ticks.push(v);
@@ -346,7 +346,7 @@ if (nShots) (() => {
     el("text", { x: x + bw / 2 + 1, y: Y(b) - 6, "text-anchor": "middle", style: "fill:var(--ink);font-weight:600" }, svg).textContent = b.toFixed(1);
     el("text", { x, y: CH - M.b + 18, "text-anchor": "middle" }, svg).textContent = `Period ${i + 1}`;
     const hit = el("rect", { x: x - b3 / 2, y: M.t, width: b3, height: CH - M.t - M.b, class: "hit" }, svg);
-    hover(hit, () => [[{ v: a.toFixed(1), k: "ours", color: "var(--s-for)" }, { v: b.toFixed(1), k: "theirs", color: "var(--s-against)" }], `Period ${i + 1}, average per game`]);
+    hover(hit, () => [[{ v: a.toFixed(1), k: "LADA", color: "var(--s-for)" }, { v: b.toFixed(1), k: "opponent", color: "var(--s-against)" }], `Period ${i + 1}, average per game`]);
   });
 })();
 lineChart({
@@ -366,7 +366,7 @@ lineChart({
   title: "Penalties taken",
   series: [{ name: "Penalties", color: "var(--s-against)", get: g => g.penalties, endLabel: true }],
   lo: 0, hi: 4, ticks: [0, 1, 2, 3, 4], fmtTick: v => String(v), fmtVal: v => String(v),
-  extra: g => [{ v: String(g.pk_ga), k: "goals against on the kill" }, { v: g.pk_min.toFixed(1) + " min", k: "short-handed" }],
+  extra: g => [{ v: String(g.pk_ga), k: "goals against on the kill" }, { v: mmss(g.pk_min * 60), k: "short-handed" }],
 });
 
 
@@ -398,7 +398,7 @@ function callout(title, p, why) {
 const lastDate = p => fdate(games.find(g => g.id === p.games[p.games.length - 1].game).date);
 if (fastest) callout("Changing faster", fastest, `Shifts ${Math.abs(Math.round(fastest.change))} s shorter on ${lastDate(fastest)} than in earlier games.`);
 if (slowest) callout("Changing slower", slowest, `Shifts ${Math.round(slowest.change)} s longer on ${lastDate(slowest)} than in earlier games.`);
-if (pmBest) callout("Best +/−", pmBest, `${signed(pmBest.pm)} over ${n(pmBest.gp, "game")} on the ice for goals.`);
+if (pmBest) callout("Best +/−", pmBest, `${signed(pmBest.pm)} this season.`);
 if (fadeMost) callout("Longest late shifts", fadeMost, `Third-period shifts ${Math.round(fadeMost.fade)} s longer than first-period ones.`);
 
 const COLS = [
@@ -406,9 +406,9 @@ const COLS = [
   { k: "name", t: "Player", l: true, text: true },
   { k: "gp", t: "GP" },
   { k: "avg", t: "Avg shift" },
-  { k: "change", t: "Last vs earlier" },
-  { k: "share", t: "Ice share" },
-  { k: "fade", t: "P3 vs P1" },
+  { k: "change", t: "Last-game shift" },
+  { k: "share", t: "Ice time" },
+  { k: "fade", t: "3rd period vs 1st" },
   { k: "pm", t: "+/−" },
 ];
 let sortK = "avg", sortDir = -1;
@@ -428,7 +428,7 @@ function renderPlayers() {
     const nm = td(p.name, "l name"); if (p.sub) nm.appendChild(h("span", "subtag", "sub")); tr.appendChild(nm);
     tr.appendChild(td(String(p.gp)));
     const a = td(""); a.appendChild(spark(p.series, { lo: 80, hi: 170 })); a.appendChild(document.createTextNode(mmss(p.avg))); tr.appendChild(a);
-    const ch = td(""); if (p.change == null) ch.appendChild(h("span", "dim", "needs 3 games")); else { const s = h("span", "chg " + (p.change < 0 ? "faster" : "slower"), `${p.change < 0 ? "▼" : "▲"} ${Math.abs(Math.round(p.change))} s ${p.change < 0 ? "faster" : "slower"}`); ch.appendChild(s); } tr.appendChild(ch);
+    const ch = td(""); if (p.change == null) ch.appendChild(h("span", "dim", "needs 3 games")); else { const s = h("span", "chg " + (p.change < 0 ? "faster" : "slower"), `${p.change < 0 ? "▼" : "▲"} ${Math.abs(Math.round(p.change))} s`); ch.appendChild(s); } tr.appendChild(ch);
     tr.appendChild(td(`${(p.share).toFixed(2)}×`));
     tr.appendChild(td(p.fade == null ? "–" : `${signed(Math.round(p.fade))} s`));
     tr.appendChild(td(signed(p.pm)));
