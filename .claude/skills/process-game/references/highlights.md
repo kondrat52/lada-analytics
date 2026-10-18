@@ -21,7 +21,8 @@ $PY pipeline/run_game.py frames $W $W/gz.jpg --view left-net <t1> <t2> ...      
 A real goal shows a scramble or shot at one net, the referee pointing at it, and one team celebrating before the
 players drift to center. Most candidates without that are false alarms (icings, offsides, a timeout). The
 scorekeeper can also be slow or wrong: on Sep 14 the board first credited our goal to the other team and fixed it
-minutes later.
+minutes later. The sheet's clock lags the goal itself: on Doofers' Sep 13 game all five goals were 6–13 s of video
+before the time the sheet's clock implies, even in a period whose clock ran through stoppages.
 The game sheet can put a goal in the wrong period: on LADA R's Sep 21 game it had Moshchuk's goal at 17:26 of
 the 2nd, but nothing happened then, and 34 s into the 3rd the board's clock stopped at 17:26 and the home score
 and shots went up. A sheet goal with no candidate near its time is worth looking for at the same clock in the

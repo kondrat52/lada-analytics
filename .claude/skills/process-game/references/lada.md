@@ -70,10 +70,16 @@ seen; on Sep 21 Mischenko #72 was marked not playing and played from the 2nd per
 `sheet` run before `periods.json` exists leaves `video_t` empty, and `goals` then prints every goal at its
 period's start: run `sheet` again once the periods are right.
 
-A game LADA's schedule view doesn't show (older than the cache, like Doofers' Sep 19 game, their first): call
+A game LADA's schedule view doesn't show (older than the cache, like Doofers' Sep 19 game): call
 `game/<any upcoming game's id against the same opponent>/opponentGames`. It lists every game against them with
 its id, date, score and `boxscoreLink` (the SportNinja id, so `sheet --sn` works too). Add the game to
-`lada_games.json` (`game/<id>` has the full record) and publish finds it by date.
+`lada_games.json` (`game/<id>` has the full record) and publish finds it by date. With no upcoming game against
+that opponent (Doofers' Sep 13 game vs Jurassic Puck, their real first), probe `game/<id>` next to the other
+teams' games that day: 32947 sat between Blue Wings' 32945/32946 and Beerteam's 32949.
+
+The scoresheet PDF's file name is the SportNinja id ("Game #aioe8TXnLIrFmOVD scoresheet.pdf" → `sheet --sn
+aioe8TXnLIrFmOVD`), so the PDF itself needn't be read. Run before fetch, `sheet` also needs `--team <slug>`: the
+work folder doesn't record the team yet, and it defaults to Turbo Kings.
 
 ## `roster.json`
 

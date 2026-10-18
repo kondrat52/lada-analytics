@@ -28,7 +28,11 @@ Camera high on the near side. Both benches are behind the far boards: away left 
 away team's penalty box is the glassed compartment just right of the away bench (frame x about 1740–1770, past
 the glass post at x 1712), so a boxed player is tracked as "at the bench"; a player serving a penalty climbs over
 the boards there and skates off when it ends, with his number readable on the way. Nets at x 540 (left) and 3245
-(right). The empty-ice period proposal is right to a few seconds here. BW's Oct 3 video came as 3600x1596; fetch
+(right). The empty-ice period proposal is often right to a few seconds here, but check every edge against the
+clock: on Doofers' Sep 13 game (the same night as Beerteam's, 9:15 PM) the board ran a 1:00 intermission
+countdown after the 1st and the 2nd with the old period still lit, and the proposal was 19–36 s off at four of
+the five edges (the 1st ended at 18:16 of video, at the board's first 00.0, not 18:41; the 2nd and 3rd started at
+the faceoff, 36 s and 19 s after it). BW's Oct 3 video came as 3600x1596; fetch
 scales such a video up to 3840x1702 and keeps the original as `video_<W>x<H>.webm`. The clock stops at whistles
 in some periods and runs through them in others. On Sep 13 (Beerteam) the operator let the 2nd period's clock hit
 00.0, then ran an extra minute on an empty rink: the period ends at the first 00.0, and `break_*.jpg` shows whether
