@@ -49,6 +49,11 @@ A bench minor (too many players) is served by a skater: find who sat by zooming 
 dark (he climbs out and his number shows), and put him as the `pk`'s `player` so the solver keeps him off. Two
 penalties at once are two overlapping `pk` entries; the solver and the lineup check expect 3 skaters then.
 
+The game sheet can name the wrong player: on Doofers' Sep 19 game it gave the last penalty to #31 Sourov, but the
+board's panel showed 37 and Akulov #37 went to the box. And a minor late in a period can wait for the next one:
+Sourov's coincidental tripping with 1:06 left in the 2nd wasn't served then (5 on 4 to the end, our box empty); he
+went in during the intermission and sat the first 2:00 of the 3rd, so the `pk` is in the 3rd only.
+
 A minor the game sheet gives at the same clock as a power-play goal against may never be served: on BW's Oct 11
 game #54's high-sticking at 15:09 never lit the panel and we had 5 skaters again from the faceoff. Check
 `run_game.py skaters` across the span before adding its `pk`.

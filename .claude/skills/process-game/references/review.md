@@ -113,6 +113,12 @@ number). Tell the user which rows you labeled by hand, and say so in `game.json`
   faces the camera) was missing from four 2nd-period stretches, and the period came to 94% of its shift seconds.
   The gap subagent found him at the bench door each time, including a 225 s shift through a penalty kill. A period
   under ~97% with one player's time far below his other periods points at him.
+- **The goalie who played isn't the roster's first.** Mark the goalies who didn't play absent too: the first goalie
+  not absent is the one the prompts' goalie line and shifts.py use (Doofers' Sep 19: Wheeler #0 in goal, #1 and #20
+  absent, no hand edits).
+- **A number no one wears.** On Doofers' Sep 19 game two rows were labeled 19 off a sleeve; a reviewer's number
+  joins the solve's roster, so it would have become a phantom player. Before solving, grep the reviews for numbers
+  not on the roster; a zfix "?" keeps them out (the gap check later found one was Kleiman #69).
 - **A sub in goal.** On LADA R's Sep 21 game Perry #99, listed under `subs`, played goal instead of #35, but
   the prompts' goalie line comes from the roster's first goalie and an empty-row line said #79 (a regular who
   played all game, number rarely readable) probably hadn't played. Both were fixed by hand in every prompt

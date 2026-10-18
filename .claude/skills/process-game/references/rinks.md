@@ -77,6 +77,17 @@ numbers barely show, so the rink has its own brightness levels (`white_v`, `dark
 (little dark in the torso tells our white from TTT's navy); referees' stripes pass as ours and the reviewers drop
 them. LADA's schedule calls it "Snoqualmie B".
 
+Doofers' Sep 19 game (home, white, left bench) was already this whole frame, but YouTube had it only at 2548x1440:
+fetch takes the best webm when there's no 4K and scales it up, and the geometry fit unchanged. The empty-ice
+proposal merged the 1st and 2nd, and the board fooled me once: after the 1st it counted a 1:00 intermission
+(period still 1, plain m:ss), which looks like the last minute of play. Play's last minute shows tenths ("12.9");
+the period ends at 0.0, and after the 2nd the board counted a 2:00 intermission. The clock ran through stoppages in
+the 1st and 2nd and stopped at whistles in the 3rd. Our (home) penalty box is on the near side just right of our
+bench. Referees and Sentinels' black jerseys with a cream shoulder yoke passed the white test, so prepare made 210
+review sheets (twice the usual) and `run_game.py skaters` read 8–10: check penalties at the box by eye. Our goalie
+wore white with dark pads, theirs light blue; in a lopsided period the play sits at their net, which tells the nets
+apart.
+
 Views: `rink` 0–3824 × 800–2160; `left-net` 80–1280 × 820–1370; `right-net` 2620–3820 × 820–1370. The nets sit
 at about (645, 1015) and (3250, 1020) in the frame, checked on the Oct 10 video; early in that video the right net
 wasn't on the ice yet, so a check should use a frame from the game itself.

@@ -36,6 +36,12 @@ line, with a `cd` to the repo:
 cd ~/lada-analytics && ~/.venvs/hockey/Scripts/python.exe pipeline/lada_ids.py --write <slug>
 ```
 
+On the Windows PC the user's terminal is Windows PowerShell 5.1, which rejects `&&`; give them this form there:
+
+```powershell
+cd ~\lada-analytics; ~\.venvs\hockey\Scripts\python.exe pipeline\lada_ids.py --write <slug>
+```
+
 It matches every `roster.json` player to LADA's roster by number and surname and prints same / NEW / DIFFERS /
 WRONG / no match. With `--write` it adds the NEW ids and LADA's players whose numbers `roster.json` lacks (surname =
 the last word of LADA's name, goalies by position, spares by Sub status), never changing what's there: fix WRONG and
@@ -63,6 +69,11 @@ scoresheet.pdf"), which says the same things. `is_playing` is the scorekeeper's 
 seen; on Sep 21 Mischenko #72 was marked not playing and played from the 2nd period), so the video decides.
 `sheet` run before `periods.json` exists leaves `video_t` empty, and `goals` then prints every goal at its
 period's start: run `sheet` again once the periods are right.
+
+A game LADA's schedule view doesn't show (older than the cache, like Doofers' Sep 19 game, their first): call
+`game/<any upcoming game's id against the same opponent>/opponentGames`. It lists every game against them with
+its id, date, score and `boxscoreLink` (the SportNinja id, so `sheet --sn` works too). Add the game to
+`lada_games.json` (`game/<id>` has the full record) and publish finds it by date.
 
 ## `roster.json`
 
