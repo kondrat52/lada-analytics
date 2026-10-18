@@ -37,7 +37,7 @@ MEMBERS = {int(k): v for k, v in _r["skaters"].items() if int(k) not in ABSENT} 
 SUBS = {int(k): v for k, v in _r.get("subs", {}).items() if int(k) not in ABSENT}  # skaters who have subbed for us, not on the team
 SKATERS = {**MEMBERS, **SUBS}                               # everyone the pipeline looks for this game
 ALL_SKATERS = {int(k): v for part in ("skaters", "subs") for k, v in _r.get(part, {}).items()}  # the whole roster
-GOALIES = [int(k) for k in _r.get("goalies", {})]
+GOALIES = [int(k) for k in _r.get("goalies", {}) if int(k) not in ABSENT]   # the first one is in goal this game
 GOALIE_NAMES = {int(k): v for k, v in _r.get("goalies", {}).items()}
 LADA_IDS = {int(k): v for k, v in _r.get("lada_player_ids", {}).items()}  # number -> LADA player id (team roster)
 

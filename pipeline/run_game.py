@@ -80,7 +80,9 @@ def download(url, W):
     vid = f"{W}/video.webm"
     if os.path.exists(vid):
         return vid
-    sh(PY, "-m", "yt_dlp", "-q", "--no-progress", "-f", "313/bestvideo[height=2160]", "-o", vid, url)
+    # 4K where there is one; Doofers' Sep 19 video topped out at 1440p (fit_size scales it up)
+    sh(PY, "-m", "yt_dlp", "-q", "--no-progress", "-f", "313/bestvideo[height=2160]/bestvideo[ext=webm]/bestvideo",
+       "-o", vid, url)
     return vid
 
 
@@ -455,6 +457,9 @@ def cmd_frames(a):
         if len(rest) < 6:
             sys.exit("frames: give --view NAME, or X0 X1 Y0 Y1 TILE_W COLS before the times")
         x0, x1, y0, y1, tile_w, cols = (int(float(x)) for x in rest[:6]); rest = rest[6:]
+    # ffmpeg rounds an odd crop of a 4:2:0 video (the H.264 a scaled-up video becomes) to even, and the frame then
+    # comes back the wrong size: keep the box even
+    x0, y0 = x0 - x0 % 2, y0 - y0 % 2; x1, y1 = x1 - (x1 - x0) % 2, y1 - (y1 - y0) % 2
     times = [float(t) for t in rest]
     if a.range:
         t0, t1, step = a.range
@@ -509,10 +514,11 @@ def cmd_absent(a):
     os.environ["ROSTER_ABSENT"] = ",".join(str(n) for n in cfg.get("absent", []))
     from roster import MEMBERS, SUBS, GOALIE_NAMES, ALL_SKATERS, TEAM
     absent = cfg.get("absent", [])
-    print(f"{TEAM}: absent this game: " + (", ".join(f"#{n} {ALL_SKATERS.get(n, '?')}" for n in absent) or "nobody"))
+    print(f"{TEAM}: absent this game: " +
+          (", ".join(f"#{n} {ALL_SKATERS.get(n) or GOALIE_NAMES.get(n, '?')}" for n in absent) or "nobody"))
     print("  skaters:", ", ".join(f"#{n} {v}" for n, v in sorted(MEMBERS.items())))
     print("  subs:   ", ", ".join(f"#{n} {v}" for n, v in sorted(SUBS.items())) or "-")
-    print("  goalies:", ", ".join(f"#{n} {v}" for n, v in sorted(GOALIE_NAMES.items())) or "-")
+    print("  goalies:", ", ".join(f"#{n} {v}" for n, v in GOALIE_NAMES.items() if n not in absent) or "-")
     if absent and any(os.path.exists(f"{W}/rev_{P['label'].lower()}/manifest.csv") for P in periods(W)):
         print("  prepare has run already: its sheets and roster cards used the old roster. Move W/p* and W/rev_p* "
               "aside and prepare again, unless the review has started (then solve alone picks the change up).")
