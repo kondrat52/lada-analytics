@@ -286,7 +286,12 @@ const Xc = i => M.l + band * (i + .5);
 function roundTop(x, base, w, hgt) { const r = Math.min(4, hgt, w / 2); return `M${x},${base}V${base - hgt + r}Q${x},${base - hgt} ${x + r},${base - hgt}H${x + w - r}Q${x + w},${base - hgt} ${x + w},${base - hgt + r}V${base}Z`; }
 function roundBottom(x, base, w, hgt) { const r = Math.min(4, hgt, w / 2); return `M${x},${base}V${base + hgt - r}Q${x},${base + hgt} ${x + r},${base + hgt}H${x + w - r}Q${x + w},${base + hgt} ${x + w},${base + hgt - r}V${base}Z`; }
 
-function lineChart({ title, series, lo, hi, ticks, fmtTick, fmtVal, ref, refLabel, legend, extra }) {
+function lineChart({ title, series, lo, hi, step, fmtTick, fmtVal, ref, refLabel, legend, extra }) {
+  // the axis is at least lo–hi, wider when a game falls outside it; at most six steps
+  const vals = series.flatMap(s => games.map(g => s.get(g))).filter(v => v != null);
+  lo = Math.min(lo, Math.floor(Math.min(...vals) / step) * step); hi = Math.max(hi, Math.ceil(Math.max(...vals) / step) * step);
+  while ((hi - lo) / step > 6.01) { step *= 2; lo = Math.floor(lo / step) * step; hi = Math.ceil(hi / step) * step; }
+  const ticks = []; for (let i = 0; lo + i * step <= hi + step / 2; i++) ticks.push(lo + i * step);
   const svg = chartCard(title, legend);
   const Y = v => CH - M.b - (v - lo) / (hi - lo) * (CH - M.t - M.b);
   frame(svg, ticks, Y, fmtTick);
@@ -352,20 +357,20 @@ if (nShots) (() => {
 lineChart({
   title: "Time in offence and defence",
   series: [{ name: "Offence", color: "var(--s-for)", get: g => g.offence, endLabel: true }, { name: "Defence", color: "var(--s-against)", get: g => g.defence, endLabel: true }],
-  lo: .1, hi: .6, ticks: [.1, .2, .3, .4, .5, .6], fmtTick: v => pct(v), fmtVal: v => pct(v),
+  lo: .1, hi: .6, step: .1, fmtTick: v => pct(v), fmtVal: v => pct(v),
   legend: [["Offence", "var(--s-for)", "line"], ["Defence", "var(--s-against)", "line"]],
   extra: g => g.offence == null ? [] : [{ v: pct(1 - g.offence - g.defence), k: "middle of the ice" }, { v: g.rink, k: "rink" }],
 });
 lineChart({
   title: "Average shift",
   series: [{ name: "Average shift", color: "var(--s-for)", get: g => g.avg_shift, endLabel: true }],
-  lo: 90, hi: 150, ticks: [90, 105, 120, 135, 150], fmtTick: v => mmss(v), fmtVal: v => mmss(v),
+  lo: 90, hi: 150, step: 15, fmtTick: v => mmss(v), fmtVal: v => mmss(v),
   extra: g => [{ v: String(g.skaters), k: "skaters dressed" }],
 });
 lineChart({
   title: "Penalties taken",
   series: [{ name: "Penalties", color: "var(--s-against)", get: g => g.penalties, endLabel: true }],
-  lo: 0, hi: 4, ticks: [0, 1, 2, 3, 4], fmtTick: v => String(v), fmtVal: v => String(v),
+  lo: 0, hi: 4, step: 1, fmtTick: v => String(v), fmtVal: v => String(v),
   extra: g => [{ v: String(g.pk_ga), k: "goals against on the kill" }, { v: mmss(g.pk_min * 60), k: "short-handed" }],
 });
 
