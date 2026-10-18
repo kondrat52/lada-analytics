@@ -5,7 +5,285 @@
   "short_name": "LDF",
   "lada_team_id": 17
  },
- "updated": null,
- "games": [],
- "players": []
+ "updated": "2026-09-19",
+ "games": [
+  "2026-09-19-vs-se"
+ ],
+ "players": [
+  {
+   "number": 46,
+   "name": "Polyanskiy",
+   "lada_player_id": 5876,
+   "games_played": 1,
+   "shifts": 14,
+   "toi": 2448,
+   "toi_per_game": 2448,
+   "play": 1546,
+   "avg_shift": 174.9,
+   "longest_shift": 344,
+   "shortest_shift": 104,
+   "games": [
+    {
+     "id": "2026-09-19-vs-se",
+     "date": "2026-09-19",
+     "opponent": {
+      "code": "SE",
+      "name": "Sentinels"
+     },
+     "toi": 2448,
+     "shifts": 14,
+     "avg_shift": 174.9,
+     "play": 1546
+    }
+   ]
+  },
+  {
+   "number": 61,
+   "name": "Prozhogin",
+   "lada_player_id": 14187,
+   "sub": true,
+   "games_played": 1,
+   "shifts": 15,
+   "toi": 2281,
+   "toi_per_game": 2281,
+   "play": 1354,
+   "avg_shift": 152.1,
+   "longest_shift": 414,
+   "shortest_shift": 64,
+   "games": [
+    {
+     "id": "2026-09-19-vs-se",
+     "date": "2026-09-19",
+     "opponent": {
+      "code": "SE",
+      "name": "Sentinels"
+     },
+     "toi": 2281,
+     "shifts": 15,
+     "avg_shift": 152.1,
+     "play": 1354
+    }
+   ]
+  },
+  {
+   "number": 29,
+   "name": "Albantov",
+   "lada_player_id": 20327,
+   "games_played": 1,
+   "shifts": 13,
+   "toi": 2183,
+   "toi_per_game": 2183,
+   "play": 1366,
+   "avg_shift": 167.9,
+   "longest_shift": 322,
+   "shortest_shift": 93,
+   "games": [
+    {
+     "id": "2026-09-19-vs-se",
+     "date": "2026-09-19",
+     "opponent": {
+      "code": "SE",
+      "name": "Sentinels"
+     },
+     "toi": 2183,
+     "shifts": 13,
+     "avg_shift": 167.9,
+     "play": 1366
+    }
+   ]
+  },
+  {
+   "number": 37,
+   "name": "Akulov",
+   "lada_player_id": 14218,
+   "games_played": 1,
+   "shifts": 15,
+   "toi": 2090,
+   "toi_per_game": 2090,
+   "play": 1270,
+   "avg_shift": 139.3,
+   "longest_shift": 195,
+   "shortest_shift": 78,
+   "games": [
+    {
+     "id": "2026-09-19-vs-se",
+     "date": "2026-09-19",
+     "opponent": {
+      "code": "SE",
+      "name": "Sentinels"
+     },
+     "toi": 2090,
+     "shifts": 15,
+     "avg_shift": 139.3,
+     "play": 1270
+    }
+   ]
+  },
+  {
+   "number": 26,
+   "name": "Babkin",
+   "lada_player_id": 11153,
+   "sub": true,
+   "games_played": 1,
+   "shifts": 17,
+   "toi": 1974,
+   "toi_per_game": 1974,
+   "play": 1229,
+   "avg_shift": 116.1,
+   "longest_shift": 280,
+   "shortest_shift": 23,
+   "games": [
+    {
+     "id": "2026-09-19-vs-se",
+     "date": "2026-09-19",
+     "opponent": {
+      "code": "SE",
+      "name": "Sentinels"
+     },
+     "toi": 1974,
+     "shifts": 17,
+     "avg_shift": 116.1,
+     "play": 1229
+    }
+   ]
+  },
+  {
+   "number": 16,
+   "name": "Skitsko",
+   "lada_player_id": 20388,
+   "sub": true,
+   "games_played": 1,
+   "shifts": 14,
+   "toi": 1738,
+   "toi_per_game": 1738,
+   "play": 1099,
+   "avg_shift": 124.1,
+   "longest_shift": 190,
+   "shortest_shift": 44,
+   "games": [
+    {
+     "id": "2026-09-19-vs-se",
+     "date": "2026-09-19",
+     "opponent": {
+      "code": "SE",
+      "name": "Sentinels"
+     },
+     "toi": 1738,
+     "shifts": 14,
+     "avg_shift": 124.1,
+     "play": 1099
+    }
+   ]
+  },
+  {
+   "number": 97,
+   "name": "Zakharankau",
+   "lada_player_id": 14185,
+   "games_played": 1,
+   "shifts": 15,
+   "toi": 1681,
+   "toi_per_game": 1681,
+   "play": 1011,
+   "avg_shift": 112.1,
+   "longest_shift": 206,
+   "shortest_shift": 25,
+   "games": [
+    {
+     "id": "2026-09-19-vs-se",
+     "date": "2026-09-19",
+     "opponent": {
+      "code": "SE",
+      "name": "Sentinels"
+     },
+     "toi": 1681,
+     "shifts": 15,
+     "avg_shift": 112.1,
+     "play": 1011
+    }
+   ]
+  },
+  {
+   "number": 44,
+   "name": "Tverskoy",
+   "lada_player_id": 5899,
+   "sub": true,
+   "games_played": 1,
+   "shifts": 14,
+   "toi": 1606,
+   "toi_per_game": 1606,
+   "play": 974,
+   "avg_shift": 114.7,
+   "longest_shift": 208,
+   "shortest_shift": 25,
+   "games": [
+    {
+     "id": "2026-09-19-vs-se",
+     "date": "2026-09-19",
+     "opponent": {
+      "code": "SE",
+      "name": "Sentinels"
+     },
+     "toi": 1606,
+     "shifts": 14,
+     "avg_shift": 114.7,
+     "play": 974
+    }
+   ]
+  },
+  {
+   "number": 69,
+   "name": "Kleiman",
+   "lada_player_id": 20329,
+   "sub": true,
+   "games_played": 1,
+   "shifts": 16,
+   "toi": 1602,
+   "toi_per_game": 1602,
+   "play": 983,
+   "avg_shift": 100.1,
+   "longest_shift": 182,
+   "shortest_shift": 22,
+   "games": [
+    {
+     "id": "2026-09-19-vs-se",
+     "date": "2026-09-19",
+     "opponent": {
+      "code": "SE",
+      "name": "Sentinels"
+     },
+     "toi": 1602,
+     "shifts": 16,
+     "avg_shift": 100.1,
+     "play": 983
+    }
+   ]
+  },
+  {
+   "number": 31,
+   "name": "Sourov",
+   "lada_player_id": 15242,
+   "games_played": 1,
+   "shifts": 11,
+   "toi": 1315,
+   "toi_per_game": 1315,
+   "play": 745,
+   "avg_shift": 119.5,
+   "longest_shift": 168,
+   "shortest_shift": 53,
+   "games": [
+    {
+     "id": "2026-09-19-vs-se",
+     "date": "2026-09-19",
+     "opponent": {
+      "code": "SE",
+      "name": "Sentinels"
+     },
+     "toi": 1315,
+     "shifts": 11,
+     "avg_shift": 119.5,
+     "play": 745
+    }
+   ]
+  }
+ ]
 }

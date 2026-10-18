@@ -1,0 +1,38 @@
+{
+  "32948": {
+    "date": "2026-09-19T20:45:00",
+    "opponentName": "Sentinels",
+    "teamGoals": 8,
+    "opponentGoals": 0,
+    "boxscoreLink": "https://app.sportninja.com/public/game/1edTUdGp2Iu4eV0o",
+    "playHome": true,
+    "rinkId": 1065,
+    "lines": "{\"offence\":[[\"20329\",\"5881\",\"14218\"],[\"20327\",\"11153\",\"14185\"],[null,\"5899\",null]],\"defence\":[[\"15242\",\"5876\"],[\"14187\",\"20388\"]],\"goalie\":[[\"20356\"]],\"beer\":[]}",
+    "rinkName": "Snoqualmie B"
+  },
+  "32980": {
+    "date": "2026-10-10T22:10:00",
+    "opponentName": "Frost Giants",
+    "teamGoals": 1,
+    "opponentGoals": 4,
+    "boxscoreLink": "https://app.sportninja.com/public/game/XoyXT50pOa9n8IZN",
+    "playHome": true,
+    "rinkId": 1065,
+    "lines": "{\"offence\":[[\"20327\",\"11153\",\"14185\"],[\"5874\",\"11114\",\"5898\"],[null,\"15242\",null]],\"defence\":[[\"5880\",\"14187\"],[\"5890\",\"5876\"]],\"goalie\":[[\"20356\"]],\"beer\":[]}",
+    "rinkName": "Snoqualmie B"
+  },
+  "33009": {
+    "date": "2026-10-18T22:10:00",
+    "opponentName": "Rainucks",
+    "playHome": false,
+    "rinkId": 2074,
+    "rinkName": "Snoqualmie A"
+  },
+  "33010": {
+    "date": "2026-10-25T21:50:00",
+    "opponentName": "Sentinels",
+    "playHome": false,
+    "rinkId": 1065,
+    "rinkName": "Snoqualmie B"
+  }
+}

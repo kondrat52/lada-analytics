@@ -5,6 +5,7 @@
   "lada_team_id": 17,
   "site_url": "https://kondrat52.github.io/lada-analytics/df/",
   "goalies": {
+    "0": "Wheeler",
     "1": "Mayorov",
     "20": "Starodubtsev"
   },
@@ -37,6 +38,7 @@
     "69": "Kleiman"
   },
   "lada_player_ids": {
+    "0": 20356,
     "1": 20392,
     "4": 5905,
     "6": 5874,
@@ -60,5 +62,8 @@
     "76": 5881,
     "97": 14185,
     "98": 5898
+  },
+  "lada_numbers": {
+    "0": 29
   }
 }

@@ -141,6 +141,11 @@
  ],
  "goalies": [
   {
+   "number": 0,
+   "name": "Wheeler",
+   "lada_player_id": 20356
+  },
+  {
    "number": 1,
    "name": "Mayorov",
    "lada_player_id": 20392
