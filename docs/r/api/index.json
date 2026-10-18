@@ -34,6 +34,30 @@
    "highlights": 13,
    "page_url": "https://kondrat52.github.io/lada-analytics/r/games/2026-09-21-vs-tbd/",
    "json_url": "https://kondrat52.github.io/lada-analytics/r/api/games/2026-09-21-vs-tbd.json"
+  },
+  {
+   "id": "2026-09-14-vs-wa",
+   "date": "2026-09-14",
+   "title": "LADA R vs Warriors, Sep 14",
+   "subtitle": "Mon Sep 14, 2026 · 10:15 PM · Renton",
+   "time": "10:15 PM",
+   "rink": "Renton",
+   "opponent": {
+    "code": "WA",
+    "name": "Warriors"
+   },
+   "lada_game_id": 32940,
+   "goals_on_video": {
+    "for": 3,
+    "against": 4
+   },
+   "shots": {
+    "for": 29,
+    "against": 38
+   },
+   "highlights": 7,
+   "page_url": "https://kondrat52.github.io/lada-analytics/r/games/2026-09-14-vs-wa/",
+   "json_url": "https://kondrat52.github.io/lada-analytics/r/api/games/2026-09-14-vs-wa.json"
   }
  ]
 }

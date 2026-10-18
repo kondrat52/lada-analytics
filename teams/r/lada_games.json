@@ -104,5 +104,12 @@
     "playHome": false,
     "rinkId": 1,
     "rinkName": "Renton"
+  },
+  "33020": {
+    "date": "2026-11-16T20:45:00",
+    "opponentName": "T.B.D.",
+    "playHome": true,
+    "rinkId": 2088,
+    "rinkName": "Snoqualmie A"
   }
 }

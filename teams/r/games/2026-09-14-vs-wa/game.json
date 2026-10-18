@@ -1,0 +1,295 @@
+{
+  "id": "2026-09-14-vs-wa",
+  "date": "2026-09-14",
+  "title": "LADA R vs Warriors, Sep 14",
+  "eyebrow": "Mon Sep 14, 2026 · 10:15 PM · Renton",
+  "opponent": "WA",
+  "video": "https://www.youtube.com/watch?v=9HJUMvSUGV4",
+  "periods": [
+    {
+      "label": "P1",
+      "start": 4,
+      "end": 1099
+    },
+    {
+      "label": "P2",
+      "start": 1206,
+      "end": 2293
+    },
+    {
+      "label": "P3",
+      "start": 2414,
+      "end": 3596
+    }
+  ],
+  "nets": {
+    "P1": 540,
+    "P2": 3245,
+    "P3": 540
+  },
+  "penalty_kills": [],
+  "notes": [
+    "Away game at Renton: we wore light blue on the left (away) bench; Warriors wore white with black and gold trim. The video came as 3600x1596 and was scaled up to Renton's usual 3840x1702.",
+    "Periods from the arena scoreboard: 0:04-18:19, 20:06-38:13 and 40:14-59:56 of the video. The board ran a 1:00 intermission countdown after the 1st and the 2nd. The clock ran through stoppages in the 1st and 2nd and stopped at whistles in the 3rd; the video reaches the final horn. Our goalie was at the left net in the 1st and 3rd, the right in the 2nd.",
+    "The recording skips about two minutes of the 3rd at 44:37 of the video: the board's clock jumps from 13:59 to 11:58 from one second to the next and every player is somewhere else. Warriors' 3-3 goal (#28 Heck from #12, clock 13:11) happened in the gap, so it has no clip and nobody's ice time covers those two minutes. The goals on video read 3-4; the final was 3-5.",
+    "Goals from SportNinja's game sheet, placed in the video by the scoreboard and checked by eye: ours at 0:25 (clock 17:35, Shachak #92 from Shtin #64 and Soubochev #9), 8:14 (9:44, Rabotyagov #79 from Makhalov #36 and Shachak #92) and 15:29 (2:32, Makhalov #36 from Shachak #92), all in the 1st; Warriors at 30:50 (7:11, 2nd, #12 Bussiere), 36:38 (1:24, 2nd, #31 Moreland), 47:27 (10:02, 3rd, #2 Quinn) and 54:11 (4:30, 3rd, #4 Simon). Each goal came 1-6 s before the board's score changed.",
+    "Shots on goal from the board, matching the game sheet: LADA R 29, Warriors 38 (11-12, 7-10, 11-16 by period). No penalties. Willis #35 left the net for an extra attacker with 13 s left (59:43 of the video) and it stayed empty to the horn.",
+    "Absent: Belousenko #11, Sergeev #12, Moshchuk #57, Shikhanov #70, Shanygin #72, Severtokov #84 and Perry #99. Sergeev was on the planned lines but not on the game sheet; his number was read 13 times all game (Warriors also wear #12) and he had no roster-card row in any period.",
+    "Lineup fix by hand: at Makhalov's goal the solver had Rabotyagov #79 on and Shachak #92 off; #79 had gone off at the bench door at 15:04 (Fateev #80 came on there) and #92's track was unlabeled until two tracks swapped after the goal, so off/on entries fixed it. One slow line change at 56:40-56:55 still shows 6 of us for a few seconds. No review rows were labeled by hand."
+  ],
+  "video_ends_early": false,
+  "fun": {
+    "name_reads": {
+      "81": 533,
+      "10": 467,
+      "36": 402,
+      "8": 362,
+      "66": 314,
+      "80": 272,
+      "9": 238,
+      "64": 178,
+      "39": 153,
+      "92": 144,
+      "79": 133
+    }
+  },
+  "pipeline": {
+    "detections": 600623,
+    "crops": 100698,
+    "reads": 11363,
+    "reviewed": 530
+  },
+  "lada_game_id": 32940,
+  "stoppages": [
+    [
+      4,
+      49
+    ],
+    [
+      116,
+      129
+    ],
+    [
+      203,
+      221
+    ],
+    [
+      329,
+      353
+    ],
+    [
+      353,
+      381
+    ],
+    [
+      403,
+      427
+    ],
+    [
+      472,
+      520
+    ],
+    [
+      534,
+      584
+    ],
+    [
+      822,
+      847
+    ],
+    [
+      847,
+      869
+    ],
+    [
+      929,
+      960
+    ],
+    [
+      1206,
+      1209
+    ],
+    [
+      1283,
+      1308
+    ],
+    [
+      1391,
+      1431
+    ],
+    [
+      1493,
+      1519
+    ],
+    [
+      1572,
+      1629
+    ],
+    [
+      1712,
+      1736
+    ],
+    [
+      1760,
+      1804
+    ],
+    [
+      1852,
+      1879
+    ],
+    [
+      1948,
+      2002
+    ],
+    [
+      2002,
+      2027
+    ],
+    [
+      2113,
+      2173
+    ],
+    [
+      2189,
+      2226
+    ],
+    [
+      2245,
+      2263
+    ],
+    [
+      2414,
+      2416
+    ],
+    [
+      2435,
+      2459
+    ],
+    [
+      2742,
+      2772
+    ],
+    [
+      2819,
+      2845
+    ],
+    [
+      2845,
+      2878
+    ],
+    [
+      3059,
+      3087
+    ],
+    [
+      3087,
+      3119
+    ],
+    [
+      3250,
+      3287
+    ],
+    [
+      3361,
+      3370
+    ],
+    [
+      3394,
+      3420
+    ],
+    [
+      3453,
+      3496
+    ]
+  ],
+  "highlights": [
+    {
+      "type": "goal",
+      "team": "for",
+      "t": 25,
+      "scorer": 92,
+      "assists": [
+        64,
+        9
+      ],
+      "clip": "clips/goal-1.mp4",
+      "poster": "clips/goal-1.jpg",
+      "note": "1st period, clock 17:35: #92 Shachak (from #64 Shtin, #9 Soubochev) jams it in at the near post in a scramble, 1-0"
+    },
+    {
+      "type": "goal",
+      "team": "for",
+      "t": 494,
+      "scorer": 79,
+      "assists": [
+        36,
+        92
+      ],
+      "clip": "clips/goal-2.mp4",
+      "poster": "clips/goal-2.jpg",
+      "note": "1st period, clock 9:44: #79 Rabotyagov (from #36 Makhalov, #92 Shachak) from the slot, 2-0"
+    },
+    {
+      "type": "goal",
+      "team": "for",
+      "t": 929,
+      "scorer": 36,
+      "assists": [
+        92
+      ],
+      "clip": "clips/goal-3.mp4",
+      "poster": "clips/goal-3.jpg",
+      "note": "1st period, clock 2:32: #36 Makhalov (from #92 Shachak) drives to the near post, 3-0"
+    },
+    {
+      "type": "goal",
+      "team": "against",
+      "t": 1850,
+      "clip": "clips/goal-4.mp4",
+      "poster": "clips/goal-4.jpg",
+      "note": "2nd period, clock 7:11: #12 Bussiere (from #67) on a breakaway, 3-1"
+    },
+    {
+      "type": "goal",
+      "team": "against",
+      "t": 2198,
+      "clip": "clips/goal-5.mp4",
+      "poster": "clips/goal-5.jpg",
+      "note": "2nd period, clock 1:24: #31 Moreland (from #67) jams in a puck sitting on the goal line after a long scramble, 3-2"
+    },
+    {
+      "type": "goal",
+      "team": "against",
+      "t": 2847,
+      "clip": "clips/goal-7.mp4",
+      "poster": "clips/goal-7.jpg",
+      "note": "3rd period, clock 10:02: #2 Quinn (from #31) from the high slot off a faceoff in our zone, 3-4 (the 3-3 goal is not in the video)"
+    },
+    {
+      "type": "goal",
+      "team": "against",
+      "t": 3251,
+      "clip": "clips/goal-8.mp4",
+      "poster": "clips/goal-8.jpg",
+      "note": "3rd period, clock 4:30: #4 Simon (from #12, #28) into the open net after our goalie came out for a loose puck, 3-5"
+    }
+  ],
+  "shots": {
+    "P1": [
+      11,
+      12
+    ],
+    "P2": [
+      7,
+      10
+    ],
+    "P3": [
+      11,
+      16
+    ]
+  },
+  "zones": {
+    "offence": 0.3417,
+    "defence": 0.4159
+  }
+}
