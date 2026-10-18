@@ -107,8 +107,16 @@ def fit_size(vid, W):
 
 
 def download_audio(url, W):
-    if not os.path.exists(f"{W}/audio.m4a"):
-        sh(PY, "-m", "yt_dlp", "-q", "--no-progress", "-f", "140/bestaudio[ext=m4a]", "-o", f"{W}/audio.m4a", url)
+    """Only clips use the audio, so a failed download (YouTube has answered 403 once, then worked on a retry) warns
+    instead of stopping fetch; re-running fetch tries again."""
+    for _ in range(2):
+        if os.path.exists(f"{W}/audio.m4a"):
+            return
+        try:
+            sh(PY, "-m", "yt_dlp", "-q", "--no-progress", "-f", "140/bestaudio[ext=m4a]", "-o", f"{W}/audio.m4a", url)
+        except subprocess.CalledProcessError:
+            pass
+    log("no audio: clips will be silent (re-run fetch to try again)")
 
 
 def calibrate(vid, W):
@@ -365,9 +373,11 @@ def cmd_goals(a):
         print("Game sheet (SportNinja) goals, with the video time the period clock implies (exact where the clock runs "
               "through stoppages, otherwise the earliest possible):")
         for x in sheet_["goals"]:
-            t_ = x.get("video_t") or (Ps and next((P["start"] for P in Ps if P["label"] == x["period"]), None))
-            print(f"  {x['period']} {x['clock']} {x['team']:<7} #{x['scorer']} {x['scorer_name']}  ~{t_ // 60 if t_ else '?'}:{t_ % 60:02d}" if t_ else
-                  f"  {x['period']} {x['clock']} {x['team']:<7} #{x['scorer']} {x['scorer_name']}")
+            t_ = x.get("video_t")
+            print(f"  {x['period']} {x['clock']} {x['team']:<7} #{x['scorer']} {x['scorer_name']}" + (f"  ~{t_ // 60}:{t_ % 60:02d}" if t_ else ""))
+        # sheet.json written before periods.json has no video times (each goal used to print as its period's start)
+        if not any(x.get("video_t") for x in sheet_["goals"]):
+            print(f"  no video times: sheet.json predates periods.json; run `run_game.py sheet {W}` again")
     print("Long stoppages (our skaters nearly still for 18+ s) and where play restarted:")
     slow = (sp < 0.55) | sp.isna()
     st = None
