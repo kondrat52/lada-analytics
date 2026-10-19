@@ -15,13 +15,17 @@
     "opponentName": "Roadrunners",
     "playHome": false,
     "rinkId": 2083,
-    "rinkName": "Renton"
+    "rinkName": "Renton",
+    "teamGoals": 4,
+    "opponentGoals": 2,
+    "boxscoreLink": "https://app.sportninja.com/public/game/xFktA9UeXLjZUwi0"
   },
   "33016": {
     "date": "2026-10-25T20:25:00",
     "opponentName": "SEA Otters",
     "playHome": true,
     "rinkId": 2085,
-    "rinkName": "Snoqualmie B"
+    "rinkName": "Snoqualmie B",
+    "lines": "{\"offence\":[[\"12165\",\"14208\",\"11144\"],[null,null,\"19314\"]],\"defence\":[[\"14209\",null],[\"11138\",null]],\"goalie\":[[\"17285\"]],\"beer\":null}"
   }
 }

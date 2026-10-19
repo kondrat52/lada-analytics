@@ -86,7 +86,7 @@ a { color: var(--blueline); }
 .hl video { width: 100%; aspect-ratio: 16 / 9; display: block; background: var(--ink); }
 .hl .cap { padding: 10px 14px 12px; display: grid; gap: 4px; }
 .hl .kind { font: 700 21px/1.1 var(--display); letter-spacing: .01em; }
-.hl .kind.for { color: var(--team); } .hl .kind.against { color: var(--redline); } .hl .kind.penalty { color: var(--muted); }
+.hl .kind.for { color: var(--team); } .hl .kind.against { color: var(--redline); } .hl .kind.penalty { color: var(--muted); } .hl .kind.moment { color: var(--team); }
 .hl .meta { font: 500 14px/1.3 var(--data); letter-spacing: .04em; color: var(--muted); }
 .hl .on { font-size: 14px; color: var(--muted); }
 .hl .on b { font: 800 1em/1 var(--display); color: var(--team); }
@@ -189,8 +189,8 @@ document.getElementById("facts").innerHTML = [
   const gf = H.filter(h => h.type === "goal" && h.team === "for").length, ga = H.filter(h => h.type === "goal" && h.team === "against").length;
   document.getElementById("score").textContent = `Goals on video: ${DATA.team} ${gf} · ${DATA.opponent} ${ga}`;
   document.getElementById("hls").innerHTML = H.map(h => {
-    const kind = h.type === "goal" ? (h.team === "for" ? `${DATA.team} goal` : `${DATA.opponent} goal`) : `Penalty${h.player ? ` · #${h.player} ${name(h.player)}` : ""}`;
-    const cls = h.type === "goal" ? h.team : "penalty";
+    const kind = h.type === "goal" ? (h.team === "for" ? `${DATA.team} goal` : `${DATA.opponent} goal`) : h.type === "moment" ? (h.title || "Moment") : `Penalty${h.player ? ` · #${h.player} ${name(h.player)}` : ""}`;
+    const cls = h.type === "goal" ? h.team : h.type === "moment" ? "moment" : "penalty";
     const on = h.on_ice && h.on_ice.length ? `<div class="on">On the ice: ${h.on_ice.map(n => `<b>#${n}</b> ${name(n)}`).join(", ")}</div>` : "";
     return `<div class="hl"><video controls playsinline preload="none" poster="${h.poster}"><source src="${h.clip}" type="video/mp4"></video>
       <div class="cap"><div class="kind ${cls}">${kind}</div>

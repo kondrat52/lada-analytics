@@ -1,0 +1,343 @@
+<!doctype html>
+<html lang="en">
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>LADA Turbo Kings vs Roadrunners, Oct 17</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Big+Shoulders+Display:wght@700;800&family=Barlow:wght@400;500;600&family=Barlow+Condensed:wght@500;600&display=swap">
+<style>
+/* Layout: a game-sheet column: header strip, summary line, sortable player table, fun stats, then a three-period shift timeline. */
+:root {
+  --ice: #f4f8fb;
+  --board: #ffffff;
+  --ink: #13243a;
+  --muted: #5b6b7e;
+  --rule: #d6e0ea;
+  --team: #3d8fd6;
+  --team-soft: #cfe3f5;
+  --redline: #c8323c;
+  --blueline: #1f4fa3;
+  --stop: #dee6ef;
+  --display: "Big Shoulders Display", "Arial Narrow", "Helvetica Neue", sans-serif;
+  --body: "Barlow", "Helvetica Neue", Arial, sans-serif;
+  --data: "Barlow Condensed", "Arial Narrow", "Helvetica Neue", sans-serif;
+}
+@media (prefers-color-scheme: dark) {
+  :root:not([data-theme="light"]) {
+    --ice: #0d1826; --board: #13233a; --ink: #e6eef7; --muted: #93a6bb; --rule: #243a55;
+    --team: #6cb3f0; --team-soft: #1d3b5c; --redline: #ef6a72; --blueline: #7fa6ea; --stop: #2f4b71; color-scheme: dark;
+  }
+}
+:root[data-theme="dark"] {
+  --ice: #0d1826; --board: #13233a; --ink: #e6eef7; --muted: #93a6bb; --rule: #243a55;
+  --team: #6cb3f0; --team-soft: #1d3b5c; --redline: #ef6a72; --blueline: #7fa6ea; --stop: #2f4b71; color-scheme: dark;
+}
+* { box-sizing: border-box; }
+body { margin: 0; background: var(--ice); color: var(--ink); font: 400 16px/1.5 var(--body); }
+.wrap { max-width: 1100px; margin: 0 auto; padding-inline: 20px; padding-block: 28px 56px; display: grid; gap: 28px; }
+header { display: grid; gap: 6px; border-bottom: 3px solid var(--redline); padding-bottom: 14px; }
+.eyebrow { font: 600 13px/1.2 var(--data); letter-spacing: .12em; text-transform: uppercase; color: var(--muted); }
+h1 { font: 800 clamp(34px, 6vw, 56px)/0.95 var(--display); letter-spacing: .01em; margin: 0; text-wrap: balance; }
+h1 .team { color: var(--team); }
+h2 { font: 700 26px/1.1 var(--display); letter-spacing: .02em; margin: 0; text-transform: uppercase; }
+.sub { color: var(--muted); max-width: 70ch; margin: 0; }
+.facts { display: flex; flex-wrap: wrap; gap: 8px 26px; font: 500 15px/1.3 var(--data); letter-spacing: .03em; }
+.facts b { font-weight: 600; font-size: 22px; font-variant-numeric: tabular-nums; display: block; }
+.facts span { color: var(--muted); text-transform: uppercase; font-size: 12px; letter-spacing: .1em; }
+section { display: grid; gap: 12px; min-width: 0; }
+.tablebox { overflow-x: auto; background: var(--board); border: 1px solid var(--rule); border-radius: 4px; }
+table { border-collapse: collapse; width: 100%; min-width: 760px; font-variant-numeric: tabular-nums; }
+th, td { padding: 8px 10px; text-align: right; white-space: nowrap; border-bottom: 1px solid var(--rule); }
+th { font: 600 12px/1.2 var(--data); letter-spacing: .1em; text-transform: uppercase; color: var(--muted); cursor: pointer; user-select: none; position: sticky; top: 0; background: var(--board); }
+th:focus-visible, .bar:focus-visible { outline: 2px solid var(--team); outline-offset: 2px; }
+th[aria-sort="descending"]::after { content: " ▼"; } th[aria-sort="ascending"]::after { content: " ▲"; }
+th.l, td.l { text-align: left; }
+td { font: 500 16px/1.2 var(--data); }
+td.num { font: 800 20px/1 var(--display); color: var(--team); width: 3.2em; }
+td.name { font: 500 16px/1.2 var(--body); }
+.sub { font: 600 11px/1 var(--data); letter-spacing: .1em; text-transform: uppercase; color: var(--muted); margin-left: 6px; }
+td.per { color: var(--muted); }
+td .bar-in { display: inline-block; height: 8px; background: var(--team); border-radius: 2px; vertical-align: middle; margin-left: 8px; }
+tr.sel td { background: var(--team-soft); }
+tbody tr { cursor: pointer; }
+.group { border-left: 1px solid var(--rule); }
+.sechead { display: flex; flex-wrap: wrap; align-items: center; justify-content: space-between; gap: 10px; }
+.seg { display: inline-flex; border: 1px solid var(--rule); border-radius: 4px; overflow: hidden; background: var(--board); }
+.seg button { font: 600 13px/1 var(--data); letter-spacing: .08em; text-transform: uppercase; padding: 9px 14px; border: 0; background: transparent; color: var(--muted); cursor: pointer; }
+.seg button[aria-selected="true"] { background: var(--team); color: var(--board); }
+.seg button:focus-visible { outline: 2px solid var(--blueline); outline-offset: -2px; }
+th.grp { text-align: center; border-left: 1px solid var(--rule); cursor: default; }
+td.gs, th.gs { border-left: 1px solid var(--rule); }
+.tl { overflow-x: auto; background: var(--board); border: 1px solid var(--rule); border-radius: 4px; padding: 10px 6px 6px; }
+svg text { fill: var(--ink); font-family: var(--data); }
+svg .mut { fill: var(--muted); }
+svg .tnum { fill: var(--team); }
+.bar { fill: var(--team); cursor: pointer; }
+svg .stop { fill: var(--stop); }
+svg .grid { stroke: var(--rule); stroke-width: 1; }
+svg .pbox { stroke: var(--rule); fill: none; }
+.bar:hover, .bar.hi { fill: var(--blueline); }
+.dim .bar:not(.hi) { opacity: .28; }
+.tip { position: fixed; pointer-events: none; background: var(--ink); color: var(--ice); font: 500 14px/1.3 var(--data); padding: 6px 9px; border-radius: 3px; z-index: 5; }
+a { color: var(--blueline); }
+.hls { display: grid; grid-template-columns: repeat(auto-fit, minmax(min(100%, 420px), 1fr)); gap: 14px; }
+.hl { background: var(--board); border: 1px solid var(--rule); border-radius: 4px; overflow: hidden; display: grid; align-content: start; min-width: 0; }
+.hl video { width: 100%; aspect-ratio: 16 / 9; display: block; background: var(--ink); }
+.hl .cap { padding: 10px 14px 12px; display: grid; gap: 4px; }
+.hl .kind { font: 700 21px/1.1 var(--display); letter-spacing: .01em; }
+.hl .kind.for { color: var(--team); } .hl .kind.against { color: var(--redline); } .hl .kind.penalty { color: var(--muted); } .hl .kind.moment { color: var(--team); }
+.hl .meta { font: 500 14px/1.3 var(--data); letter-spacing: .04em; color: var(--muted); }
+.hl .on { font-size: 14px; color: var(--muted); }
+.hl .on b { font: 800 1em/1 var(--display); color: var(--team); }
+.score { font: 600 15px/1.3 var(--data); letter-spacing: .06em; text-transform: uppercase; color: var(--muted); }
+.fun { display: grid; grid-template-columns: repeat(auto-fit, minmax(260px, 1fr)); gap: 12px; }
+.card { background: var(--board); border: 1px solid var(--rule); border-radius: 4px; padding: 14px 16px; display: grid; gap: 8px; align-content: start; min-width: 0; }
+.card h3 { margin: 0; font: 600 12px/1.2 var(--data); letter-spacing: .1em; text-transform: uppercase; color: var(--muted); }
+.card .big { font: 700 24px/1.1 var(--display); letter-spacing: .01em; }
+.card .n { font: 800 1.05em/1 var(--display); color: var(--team); }
+.card ul { list-style: none; margin: 0; padding: 0; display: grid; gap: 5px; font: 500 16px/1.3 var(--data); }
+.card li { display: flex; justify-content: space-between; gap: 12px; }
+.card li span:last-child { font-variant-numeric: tabular-nums; color: var(--muted); white-space: nowrap; }
+.card p { margin: 0; color: var(--muted); font-size: 14px; }
+.pbar { display: grid; grid-template-columns: 2.2em 1fr auto; align-items: center; gap: 10px; font: 500 16px/1.3 var(--data); }
+.pbar i { display: block; height: 10px; background: var(--team); border-radius: 2px; }
+.numbers { grid-column: 1 / -1; display: flex; flex-wrap: wrap; gap: 8px 32px; }
+.numbers div { display: grid; }
+.numbers b { font: 700 22px/1.1 var(--display); font-variant-numeric: tabular-nums; }
+.numbers span { font: 500 12px/1.3 var(--data); letter-spacing: .1em; text-transform: uppercase; color: var(--muted); }
+@media (max-width: 560px) { .wrap { padding-inline: 16px; } .facts b { font-size: 19px; } }
+@media (prefers-reduced-motion: no-preference) { .bar { transition: fill .12s, opacity .12s; } }
+</style>
+
+<div class="wrap">
+  <header>
+    <div class="eyebrow"><a href="../../">All games</a> · Sat Oct 17, 2026 · 9:15 PM · Renton</div>
+    <h1><span class="team">LADA Turbo Kings</span> vs Roadrunners</h1>
+    <p class="sub">Shift sheet: time on ice for every LADA Turbo Kings skater, measured from the <a href="https://www.youtube.com/watch?v=UoojnruHtu8" target="_blank" rel="noopener">wide-cut game video</a>.</p>
+  </header>
+
+  <div class="facts" id="facts"></div>
+
+  <section>
+    <div class="sechead">
+      <h2>Players</h2>
+      <div class="seg" role="tablist" aria-label="Table view">
+        <button type="button" id="v-game" role="tab" aria-selected="true">Game</button>
+        <button type="button" id="v-period" role="tab" aria-selected="false">By period</button>
+      </div>
+    </div>
+    <div class="tablebox"><table id="tbl"><thead></thead><tbody></tbody></table></div>
+  </section>
+
+  <section id="hlsec">
+    <h2>Highlights</h2>
+    <div class="score" id="score"></div>
+    <div class="hls" id="hls"></div>
+  </section>
+
+  <section id="funsec">
+    <h2>Fun stats</h2>
+    <div class="fun" id="fun"></div>
+  </section>
+
+  <section>
+    <h2>Shift timeline</h2>
+    <div class="tl"><svg id="tl" role="img" aria-label="Shift timeline by player and period"></svg></div>
+  </section>
+
+</div>
+<div class="tip" id="tip" hidden></div>
+
+<script>
+const DATA = {"periods": [{"label": "P1", "start": 7, "end": 1089}, {"label": "P2", "start": 1183, "end": 2263}, {"label": "P3", "start": 2360, "end": 3731}], "players": [{"num": 12, "name": "Kondratenko", "sub": false, "shifts": 16, "toi": 1629.0, "avg": 101.8125, "median": 104.5, "longest": 149.0, "shortest": 52.0, "play": 1274.0, "per": [[5, 489.0, 97.8], [5, 561.0, 112.2], [6, 579.0, 96.5]]}, {"num": 13, "name": "Belousenko", "sub": false, "shifts": 15, "toi": 1882.0, "avg": 125.46666666666667, "median": 113.0, "longest": 179.0, "shortest": 75.0, "play": 1208.0, "per": [[4, 585.0, 146.25], [5, 575.0, 115.0], [6, 722.0, 120.33333333333333]]}, {"num": 14, "name": "Radutskiy", "sub": false, "shifts": 15, "toi": 1666.0, "avg": 111.06666666666666, "median": 107.0, "longest": 166.0, "shortest": 32.0, "play": 1040.0, "per": [[5, 520.0, 104.0], [5, 527.0, 105.4], [5, 619.0, 123.8]]}, {"num": 18, "name": "Petrov", "sub": false, "shifts": 15, "toi": 1820.0, "avg": 121.33333333333333, "median": 118.0, "longest": 165.0, "shortest": 81.0, "play": 1386.0, "per": [[5, 540.0, 108.0], [5, 592.0, 118.4], [5, 688.0, 137.6]]}, {"num": 26, "name": "Babkin", "sub": false, "shifts": 13, "toi": 1658.0, "avg": 127.53846153846153, "median": 128.0, "longest": 181.0, "shortest": 52.0, "play": 1172.0, "per": [[5, 536.0, 107.2], [3, 414.0, 138.0], [5, 708.0, 141.6]]}, {"num": 33, "name": "Nizamutdinov", "sub": false, "shifts": 11, "toi": 1175.0, "avg": 106.81818181818181, "median": 95.0, "longest": 178.0, "shortest": 71.0, "play": 921.0, "per": [[4, 357.0, 89.25], [3, 311.0, 103.66666666666667], [4, 507.0, 126.75]]}, {"num": 61, "name": "Prozhogin", "sub": false, "shifts": 18, "toi": 1870.0, "avg": 103.88888888888889, "median": 100.5, "longest": 167.0, "shortest": 25.0, "play": 1272.0, "per": [[5, 562.0, 112.4], [5, 554.0, 110.8], [8, 754.0, 94.25]]}, {"num": 64, "name": "Belov", "sub": false, "shifts": 11, "toi": 1147.0, "avg": 104.27272727272727, "median": 102.0, "longest": 143.0, "shortest": 58.0, "play": 824.0, "per": [[4, 372.0, 93.0], [3, 331.0, 110.33333333333333], [4, 444.0, 111.0]]}, {"num": 82, "name": "Podkorytov", "sub": false, "shifts": 12, "toi": 1306.0, "avg": 108.83333333333333, "median": 105.5, "longest": 171.0, "shortest": 30.0, "play": 773.0, "per": [[4, 393.0, 98.25], [4, 406.0, 101.5], [4, 507.0, 126.75]]}, {"num": 89, "name": "Olyanich", "sub": false, "shifts": 12, "toi": 1757.0, "avg": 146.41666666666666, "median": 161.5, "longest": 194.0, "shortest": 76.0, "play": 1208.0, "per": [[4, 575.0, 143.75], [4, 483.0, 120.75], [4, 699.0, 174.75]]}, {"num": 90, "name": "Ivanov", "sub": false, "shifts": 14, "toi": 2058.0, "avg": 147.0, "median": 138.0, "longest": 213.0, "shortest": 66.0, "play": 1503.0, "per": [[4, 626.0, 156.5], [4, 598.0, 149.5], [6, 834.0, 139.0]]}], "highlights": [{"type": "moment", "title": "3 on 0, no goal", "t": 898, "clip": "clips/moment-1.mp4", "poster": "clips/moment-1.jpg", "note": "1st period, clock 3:11: #89 carries in with #90 and a third forward, nobody back but their goalie; the backcheck catches up before a goal", "period": "P1", "on_ice": [13, 61, 64, 89, 90]}, {"type": "goal", "team": "for", "t": 1246, "scorer": 13, "assists": [14], "clip": "clips/goal-1.mp4", "poster": "clips/goal-1.jpg", "note": "2nd period, clock 16:55: Belousenko in a scramble at the crease, 1-0", "period": "P2", "on_ice": [13, 14, 61, 82, 89]}, {"type": "penalty", "player": 26, "t": 1361, "clip": "clips/penalty-26.mp4", "poster": "clips/penalty-26.jpg", "note": "2nd period, clock 15:00: hooking from behind; the board ran 3:00, ended by their power-play goal at 11:48", "period": "P2", "on_ice": []}, {"type": "goal", "team": "for", "t": 1456, "scorer": 33, "assists": [], "clip": "clips/goal-2.mp4", "poster": "clips/goal-2.jpg", "note": "2nd period, clock 13:20: short-handed, Nizamutdinov carries in alone and dekes the goalie, 2-0", "period": "P2", "on_ice": [13, 14, 33, 61]}, {"type": "goal", "team": "against", "t": 1555, "scorer": 27, "assists": [23], "clip": "clips/goal-3.mp4", "poster": "clips/goal-3.jpg", "note": "2nd period, clock 11:48: power-play goal from the low slot, 2-1", "period": "P2", "on_ice": [12, 18, 82, 90]}, {"type": "goal", "team": "for", "t": 2158, "scorer": 13, "assists": [33], "clip": "clips/goal-4.mp4", "poster": "clips/goal-4.jpg", "note": "2nd period, clock 1:44: Belousenko at the crease as the goalie sprawls, 3-1", "period": "P2", "on_ice": [13, 14, 33, 61, 89]}, {"type": "goal", "team": "against", "t": 2765, "scorer": 91, "assists": [11, 71], "clip": "clips/goal-5.mp4", "poster": "clips/goal-5.jpg", "note": "3rd period, clock 12:10: scramble at our crease, 3-2", "period": "P3", "on_ice": [12, 13, 14, 26, 82]}, {"type": "goal", "team": "for", "t": 2946, "scorer": 13, "assists": [], "clip": "clips/goal-6.mp4", "poster": "clips/goal-6.jpg", "note": "3rd period, clock 9:56: Belousenko's hat trick out of a long crease scramble, 4-2", "period": "P3", "on_ice": [12, 13, 33, 89, 90]}], "opponent": "Roadrunners", "team": "LADA Turbo Kings", "stoppages": [[7, 9], [59, 85], [179, 207], [249, 286], [319, 330], [346, 373], [429, 462], [529, 549], [569, 585], [706, 727], [823, 867], [902, 924], [1183, 1225], [1225, 1282], [1458, 1501], [1548, 1586], [1596, 1613], [1657, 1685], [1813, 1853], [1908, 1928], [1928, 1951], [1960, 1983], [2092, 2152], [2360, 2362], [2452, 2480], [2480, 2496], [2682, 2710], [2755, 2793], [2837, 2864], [2938, 2982], [3045, 3080], [3099, 3119], [3254, 3306], [3403, 3443], [3652, 3680]], "shifts": [{"player": 12, "period": "P1", "t0": 7.0, "t1": 59.0}, {"player": 12, "period": "P1", "t0": 161.0, "t1": 262.0}, {"player": 12, "period": "P1", "t0": 420.0, "t1": 531.0}, {"player": 12, "period": "P1", "t0": 715.0, "t1": 820.0}, {"player": 12, "period": "P1", "t0": 948.0, "t1": 1068.0}, {"player": 13, "period": "P1", "t0": 71.0, "t1": 163.0}, {"player": 13, "period": "P1", "t0": 280.0, "t1": 426.0}, {"player": 13, "period": "P1", "t0": 535.0, "t1": 703.0}, {"player": 13, "period": "P1", "t0": 820.0, "t1": 999.0}, {"player": 14, "period": "P1", "t0": 7.0, "t1": 69.0}, {"player": 14, "period": "P1", "t0": 145.0, "t1": 282.0}, {"player": 14, "period": "P1", "t0": 416.0, "t1": 543.0}, {"player": 14, "period": "P1", "t0": 702.0, "t1": 864.0}, {"player": 14, "period": "P1", "t0": 1057.0, "t1": 1089.0}, {"player": 18, "period": "P1", "t0": 7.0, "t1": 88.0}, {"player": 18, "period": "P1", "t0": 156.0, "t1": 281.0}, {"player": 18, "period": "P1", "t0": 418.0, "t1": 540.0}, {"player": 18, "period": "P1", "t0": 702.0, "t1": 820.0}, {"player": 18, "period": "P1", "t0": 995.0, "t1": 1089.0}, {"player": 26, "period": "P1", "t0": 7.0, "t1": 59.0}, {"player": 26, "period": "P1", "t0": 149.0, "t1": 277.0}, {"player": 26, "period": "P1", "t0": 419.0, "t1": 544.0}, {"player": 26, "period": "P1", "t0": 699.0, "t1": 861.0}, {"player": 26, "period": "P1", "t0": 1020.0, "t1": 1089.0}, {"player": 33, "period": "P1", "t0": 65.0, "t1": 160.0}, {"player": 33, "period": "P1", "t0": 361.0, "t1": 432.0}, {"player": 33, "period": "P1", "t0": 630.0, "t1": 710.0}, {"player": 33, "period": "P1", "t0": 948.0, "t1": 1059.0}, {"player": 61, "period": "P1", "t0": 88.0, "t1": 163.0}, {"player": 61, "period": "P1", "t0": 270.0, "t1": 427.0}, {"player": 61, "period": "P1", "t0": 527.0, "t1": 694.0}, {"player": 61, "period": "P1", "t0": 816.0, "t1": 954.0}, {"player": 61, "period": "P1", "t0": 1064.0, "t1": 1089.0}, {"player": 64, "period": "P1", "t0": 7.0, "t1": 65.0}, {"player": 64, "period": "P1", "t0": 265.0, "t1": 370.0}, {"player": 64, "period": "P1", "t0": 524.0, "t1": 631.0}, {"player": 64, "period": "P1", "t0": 847.0, "t1": 949.0}, {"player": 82, "period": "P1", "t0": 150.0, "t1": 268.0}, {"player": 82, "period": "P1", "t0": 432.0, "t1": 524.0}, {"player": 82, "period": "P1", "t0": 704.0, "t1": 857.0}, {"player": 82, "period": "P1", "t0": 1059.0, "t1": 1089.0}, {"player": 89, "period": "P1", "t0": 71.0, "t1": 147.0}, {"player": 89, "period": "P1", "t0": 268.0, "t1": 428.0}, {"player": 89, "period": "P1", "t0": 535.0, "t1": 703.0}, {"player": 89, "period": "P1", "t0": 853.0, "t1": 1024.0}, {"player": 90, "period": "P1", "t0": 63.0, "t1": 159.0}, {"player": 90, "period": "P1", "t0": 274.0, "t1": 425.0}, {"player": 90, "period": "P1", "t0": 534.0, "t1": 717.0}, {"player": 90, "period": "P1", "t0": 864.0, "t1": 1060.0}, {"player": 12, "period": "P2", "t0": 1276.0, "t1": 1381.0}, {"player": 12, "period": "P2", "t0": 1473.0, "t1": 1564.0}, {"player": 12, "period": "P2", "t0": 1672.0, "t1": 1793.0}, {"player": 12, "period": "P2", "t0": 1938.0, "t1": 2087.0}, {"player": 12, "period": "P2", "t0": 2168.0, "t1": 2263.0}, {"player": 13, "period": "P2", "t0": 1183.0, "t1": 1276.0}, {"player": 13, "period": "P2", "t0": 1374.0, "t1": 1480.0}, {"player": 13, "period": "P2", "t0": 1571.0, "t1": 1678.0}, {"player": 13, "period": "P2", "t0": 1786.0, "t1": 1946.0}, {"player": 13, "period": "P2", "t0": 2078.0, "t1": 2187.0}, {"player": 14, "period": "P2", "t0": 1183.0, "t1": 1271.0}, {"player": 14, "period": "P2", "t0": 1387.0, "t1": 1473.0}, {"player": 14, "period": "P2", "t0": 1566.0, "t1": 1673.0}, {"player": 14, "period": "P2", "t0": 1844.0, "t1": 1924.0}, {"player": 14, "period": "P2", "t0": 2097.0, "t1": 2263.0}, {"player": 18, "period": "P2", "t0": 1268.0, "t1": 1384.0}, {"player": 18, "period": "P2", "t0": 1473.0, "t1": 1579.0}, {"player": 18, "period": "P2", "t0": 1671.0, "t1": 1792.0}, {"player": 18, "period": "P2", "t0": 1922.0, "t1": 2087.0}, {"player": 18, "period": "P2", "t0": 2179.0, "t1": 2263.0}, {"player": 26, "period": "P2", "t0": 1266.0, "t1": 1366.0}, {"player": 26, "period": "P2", "t0": 1672.0, "t1": 1805.0}, {"player": 26, "period": "P2", "t0": 1920.0, "t1": 2101.0}, {"player": 33, "period": "P2", "t0": 1380.0, "t1": 1469.0}, {"player": 33, "period": "P2", "t0": 1663.0, "t1": 1808.0}, {"player": 33, "period": "P2", "t0": 2097.0, "t1": 2174.0}, {"player": 61, "period": "P2", "t0": 1183.0, "t1": 1280.0}, {"player": 61, "period": "P2", "t0": 1375.0, "t1": 1479.0}, {"player": 61, "period": "P2", "t0": 1581.0, "t1": 1658.0}, {"player": 61, "period": "P2", "t0": 1791.0, "t1": 1956.0}, {"player": 61, "period": "P2", "t0": 2078.0, "t1": 2189.0}, {"player": 64, "period": "P2", "t0": 1280.0, "t1": 1376.0}, {"player": 64, "period": "P2", "t0": 1581.0, "t1": 1673.0}, {"player": 64, "period": "P2", "t0": 1956.0, "t1": 2099.0}, {"player": 82, "period": "P2", "t0": 1183.0, "t1": 1275.0}, {"player": 82, "period": "P2", "t0": 1478.0, "t1": 1581.0}, {"player": 82, "period": "P2", "t0": 1804.0, "t1": 1919.0}, {"player": 82, "period": "P2", "t0": 2167.0, "t1": 2263.0}, {"player": 89, "period": "P2", "t0": 1183.0, "t1": 1268.0}, {"player": 89, "period": "P2", "t0": 1562.0, "t1": 1677.0}, {"player": 89, "period": "P2", "t0": 1804.0, "t1": 1924.0}, {"player": 89, "period": "P2", "t0": 2100.0, "t1": 2263.0}, {"player": 90, "period": "P2", "t0": 1275.0, "t1": 1389.0}, {"player": 90, "period": "P2", "t0": 1467.0, "t1": 1581.0}, {"player": 90, "period": "P2", "t0": 1659.0, "t1": 1846.0}, {"player": 90, "period": "P2", "t0": 1916.0, "t1": 2099.0}, {"player": 12, "period": "P3", "t0": 2463.0, "t1": 2591.0}, {"player": 12, "period": "P3", "t0": 2704.0, "t1": 2768.0}, {"player": 12, "period": "P3", "t0": 2901.0, "t1": 3030.0}, {"player": 12, "period": "P3", "t0": 3186.0, "t1": 3282.0}, {"player": 12, "period": "P3", "t0": 3399.0, "t1": 3503.0}, {"player": 12, "period": "P3", "t0": 3596.0, "t1": 3654.0}, {"player": 13, "period": "P3", "t0": 2360.0, "t1": 2473.0}, {"player": 13, "period": "P3", "t0": 2632.0, "t1": 2781.0}, {"player": 13, "period": "P3", "t0": 2922.0, "t1": 3043.0}, {"player": 13, "period": "P3", "t0": 3182.0, "t1": 3283.0}, {"player": 13, "period": "P3", "t0": 3400.0, "t1": 3563.0}, {"player": 13, "period": "P3", "t0": 3656.0, "t1": 3731.0}, {"player": 14, "period": "P3", "t0": 2456.0, "t1": 2588.0}, {"player": 14, "period": "P3", "t0": 2698.0, "t1": 2789.0}, {"player": 14, "period": "P3", "t0": 2973.0, "t1": 3074.0}, {"player": 14, "period": "P3", "t0": 3270.0, "t1": 3434.0}, {"player": 14, "period": "P3", "t0": 3538.0, "t1": 3669.0}, {"player": 18, "period": "P3", "t0": 2473.0, "t1": 2638.0}, {"player": 18, "period": "P3", "t0": 2785.0, "t1": 2928.0}, {"player": 18, "period": "P3", "t0": 3034.0, "t1": 3190.0}, {"player": 18, "period": "P3", "t0": 3280.0, "t1": 3395.0}, {"player": 18, "period": "P3", "t0": 3546.0, "t1": 3655.0}, {"player": 26, "period": "P3", "t0": 2360.0, "t1": 2471.0}, {"player": 26, "period": "P3", "t0": 2669.0, "t1": 2779.0}, {"player": 26, "period": "P3", "t0": 2965.0, "t1": 3114.0}, {"player": 26, "period": "P3", "t0": 3270.0, "t1": 3428.0}, {"player": 26, "period": "P3", "t0": 3551.0, "t1": 3731.0}, {"player": 33, "period": "P3", "t0": 2459.0, "t1": 2637.0}, {"player": 33, "period": "P3", "t0": 2854.0, "t1": 2973.0}, {"player": 33, "period": "P3", "t0": 3190.0, "t1": 3281.0}, {"player": 33, "period": "P3", "t0": 3551.0, "t1": 3670.0}, {"player": 61, "period": "P3", "t0": 2360.0, "t1": 2450.0}, {"player": 61, "period": "P3", "t0": 2586.0, "t1": 2696.0}, {"player": 61, "period": "P3", "t0": 2773.0, "t1": 2853.0}, {"player": 61, "period": "P3", "t0": 2870.0, "t1": 2903.0}, {"player": 61, "period": "P3", "t0": 3030.0, "t1": 3189.0}, {"player": 61, "period": "P3", "t0": 3272.0, "t1": 3395.0}, {"player": 61, "period": "P3", "t0": 3503.0, "t1": 3594.0}, {"player": 61, "period": "P3", "t0": 3663.0, "t1": 3731.0}, {"player": 64, "period": "P3", "t0": 2360.0, "t1": 2459.0}, {"player": 64, "period": "P3", "t0": 2776.0, "t1": 2870.0}, {"player": 64, "period": "P3", "t0": 3061.0, "t1": 3184.0}, {"player": 64, "period": "P3", "t0": 3424.0, "t1": 3552.0}, {"player": 82, "period": "P3", "t0": 2633.0, "t1": 2787.0}, {"player": 82, "period": "P3", "t0": 2963.0, "t1": 3071.0}, {"player": 82, "period": "P3", "t0": 3268.0, "t1": 3439.0}, {"player": 82, "period": "P3", "t0": 3657.0, "t1": 3731.0}, {"player": 89, "period": "P3", "t0": 2473.0, "t1": 2667.0}, {"player": 89, "period": "P3", "t0": 2776.0, "t1": 2970.0}, {"player": 89, "period": "P3", "t0": 3106.0, "t1": 3286.0}, {"player": 89, "period": "P3", "t0": 3428.0, "t1": 3559.0}, {"player": 90, "period": "P3", "t0": 2360.0, "t1": 2470.0}, {"player": 90, "period": "P3", "t0": 2582.0, "t1": 2702.0}, {"player": 90, "period": "P3", "t0": 2768.0, "t1": 2968.0}, {"player": 90, "period": "P3", "t0": 3059.0, "t1": 3272.0}, {"player": 90, "period": "P3", "t0": 3421.0, "t1": 3546.0}, {"player": 90, "period": "P3", "t0": 3665.0, "t1": 3731.0}], "video": "https://www.youtube.com/watch?v=UoojnruHtu8", "fun": {"pairs": [{"a": 13, "b": 61, "sec": 1373}, {"a": 13, "b": 89, "sec": 1254}, {"a": 13, "b": 90, "sec": 1225}], "unit": {"players": [12, 14, 18, 26, 82], "sec": 294}, "periods": [{"label": "P1", "avg": 113.36734693877551, "n": 49}, {"label": "P2", "avg": 116.34782608695652, "n": 46}, {"label": "P3", "avg": 123.87719298245614, "n": 57}], "quickest": {"num": 12, "avg": 101.8125}, "most": {"nums": [61], "n": 18}, "pk": [{"period": "P2", "to": 374, "player": 26, "crew": [{"num": 90, "sec": 113}, {"num": 13, "sec": 106}, {"num": 61, "sec": 104}, {"num": 18, "sec": 102}, {"num": 12, "sec": 99}, {"num": 33, "sec": 89}, {"num": 14, "sec": 86}, {"num": 82, "sec": 79}], "from": 183}], "reads": [{"num": 90, "n": 648}, {"num": 14, "n": 409}, {"num": 18, "n": 340}, {"num": 13, "n": 334}, {"num": 89, "n": 213}, {"num": 26, "n": 168}, {"num": 12, "n": 80}, {"num": 61, "n": 75}, {"num": 33, "n": 59}, {"num": 64, "n": 54}, {"num": 82, "n": 35}], "pipeline": {"detections": 821302, "crops": 118401, "reads": 11607, "reviewed": 760}}, "shots": {"P1": [15, 2], "P2": [8, 6], "P3": [15, 8]}};
+const VIDEO = DATA.video;
+// a link to [t] seconds into the video; keeps watch?v= links' own query
+const at = t => { const u = new URL(VIDEO); u.searchParams.set("t", Math.max(0, t)); return u.href; };
+const fmt = s => { s = Math.round(s); return `${Math.floor(s / 60)}:${String(s % 60).padStart(2, "0")}`; };
+const P = DATA.periods;
+
+// facts strip
+const tot = DATA.players.reduce((a, p) => a + p.toi, 0);
+const nsh = DATA.players.reduce((a, p) => a + p.shifts, 0);
+document.getElementById("facts").innerHTML = [
+  [DATA.players.length, "skaters"],
+  [P.map(p => fmt(p.end - p.start)).join(" · "), "period lengths"],
+  [nsh, "shifts"],
+  [fmt(tot / nsh), "average shift"],
+].concat((() => {
+  const S = DATA.shots;   // {"P1": [ours, theirs], ...} from the arena scoreboard
+  if (!S) return [];
+  const per = P.filter(p => S[p.label]).map(p => S[p.label]);
+  const f = per.reduce((a, x) => a + x[0], 0), g = per.reduce((a, x) => a + x[1], 0);
+  return [[`${f}–${g}`, `shots on goal · by period ${per.map(x => x.join("–")).join(", ")}`]];
+})()).concat((() => {
+  const top = [...DATA.players].sort((a, b) => b.toi - a.toi)[0];
+  const ls = DATA.shifts.reduce((a, s) => (s.t1 - s.t0 > a.t1 - a.t0 ? s : a));
+  const lp = DATA.players.find(p => p.num === ls.player);
+  const sp = DATA.players.filter(p => p.shortest != null).reduce((a, p) => (p.shortest < a.shortest ? p : a));
+  return [[`#${top.num} ${top.name} · ${fmt(top.toi)}`, "most ice time"],
+          [`#${lp.num} ${lp.name} · ${fmt(ls.t1 - ls.t0)}`, "longest shift"],
+          [`#${sp.num} ${sp.name} · ${fmt(sp.shortest)}`, "shortest shift"]];
+})()).map(([v, l]) => `<div><b>${v}</b><span>${l}</span></div>`).join("");
+// highlights
+(() => {
+  const H = DATA.highlights || [];
+  if (!H.length) { document.getElementById("hlsec").hidden = true; return; }
+  const name = n => (DATA.players.find(p => p.num === n) || {}).name || "";
+  const periodName = l => /^P\d+$/.test(l) ? `Period ${l.slice(1)}` : l;   // "Period 1" for P1; OT as written
+  const gf = H.filter(h => h.type === "goal" && h.team === "for").length, ga = H.filter(h => h.type === "goal" && h.team === "against").length;
+  document.getElementById("score").textContent = `Goals on video: ${DATA.team} ${gf} · ${DATA.opponent} ${ga}`;
+  document.getElementById("hls").innerHTML = H.map(h => {
+    const kind = h.type === "goal" ? (h.team === "for" ? `${DATA.team} goal` : `${DATA.opponent} goal`) : h.type === "moment" ? (h.title || "Moment") : `Penalty${h.player ? ` · #${h.player} ${name(h.player)}` : ""}`;
+    const cls = h.type === "goal" ? h.team : h.type === "moment" ? "moment" : "penalty";
+    const on = h.on_ice && h.on_ice.length ? `<div class="on">On the ice: ${h.on_ice.map(n => `<b>#${n}</b> ${name(n)}`).join(", ")}</div>` : "";
+    return `<div class="hl"><video controls playsinline preload="none" poster="${h.poster}"><source src="${h.clip}" type="video/mp4"></video>
+      <div class="cap"><div class="kind ${cls}">${kind}</div>
+      <div class="meta">${periodName(h.period)} · <a href="${at(h.t - 10)}" target="_blank" rel="noopener">${fmt(h.t)} in the full video</a>${h.note ? ` · ${h.note}` : ""}</div>${on}</div></div>`;
+  }).join("");
+})();
+
+// fun stats
+(() => {
+  const F = DATA.fun || {}, name = n => (DATA.players.find(p => p.num === n) || {}).name || "";
+  const who = n => `<b class="n">#${n}</b> ${name(n)}`;
+  const cards = [];
+  const list = rows => `<ul>${rows.map(([a, b]) => `<li><span>${a}</span><span>${b}</span></li>`).join("")}</ul>`;
+  if (F.pairs && F.pairs.length) cards.push(`<h3>Best duos</h3>${list(F.pairs.map(p => [`${who(p.a)} + ${who(p.b)}`, fmt(p.sec)]))}`);
+  if (F.unit) cards.push(`<h3>Most-used five</h3>${list(F.unit.players.map(n => [who(n), ""]))}<p>Together for ${fmt(F.unit.sec)} of the game.</p>`);
+  if (F.periods) {
+    const mx = Math.max(...F.periods.map(p => p.avg));
+    cards.push(`<h3>Shift length by period</h3>${F.periods.map(p => `<div class="pbar"><span>${p.label}</span><i style="width:${Math.round(100 * p.avg / mx)}%"></i><span>${fmt(p.avg)} avg · ${p.n} shifts</span></div>`).join("")}`);
+  }
+  if (F.quickest) cards.push(`<h3>Quickest changer</h3><div class="big">${who(F.quickest.num)}</div><p>${fmt(F.quickest.avg)} average shift.</p>` +
+    (F.most ? `<h3>Most shifts</h3><div>${F.most.nums.map(who).join(", ")}</div><p>${F.most.n} shifts each.</p>` : ""));
+  (F.pk || []).forEach(k => cards.push(`<h3>Penalty kill</h3><p>${k.period} ${fmt(k.from)}–${fmt(k.to)}${k.player ? ` · ${who(k.player)} in the box` : ""}</p>${list(k.crew.map(c => [who(c.num), fmt(c.sec)]))}`));
+  if (F.reads && F.reads.length > 1) {
+    const top = F.reads[0], low = F.reads[F.reads.length - 1];
+    cards.push(`<h3>Most readable jersey</h3><div class="big">${who(top.num)}</div><p>Name read ${top.n.toLocaleString()} times by the software. Hardest to read: ${who(low.num)}, ${low.n} times.</p>`);
+  }
+  if (F.pipeline) {
+    const P2 = F.pipeline, it = [[P2.detections, "player detections"], [P2.crops, "close-ups of our players"], [P2.reads, "number and name reads"], [P2.reviewed, "tracks checked by eye"]];
+    cards.push(`<div class="numbers">${it.filter(x => x[0]).map(([v, l]) => `<div><b>${v.toLocaleString()}</b><span>${l}</span></div>`).join("")}</div>`);
+  }
+  const box = document.getElementById("fun");
+  box.innerHTML = cards.map((c, i) => c.startsWith('<div class="numbers"') ? c.replace('class="numbers"', 'class="numbers card"') : `<div class="card">${c}</div>`).join("");
+  if (!cards.length) document.getElementById("funsec").hidden = true;
+})();
+
+// table: two views (whole game / by period), sortable, click a player to highlight his shifts
+let view = "game", sortKey = "toi", sortDir = -1, selected = null;
+const tbl = document.getElementById("tbl"), rowsEl = tbl.querySelector("tbody");
+const maxToi = Math.max(...DATA.players.map(p => p.toi));
+const hasPlay = DATA.players.some(p => p.play != null);
+const t_ = s => (s == null ? "–" : fmt(s));
+const COLS = {
+  game: [
+    { k: "shifts", l: "Shifts", f: p => p.shifts },
+    { k: "toi", l: "Ice time", f: p => `${fmt(p.toi)}<span class="bar-in" style="width:${Math.round(60 * p.toi / maxToi)}px"></span>` },
+    ...(hasPlay ? [{ k: "play", l: "Live play", f: p => t_(p.play) }] : []),
+    { k: "avg", l: "Avg shift", f: p => fmt(p.avg) },
+    { k: "median", l: "Median", f: p => fmt(p.median) },
+    { k: "longest", l: "Longest", f: p => fmt(p.longest) },
+    { k: "shortest", l: "Shortest", f: p => t_(p.shortest) },
+  ],
+  period: P.flatMap((per, i) => [
+    { k: `p${i}n`, l: "Shifts", g: per.label, f: p => (p.per[i] ? p.per[i][0] : "–"), first: true },
+    { k: `p${i}t`, l: "Ice time", f: p => t_(p.per[i] && p.per[i][1]) },
+    { k: `p${i}a`, l: "Avg shift", f: p => t_(p.per[i] && p.per[i][2]) },
+  ]),
+};
+function val(p, k) {
+  const m = /^p(\d)([nta])$/.exec(k);
+  if (m) { const x = p.per[+m[1]]; return x ? x["nta".indexOf(m[2])] : -1; }
+  return p[k] ?? Infinity;
+}
+function renderHead() {
+  const cols = COLS[view];
+  let h = "";
+  if (view === "period")
+    h += `<tr><th colspan="2"></th>${P.map(per => `<th class="grp" colspan="3">${per.label}</th>`).join("")}</tr>`;
+  h += `<tr><th class="l" data-k="num" tabindex="0">#</th><th class="l" data-k="name" tabindex="0">Player</th>` +
+    cols.map(c => `<th data-k="${c.k}" tabindex="0" class="${c.first ? "gs" : ""}">${c.l}</th>`).join("") + "</tr>";
+  tbl.querySelector("thead").innerHTML = h;
+  tbl.querySelectorAll("th[data-k]").forEach(th => {
+    const go = () => { const k = th.dataset.k; sortDir = sortKey === k ? -sortDir : (k === "name" || k === "num" ? 1 : -1); sortKey = k; renderTable(); };
+    th.addEventListener("click", go);
+    th.addEventListener("keydown", e => { if (e.key === "Enter" || e.key === " ") { e.preventDefault(); go(); } });
+  });
+}
+function renderTable() {
+  const rows = [...DATA.players].sort((a, b) => {
+    const x = val(a, sortKey), y = val(b, sortKey);
+    return (typeof x === "string" ? x.localeCompare(y) : x - y) * sortDir;
+  });
+  rowsEl.innerHTML = rows.map(p => `<tr data-n="${p.num}" class="${selected === p.num ? "sel" : ""}">
+    <td class="l num">${p.num}</td><td class="l name">${p.name || "<span style='color:var(--muted)'>(name?)</span>"}${p.sub ? "<span class='sub'>sub</span>" : ""}</td>` +
+    COLS[view].map(c => `<td class="${c.first ? "gs" : ""}">${c.f(p)}</td>`).join("") + "</tr>").join("");
+  tbl.querySelectorAll("th[data-k]").forEach(th => th.setAttribute("aria-sort", th.dataset.k === sortKey ? (sortDir < 0 ? "descending" : "ascending") : "none"));
+}
+function setView(v) {
+  view = v;
+  document.getElementById("v-game").setAttribute("aria-selected", v === "game");
+  document.getElementById("v-period").setAttribute("aria-selected", v === "period");
+  renderHead(); renderTable();
+}
+document.getElementById("v-game").addEventListener("click", () => setView("game"));
+document.getElementById("v-period").addEventListener("click", () => setView("period"));
+rowsEl.addEventListener("click", e => {
+  const tr = e.target.closest("tr"); if (!tr) return;
+  const n = +tr.dataset.n; selected = selected === n ? null : n; renderTable(); highlight();
+});
+
+// timeline: one lane per player, three period blocks side by side, shared seconds scale
+const svg = document.getElementById("tl");
+const order = [...DATA.players].sort((a, b) => a.num - b.num);
+const LW = 118, LANE = 22, TOP = 30, GAP = 18, W = 1060;
+const totalLen = P.reduce((a, p) => a + (p.end - p.start), 0);
+const scale = (W - LW - GAP * (P.length - 1) - 28) / totalLen;
+const x0s = []; let acc = LW;
+P.forEach(p => { x0s.push(acc); acc += (p.end - p.start) * scale + GAP; });
+const H = TOP + order.length * LANE + 8;
+svg.setAttribute("viewBox", `0 0 ${W} ${H}`); svg.setAttribute("width", W); svg.setAttribute("height", H);
+let g = "";
+P.forEach((p, i) => {
+  const x = x0s[i], w = (p.end - p.start) * scale;
+  g += `<text x="${x}" y="14" font-size="13" font-weight="600">${p.label}</text>`;
+  for (let m = 5; m * 60 < p.end - p.start; m += 5) {
+    const xx = x + m * 60 * scale;
+    g += `<line class="grid" x1="${xx}" x2="${xx}" y1="${TOP - 6}" y2="${H - 6}"/>`;
+    g += `<text class="mut" x="${xx}" y="${TOP - 10}" font-size="11" text-anchor="middle">${m}:00</text>`;
+  }
+  g += `<rect class="pbox" x="${x}" y="${TOP - 4}" width="${w}" height="${H - TOP - 2}"/>`;
+});
+(DATA.stoppages || []).forEach(([a, b]) => {
+  const pi = P.findIndex(p => a >= p.start && a < p.end); if (pi < 0) return;
+  const per = P[pi], x = x0s[pi] + (a - per.start) * scale, w = (Math.min(b, per.end) - a) * scale;
+  g += `<rect x="${x.toFixed(1)}" y="${TOP - 4}" width="${Math.max(1, w).toFixed(1)}" height="${H - TOP - 2}" class="stop"/>`;
+});
+order.forEach((p, r) => {
+  const y = TOP + r * LANE;
+  g += `<text x="6" y="${y + 15}" font-size="14"><tspan font-weight="600" class="tnum">${p.num}</tspan> ${p.name || ""}</text>`;
+});
+DATA.shifts.forEach(s => {
+  const r = order.findIndex(p => p.num === s.player), pi = P.findIndex(p => p.label === s.period);
+  if (r < 0 || pi < 0) return;
+  const per = P[pi], x = x0s[pi] + (s.t0 - per.start) * scale, w = Math.max(2, (s.t1 - s.t0) * scale);
+  g += `<a href="${at(Math.round(s.t0) - 3)}" target="_blank" rel="noopener"><rect class="bar" tabindex="0" data-n="${s.player}" data-tip="#${s.player} ${s.period} ${fmt(s.t0 - per.start)}–${fmt(s.t1 - per.start)} (${fmt(s.t1 - s.t0)})" x="${x.toFixed(1)}" y="${TOP + r * LANE + 3}" width="${w.toFixed(1)}" height="${LANE - 7}" rx="2"/></a>`;
+});
+svg.innerHTML = g;
+function highlight() {
+  svg.classList.toggle("dim", selected !== null);
+  svg.querySelectorAll(".bar").forEach(b => b.classList.toggle("hi", +b.dataset.n === selected));
+}
+const tip = document.getElementById("tip");
+svg.addEventListener("mousemove", e => {
+  const b = e.target.closest(".bar");
+  if (!b) { tip.hidden = true; return; }
+  tip.textContent = b.dataset.tip; tip.hidden = false;
+  tip.style.left = Math.min(e.clientX + 12, innerWidth - tip.offsetWidth - 8) + "px"; tip.style.top = (e.clientY + 14) + "px";
+});
+svg.addEventListener("mouseleave", () => tip.hidden = true);
+renderHead(); renderTable();
+</script>

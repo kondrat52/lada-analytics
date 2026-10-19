@@ -1,0 +1,319 @@
+{
+  "id": "2026-10-17-vs-rr",
+  "date": "2026-10-17",
+  "title": "LADA Turbo Kings vs Roadrunners, Oct 17",
+  "eyebrow": "Sat Oct 17, 2026 · 9:15 PM · Renton",
+  "opponent": "RR",
+  "video": "https://www.youtube.com/watch?v=UoojnruHtu8",
+  "periods": [
+    {
+      "label": "P1",
+      "start": 7,
+      "end": 1089
+    },
+    {
+      "label": "P2",
+      "start": 1183,
+      "end": 2263
+    },
+    {
+      "label": "P3",
+      "start": 2360,
+      "end": 3731
+    }
+  ],
+  "nets": {
+    "P1": 560,
+    "P2": 3345,
+    "P3": 560
+  },
+  "penalty_kills": [
+    {
+      "period": "P2",
+      "start": 1366,
+      "end": 1557,
+      "player": 26
+    }
+  ],
+  "notes": [
+    "Renton's new camera from this game: a fisheye low at center ice on the near side, the whole 3840x1920 frame (rink geometry renton2).",
+    "Dmitriyev #4 subbed in goal for Fisenko (per the game sheet; not on our roster).",
+    "Absent: Sokolov #4, Vasyliev #31, Unuchek #49, Fisenko #58 (G), Kleiman #69, Bronnikov #74, Shakhov #78. The 11 skaters on the video are the 11 the game sheet marks playing.",
+    "Periods from the arena scoreboard's clock (18:00 each); it ran through stoppages in the 1st and 2nd, stopped at whistles in the 3rd, and counted a 1:00 intermission after the 1st and 2nd.",
+    "Goals and assists from SportNinja's game sheet, each found on the video. Their power-play goal came at 11:48 on the board's clock, not the sheet's 12:25.",
+    "Penalty kill from 22:46 to 25:57 of the video (Babkin #26 in the box for hooking; the board ran 3:00), ended by their power-play goal; solved with 4 skaters on the ice.",
+    "Shots from the arena scoreboard, the same as the game sheet's (38-16).",
+    "Labeled by hand: #13 coming on at 56:40 (the tracker lost his first seconds off the bench).",
+    "Highlights include a 3-on-0 in the 1st that didn't score, asked for by the team."
+  ],
+  "video_ends_early": false,
+  "fun": {
+    "name_reads": {
+      "90": 648,
+      "14": 409,
+      "18": 340,
+      "13": 334,
+      "89": 213,
+      "26": 168,
+      "12": 80,
+      "61": 75,
+      "33": 59,
+      "64": 54,
+      "82": 35
+    }
+  },
+  "pipeline": {
+    "detections": 821302,
+    "crops": 118401,
+    "reads": 11607,
+    "reviewed": 760
+  },
+  "highlights": [
+    {
+      "type": "moment",
+      "title": "3 on 0, no goal",
+      "t": 898,
+      "clip": "clips/moment-1.mp4",
+      "poster": "clips/moment-1.jpg",
+      "note": "1st period, clock 3:11: #89 carries in with #90 and a third forward, nobody back but their goalie; the backcheck catches up before a goal"
+    },
+    {
+      "type": "goal",
+      "team": "for",
+      "t": 1246,
+      "scorer": 13,
+      "assists": [
+        14
+      ],
+      "clip": "clips/goal-1.mp4",
+      "poster": "clips/goal-1.jpg",
+      "note": "2nd period, clock 16:55: Belousenko in a scramble at the crease, 1-0"
+    },
+    {
+      "type": "penalty",
+      "player": 26,
+      "t": 1361,
+      "clip": "clips/penalty-26.mp4",
+      "poster": "clips/penalty-26.jpg",
+      "note": "2nd period, clock 15:00: hooking from behind; the board ran 3:00, ended by their power-play goal at 11:48"
+    },
+    {
+      "type": "goal",
+      "team": "for",
+      "t": 1456,
+      "scorer": 33,
+      "assists": [],
+      "clip": "clips/goal-2.mp4",
+      "poster": "clips/goal-2.jpg",
+      "note": "2nd period, clock 13:20: short-handed, Nizamutdinov carries in alone and dekes the goalie, 2-0"
+    },
+    {
+      "type": "goal",
+      "team": "against",
+      "t": 1555,
+      "scorer": 27,
+      "assists": [
+        23
+      ],
+      "clip": "clips/goal-3.mp4",
+      "poster": "clips/goal-3.jpg",
+      "note": "2nd period, clock 11:48: power-play goal from the low slot, 2-1"
+    },
+    {
+      "type": "goal",
+      "team": "for",
+      "t": 2158,
+      "scorer": 13,
+      "assists": [
+        33
+      ],
+      "clip": "clips/goal-4.mp4",
+      "poster": "clips/goal-4.jpg",
+      "note": "2nd period, clock 1:44: Belousenko at the crease as the goalie sprawls, 3-1"
+    },
+    {
+      "type": "goal",
+      "team": "against",
+      "t": 2765,
+      "scorer": 91,
+      "assists": [
+        11,
+        71
+      ],
+      "clip": "clips/goal-5.mp4",
+      "poster": "clips/goal-5.jpg",
+      "note": "3rd period, clock 12:10: scramble at our crease, 3-2"
+    },
+    {
+      "type": "goal",
+      "team": "for",
+      "t": 2946,
+      "scorer": 13,
+      "assists": [],
+      "clip": "clips/goal-6.mp4",
+      "poster": "clips/goal-6.jpg",
+      "note": "3rd period, clock 9:56: Belousenko's hat trick out of a long crease scramble, 4-2"
+    }
+  ],
+  "lada_game_id": 33015,
+  "zones": {
+    "offence": 0.4626,
+    "defence": 0.2976
+  },
+  "shots": {
+    "P1": [
+      15,
+      2
+    ],
+    "P2": [
+      8,
+      6
+    ],
+    "P3": [
+      15,
+      8
+    ]
+  },
+  "stoppages": [
+    [
+      7,
+      9
+    ],
+    [
+      59,
+      85
+    ],
+    [
+      179,
+      207
+    ],
+    [
+      249,
+      286
+    ],
+    [
+      319,
+      330
+    ],
+    [
+      346,
+      373
+    ],
+    [
+      429,
+      462
+    ],
+    [
+      529,
+      549
+    ],
+    [
+      569,
+      585
+    ],
+    [
+      706,
+      727
+    ],
+    [
+      823,
+      867
+    ],
+    [
+      902,
+      924
+    ],
+    [
+      1183,
+      1225
+    ],
+    [
+      1225,
+      1282
+    ],
+    [
+      1458,
+      1501
+    ],
+    [
+      1548,
+      1586
+    ],
+    [
+      1596,
+      1613
+    ],
+    [
+      1657,
+      1685
+    ],
+    [
+      1813,
+      1853
+    ],
+    [
+      1908,
+      1928
+    ],
+    [
+      1928,
+      1951
+    ],
+    [
+      1960,
+      1983
+    ],
+    [
+      2092,
+      2152
+    ],
+    [
+      2360,
+      2362
+    ],
+    [
+      2452,
+      2480
+    ],
+    [
+      2480,
+      2496
+    ],
+    [
+      2682,
+      2710
+    ],
+    [
+      2755,
+      2793
+    ],
+    [
+      2837,
+      2864
+    ],
+    [
+      2938,
+      2982
+    ],
+    [
+      3045,
+      3080
+    ],
+    [
+      3099,
+      3119
+    ],
+    [
+      3254,
+      3306
+    ],
+    [
+      3403,
+      3443
+    ],
+    [
+      3652,
+      3680
+    ]
+  ]
+}
