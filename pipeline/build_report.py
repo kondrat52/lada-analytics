@@ -62,11 +62,11 @@ def fun_stats(A, game):
 
 
 def highlights(A, game):
-    """Clips listed in game.json, with the period, and who was on the ice for goals."""
+    """Clips listed in game.json, with the period, and who was on the ice for goals and moments."""
     out = []
     for h in game.get("highlights", []):
         per = next((p for p in game["periods"] if p["start"] <= h["t"] <= p["end"]), None)
-        on = sorted(int(r.player) for r in A.itertuples() if r.t0 <= h["t"] < r.t1) if h["type"] == "goal" else []
+        on = sorted(int(r.player) for r in A.itertuples() if r.t0 <= h["t"] < r.t1) if h["type"] in ("goal", "moment") else []
         out.append(dict(h, period=per["label"] if per else "", on_ice=on))
     return out
 

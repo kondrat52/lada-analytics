@@ -104,7 +104,7 @@ def game_doc(game, A, players, highlights):
                     "duration": _num(r.dur), "play": _num(getattr(r, "play", None)),
                     "start_in_period": _num(r.t0 - pstart[r.period])}
                    for r in A.sort_values(["t0", "player"]).itertuples()],
-        "highlights": [{"type": h["type"], "team": h.get("team"),
+        "highlights": [{"type": h["type"], "team": h.get("team"), "title": h.get("title"),
                         "player": _player(h["player"]) if h.get("player") is not None else None,
                         "t": h["t"], "period": h.get("period"),
                         "t_in_period": _num(h["t"] - pstart[h["period"]]) if h.get("period") in pstart else None,

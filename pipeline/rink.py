@@ -204,7 +204,42 @@ class Kirkland(Renton):
         return (x > x0 - 40) & (x < x1 + 40) & (rel > -80)
 
 
-RINKS = {"renton": Renton, "snoqualmie": Snoqualmie, "snoqualmie2": Snoqualmie2, "kirkland": Kirkland}
+class Renton2(Kirkland):
+    """Renton from Oct 17, 2026: a new camera low at center ice on the near side with a fisheye lens, the whole
+    frame (3840x1920). The far boards bow up to y ~340 at center and drop to ~1030 at the frame edges, where the end
+    boards run down to the near boards along the bottom. Same rink as before, so the benches are still behind the far
+    boards, away left (we wore light blue) and home right, with the penalty boxes between them; a player at the far
+    boards is about as tall as with the old camera (~75 px), so the bench rules need no scaling."""
+    crop_top = 220 / 1920
+    board_band = (0.15, 0.56)
+    board_lowest = True           # yellow signs above the end boards, and the scoreboard's digits
+    size = (3840, 1920)
+    center_x = 1940
+    nets = {"left": 560, "right": 3345}
+    NET_Y = 755                   # both nets sit at about this y, right in front of the end boards' kick plate
+    min_break = 25
+    bench_side = "left"
+    # x at the boards: the away bench runs from the glass post at 1380 to its box (1735-1865, a boxed player is
+    # "at the bench" as with the old camera), the home bench from its box (2020-2150) to 2500
+    BENCHES = {"left": (1380, 1800), "right": (2080, 2500)}
+    scoreboard = (3456, 576, 150, 126)    # even sides: ffmpeg rounds an odd crop of yuv420 video down, misaligning frames
+    shots_boxes = {"home": (36, 57, 48, 69), "guest": (50, 66, 64, 79)}
+    views = {"rink": (0, 3840, 220, 1920), "left-net": (100, 1300, 480, 1080), "right-net": (2600, 3800, 470, 1070)}
+    # the ice inside the near boards, which bow down to the frame's bottom edge at center (the far boards curve is the
+    # top)
+    ICE = Path([(0, 0), (3840, 0), (3840, 1000), (3790, 1030), (3600, 1240), (3400, 1440), (3200, 1600),
+                (2880, 1770), (2600, 1850), (2200, 1910), (1920, 1920), (1600, 1910), (1400, 1880), (1200, 1830),
+                (1000, 1760), (800, 1660), (600, 1540), (400, 1360), (200, 1120), (100, 1030), (0, 1000)])
+
+    def in_crease(self, x, rel, net_x):
+        """Near the end boards the boards curve is steep, so the crease is a box in the frame around the net."""
+        x = np.asarray(x, float)
+        y = np.asarray(rel, float) + np.polyval(self.P, x)
+        return (np.abs(x - net_x) < 160) & (y > self.NET_Y - 50) & (y < self.NET_Y + 90)
+
+
+RINKS = {"renton": Renton, "snoqualmie": Snoqualmie, "snoqualmie2": Snoqualmie2, "kirkland": Kirkland,
+         "renton2": Renton2}
 
 # Our jersey that game, as tests on process.py's torso colour fractions (the dets.csv columns, or a dict of them):
 # `ours` picks our players for tracking, the looser `crop` which detections get a 4K crop for OCR and review.
