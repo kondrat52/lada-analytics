@@ -26,7 +26,10 @@ before the time the sheet's clock implies, even in a period whose clock ran thro
 The game sheet can put a goal in the wrong period: on LADA R's Sep 21 game it had Moshchuk's goal at 17:26 of
 the 2nd, but nothing happened then, and 34 s into the 3rd the board's clock stopped at 17:26 and the home score
 and shots went up. A sheet goal with no candidate near its time is worth looking for at the same clock in the
-next or previous period.
+next or previous period. The sheet's time for a power-play goal can be the penalty's, not the goal's: on TK's Oct 17
+game it had Roadrunners' goal at 12:25, but the board's clock read 11:48 when it went in, 37 s later, and the penalty
+panel went dark then. Where the video has sound (Renton's new camera), the whistle after a goal is audible and pins
+it to a fraction of a second.
 
 The recording itself can skip. LADA R's Sep 14 video loses about two minutes of the 3rd at 44:37: from one second to
 the next the board's clock jumps from 13:59 to 11:58, the home score and shots go up during live play, and every
@@ -99,6 +102,13 @@ Pages. The recordings' audio is silent, so clips have no sound.
  {"type": "penalty", "player": 4, "t": 3580, "clip": "clips/penalty-4.mp4", "poster": "clips/penalty-4.jpg",
   "note": "1st period, clock 3:40: 3 minutes, ended by their power-play goal at 0:38"}]
 ```
+
+A play worth a clip that is neither (the user asked for TK's 3-on-0 that didn't score on Oct 17) is a
+`"moment"` with a `"title"`, the card's heading: `{"type": "moment", "title": "3 on 0, no goal", "t": 1234,
+"clip": "clips/moment-1.mp4", "poster": "clips/moment-1.jpg", "note": "..."}`. The page lists who was on the ice
+for it as for a goal; it doesn't count toward goals and the lineup check skips it. The user's "around 3:00 in the
+1st" was the clock (3:11 left, video 898), not 3:00 into the video: try both. A detection scan for 3+ of ours past
+every opponent finds too many runs to use alone (the white test misses opponents), so look at the frames.
 
 `t` is seconds of video at the goal or infraction. `scorer` and `assists` are optional and come from the
 scoresheet; the lineup check in solve and publish then flags a credited player who isn't on the ice at `t`, which

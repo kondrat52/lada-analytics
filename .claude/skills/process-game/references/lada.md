@@ -67,6 +67,11 @@ mark as playing. The user may also hand you the scoresheet PDF from the SportNin
 scoresheet.pdf"), which says the same things. `is_playing` is the scorekeeper's and can be wrong (Y's Shakhov
 #78 was marked not playing with SHAKHOV 78 on his back all game; Potepalov #15 was marked playing and never
 seen; on Sep 21 Mischenko #72 was marked not playing and played from the 2nd period), so the video decides.
+Check the sheet's goalie too: on TK's Oct 17 game a sub goalie, Dmitriyev #4, was marked playing and Fisenko #58 not,
+while #4 is also skater Sokolov's number on our roster. Mark both #4 (Sokolov didn't play) and #58 absent, leave the
+sub goalie out of `roster.json`, and tell the reviewers with `--note` that the #4 in goalie pads is our goalie. An
+opponent's number can also pass our jersey test: Roadrunners' #4 ORR wears grey-white with light-blue stripes, and
+his crops were most of the 88 reads of "4".
 `sheet` run before `periods.json` exists leaves `video_t` empty, and `goals` then prints every goal at its
 period's start: run `sheet` again once the periods are right.
 

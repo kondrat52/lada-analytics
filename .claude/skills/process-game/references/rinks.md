@@ -51,6 +51,30 @@ read `shots_check.jpg` yourself every time.
 
 Views: `rink` 0–3840 × 700–1500; `left-net` 150–1450 × 720–1070; `right-net` 2500–3800 × 720–1070.
 
+## Renton, new camera (`renton2`, the whole fisheye frame, 3840x1920)
+
+From Turbo Kings' Oct 17 game (9:15 PM) Renton's video comes from a new camera low at center ice on the near side,
+behind the netting, with a fisheye lens: fetch stops with "video is 3840x1920 ... new framing". The far boards bow
+up to y ~340 at center and drop to ~1030 at the frame edges; the near boards run along the bottom. The rink is the
+same, so the benches are still behind the far boards: away (light blue) from the glass post at x 1380 to ~1735,
+then the away box (1735–1865), the scorekeeper's window at center (the scorekeeper wore light blue and passes our
+jersey test; he is outside the bench zone, so he isn't tracked), the home box (2020–2150) and the home bench to
+~2500. A player at the far boards is ~75 px tall, as with the old camera, so the bench rules are Kirkland's,
+unscaled. Bench sitters show only their heads above the boards and don't pass the jersey test; line changes come
+from on-ice tracks ending at the boards, as before. The nets sit at about (560, 755) and (3345, 755), right in front
+of the end boards' kick plate, where the boards curve is steep: the crease is a box in the frame (`in_crease`).
+The scoreboard is small and tilted in the right corner (x 3456–3606, y 576–702), readable on `sb.jpg` but not by
+`shots.py`'s OCR (it read 30-6 for 38-16): read the shots at each period's end yourself. Players near the camera are
+~500 px tall. Unlike the old camera's, this video has real audio: the referees' whistles are audible, which pins
+goals and penalty calls to a fraction of a second, and clips keep the sound.
+
+On Oct 17 the clock ran through stoppages in the 1st and 2nd and stopped at whistles in the 3rd; the board counted a
+1:00 intermission after the 1st and 2nd (period ends at the first 00.0, starts when 18:00 starts counting). The
+empty-ice proposal had the 1st period's net backwards and its edges 5–26 s off. The board ran 3:00 for a minor the sheet
+calls 2:00, lit the panel during the stoppage and started it at the faceoff, and cleared it at a power-play goal.
+
+Views: `rink` 0–3840 × 220–1920; `left-net` 100–1300 × 480–1080; `right-net` 2600–3800 × 470–1070.
+
 ## Snoqualmie A (`snoqualmie`, a 3840x1536 strip)
 
 Blue Wings' home rink. Camera high on the near side at center, very wide. Both benches are on the near side at the
@@ -142,7 +166,8 @@ U=$($PY -m yt_dlp -g -f 313 "<url>"); $FF -loglevel error -ss 600 -i "$U" -frame
 ```
 
 Add a class: `crop_top` above the heads of players at the far boards (a wrong crop silently loses them), the board
-band, the ice polygon, the benches, the nets, `scoreboard` (x, y, w, h), `shots_boxes` (the home and guest shot
-digits inside that crop), `views`, and `board_lowest` if there's yellow lettering above the boards. Run
+band, the ice polygon, the benches, the nets, `scoreboard` (x, y, w, h, all even: ffmpeg rounds an odd crop of
+yuv420 video down, every raw frame read then drifts a row, and the scan shows two half boards and runs short of the
+video, 3706 s for 3736), `shots_boxes` (the home and guest shot digits inside that crop), `views`, and `board_lowest` if there's yellow lettering above the boards. Run
 `boards.py` on the frame and draw its curve over it; check it all the way to the frame edges. Then YOLO on a few
 frames and the jersey test under that lighting, and only then detection. Register the class in `RINKS`.
