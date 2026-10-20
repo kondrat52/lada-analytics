@@ -694,7 +694,7 @@ def cmd_solve(a):
         tgt += [[k["start"], k["end"], 5, k["player"], "on"] for k in P.get("on", [])]   # seen on the ice, track lost
         tgt += [[k["start"], k["end"], 4, k.get("player")] for k in P.get("pk", [])]   # player: off, in the box
         tgt += [[k["start"], k["end"], 6] for k in P.get("extra", [])]   # our goalie pulled for an extra attacker
-        sh(PY, f"{HERE}/run2.py", f"{W}/{p}", f"{W}/rev_{p}", P["end"], json.dumps([[P["start"], P["end"]]]), json.dumps(tgt))
+        sh(PY, f"{HERE}/run2.py", f"{W}/{p}", f"{W}/rev_{p}", P["end"], json.dumps(live_spans(P)), json.dumps(tgt))
         sh(PY, f"{HERE}/gantt.py", f"{W}/{p}/shifts_final.csv", f"{W}/{p}/segs_final.csv", f"{W}/gantt_{p}.png",
            P["start"], P["end"])
         labels.append(f"{p}:{P['label']}")
@@ -705,12 +705,22 @@ def cmd_solve(a):
     for P in periods(W):   # shift seconds vs 5 skaters for the whole period (4 inside penalty kills, 6 with the goalie pulled)
         length = P["end"] - P["start"]; pk = sum(k["end"] - k["start"] for k in P.get("pk", []))
         ex = sum(k["end"] - k["start"] for k in P.get("extra", []))
-        want = 5 * length - pk + ex; have = int(A[A.period == P["label"]].dur.sum())
-        print(f"{P['label']}: {have} s of shifts; 5 x {length} s - {pk} s of penalty kill"
+        ps = sum(k["end"] - k["start"] for k in P.get("ps", []))
+        want = 5 * (length - ps) - pk + ex; have = int(A[A.period == P["label"]].dur.sum())
+        print(f"{P['label']}: {have} s of shifts; 5 x {length - ps} s - {pk} s of penalty kill"
               + (f" + {ex} s of extra attacker" if ex else "") + f" = {want} s ({have / want:.0%})")
     lineup_check(W)
     log(f"gantt charts: {W}/gantt_*.png (the bottom panel should sit at 5, 4 during a penalty kill); look at them "
         f"when the lineup check lists something")
+
+
+def live_spans(P):
+    """The period minus its penalty shots against us ("ps": [{"start", "end"}]): while their shooter faces our goalie,
+    all our skaters are at the bench, so the solver puts nobody on, as in an intermission."""
+    spans, t = [], P["start"]
+    for k in sorted(P.get("ps", []), key=lambda k: k["start"]):
+        spans.append([t, k["start"]]); t = k["end"]
+    return spans + [[t, P["end"]]]
 
 
 def lineup_check(W, min_len=15):
@@ -720,6 +730,8 @@ def lineup_check(W, min_len=15):
     A = pd.read_csv(f"{W}/shifts_all.csv")
     Ps = periods(W)
     def target(t):   # each penalty kill takes a skater off; two at once (a 5-on-3) take two; a pulled goalie adds one
+        if any(k["start"] <= t < k["end"] for P in Ps for k in P.get("ps", [])):
+            return 0   # a penalty shot against: everyone at the bench
         return max(3, 5 - sum(k["start"] <= t < k["end"] for P in Ps for k in P.get("pk", []))
                    + sum(k["start"] <= t < k["end"] for P in Ps for k in P.get("extra", [])))
     def on(t):
