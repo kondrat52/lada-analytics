@@ -78,7 +78,10 @@ period's start: run `sheet` again once the periods are right.
 A game LADA's schedule view doesn't show (older than the cache, like Doofers' Sep 19 game): call
 `game/<any upcoming game's id against the same opponent>/opponentGames`. It lists every game against them with
 its id, date, score and `boxscoreLink` (the SportNinja id, so `sheet --sn` works too). Add the game to
-`lada_games.json` (`game/<id>` has the full record) and publish finds it by date. With no upcoming game against
+`lada_games.json` (`game/<id>` has the full record) and publish finds it by date. Store `date` as
+`YYYY-MM-DDTHH:MM:SS` from the record's `dayTime`: its own `date` is "9/27/2026", which publish's lookup by date
+misses; the record has no `rinkName` either. The schedule view can also skip games in mid-season: Doofers' Sep 27
+and Oct 4 games never showed up in it, between games that did, and `opponentGames` had both with their sheets. With no upcoming game against
 that opponent (Doofers' Sep 13 game vs Jurassic Puck, their real first), probe `game/<id>` next to the other
 teams' games that day: 32947 sat between Blue Wings' 32945/32946 and Beerteam's 32949.
 

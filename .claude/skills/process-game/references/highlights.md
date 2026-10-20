@@ -26,7 +26,10 @@ before the time the sheet's clock implies, even in a period whose clock ran thro
 The game sheet can put a goal in the wrong period: on LADA R's Sep 21 game it had Moshchuk's goal at 17:26 of
 the 2nd, but nothing happened then, and 34 s into the 3rd the board's clock stopped at 17:26 and the home score
 and shots went up. A sheet goal with no candidate near its time is worth looking for at the same clock in the
-next or previous period. The sheet's time for a power-play goal can be the penalty's, not the goal's: on TK's Oct 17
+next or previous period. The credited scorer can be wrong too: on Doofers' Sep 27 game the sheet gave the first goal to
+Babkin #26, who wasn't on the ice (two frame checks agreed; he came on for the faceoff after it, and Albantov #29 was
+at the crease). The page keeps the sheet's credit, the goal's note and `game.json`'s notes say what the video shows,
+and the lineup check keeps listing it, which is expected. The sheet's time for a power-play goal can be the penalty's, not the goal's: on TK's Oct 17
 game it had Roadrunners' goal at 12:25, but the board's clock read 11:48 when it went in, 37 s later, and the penalty
 panel went dark then. Where the video has sound (Renton's new camera), the whistle after a goal is audible and pins
 it to a fraction of a second.

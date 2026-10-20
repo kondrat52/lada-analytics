@@ -18,7 +18,7 @@ without one is Renton. Pick the rink by the frame size and view of `frame600.png
   with the player's number and time left. Its LEDs flicker (at Renton most single frames show it dark), so
   `scoreboard.py` keeps the brightest frame of each second; fetch scans it into `$W/scoreboard.npy` and `$W/sb.jpg`.
 - Which side we are: usually LADA's `playHome`, but go by the final score on the board. LADA Y were away in LADA
-  but HOME on Kirkland's board on Sep 14.
+  but HOME on Kirkland's board on Sep 14; Doofers were away and guests on Sep 27 but had the home-side bench.
 - Scorekeepers put penalties on the wrong panel (Kirkland: ours on the guest panel while the score sat on the home
   side), so the penalty box decides whose a penalty is.
 
@@ -151,6 +151,14 @@ as 3600x1440 and get scaled up.
 - Teamy McTeamface's white jerseys have big sky-blue panels, so half of theirs pass the plain light-blue test.
   `--jersey "light blue vs sky blue"` adds a hue test (`bhue` in `dets.csv`: ours ~113, theirs ~107).
 - Shots OCR is often wrong here: fix `shots.json` from `shots_check.jpg`.
+- Doofers' Sep 27 game (3:00 PM; a recording of LiveBarn's player, 3438x1374) was away in LADA and the guests on the
+  board, yet our light-blue jerseys sat at the home-side bench right of center: check `frame600.png` and set the bench
+  from it, never from home/away. The empty-ice proposal found all three periods that time, but 20-40 s off at every
+  edge; the clock rules above held (18:00 starting to count, 0.0, a 1:00 intermission countdown), with the clock
+  running through stoppages in the 1st and 2nd and stopping at whistles in the 3rd. Both minors ran 3:00 on the board.
+  Our player dropped into the near-right box. Rainucks' white jerseys with blue numbers and green-and-blue stripes
+  passed the light-blue test (`unknown` listed six of their numbers, #96 with more reads than any of ours), and the
+  goalies were told apart by colour (ours red, theirs white). Shots OCR read 20-20 for the board's 25-32.
 
 Views: `rink` 0–3840 × 320–1536; `left-net` 150–1350 × 400–800; `right-net` 2600–3800 × 400–800.
 

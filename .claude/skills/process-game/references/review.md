@@ -119,6 +119,11 @@ number). Tell the user which rows you labeled by hand, and say so in `game.json`
 - **A number no one wears.** On Doofers' Sep 19 game two rows were labeled 19 off a sleeve; a reviewer's number
   joins the solve's roster, so it would have become a phantom player. Before solving, grep the reviews for numbers
   not on the roster; a zfix "?" keeps them out (the gap check later found one was Kleiman #69).
+- **A sub in goal, again.** Doofers' Sep 27 game had David Pfeifer #54 (under `subs`) in goal in a red goalie
+  jersey: #0, #1, #20 and #54 all went on the absent list, so the prompts' goalie line read "Our goalie is not on the
+  card" and a `--note` named him and his colour; no prompt needed editing and no reviewer labeled anyone 54. The
+  first gap check also gets the bench right only half the time at Kirkland's staggered changes: a second pass over
+  the gaps it left (and over any shift over ~5 minutes) found #52 sitting a whole timeout and the next shift.
 - **A sub in goal.** On LADA R's Sep 21 game Perry #99, listed under `subs`, played goal instead of #35, but
   the prompts' goalie line comes from the roster's first goalie and an empty-row line said #79 (a regular who
   played all game, number rarely readable) probably hadn't played. Both were fixed by hand in every prompt
