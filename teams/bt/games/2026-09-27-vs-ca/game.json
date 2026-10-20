@@ -32,7 +32,7 @@
     "Away game at Renton: we wore light blue and had the left bench (the pipeline's defaults). The 3246x1440 video was scaled up to the rink's usual frame. The game sheet (SportNinja, read through its public API) gave the score, the goals with scorers, the shots and who played, and had no penalties; the arena scoreboard and the video confirmed them. LADA's schedule view never listed this game; its id (32972) came from the games against Cascadiens.",
     "Periods by the scoreboard clock (we were GUEST): 0:17-18:41, 20:13-38:15 and 39:55-66:58 of the video. The clock ran through stoppages in the 1st and 2nd and stopped at whistles in the 3rd, and the board counted a 1:00 intermission after the 1st and the 2nd. The video runs to the final horn. Shots on goal 39-25 (9-5, 11-8, 19-12), as on the sheet and the board.",
     "Goals at 32:32 (Cascadiens #91 Farina), 36:33 (Solovyov #87, assists Zhaksilikov #23 and Zakharov #34), 46:50 (#8 Garbelman), 55:24 (Bogdanov #10, assist Tverskoy #44) and 65:06 (the winner, 40 s left) of the video, each found by eye and matched to the board. The sheet puts Bogdanov's goal at 17:17 of the 3rd; the board's clock stopped at 7:17 for it.",
-    "The winner: the game sheet credits Shikhanov #70, unassisted, and the page keeps the sheet's credit, but the video shows Kleiman #69 carrying the puck in alone, scoring and raising his arms. Shikhanov was on the ice for it.",
+    "The winner is credited to Kleiman #69, as the video shows: he carries the puck in alone, scores and raises his arms. The game sheet credits Shikhanov #70, unassisted (he was on the ice for it).",
     "Khristoforov #7 went down injured by our net at 41:25 of the video, early in the 3rd, skated slowly to the bench at 42:25 and didn't come back. Volkov #94 played defence with Papusha #24 for the rest of the game.",
     "Twelve skaters and Mayorov #1 in goal. Absent: Zhaksilikov #5, Belousenko #11, Papusha #25, Gilderman #41, goalie Starodubtsev #20 and all the subs.",
     "Labeled by hand after a frame check: #70 going off at our bench at 30:34 while #24 came on (P2 row R93), #70 on the ice for the winning goal (P3 row R229, his number read at 64:58-65:03), and #7 off from his injury to the end."
@@ -59,7 +59,77 @@
     "reads": 12232,
     "reviewed": 595
   },
+  "highlights": [
+    {
+      "type": "goal",
+      "team": "against",
+      "t": 1952,
+      "clip": "clips/goal-1.mp4",
+      "poster": "clips/goal-1.jpg",
+      "note": "2nd period, clock 5:40: Cascadiens #91 Farina in a scramble at our net, 0-1"
+    },
+    {
+      "type": "goal",
+      "team": "for",
+      "t": 2193,
+      "clip": "clips/goal-2.mp4",
+      "poster": "clips/goal-2.jpg",
+      "scorer": 87,
+      "assists": [
+        23,
+        34
+      ],
+      "note": "2nd period, clock 1:38: Solovyov #87 jams it in at the crease (assists #23, #34), 1-1"
+    },
+    {
+      "type": "goal",
+      "team": "against",
+      "t": 2810,
+      "clip": "clips/goal-3.mp4",
+      "poster": "clips/goal-3.jpg",
+      "note": "3rd period, clock 13:46: Cascadiens #8 Garbelman at the crease, 1-2"
+    },
+    {
+      "type": "goal",
+      "team": "for",
+      "t": 3324,
+      "clip": "clips/goal-4.mp4",
+      "poster": "clips/goal-4.jpg",
+      "scorer": 10,
+      "assists": [
+        44
+      ],
+      "note": "3rd period, clock 7:17 (the game sheet says 17:17): Bogdanov #10 carries in and scores (assist #44), 2-2"
+    },
+    {
+      "type": "goal",
+      "team": "for",
+      "t": 3906,
+      "clip": "clips/goal-5.mp4",
+      "poster": "clips/goal-5.jpg",
+      "scorer": 69,
+      "note": "3rd period, clock 0:40: the winner, 3-2. Kleiman #69 carries in alone, scores and raises his arms (the game sheet credits Shikhanov #70, unassisted)"
+    }
+  ],
   "lada_game_id": 32972,
+  "zones": {
+    "offence": 0.383,
+    "defence": 0.3364
+  },
+  "shots": {
+    "P1": [
+      9,
+      5
+    ],
+    "P2": [
+      11,
+      8
+    ],
+    "P3": [
+      19,
+      12
+    ]
+  },
   "stoppages": [
     [
       30,
@@ -189,75 +259,5 @@
       3908,
       3942
     ]
-  ],
-  "highlights": [
-    {
-      "type": "goal",
-      "team": "against",
-      "t": 1952,
-      "clip": "clips/goal-1.mp4",
-      "poster": "clips/goal-1.jpg",
-      "note": "2nd period, clock 5:40: Cascadiens #91 Farina in a scramble at our net, 0-1"
-    },
-    {
-      "type": "goal",
-      "team": "for",
-      "t": 2193,
-      "clip": "clips/goal-2.mp4",
-      "poster": "clips/goal-2.jpg",
-      "scorer": 87,
-      "assists": [
-        23,
-        34
-      ],
-      "note": "2nd period, clock 1:38: Solovyov #87 jams it in at the crease (assists #23, #34), 1-1"
-    },
-    {
-      "type": "goal",
-      "team": "against",
-      "t": 2810,
-      "clip": "clips/goal-3.mp4",
-      "poster": "clips/goal-3.jpg",
-      "note": "3rd period, clock 13:46: Cascadiens #8 Garbelman at the crease, 1-2"
-    },
-    {
-      "type": "goal",
-      "team": "for",
-      "t": 3324,
-      "clip": "clips/goal-4.mp4",
-      "poster": "clips/goal-4.jpg",
-      "scorer": 10,
-      "assists": [
-        44
-      ],
-      "note": "3rd period, clock 7:17 (the game sheet says 17:17): Bogdanov #10 carries in and scores (assist #44), 2-2"
-    },
-    {
-      "type": "goal",
-      "team": "for",
-      "t": 3906,
-      "clip": "clips/goal-5.mp4",
-      "poster": "clips/goal-5.jpg",
-      "scorer": 70,
-      "note": "3rd period, clock 0:40: the winner, 3-2. The game sheet credits Shikhanov #70 unassisted, but the video shows #69 Kleiman carrying in alone, scoring and raising his arms"
-    }
-  ],
-  "shots": {
-    "P1": [
-      9,
-      5
-    ],
-    "P2": [
-      11,
-      8
-    ],
-    "P3": [
-      19,
-      12
-    ]
-  },
-  "zones": {
-    "offence": 0.383,
-    "defence": 0.3364
-  }
+  ]
 }
