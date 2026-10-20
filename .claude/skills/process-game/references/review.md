@@ -113,6 +113,10 @@ number). Tell the user which rows you labeled by hand, and say so in `game.json`
   faces the camera) was missing from four 2nd-period stretches, and the period came to 94% of its shift seconds.
   The gap subagent found him at the bench door each time, including a 225 s shift through a penalty kill. A period
   under ~97% with one player's time far below his other periods points at him.
+- **A player who leaves hurt.** The opposite sign: on Beerteam's Sep 27 game Khristoforov #7 went down injured early in
+  the 3rd and never came back, the 3rd still came to 101% (Volkov #94 moved back to defence), and #7's 3rd-period time
+  was one shift. A period at ~100% with one regular's time far below his other periods means he left: a frame check
+  at a few later line changes confirms it, and an `off` span from the injury to the period's end keeps him off.
 - **The goalie who played isn't the roster's first.** Mark the goalies who didn't play absent too: the first goalie
   not absent is the one the prompts' goalie line and shifts.py use (Doofers' Sep 19: Wheeler #0 in goal, #1 and #20
   absent, no hand edits).

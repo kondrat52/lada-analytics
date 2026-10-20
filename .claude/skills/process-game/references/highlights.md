@@ -29,7 +29,11 @@ and shots went up. A sheet goal with no candidate near its time is worth looking
 next or previous period. The credited scorer can be wrong too: on Doofers' Sep 27 game the sheet gave the first goal to
 Babkin #26, who wasn't on the ice (two frame checks agreed; he came on for the faceoff after it, and Albantov #29 was
 at the crease). The page keeps the sheet's credit, the goal's note and `game.json`'s notes say what the video shows,
-and the lineup check keeps listing it, which is expected. The sheet's time for a power-play goal can be the penalty's, not the goal's: on TK's Oct 17
+and the lineup check keeps listing it, which is expected. The reverse slips through: on Beerteam's Sep 27 game the
+sheet credited the winner to Shikhanov #70, unassisted, while the video plainly shows Kleiman #69 carrying in alone and
+scoring. #70 was on the ice, so the lineup check passed and only the frame check caught it; read the scorer's number
+on every goal. A clock time can lose a digit too: that sheet put Bogdanov's goal at 17:17 of the 3rd, where nothing
+happened, and the board's clock stopped at 7:17 for it. The sheet's time for a power-play goal can be the penalty's, not the goal's: on TK's Oct 17
 game it had Roadrunners' goal at 12:25, but the board's clock read 11:48 when it went in, 37 s later, and the penalty
 panel went dark then. Where the video has sound (Renton's new camera), the whistle after a goal is audible and pins
 it to a fraction of a second.

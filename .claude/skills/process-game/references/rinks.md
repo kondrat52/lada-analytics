@@ -50,7 +50,12 @@ the clock (18:00 starting to count, the first 00.0). `shots.py` read 25-5 there 
 read `shots_check.jpg` yourself every time. Doofers' Oct 4 game (9:15 PM, 3246x1440 again) had the 1:00 countdown
 after the 1st and 2nd too; the proposal started the 3rd 90 s early, inside the countdown and the empty-board wait
 after it, and put the 3rd at the same net as the 2nd. Every edge came from the clock again, and the shots OCR read
-the 3rd as 9 where the board went from 19 to 35.
+the 3rd as 9 where the board went from 19 to 35. Beerteam's Sep 27 game (9:15 PM, 3246x1440, away) went the same way:
+the proposal merged the 2nd and 3rd into one period and put it at the 1st's net, the board ran the 1:00 countdown after
+the 1st and 2nd, the clock ran through stoppages in the 1st and 2nd and stopped at whistles in the 3rd, and the shots
+OCR read 1-5, 1-9, 15-11 for the board's 9-5, 11-8, 19-12. On the one-a-minute `sb.jpg` the last minute's tenths
+read like minutes ("43.1" looks like 4:31), and the board was dark (flicker) for the seconds around the 2nd period's
+0.0: a 2 s sheet over the last minute pins the end.
 
 Views: `rink` 0–3840 × 700–1500; `left-net` 150–1450 × 720–1070; `right-net` 2500–3800 × 720–1070.
 

@@ -81,7 +81,9 @@ detection (restarting itself if it slows down), OCRs the crops, proposes periods
 into `$W/sb.jpg` (one tile per minute). It resumes after any interruption, so re-run it if a background job is
 stopped (the Mac's shell jobs stop after 2 hours; detection alone can take longer there). Don't run anything heavy
 meanwhile: OCR and other jobs starve the video decoder. YouTube sometimes answers "Sign in to confirm you're not a
-bot" for every client: on Oct 19 it cleared by itself after about 25 minutes. A background loop that runs
+bot" for every client (every `player_client` alike): on Oct 19 it cleared by itself after about 25 minutes, and
+that night after 50 for a video uploaded that evening. oEmbed answers during a block and gives the title, which says
+whose game it is (`curl "https://www.youtube.com/oembed?url=<url>&format=json"`). A background loop that runs
 `$PY -m yt_dlp -F <url>` every 5 minutes and starts fetch once format 313 is listed gets through without cookies;
 reading the user's browser cookies (`--cookies-from-browser`) needs their say-so.
 
