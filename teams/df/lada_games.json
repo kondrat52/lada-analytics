@@ -32,6 +32,17 @@
     "opponentName": "Rainucks",
     "rinkName": "Kirkland"
   },
+  "32979": {
+    "date": "2026-10-04T21:15:00",
+    "opponentName": "Frost Giants",
+    "teamGoals": 2,
+    "opponentGoals": 5,
+    "boxscoreLink": "https://app.sportninja.com/public/game/PqDRH53DjdnzAJD1",
+    "playHome": false,
+    "rinkId": 1062,
+    "lines": "{\"offence\":[[\"20327\",\"14216\",\"14185\"],[\"5874\",\"5881\",\"11114\"]],\"defence\":[[\"5880\",\"5901\"],[\"14187\",\"5905\"]],\"goalie\":[[\"20356\"]],\"beer\":[\"14185\"]}",
+    "rinkName": "Renton"
+  },
   "32980": {
     "date": "2026-10-10T22:10:00",
     "opponentName": "Frost Giants",

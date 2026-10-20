@@ -1,0 +1,238 @@
+{
+  "id": "2026-10-04-vs-fg",
+  "date": "2026-10-04",
+  "title": "LADA Doofers vs Frost Giants, Oct 4",
+  "eyebrow": "Sun Oct 4, 2026 · 9:15 PM · Renton",
+  "opponent": "FG",
+  "video": "https://youtu.be/MhKscVX6LZE",
+  "periods": [
+    {
+      "label": "P1",
+      "start": 10,
+      "end": 1200
+    },
+    {
+      "label": "P2",
+      "start": 1296,
+      "end": 2399
+    },
+    {
+      "label": "P3",
+      "start": 2566,
+      "end": 3960
+    }
+  ],
+  "nets": {
+    "P1": 540,
+    "P2": 3245,
+    "P3": 540
+  },
+  "penalty_kills": [],
+  "notes": [
+    "Away in LADA's schedule and the guests on Renton's board, with the away bench left of center; we wore our light-blue jerseys. LADA's schedule view didn't list the game; its id came from LADA's list of games against the same opponents. The video is from Renton's old camera (3246x1440, scaled up for detection).",
+    "The game sheet (SportNinja, read through its public API) gave the score, the scorers, the shots and who played; each goal was found on the video and against the arena scoreboard. No penalties.",
+    "Periods from the board's clock: each started when 18:00 began counting (0:10, 21:36 and 42:46 of video) and ended at 0.0 (20:00, 39:59, 66:00), with a 1:00 intermission countdown after the 1st and 2nd. The empty-ice proposal started the 3rd 90 s early and had its net reversed. The video reaches the final horn.",
+    "No goalie in our net until about 51:40 of video (about 10:50 left in the 3rd): until then we skated six, with a skater standing in at our net (Polyanskiy #52, Prozhogin #61 and Komashinsky #13 at different times). A padded goalie in a navy jersey then came on through our bench and played the rest; the game sheet lists Wheeler #0 in goal. The shift sheet expects six skaters until then. Detections in our crease are dropped, so the stand-in's time in net comes from the gaps between his tracks.",
+    "Komashinsky #13 left the ice for good at about 49:55 of video in the 3rd and wasn't seen again.",
+    "Ten skaters, exactly LADA's planned lines, two of them subs (Sokolov #4 and Prozhogin #61). Whisman #25 is marked playing on the game sheet but never showed up on the video (his number was never read, and the shifts add up with ten skaters), so he is listed absent. Absent: #1, #11, #12, #16, #20, #25, #26, #27, #31, #37, #38, #44, #46, #54, #69, #98.",
+    "Goal 3: the game sheet's 5:42 is the clock at the restart; the goal went in at about 6:07.",
+    "Shots from the board, matching the game sheet (35-12); the shots OCR misread the 3rd.",
+    "Labeled by hand: no review rows; on/off corrections from a frame-by-frame check of every lineup gap: #13's track labeled #75 at a 1st-period change, #52 at changes in the 1st and 3rd, #13 and #52 around our net in the 2nd, #13 as the stand-in early in the 3rd and #61 taking over from him, staggered changes in the 3rd, and the changes around goals 5 and 7. One 16 s stretch with six of us counted just after the goalie came on (51:40-51:56) is left as is."
+  ],
+  "video_ends_early": false,
+  "fun": {
+    "name_reads": {
+      "4": 1145,
+      "71": 938,
+      "6": 432,
+      "52": 369,
+      "29": 365,
+      "97": 256,
+      "61": 100,
+      "13": 79,
+      "75": 24
+    }
+  },
+  "pipeline": {
+    "detections": 621680,
+    "crops": 117679,
+    "reads": 13371,
+    "reviewed": 543
+  },
+  "lada_game_id": 32979,
+  "stoppages": [
+    [
+      10,
+      13
+    ],
+    [
+      314,
+      341
+    ],
+    [
+      924,
+      950
+    ],
+    [
+      1020,
+      1048
+    ],
+    [
+      1296,
+      1357
+    ],
+    [
+      1747,
+      1825
+    ],
+    [
+      1849,
+      1886
+    ],
+    [
+      2009,
+      2034
+    ],
+    [
+      2096,
+      2176
+    ],
+    [
+      2317,
+      2371
+    ],
+    [
+      2566,
+      2571
+    ],
+    [
+      3052,
+      3079
+    ],
+    [
+      3101,
+      3129
+    ],
+    [
+      3144,
+      3176
+    ],
+    [
+      3272,
+      3334
+    ],
+    [
+      3399,
+      3463
+    ],
+    [
+      3484,
+      3510
+    ]
+  ],
+  "highlights": [
+    {
+      "type": "goal",
+      "team": "against",
+      "t": 1019,
+      "scorer": 91,
+      "assists": [
+        14,
+        55
+      ],
+      "clip": "clips/goal-1.mp4",
+      "poster": "clips/goal-1.jpg",
+      "note": "1st period, clock 2:59: a rush from the right, Pourcho #91 jams it in at the crease past a skater standing in for our absent goalie, 0-1"
+    },
+    {
+      "type": "goal",
+      "team": "against",
+      "t": 1593,
+      "scorer": 44,
+      "assists": [
+        7
+      ],
+      "clip": "clips/goal-2.mp4",
+      "poster": "clips/goal-2.jpg",
+      "note": "2nd period, clock 13:01: Descala #44 carries it in and shoots from the top of the circle, 0-2"
+    },
+    {
+      "type": "goal",
+      "team": "against",
+      "t": 2008,
+      "scorer": 68,
+      "assists": [
+        7
+      ],
+      "clip": "clips/goal-3.mp4",
+      "poster": "clips/goal-3.jpg",
+      "note": "2nd period, clock about 6:07 (the game sheet's 5:42 is the restart): Ferens #68 cuts across the slot and finishes at the right side of the crease, 0-3"
+    },
+    {
+      "type": "goal",
+      "team": "against",
+      "t": 2136,
+      "scorer": 91,
+      "assists": [],
+      "clip": "clips/goal-4.mp4",
+      "poster": "clips/goal-4.jpg",
+      "note": "2nd period, clock 3:58: a two-on-none down the right side, Pourcho #91 jams it in at the crease, 0-4"
+    },
+    {
+      "type": "goal",
+      "team": "for",
+      "t": 2791,
+      "scorer": 97,
+      "assists": [
+        52
+      ],
+      "clip": "clips/goal-5.mp4",
+      "poster": "clips/goal-5.jpg",
+      "note": "3rd period, clock 14:14: Zakharankau #97 drives the net from the right and jams it in at the post, 1-4"
+    },
+    {
+      "type": "goal",
+      "team": "for",
+      "t": 3148,
+      "scorer": 6,
+      "assists": [
+        76,
+        52
+      ],
+      "clip": "clips/goal-6.mp4",
+      "poster": "clips/goal-6.jpg",
+      "note": "3rd period, clock 10:19: Polyanskiy #52 shoots from the point and Zaychikov #6 finishes the scramble at the near post, 2-4"
+    },
+    {
+      "type": "goal",
+      "team": "against",
+      "t": 3431,
+      "scorer": 91,
+      "assists": [
+        10,
+        55
+      ],
+      "clip": "clips/goal-7.mp4",
+      "poster": "clips/goal-7.jpg",
+      "note": "3rd period, clock 6:44: a long goalmouth scramble, Pourcho #91 pokes it in for his hat trick, 2-5"
+    }
+  ],
+  "shots": {
+    "P1": [
+      8,
+      2
+    ],
+    "P2": [
+      11,
+      7
+    ],
+    "P3": [
+      16,
+      3
+    ]
+  },
+  "zones": {
+    "offence": 0.5069,
+    "defence": 0.1554
+  }
+}
