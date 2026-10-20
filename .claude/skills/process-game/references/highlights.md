@@ -74,6 +74,15 @@ tripping): no panel, an empty box, and the player kept playing. A coincidental p
 a `pk` for ours. A major or misconduct can have another player serve the minor: Sep 21's #81 got boarding plus a
 10-minute misconduct, #10 sat the minor (the `pk`'s `player`), and #81 never came back (an `off` to the end).
 
+A penalty shot replaces the minor, and SportNinja's game sheet doesn't record it: on BW's Oct 18 game it still listed
+#88's hooking as a 2-minute minor. The board gives it away: the panel posts "88 2:00" while the clock is stopped, then
+goes dark before the faceoff, the clock stays frozen for about a minute, and `run_game.py skaters` drops to our goalie
+alone while their shooter skates in from center. There's no `pk`. Put the stretch with all our skaters at the bench
+in the period's `"ps"` (solve puts nobody on, so the clip's card lists no one), clip the infraction as a `penalty`, and
+clip the shot as a `"moment"` titled "Penalty shot". With one skater on the ice the default framing wanders off to
+center ice and misses the save, so pass the net's x as the focus (630 or 3260 at Snoqualmie A). A penalty shot for us
+leaves our shooter on the ice, which `ps` doesn't model yet: `ps` plus an `on` for the shooter would conflict.
+
 For each of our penalties, find the infraction: the referee raises an arm right after it (a delayed penalty),
 play goes on until our team touches the puck, then the whistle and the penalty-kill faceoff. The clock stops at
 the whistle, so start 10–20 s before it. The referee may signal from the far end, so look where the penalized

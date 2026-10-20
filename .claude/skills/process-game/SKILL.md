@@ -127,7 +127,9 @@ a 2-minute penalty on a stopped clock often takes 3+ minutes of video.
 Add each to its period in `periods.json`: `"pk": [{"start": 3602, "end": 3798, "player": 4}]`. Solve keeps the
 player off for that span, since the box isn't our bench.
 
-A pulled goalie is the opposite: `"extra": [{"start": 3666, "end": 3754}]` in its period makes solve and the lineup
+A penalty shot against us sends all our skaters to the bench: `"ps": [{"start": 3724, "end": 3765}]` in its period
+makes solve put nobody on and the lineup check expect 0 (`references/highlights.md` has how to find one; the game
+sheet doesn't record it). A pulled goalie is the opposite: `"extra": [{"start": 3666, "end": 3754}]` in its period makes solve and the lineup
 check expect 6 skaters from the moment he leaves the crease until he is back in it (through any goal against). An
 empty-net goal on the sheet or our crease emptying late in a period gives it away.
 

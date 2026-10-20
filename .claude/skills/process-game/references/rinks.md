@@ -96,6 +96,13 @@ empty-ice proposal merged the 1st and 2nd into one period; take every period fro
 18:00, end at 0:00), as at Kirkland. The clock again ran through stoppages in the 1st and 2nd and stopped at whistles
 in the 3rd. A player of ours (home) going to the box skates to the near-left corner and climbs in at the bottom-left
 of the frame, next to our bench. The board ran 3:00 for a minor in the 2nd and 2:00 for one in the 3rd.
+BW's Oct 18 game (home, 4:30 PM) followed Beerteam's pattern: every period ran to 0.0, followed by a 1:00 intermission
+countdown, the clock ran through stoppages in the 1st and 2nd and stopped at whistles in the 3rd, and the board ran
+3:00 for the 1st period's minor and 2:00 for the 3rd's. The proposal merged the 1st and 2nd and had every net
+backwards. Snoqualmie A's period ends haven't followed one rule, so read the clock every time. Fetch defaults to the
+away bench here (`bench_side = "right"`), so a home game needs `--bench left`. That video was a recording of
+LiveBarn's player (3438x1374): LiveBarn's score panel sits in the top-left corner and a timeline bar along the
+bottom, both outside the ice, and detection was unaffected.
 
 Views: `rink` 0–3840 × 380–1536; `left-net` 200–1400 × 380–760; `right-net` 2600–3800 × 380–760.
 
