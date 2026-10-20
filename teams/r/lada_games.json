@@ -82,7 +82,8 @@
     "playHome": true,
     "rinkId": 1,
     "rinkName": "Renton",
-    "lines": "{\"offence\":[],\"defence\":[],\"goalie\":[],\"beer\":[\"56\"]}"
+    "lines": "{\"offence\":[],\"defence\":[],\"goalie\":[],\"beer\":[\"56\"]}",
+    "boxscoreLink": "https://app.sportninja.com/public/game/n427SOwXLdAZuTnz"
   },
   "33008": {
     "date": "2026-10-26T22:15:00",

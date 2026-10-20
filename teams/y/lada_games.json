@@ -53,7 +53,10 @@
     "opponentName": "Flounders",
     "playHome": true,
     "rinkId": 2071,
-    "rinkName": "Snoqualmie A"
+    "rinkName": "Snoqualmie A",
+    "teamGoals": 1,
+    "opponentGoals": 2,
+    "boxscoreLink": "https://app.sportninja.com/public/game/h6UsoZtdsKfmp6HE"
   },
   "32995": {
     "date": "2026-10-26T21:45:00",
@@ -75,5 +78,12 @@
     "playHome": false,
     "rinkId": 2071,
     "rinkName": "Snoqualmie A"
+  },
+  "32998": {
+    "date": "2026-11-16T20:45:00",
+    "opponentName": "Warriors",
+    "playHome": true,
+    "rinkId": 2070,
+    "rinkName": "Renton"
   }
 }

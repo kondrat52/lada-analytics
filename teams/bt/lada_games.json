@@ -24,6 +24,16 @@
     "rinkId": 2073,
     "lines": "{\"offence\":[[\"297\",\"11101\",\"81\"],[\"5812\",\"3423\",\"20355\"],[\"120\",\"248\",\"237\"]],\"defence\":[[\"254\",\"14184\"],[\"253\",\"5795\"]],\"goalie\":[],\"beer\":[]}"
   },
+  "32972": {
+    "date": "2026-09-27T21:15:00",
+    "opponentName": "Cascadiens",
+    "playHome": false,
+    "teamGoals": 3,
+    "opponentGoals": 2,
+    "boxscoreLink": "https://app.sportninja.com/public/game/ygIuemEgHmuxKksb",
+    "rinkId": 23,
+    "lines": "{\"offence\":[[\"297\",\"11101\",\"81\"],[\"5812\",\"3423\",\"20355\"],[\"120\",null,null]],\"defence\":[[\"5796\",\"248\"],[\"20384\",\"254\"]],\"goalie\":[[\"20324\"]],\"beer\":[\"297\"]}"
+  },
   "32974": {
     "date": "2026-10-10T21:15:00",
     "opponentName": "Jurassic Puck",
@@ -40,7 +50,10 @@
     "playHome": true,
     "rinkId": 31,
     "rinkName": "Kirkland",
-    "lines": "{\"offence\":[[\"297\",\"17267\",\"81\"],[\"5812\",\"3423\",\"120\"]],\"defence\":[[\"5796\",\"20355\"],[\"20384\",\"5795\"]],\"goalie\":[[\"20324\"]]}"
+    "lines": "{\"offence\":[[\"297\",\"17267\",\"81\"],[\"5812\",\"3423\",\"120\"]],\"defence\":[[\"5796\",\"20355\"],[\"20384\",\"5795\"]],\"goalie\":[[\"20324\"]]}",
+    "teamGoals": 5,
+    "opponentGoals": 1,
+    "boxscoreLink": "https://app.sportninja.com/public/game/khqNEg1dR7t3BuLk"
   },
   "33012": {
     "date": "2026-10-25T17:55:00",
