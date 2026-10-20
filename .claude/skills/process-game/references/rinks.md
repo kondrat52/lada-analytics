@@ -107,7 +107,11 @@ of the frame, next to our bench. The board ran 3:00 for a minor in the 2nd and 2
 BW's Oct 18 game (home, 4:30 PM) followed Beerteam's pattern: every period ran to 0.0, followed by a 1:00 intermission
 countdown, the clock ran through stoppages in the 1st and 2nd and stopped at whistles in the 3rd, and the board ran
 3:00 for the 1st period's minor and 2:00 for the 3rd's. The proposal merged the 1st and 2nd and had every net
-backwards. Snoqualmie A's period ends haven't followed one rule, so read the clock every time. Fetch defaults to the
+backwards. Beerteam's Oct 4 game (home, 5:55 PM) did all of that again (0.0, a 1:00 countdown, 3:00 then 2:00 minors,
+P1 and P2 merged, every net backwards). In every home game here so far our goalie played the left net in the 1st and
+3rd and the right in the 2nd. On Oct 4 both goalies wore white with white pads, so the crease zooms couldn't tell
+them apart: where our goal and the goals against went in settled the nets. Snoqualmie A's period ends haven't
+followed one rule, so read the clock every time. Fetch defaults to the
 away bench here (`bench_side = "right"`), so a home game needs `--bench left`. That video was a recording of
 LiveBarn's player (3438x1374): LiveBarn's score panel sits in the top-left corner and a timeline bar along the
 bottom, both outside the ice, and detection was unaffected.

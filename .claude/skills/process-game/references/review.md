@@ -77,6 +77,15 @@ number). Tell the user which rows you labeled by hand, and say so in `game.json`
   and 35 labeled ~35 rows as #3, and a reviewer's "?" keeps the OCR label. That's what `run_game.py absent` is
   for; set it before prepare.
 - **Borrowed jerseys.** Dukhno #50 played in a jersey with the DERKACHEV nameplate; a `--note` tells reviewers.
+- **Two jerseys of ours at once.** On Beerteam's Oct 4 game four regulars (#10, #34, #41, #87) wore a white jersey with
+  teal and black trim ("Lada Family XV") and the rest the usual royal-blue trim. Both passed the white test. A
+  `--note` naming the four kept reviewers from calling them noise. The roster card shows such a split at a glance.
+- **Prompt wording versus a `--note`.** The template asks for "G" on goalie rows. A note that said "mark him '-'"
+  contradicted it and had to be fixed with sed in all 37 prompts (and in `review.json`, escaping the quotes). Word
+  notes to match the template's codes.
+- **A timeout late in the 3rd.** Beerteam's Oct 4 game had one at 2:34 of the 3rd (3687–3767 of video), which the
+  lineup check showed as 3 on. The gap checker found it on the board's frozen clock and gave the time to the five who
+  came out, as on Sep 20.
 - **Opponents with our numbers.** Night Owls wore white #11, #35 and #43 against our light blue; the `--opp` text
   said a white jersey is an opponent whatever its number.
 - **Our goalie as a skater.** At Snoqualmie A our goalie (light blue, red pads) was sometimes tracked as a skater

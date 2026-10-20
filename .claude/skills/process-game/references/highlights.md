@@ -39,6 +39,13 @@ game it had Roadrunners' goal at 12:25, but the board's clock read 11:48 when it
 panel went dark then. Where the video has sound (Renton's new camera), the whistle after a goal is audible and pins
 it to a fraction of a second.
 
+The board can also count a goal that never happened. On Beerteam's Oct 4 game the clock froze at 18.6 for Jackalopes'
+3rd goal; 15 s later the guest score went to 4 and their shots up by one, while the players were only lining up at
+center. The sheet and LADA had 1-3. A score change while the clock is stopped and nobody is playing is the
+operator's slip: the sheet's score stands, and the shot that came with it comes off `shots.json` (and off its guest
+`series`). That sheet didn't mark the last goal as empty-net either. The frame check found our net empty, and a
+crease zoom 1 s apart found our goalie out from 3851 to 4026 (an `extra` span, about 1:30 of clock with stoppages).
+
 The recording itself can skip. LADA R's Sep 14 video loses about two minutes of the 3rd at 44:37: from one second to
 the next the board's clock jumps from 13:59 to 11:58, the home score and shots go up during live play, and every
 player is somewhere else (three tracks end at 2677.4 s and two begin at 2677.5 s). The sheet's 13:11 goal fell in
