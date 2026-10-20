@@ -47,7 +47,10 @@ board's shot count fell well behind the game sheet in the 3rd (about 20–29 aga
 for a while and fixed it later. On LADA R's Sep 14 game (10:15 PM) the proposal merged the 2nd and 3rd instead, and
 the board again ran a 1:00 intermission countdown after the 1st and 2nd: periods are 18:00, and every edge came from
 the clock (18:00 starting to count, the first 00.0). `shots.py` read 25-5 there while the board plainly said 29-38;
-read `shots_check.jpg` yourself every time.
+read `shots_check.jpg` yourself every time. Doofers' Oct 4 game (9:15 PM, 3246x1440 again) had the 1:00 countdown
+after the 1st and 2nd too; the proposal started the 3rd 90 s early, inside the countdown and the empty-board wait
+after it, and put the 3rd at the same net as the 2nd. Every edge came from the clock again, and the shots OCR read
+the 3rd as 9 where the board went from 19 to 35.
 
 Views: `rink` 0–3840 × 700–1500; `left-net` 150–1450 × 720–1070; `right-net` 2500–3800 × 720–1070.
 

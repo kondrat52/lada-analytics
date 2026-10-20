@@ -80,7 +80,10 @@ downloads the 4K video (and scales a smaller one up to the rink's usual frame), 
 detection (restarting itself if it slows down), OCRs the crops, proposes periods, and scans the arena scoreboard
 into `$W/sb.jpg` (one tile per minute). It resumes after any interruption, so re-run it if a background job is
 stopped (the Mac's shell jobs stop after 2 hours; detection alone can take longer there). Don't run anything heavy
-meanwhile: OCR and other jobs starve the video decoder.
+meanwhile: OCR and other jobs starve the video decoder. YouTube sometimes answers "Sign in to confirm you're not a
+bot" for every client: on Oct 19 it cleared by itself after about 25 minutes. A background loop that runs
+`$PY -m yt_dlp -F <url>` every 5 minutes and starts fetch once format 313 is listed gets through without cookies;
+reading the user's browser cookies (`--cookies-from-browser`) needs their say-so.
 
 Pick `--rink` by the frame size and view (`references/rinks.md`); for a rink that isn't in `rink.py`, stop before
 detection and follow the new-rink steps there. `--jersey` picks our colour test (default light blue); if you learn
@@ -131,7 +134,9 @@ A penalty shot against us sends all our skaters to the bench: `"ps": [{"start": 
 makes solve put nobody on and the lineup check expect 0 (`references/highlights.md` has how to find one; the game
 sheet doesn't record it). A pulled goalie is the opposite: `"extra": [{"start": 3666, "end": 3754}]` in its period makes solve and the lineup
 check expect 6 skaters from the moment he leaves the crease until he is back in it (through any goal against). An
-empty-net goal on the sheet or our crease emptying late in a period gives it away.
+empty-net goal on the sheet or our crease emptying late in a period gives it away. A team with no goalie at all
+skates six with a skater standing in at the net: an `extra` span over the whole stretch (`references/review.md`,
+"No goalie").
 
 ## 4. The roster for this game
 

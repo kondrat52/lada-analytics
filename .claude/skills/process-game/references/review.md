@@ -119,6 +119,16 @@ number). Tell the user which rows you labeled by hand, and say so in `game.json`
 - **A number no one wears.** On Doofers' Sep 19 game two rows were labeled 19 off a sleeve; a reviewer's number
   joins the solve's roster, so it would have become a phantom player. Before solving, grep the reviews for numbers
   not on the roster; a zfix "?" keeps them out (the gap check later found one was Kleiman #69).
+- **No goalie.** Doofers' Oct 4 game had no goalie until 51:40 of video (10:50 left in the 3rd): they skated six,
+  with a skater (#52, #61 or #13 at different times) standing or kneeling in our net, and a padded goalie in a navy
+  jersey came on through our bench then (the game sheet named Wheeler #0 in goal all game). Nothing before solve
+  showed it: the crease zooms for `net` saw "someone in light blue at our net". The first solve said 103-104% of
+  five, and its lineup check listed eight windows, most of them "6 on". The gap-check subagent counted six of ours
+  by eye again and again and found the goalie's entrance. `extra` spans for the whole of P1 and P2 and P3 up to
+  3100 brought it to 101-102% with one window left. Prepare had already dropped the stand-in's detections in our
+  crease (the `net` filter), and the review had started, so prepare couldn't be redone; solve filled him in from
+  the gaps between his tracks (a choppy track, on for 19 of 20 minutes). On a crease zoom, check for pads, a
+  blocker and a goalie mask, not just a body at the net.
 - **A sub in goal, again.** Doofers' Sep 27 game had David Pfeifer #54 (under `subs`) in goal in a red goalie
   jersey: #0, #1, #20 and #54 all went on the absent list, so the prompts' goalie line read "Our goalie is not on the
   card" and a `--note` named him and his colour; no prompt needed editing and no reviewer labeled anyone 54. The
