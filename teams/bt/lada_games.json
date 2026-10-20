@@ -34,6 +34,16 @@
     "rinkId": 23,
     "lines": "{\"offence\":[[\"297\",\"11101\",\"81\"],[\"5812\",\"3423\",\"20355\"],[\"120\",null,null]],\"defence\":[[\"5796\",\"248\"],[\"20384\",\"254\"]],\"goalie\":[[\"20324\"]],\"beer\":[\"297\"]}"
   },
+  "32973": {
+    "date": "2026-10-04T17:55:00",
+    "opponentName": "Jackalopes",
+    "playHome": true,
+    "teamGoals": 1,
+    "opponentGoals": 3,
+    "boxscoreLink": "https://app.sportninja.com/public/game/gk2DIkdGoudYkFE5",
+    "rinkId": 2073,
+    "lines": "{\"offence\":[[\"20355\",\"17267\",\"81\"],[\"297\",\"11101\",\"5575\"],[\"5812\",\"3423\",\"120\"]],\"defence\":[[\"5796\",\"248\"],[\"20384\",\"254\"]],\"goalie\":[[\"20324\"]],\"beer\":[]}"
+  },
   "32974": {
     "date": "2026-10-10T21:15:00",
     "opponentName": "Jurassic Puck",

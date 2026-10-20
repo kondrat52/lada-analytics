@@ -1,0 +1,278 @@
+{
+  "id": "2026-10-04-vs-ja",
+  "date": "2026-10-04",
+  "title": "LADA Beerteam vs Jackalopes, Oct 4",
+  "eyebrow": "Sun Oct 4, 2026 · 5:55 PM · Snoqualmie A",
+  "opponent": "JA",
+  "video": "https://youtu.be/DbJGkldcQh8",
+  "periods": [
+    {
+      "label": "P1",
+      "start": 10,
+      "end": 1089
+    },
+    {
+      "label": "P2",
+      "start": 1196,
+      "end": 2327
+    },
+    {
+      "label": "P3",
+      "start": 2423,
+      "end": 4050
+    }
+  ],
+  "nets": {
+    "P1": 630,
+    "P2": 3260,
+    "P3": 630
+  },
+  "penalty_kills": [
+    {
+      "period": "P1",
+      "start": 652,
+      "end": 857,
+      "player": 34
+    },
+    {
+      "period": "P3",
+      "start": 3036,
+      "end": 3286,
+      "player": 70
+    }
+  ],
+  "notes": [
+    "Home game at Snoqualmie A: we wore white and had the left bench. The 3438x1374 LiveBarn recording was scaled up to the rink's usual frame. The game sheet (SportNinja, read through its public API) gave the score, the goals with scorers, the penalties, the shots and who played; the arena scoreboard and the video confirmed them. LADA's schedule view never listed this game; its id (32973) was found between Beerteam's Sep 27 and Oct 10 games.",
+    "Periods by the scoreboard clock (we were HOME): 0:10-18:09, 19:56-38:47 and 40:23-67:30 of the video. The clock ran through stoppages in the 1st and 2nd and stopped at whistles in the 3rd, and the board counted a 1:00 intermission after the 1st and the 2nd. The video runs to the final horn. Final 1-3. The board ended at 1-4: with its clock frozen at 18.6 s after Jackalopes' third goal, it added a fourth guest goal and a shot at 67:05 of the video while the players were only lining up at center. The sheet and LADA have 1-3.",
+    "Shots on goal 27-39 (12-10, 5-14, 10-15): the board's, without the shot that came with its phantom goal. The board's last home shot came with 3 s left and isn't on the sheet (26-39, 9-15 in the 3rd).",
+    "Goals at 14:28 (Zhaksilikov #5, assist Gilderman #41, in a scramble at their crease), 37:57 (the sheet credits Jackalopes #91 Lupa, assist #92), 59:17 (#12 Zhang) and 66:44 (#74 Kees, into our empty net) of the video, each found by eye and matched to the board. The frame check read orange #12 on the second goal and probably #2 on the third; the sheet's credits are kept.",
+    "Our penalties: Zakharov #34, roughing after the whistle in front of our net at 10:52 of the video (1st period 6:51), 3:00 on the board, in the box 11:03-14:18; Shikhanov #70, tripping at the far boards at 50:21 (3rd period 9:25, a delayed call, whistle at 50:36), 2:00, in the box 50:48-54:46 and straight back into play. Both were killed off.",
+    "Mayorov #1 went to the bench for an extra attacker at 64:12 of the video (about 1:30 left), with Zhaksilikov #5 coming on as the sixth skater, and was back in the net at 67:00 after the empty-net goal; the frame check also saw him out briefly at 62:54-63:05. A timeout at 2:34 of the 3rd (61:27-62:47 of the video) is credited to the five who came out of it, so three 3rd-period shifts over five minutes include those 80 s.",
+    "Twelve skaters and Mayorov #1 in goal. Bogdanov #10, Zakharov #34, Gilderman #41 and Solovyov #87 wore a white jersey with teal and black trim, the rest the usual royal-blue trim. Absent: Belousenko #11, Papusha #24 (in LADA's planned lines, but not marked playing and never seen), Papusha #25, goalie Starodubtsev #20 and all the subs.",
+    "Fixed by hand after frame checks of every stretch the lineup check flagged (on/off spans; no review rows changed): Kleiman #69 on the ice at 3:48-4:07 and 9:35-10:56 of the video, where his tracks carried other numbers; line changes at 4:05-5:00, 15:43-15:59 and 24:31-25:22; a nine-on stretch at 45:11-45:32 cut to #5, #10, #23, #34 and #70; #70 on from 48:26 on an unlabeled track; the changes around #70's penalty, the timeout and the pulled goalie; and the lineup after the empty-net goal."
+  ],
+  "video_ends_early": false,
+  "fun": {
+    "name_reads": {
+      "68": 461,
+      "10": 415,
+      "34": 304,
+      "41": 283,
+      "27": 133,
+      "44": 132,
+      "69": 85,
+      "87": 56,
+      "70": 36,
+      "7": 19
+    }
+  },
+  "pipeline": {
+    "detections": 879089,
+    "crops": 140717,
+    "reads": 7943,
+    "reviewed": 848
+  },
+  "lada_game_id": 32973,
+  "stoppages": [
+    [
+      10,
+      12
+    ],
+    [
+      83,
+      146
+    ],
+    [
+      165,
+      180
+    ],
+    [
+      516,
+      538
+    ],
+    [
+      861,
+      895
+    ],
+    [
+      903,
+      936
+    ],
+    [
+      957,
+      1024
+    ],
+    [
+      1032,
+      1052
+    ],
+    [
+      1196,
+      1199
+    ],
+    [
+      1203,
+      1260
+    ],
+    [
+      1399,
+      1430
+    ],
+    [
+      1430,
+      1475
+    ],
+    [
+      1531,
+      1572
+    ],
+    [
+      1661,
+      1721
+    ],
+    [
+      1788,
+      1819
+    ],
+    [
+      1897,
+      1946
+    ],
+    [
+      1982,
+      2011
+    ],
+    [
+      2115,
+      2142
+    ],
+    [
+      2253,
+      2275
+    ],
+    [
+      2275,
+      2304
+    ],
+    [
+      2476,
+      2510
+    ],
+    [
+      2549,
+      2584
+    ],
+    [
+      2912,
+      2947
+    ],
+    [
+      2977,
+      2998
+    ],
+    [
+      3031,
+      3066
+    ],
+    [
+      3288,
+      3312
+    ],
+    [
+      3417,
+      3456
+    ],
+    [
+      3555,
+      3584
+    ],
+    [
+      3676,
+      3767
+    ],
+    [
+      3776,
+      3798
+    ],
+    [
+      3855,
+      3895
+    ],
+    [
+      4007,
+      4031
+    ]
+  ],
+  "highlights": [
+    {
+      "type": "penalty",
+      "player": 34,
+      "t": 652.5,
+      "clip": "clips/penalty-34.mp4",
+      "poster": "clips/penalty-34.jpg",
+      "note": "1st period, clock 6:51: Zakharov #34, roughing after the whistle in front of our net, 3 minutes; killed off"
+    },
+    {
+      "type": "goal",
+      "team": "for",
+      "t": 868,
+      "clip": "clips/goal-1.mp4",
+      "poster": "clips/goal-1.jpg",
+      "scorer": 5,
+      "assists": [
+        41
+      ],
+      "note": "1st period, clock 3:41: Zhaksilikov #5 at the post in a scramble after Gilderman #41 jams at it, 1-0"
+    },
+    {
+      "type": "goal",
+      "team": "against",
+      "t": 2277.5,
+      "clip": "clips/goal-2.mp4",
+      "poster": "clips/goal-2.jpg",
+      "note": "2nd period, clock 0:21: Jackalopes carry in down the right side and score close in at the post, 1-1 (the game sheet credits #91 Lupa, assist #92)"
+    },
+    {
+      "type": "penalty",
+      "player": 70,
+      "t": 3021,
+      "clip": "clips/penalty-70.mp4",
+      "poster": "clips/penalty-70.jpg",
+      "note": "3rd period, clock 9:25: Shikhanov #70, tripping along the far boards (delayed call), 2 minutes; killed off"
+    },
+    {
+      "type": "goal",
+      "team": "against",
+      "t": 3557,
+      "clip": "clips/goal-3.mp4",
+      "poster": "clips/goal-3.jpg",
+      "note": "3rd period, clock 4:17: jammed in at the crease with our goalie down, 1-2 (the game sheet credits #12 Zhang)"
+    },
+    {
+      "type": "goal",
+      "team": "against",
+      "t": 4004.5,
+      "clip": "clips/goal-4.mp4",
+      "poster": "clips/goal-4.jpg",
+      "note": "3rd period, clock 0:18: empty-net goal from near our blue line with our goalie pulled, 1-3 (the game sheet credits #74 Kees)"
+    }
+  ],
+  "shots": {
+    "P1": [
+      12,
+      10
+    ],
+    "P2": [
+      5,
+      14
+    ],
+    "P3": [
+      10,
+      15
+    ]
+  },
+  "zones": {
+    "offence": 0.3772,
+    "defence": 0.3794
+  }
+}
