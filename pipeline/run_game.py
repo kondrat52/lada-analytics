@@ -1150,8 +1150,9 @@ if __name__ == "__main__":
     if sys.platform == "win32":   # keep Windows awake while this runs (caffeinate does it on the Mac)
         import ctypes
         ctypes.windll.kernel32.SetThreadExecutionState(0x80000000 | 0x00000001)   # ES_CONTINUOUS | ES_SYSTEM_REQUIRED
-    if a.cmd == "fetch":
+    if a.cmd in ("fetch", "sheet") and a.W:   # sheet usually runs before fetch has made the folder
         os.makedirs(a.W, exist_ok=True)
+    if a.cmd == "fetch":
         open(f"{a.W}/url.txt", "w").write(a.url)
     # the team, before anything imports roster.py: fetch's --team, else the one fetch stored, else Turbo Kings
     cfg = f"{a.W}/full/rink.json" if getattr(a, "W", None) else ""
