@@ -1,0 +1,372 @@
+{
+  "id": "2026-09-27-vs-rn",
+  "date": "2026-09-27",
+  "title": "LADA Doofers vs Rainucks, Sep 27",
+  "eyebrow": "Sun Sep 27, 2026 · 3:00 PM · Kirkland",
+  "opponent": "RN",
+  "video": "https://youtu.be/hAvBQ2iBiUA",
+  "periods": [
+    {
+      "label": "P1",
+      "start": 31,
+      "end": 1110
+    },
+    {
+      "label": "P2",
+      "start": 1201,
+      "end": 2282
+    },
+    {
+      "label": "P3",
+      "start": 2394,
+      "end": 3979
+    }
+  ],
+  "nets": {
+    "P1": 3255,
+    "P2": 605,
+    "P3": 3255
+  },
+  "penalty_kills": [
+    {
+      "period": "P1",
+      "start": 315,
+      "end": 525,
+      "player": 52
+    }
+  ],
+  "notes": [
+    "Away in LADA's schedule, but the guests on Kirkland's board, with the bench right of center (the home side here); we wore our blue jerseys. LADA's schedule view didn't list the game; its id came from the games against the Rainucks. The video is a recording of LiveBarn's player (3438x1374, scaled up for detection).",
+    "The game sheet (SportNinja, read through its public API) gave the score, the scorers, the penalties, the shots and who played; each goal was found on the video and against the arena scoreboard.",
+    "Periods from the board's clock: each started when 18:00 began counting (0:31, 20:01 and 39:54 of video) and ended at 0.0 (18:30, 38:02, 66:19), with a 1:00 intermission countdown after the 1st and 2nd. The clock ran through stoppages in the 1st and 2nd and stopped at whistles in the 3rd. The empty-ice proposal found all three periods this time, but its edges were 20-40 s off.",
+    "Pfeifer #54, a sub, in goal in a red goalie jersey (#0 Wheeler, #1 Mayorov and #20 Starodubtsev absent). Ten skaters, exactly LADA's planned lines and the game sheet; one of them a sub, Babkin #26. Absent: #4, #11, #12, #16, #25, #27, #38, #44, #61, #69, #76, #97, #98.",
+    "Goal 1: the game sheet gives it to Babkin #26 from Komashinsky #13 and Fedotov #71, but Babkin wasn't on the ice (he came on for the faceoff after it); Albantov #29 was at the crease. The page keeps the sheet's credit.",
+    "Penalties: Polyanskiy #52's high-sticking at 13:18 of the 1st ran 3:00 on the board (2 minutes on the game sheet) and was killed. Rainucks' #77 hooking early in the 1st also ran 3:00. A timeout in the 3rd stopped play for about 80 s (56:41-58:00 of video).",
+    "Shots from the board, matching the game sheet (the shots OCR misread them).",
+    "Rainucks' white jerseys with blue numbers passed our jersey test, so many of their crops reached the reviewers, who marked them as noise.",
+    "Labeled by hand: no review rows; on/off corrections from a frame-by-frame check of every lineup gap: a track mislabeled #52 at a 1st-period change, #75 and #29 lost by their tracks in the 2nd, the change during goal 5, two staggered changes in the 3rd, and #52 sitting from the timeout to the next stoppage with #75 on in his place."
+  ],
+  "video_ends_early": false,
+  "fun": {
+    "name_reads": {
+      "31": 558,
+      "6": 530,
+      "29": 361,
+      "71": 359,
+      "26": 287,
+      "37": 274,
+      "75": 124,
+      "13": 79
+    }
+  },
+  "pipeline": {
+    "detections": 814777,
+    "crops": 112536,
+    "reads": 12764,
+    "reviewed": 572
+  },
+  "lada_game_id": 32978,
+  "stoppages": [
+    [
+      31,
+      62
+    ],
+    [
+      253,
+      281
+    ],
+    [
+      310,
+      345
+    ],
+    [
+      345,
+      376
+    ],
+    [
+      473,
+      496
+    ],
+    [
+      496,
+      511
+    ],
+    [
+      552,
+      614
+    ],
+    [
+      632,
+      655
+    ],
+    [
+      668,
+      689
+    ],
+    [
+      689,
+      715
+    ],
+    [
+      800,
+      831
+    ],
+    [
+      854,
+      887
+    ],
+    [
+      920,
+      969
+    ],
+    [
+      1201,
+      1203
+    ],
+    [
+      1280,
+      1315
+    ],
+    [
+      1393,
+      1461
+    ],
+    [
+      1479,
+      1509
+    ],
+    [
+      1742,
+      1769
+    ],
+    [
+      1780,
+      1811
+    ],
+    [
+      1906,
+      1925
+    ],
+    [
+      1925,
+      1972
+    ],
+    [
+      2068,
+      2095
+    ],
+    [
+      2238,
+      2266
+    ],
+    [
+      2394,
+      2397
+    ],
+    [
+      2431,
+      2464
+    ],
+    [
+      2857,
+      2887
+    ],
+    [
+      2887,
+      2930
+    ],
+    [
+      2980,
+      3019
+    ],
+    [
+      3145,
+      3161
+    ],
+    [
+      3161,
+      3184
+    ],
+    [
+      3249,
+      3335
+    ],
+    [
+      3335,
+      3371
+    ],
+    [
+      3401,
+      3478
+    ],
+    [
+      3478,
+      3497
+    ],
+    [
+      3550,
+      3596
+    ],
+    [
+      3757,
+      3789
+    ],
+    [
+      3828,
+      3907
+    ],
+    [
+      3907,
+      3931
+    ],
+    [
+      3943,
+      3965
+    ]
+  ],
+  "highlights": [
+    {
+      "type": "goal",
+      "team": "for",
+      "t": 559,
+      "scorer": 26,
+      "assists": [
+        13,
+        71
+      ],
+      "clip": "clips/goal-1.mp4",
+      "poster": "clips/goal-1.jpg",
+      "note": "1st period, clock 9:12: a scramble at the crease with the goalie down, 1-0. The game sheet credits Babkin #26 (from Komashinsky and Fedotov), but Babkin wasn't on the ice: he came on for the faceoff after it; Albantov #29 was at the crease"
+    },
+    {
+      "type": "goal",
+      "team": "against",
+      "t": 943,
+      "scorer": 67,
+      "assists": [
+        33
+      ],
+      "clip": "clips/goal-2.mp4",
+      "poster": "clips/goal-2.jpg",
+      "note": "1st period, clock 2:43: Rintala #67 takes it to the crease with Pfeifer down, 1-1"
+    },
+    {
+      "type": "penalty",
+      "player": 52,
+      "t": 313,
+      "clip": "clips/penalty-1.mp4",
+      "poster": "clips/penalty-1.jpg",
+      "note": "1st period, clock 13:18: high-sticking in a battle on the far boards; 3:00 on the board (2 on the game sheet), no goal against"
+    },
+    {
+      "type": "goal",
+      "team": "for",
+      "t": 1279,
+      "scorer": 52,
+      "assists": [],
+      "clip": "clips/goal-3.mp4",
+      "poster": "clips/goal-3.jpg",
+      "note": "2nd period, clock 16:18: Polyanskiy #52 jams it in at the right post, unassisted, 2-1"
+    },
+    {
+      "type": "goal",
+      "team": "for",
+      "t": 1783,
+      "scorer": 13,
+      "assists": [
+        29
+      ],
+      "clip": "clips/goal-4.mp4",
+      "poster": "clips/goal-4.jpg",
+      "note": "2nd period, clock 8:11: a scramble with the goalie down, Komashinsky #13 pokes it in at the left post from Albantov, 3-1"
+    },
+    {
+      "type": "goal",
+      "team": "for",
+      "t": 1897,
+      "scorer": 13,
+      "assists": [],
+      "clip": "clips/goal-5.mp4",
+      "poster": "clips/goal-5.jpg",
+      "note": "2nd period, clock 6:08: Komashinsky #13 again, jammed in at the left post out of a scramble, 4-1"
+    },
+    {
+      "type": "goal",
+      "team": "against",
+      "t": 2007,
+      "scorer": 23,
+      "assists": [],
+      "clip": "clips/goal-6.mp4",
+      "poster": "clips/goal-6.jpg",
+      "note": "2nd period, clock 4:27: Spears #23 cuts to the post with Pfeifer sprawling, 4-2"
+    },
+    {
+      "type": "goal",
+      "team": "against",
+      "t": 2433,
+      "scorer": 23,
+      "assists": [
+        38
+      ],
+      "clip": "clips/goal-7.mp4",
+      "poster": "clips/goal-7.jpg",
+      "note": "3rd period, clock 17:20: Spears #23 again, out of a scramble at the crease, 4-3"
+    },
+    {
+      "type": "goal",
+      "team": "for",
+      "t": 3289,
+      "scorer": 6,
+      "assists": [
+        37
+      ],
+      "clip": "clips/goal-8.mp4",
+      "poster": "clips/goal-8.jpg",
+      "note": "3rd period, clock 6:05: straight off the faceoff in the left circle, Zaychikov #6 from Akulov, 5-3"
+    },
+    {
+      "type": "goal",
+      "team": "against",
+      "t": 3563,
+      "scorer": 22,
+      "assists": [
+        32,
+        3
+      ],
+      "clip": "clips/goal-9.mp4",
+      "poster": "clips/goal-9.jpg",
+      "note": "3rd period, clock 4:11: Sreibers #22 from the left side of the crease with Pfeifer down, 5-4"
+    },
+    {
+      "type": "goal",
+      "team": "for",
+      "t": 3758,
+      "scorer": 37,
+      "assists": [
+        26,
+        52
+      ],
+      "clip": "clips/goal-10.mp4",
+      "poster": "clips/goal-10.jpg",
+      "note": "3rd period, clock 1:49: Akulov #37 drives in from the right and scores at the right post, from Babkin and Polyanskiy #52, 6-4"
+    }
+  ],
+  "shots": {
+    "P1": [
+      4,
+      9
+    ],
+    "P2": [
+      7,
+      9
+    ],
+    "P3": [
+      14,
+      14
+    ]
+  },
+  "zones": {
+    "offence": 0.2903,
+    "defence": 0.4596
+  }
+}

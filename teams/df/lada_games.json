@@ -21,6 +21,17 @@
     "lines": "{\"offence\":[[\"20329\",\"5881\",\"14218\"],[\"20327\",\"11153\",\"14185\"],[null,\"5899\",null]],\"defence\":[[\"15242\",\"5876\"],[\"14187\",\"20388\"]],\"goalie\":[[\"20356\"]],\"beer\":[]}",
     "rinkName": "Snoqualmie B"
   },
+  "32978": {
+    "date": "2026-09-27T15:00:00",
+    "teamGoals": 6,
+    "opponentGoals": 4,
+    "boxscoreLink": "https://app.sportninja.com/public/game/DYtrCkdJ8koc8YYg",
+    "playHome": false,
+    "rinkId": 1063,
+    "lines": "{\"offence\":[[\"5874\",\"14216\",\"14218\"],[\"20327\",\"11153\",\"11114\"]],\"defence\":[[\"15242\",\"5876\"],[\"5880\",\"5901\"]],\"goalie\":[[\"20356\"]],\"beer\":[]}",
+    "opponentName": "Rainucks",
+    "rinkName": "Kirkland"
+  },
   "32980": {
     "date": "2026-10-10T22:10:00",
     "opponentName": "Frost Giants",
@@ -37,7 +48,10 @@
     "opponentName": "Rainucks",
     "playHome": false,
     "rinkId": 2074,
-    "rinkName": "Snoqualmie A"
+    "rinkName": "Snoqualmie A",
+    "teamGoals": 2,
+    "opponentGoals": 3,
+    "boxscoreLink": "https://app.sportninja.com/public/game/vccVjter5bDSnev7"
   },
   "33010": {
     "date": "2026-10-25T21:50:00",
