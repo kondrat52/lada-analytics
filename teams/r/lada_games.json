@@ -65,6 +65,17 @@
     "opponentGoals": 6,
     "boxscoreLink": "https://app.sportninja.com/public/game/p0NTX64FHGBHHOUW"
   },
+  "32965": {
+    "date": "2026-09-28T22:15:00",
+    "opponentName": "LADA Y",
+    "rinkName": "Renton",
+    "playHome": true,
+    "rinkId": 1,
+    "lines": "{\"offence\":[[\"5761\",\"196\",\"259\"],[\"3425\",\"5690\",\"20413\"],[\"5683\",\"5867\",\"2\"]],\"defence\":[[\"5827\",\"5725\"],[\"123\",\"56\"],[\"34\",null]],\"goalie\":[[\"15240\"]],\"beer\":[\"5725\"]}",
+    "teamGoals": 2,
+    "opponentGoals": 2,
+    "boxscoreLink": "https://app.sportninja.com/public/game/lpEe1DZGDpUHwf92"
+  },
   "32992": {
     "date": "2026-10-12T22:10:00",
     "opponentName": "Flounders",
@@ -83,14 +94,17 @@
     "rinkId": 1,
     "rinkName": "Renton",
     "lines": "{\"offence\":[],\"defence\":[],\"goalie\":[],\"beer\":[\"56\"]}",
-    "boxscoreLink": "https://app.sportninja.com/public/game/n427SOwXLdAZuTnz"
+    "boxscoreLink": "https://app.sportninja.com/public/game/n427SOwXLdAZuTnz",
+    "teamGoals": 6,
+    "opponentGoals": 3
   },
   "33008": {
     "date": "2026-10-26T22:15:00",
     "opponentName": "Weekday Benders",
     "playHome": true,
     "rinkId": 1,
-    "rinkName": "Renton"
+    "rinkName": "Renton",
+    "lines": "{\"offence\":[],\"defence\":[],\"goalie\":[],\"beer\":[\"5683\"]}"
   },
   "33018": {
     "date": "2026-11-02T22:10:00",
