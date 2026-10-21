@@ -58,7 +58,8 @@ as playing, and it writes `$W/sheet.json`, which `goals` and the lineup check us
 user says the same things; read it only when the API has nothing.
 
 Then ask, in one message, only for what's still missing: whose game if the link or title doesn't say (Blue Wings'
-titles name the team, Turbo Kings' start with LTK), the opponent's short name (e.g. RR; `opponents.json` has the
+titles name the team, Turbo Kings' start with LTK; "LADA R vs LADA Y" is both teams', processed from one fetch as
+`references/lada.md` describes), the opponent's short name (e.g. RR; `opponents.json` has the
 known ones), and new players and whether each is on the team or a sub (the schedule's "LADA ids not in
 roster.json" and the sheet's "marked playing but not in roster.json" are the candidates). Don't ask about the
 score, goal times or penalties: the sheet and the scoreboard have them. Fetch prints the video's title, which

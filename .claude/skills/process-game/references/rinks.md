@@ -56,6 +56,13 @@ the 1st and 2nd, the clock ran through stoppages in the 1st and 2nd and stopped 
 OCR read 1-5, 1-9, 15-11 for the board's 9-5, 11-8, 19-12. On the one-a-minute `sb.jpg` the last minute's tenths
 read like minutes ("43.1" looks like 4:31), and the board was dark (flicker) for the seconds around the 2nd period's
 0.0: a 2 s sheet over the last minute pins the end.
+LADA R vs LADA Y on Sep 28 (10:15 PM, 3246x1440) went the same way again: the proposal found one period for the whole
+video, the 1:00 countdown after the 1st and 2nd, the clock running through stoppages in the 1st and 2nd and stopping
+at whistles in the 3rd, and shots OCR at 3-21 for the board's 22-31. The board ran 3:00 for the 1st and 2nd periods'
+minors and 2:00 for the 3rd's. The panel lit 12-29 s after the whistle: the scorekeeper posts a penalty at the next
+faceoff, once stopping the running clock to do it, so a kill starts at the whistle the box trip shows, not when the
+panel lights. The camera was fixed all game, whatever a checker says: phase correlation of `full/ov/` frames gives
+the shift, and it was zero.
 
 Views: `rink` 0–3840 × 700–1500; `left-net` 150–1450 × 720–1070; `right-net` 2500–3800 × 720–1070.
 
@@ -178,11 +185,14 @@ Views: `rink` 0–3840 × 320–1536; `left-net` 150–1350 × 400–800; `right
 
 `JERSEYS` in `rink.py` turns process.py's torso colour fractions into "ours" (tracked) and "crop" (saved for OCR
 and review). Light blue is the default; `white` is a white torso with little dark in it and under 10% red (Sea
-Otters' red with white stripes is 30–50% red); `light blue vs sky blue` adds the hue test. A rink can override a
+Otters' red with white stripes is 30–50% red); `light blue vs sky blue` adds the hue test; `white vs light blue` is
+the white test with under 30% blue, for a game against LADA's other light-blue team (`references/lada.md`, "A game
+between two LADA teams"). A rink can override a
 test for its own lighting (`jerseys` on the class, as Snoqualmie B does). Whenever the picture looks different
 from before, run YOLO on a few frames and check the test before detection: a wrong test loses our far-side
 players silently. Detection only saves crops of players in our jersey, so a jersey set wrong after the fact means
-`run_game.py jersey $W <name>` (~5 min, no detection rerun).
+`run_game.py jersey $W <name>` (no detection rerun; ~5 min for a few crops, 22 min of decoding for 100k on a
+66-minute video).
 
 ## A rink that isn't in `rink.py`
 

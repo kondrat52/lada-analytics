@@ -111,6 +111,31 @@ who didn't play a game are marked with `run_game.py absent`, never by editing th
 `opponents.json` maps the opponent code to the full name. `lada_games.json` is the API cache above; commit it
 with the game.
 
+## A game between two LADA teams
+
+"2026/09/28 LADA R vs LADA Y" was both teams' game, and the user wanted it on both sites. Neither team's schedule
+view had it; probing found R's 32965 and Y's 32967, two ids apart, with one SportNinja sheet between them (`sheet
+--lada` for each). Add it to both `lada_games.json` files and each team to the other's `opponents.json` (`R` = "LADA
+R", `Y` = "LADA Y", LADA's names). Detection doesn't depend on the jersey, so one fetch serves both:
+
+1. Fetch for the light-blue team (the default jersey) and carry it through as usual.
+2. Make the other folder by hand: hard links (`ln`) to `video.webm`, `audio.m4a`, `frame600.png`, `video_info.json`,
+   `url.txt`, `scoreboard.npy` and `sb.jpg`; copies of `full/dets.csv`, `full/boards_poly.npy`, `full/ov/` and
+   `full/log.txt`; and `full/rink.json` with its team, rink, jersey and bench. Without `log.txt` the OCR workers
+   crash at once and `jersey` still reports "done" with no reads (check that `full/ocr_*.csv` aren't empty). Then
+   `run_game.py jersey $W2 "white vs light blue"` cuts its crops and OCRs them: 22 minutes of decoding for a
+   66-minute video, so start it the moment fetch is done.
+3. Shared: the periods (each team's own `net`, so swapped), the scoreboard, the shots (pairs reversed, `us`
+   flipped), the goals and their clips (cut once, copied into the other site's `games/<id>/clips/`; `for`/`against`
+   swapped, `scorer` and `assists` only on the team's own goals). Each team's `pk` and penalty clips are its own.
+
+The jerseys are one LADA design in two colours, and each passes part of the other's test. R's white with blue numbers
+passed Y's light-blue crop test (Y's `unknown` listed #84, #66, #36, #10, #64 with R's nameplates; tracking was fine).
+Y's light blue with white numbers and trim passed the plain white test on 9% of torsos and made 174 review sheets for
+R; `white vs light blue` brought that to 114. Both `--opp` texts said any jersey of the other colour is an opponent
+whatever its number: both teams have a #70 and a #12, and #11 Belousenko is on both rosters. R's sheet also had
+Shikhanov #70 and Shachak #92 not playing, while their nameplates were read all game.
+
 ## A new team
 
 1. `teams/<slug>/roster.json` copied from another team's with empty `skaters`, `subs`, `goalies` and
