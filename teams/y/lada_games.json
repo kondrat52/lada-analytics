@@ -48,6 +48,17 @@
     "opponentGoals": 2,
     "boxscoreLink": "https://app.sportninja.com/public/game/lpEe1DZGDpUHwf92"
   },
+  "32968": {
+    "date": "2026-10-05T21:45:00",
+    "opponentName": "BladeRunners",
+    "rinkName": "Kirkland",
+    "playHome": true,
+    "rinkId": 2069,
+    "lines": "{\"offence\":[[\"11129\",\"11166\",\"20326\"],[\"20420\",\"18293\",\"20416\"],[null,\"5945\",null]],\"defence\":[[\"20419\",\"5942\"],[\"20417\",\"20415\"]],\"goalie\":[[\"9080\"]]}",
+    "teamGoals": 5,
+    "opponentGoals": 9,
+    "boxscoreLink": "https://app.sportninja.com/public/game/wmQ5HZzXmuWBUBgp"
+  },
   "32993": {
     "date": "2026-10-12T20:45:00",
     "opponentName": "Weekday Benders",

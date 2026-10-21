@@ -6,11 +6,35 @@
   "lada_team_id": 20
  },
  "site_url": "https://kondrat52.github.io/lada-analytics/y/",
- "updated": "2026-09-28",
+ "updated": "2026-10-05",
  "season_url": "https://kondrat52.github.io/lada-analytics/y/api/season.json",
  "roster_url": "https://kondrat52.github.io/lada-analytics/y/api/roster.json",
  "trends_url": "https://kondrat52.github.io/lada-analytics/y/api/trends.json",
  "games": [
+  {
+   "id": "2026-10-05-vs-br",
+   "date": "2026-10-05",
+   "title": "LADA Y vs BladeRunners, Oct 5",
+   "subtitle": "Mon Oct 5, 2026 · 9:45 PM · Kirkland",
+   "time": "9:45 PM",
+   "rink": "Kirkland",
+   "opponent": {
+    "code": "BR",
+    "name": "BladeRunners"
+   },
+   "lada_game_id": 32968,
+   "goals_on_video": {
+    "for": 5,
+    "against": 9
+   },
+   "shots": {
+    "for": 25,
+    "against": 39
+   },
+   "highlights": 16,
+   "page_url": "https://kondrat52.github.io/lada-analytics/y/games/2026-10-05-vs-br/",
+   "json_url": "https://kondrat52.github.io/lada-analytics/y/api/games/2026-10-05-vs-br.json"
+  },
   {
    "id": "2026-09-28-vs-r",
    "date": "2026-09-28",
