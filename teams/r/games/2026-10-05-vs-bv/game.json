@@ -1,0 +1,308 @@
+{
+  "id": "2026-10-05-vs-bv",
+  "date": "2026-10-05",
+  "title": "LADA R vs Best Vibes, Oct 5",
+  "eyebrow": "Mon Oct 5, 2026 · 8:45 PM · Snoqualmie A",
+  "opponent": "BV",
+  "video": "https://youtu.be/8Xz3O7wRoS4",
+  "periods": [
+    {
+      "label": "P1",
+      "start": 6,
+      "end": 1110
+    },
+    {
+      "label": "P2",
+      "start": 1207,
+      "end": 2385
+    },
+    {
+      "label": "P3",
+      "start": 2530,
+      "end": 4002
+    }
+  ],
+  "nets": {
+    "P1": 630,
+    "P2": 3260,
+    "P3": 630
+  },
+  "penalty_kills": [
+    {
+      "period": "P2",
+      "start": 1997,
+      "end": 2238,
+      "player": 81
+    },
+    {
+      "period": "P2",
+      "start": 2266,
+      "end": 2318,
+      "player": 81
+    }
+  ],
+  "notes": [
+    "Home game at Snoqualmie A against Best Vibes: we wore white with blue numbers on the left bench, Best Vibes teal (one of them in lime green). The LiveBarn video came as 3438x1374 and was scaled up to Snoqualmie's usual 3840x1536. Unlike most of our videos it has sound, so the clips have the referees' whistles.",
+    "Periods from the arena scoreboard: 0:06-18:30, 20:07-39:45 and 42:10-66:42 of the video (the empty-ice proposal merged two periods). The clock ran through stoppages in the 1st and 2nd. The board ran a 1:00 intermission countdown after the 1st and about 1:30 after the 2nd. In the 3rd the clock jumped from 3:00 to 2:00 at 61:29 of the video, with play going on (the operator took off a minute). The video reaches the final horn. Perry #99 was in our net, the left one in the 1st and 3rd and the right one in the 2nd.",
+    "Goals from SportNinja's game sheet, placed in the video by the scoreboard and the whistles and checked by eye. Ours: 1:49 (clock 16:16, 1st, Shachak #92 from Soubochev #9), 22:18 (2nd, Shachak #92 from Soubochev #9 on the power play; the board read about 15:48, the sheet says 15:36) and 39:01 (0:18, 2nd, Bekker #66 from Makhalov #36). Best Vibes': 39:43 (0:02, 2nd, #8 Wang from #5 Lebovic). The period ended at that goal, and the operator ran off the last 2 s with no play. Final 3-1.",
+    "Shots on goal from the board: LADA R 35, Best Vibes 37 (6-22, 13-8, 16-7 by period). SportNinja's sheet has the same totals but splits ours 12 and 17 in the 2nd and 3rd.",
+    "Penalties: Best Vibes' #37 Marshall, interference at 15:54 of the 2nd; Shachak's goal a few seconds later ended the power play. Dotsenko #81, tripping in the 2nd at 33:15 of the video. Their #8 went down hurt, the whistle came at 33:17, and he was in the box at 34:07. The sheet has 3:51, which is when the board posted it. The board ran 3:00 from the faceoff, and he came out at 37:18. At the next whistle the referees sent him back for 4 more seconds (in the box 37:46-38:38, through a long stoppage).",
+    "Played: 13 skaters, the same as the sheet's list. Perry #99 (a sub) played goal, so he has no skater time. Didn't play: Willis #35, Belousenko #11, Vorobyov #39, Shanygin #72 and Fateev #80. #87, read 98 times, was Dotsenko #81 (DOTSENKO on his back).",
+    "No review rows were labeled by hand. Seven lineup stretches were checked in full frames, and six were fixed with on/off entries. P1 2:52-3:08: the change took longer than the solver had it (#66 on at 3:06, #92 off at 3:05). P1 10:49-11:24: Dotsenko #81 on. P2 34:55-35:33: Shachak #92 on in the kill (his number wasn't readable there; medium confidence). P2 37:15-38:48: Shanygin #8 off from 37:15, Rabotyagov #79 on until the faceoff, and Dotsenko #81 on between his two stints in the box. P3 44:04-44:14: Sergeev #12 off. P3 54:40-55:02: Shikhanov #70 on. P3 64:53-65:09 really had six of ours on, gathered at our bench during a long stoppage, so it was left as is."
+  ],
+  "video_ends_early": false,
+  "fun": {
+    "name_reads": {
+      "12": 449,
+      "92": 197,
+      "81": 187,
+      "66": 130,
+      "64": 125,
+      "9": 117,
+      "36": 97,
+      "84": 85,
+      "79": 83,
+      "57": 60,
+      "8": 49,
+      "70": 35,
+      "10": 12
+    }
+  },
+  "pipeline": {
+    "detections": 826793,
+    "crops": 125774,
+    "reads": 5519,
+    "reviewed": 953
+  },
+  "lada_game_id": 32966,
+  "stoppages": [
+    [
+      6,
+      8
+    ],
+    [
+      49,
+      82
+    ],
+    [
+      111,
+      133
+    ],
+    [
+      259,
+      278
+    ],
+    [
+      491,
+      514
+    ],
+    [
+      591,
+      611
+    ],
+    [
+      635,
+      654
+    ],
+    [
+      677,
+      707
+    ],
+    [
+      743,
+      762
+    ],
+    [
+      808,
+      842
+    ],
+    [
+      955,
+      981
+    ],
+    [
+      1021,
+      1041
+    ],
+    [
+      1083,
+      1108
+    ],
+    [
+      1207,
+      1259
+    ],
+    [
+      1308,
+      1362
+    ],
+    [
+      1677,
+      1700
+    ],
+    [
+      1784,
+      1816
+    ],
+    [
+      1892,
+      1929
+    ],
+    [
+      1929,
+      1958
+    ],
+    [
+      1998,
+      2061
+    ],
+    [
+      2090,
+      2112
+    ],
+    [
+      2241,
+      2317
+    ],
+    [
+      2341,
+      2369
+    ],
+    [
+      2530,
+      2533
+    ],
+    [
+      2631,
+      2656
+    ],
+    [
+      2656,
+      2674
+    ],
+    [
+      2708,
+      2750
+    ],
+    [
+      2792,
+      2826
+    ],
+    [
+      2854,
+      2873
+    ],
+    [
+      2943,
+      2974
+    ],
+    [
+      2986,
+      3013
+    ],
+    [
+      3175,
+      3225
+    ],
+    [
+      3340,
+      3354
+    ],
+    [
+      3390,
+      3414
+    ],
+    [
+      3428,
+      3463
+    ],
+    [
+      3813,
+      3879
+    ],
+    [
+      3879,
+      3922
+    ],
+    [
+      3922,
+      3944
+    ],
+    [
+      3966,
+      3989
+    ]
+  ],
+  "highlights": [
+    {
+      "type": "goal",
+      "team": "for",
+      "t": 109,
+      "scorer": 92,
+      "assists": [
+        9
+      ],
+      "clip": "clips/goal-1.mp4",
+      "poster": "clips/goal-1.jpg",
+      "note": "1st period, clock 16:16: Shachak #92 from Soubochev #9, out of a scramble at the crease, 1-0"
+    },
+    {
+      "type": "goal",
+      "team": "for",
+      "t": 1338,
+      "scorer": 92,
+      "assists": [
+        9
+      ],
+      "clip": "clips/goal-2.mp4",
+      "poster": "clips/goal-2.jpg",
+      "note": "2nd period, clock 15:48 (the sheet says 15:36): Shachak #92 again from Soubochev #9, on the power play with their goalie down, 2-0"
+    },
+    {
+      "type": "goal",
+      "team": "for",
+      "t": 2341,
+      "scorer": 66,
+      "assists": [
+        36
+      ],
+      "clip": "clips/goal-3.mp4",
+      "poster": "clips/goal-3.jpg",
+      "note": "2nd period, clock 0:18: Bekker #66 from Makhalov #36, at the post, 3-0"
+    },
+    {
+      "type": "goal",
+      "team": "against",
+      "t": 2383,
+      "clip": "clips/goal-4.mp4",
+      "poster": "clips/goal-4.jpg",
+      "note": "2nd period, clock 0:02: Best Vibes' #8 Wang from the slot with our goalie down, 3-1"
+    },
+    {
+      "type": "penalty",
+      "player": 81,
+      "t": 1995,
+      "clip": "clips/penalty-81.mp4",
+      "poster": "clips/penalty-81.jpg",
+      "note": "2nd period, clock 4:50 (posted at 3:51): tripping; their #8 went down hurt. The board ran 3:00 from the faceoff, and the referees sent him back for 4 more seconds after it ran out"
+    }
+  ],
+  "shots": {
+    "P1": [
+      6,
+      22
+    ],
+    "P2": [
+      13,
+      8
+    ],
+    "P3": [
+      16,
+      7
+    ]
+  },
+  "zones": {
+    "offence": 0.3708,
+    "defence": 0.4233
+  }
+}

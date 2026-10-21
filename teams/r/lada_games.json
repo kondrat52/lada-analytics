@@ -76,6 +76,17 @@
     "opponentGoals": 2,
     "boxscoreLink": "https://app.sportninja.com/public/game/lpEe1DZGDpUHwf92"
   },
+  "32966": {
+    "date": "2026-10-05T20:45:00",
+    "opponentName": "Best Vibes",
+    "rinkName": "Snoqualmie A",
+    "playHome": true,
+    "rinkId": 2088,
+    "lines": "{\"offence\":[[\"5761\",\"196\",\"259\"],[\"3425\",\"5690\",\"5683\"],[\"5867\",\"20413\",\"2\"]],\"defence\":[[\"5827\",\"5725\"],[\"123\",\"56\"]],\"goalie\":[[\"15240\"]],\"beer\":[\"5725\"]}",
+    "teamGoals": 3,
+    "opponentGoals": 1,
+    "boxscoreLink": "https://app.sportninja.com/public/game/SZZTlUKB1J9nmk5o"
+  },
   "32992": {
     "date": "2026-10-12T22:10:00",
     "opponentName": "Flounders",
