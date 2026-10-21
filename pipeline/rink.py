@@ -255,6 +255,10 @@ JERSEYS = {
     # theirs pass the plain light-blue test. Hue tells them apart (bhue at Kirkland: ours ~113, theirs ~107)
     "light blue vs sky blue": dict(ours=lambda c: (c["blue"] >= 0.3) & (c["bhue"] >= 111),
                                    crop=lambda c: (c["blue"] >= 0.12) & (c["bhue"] >= 110)),
+    # our white against LADA's own light blue (LADA R vs LADA Y): 9% of the light-blue torsos pass the white test on
+    # their white numbers and trim; our blue numbers are rarely 30% of the torso
+    "white vs light blue": dict(ours=lambda c: JERSEYS["white"]["ours"](c) & (c["blue"] < 0.3),
+                                crop=lambda c: JERSEYS["white"]["crop"](c)),
 }
 
 
