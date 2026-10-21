@@ -116,7 +116,8 @@ from `rink.py`) keeps the virtual camera on one end. For a penalty pass `#<numbe
 it, starting a few seconds before the infraction. A focus x can lock onto someone right by the camera (at
 Kirkland a referee in the near corner filled the frame), so start with the default and check a few frames of each
 clip (cv2 can read the mp4). Clips land in the team site's `games/<id>/clips/`, about 5 MB each, served by GitHub
-Pages. The recordings' audio is silent, so clips have no sound.
+Pages. Most recordings' audio is silent, so their clips have no sound; where it isn't (Renton's new camera, LADA R's
+Oct 5 LiveBarn recording at Snoqualmie A), `clip` keeps it.
 
 ## `highlights.json`
 

@@ -122,6 +122,17 @@ followed one rule, so read the clock every time. Fetch defaults to the
 away bench here (`bench_side = "right"`), so a home game needs `--bench left`. That video was a recording of
 LiveBarn's player (3438x1374): LiveBarn's score panel sits in the top-left corner and a timeline bar along the
 bottom, both outside the ice, and detection was unaffected.
+LADA R's Oct 5 game (home, 8:45 PM, white, left bench) came as the same 3438x1374 LiveBarn recording, but this one
+had real audio: the referees' whistles (about 2.4 kHz) were audible, so they pinned the goals and the penalty, and the
+clips kept the sound. Check each recording for sound rather than assuming silence. The proposal merged periods and
+had the nets wrong again; the periods came from the clock. Our goalie was in the left net in the 1st and 3rd and the
+right in the 2nd, as in every home game here. The clock ran through stoppages in the 1st and 2nd. The board counted a
+1:00 intermission down after the 1st and about 1:30 after the 2nd. In the 3rd the clock jumped from 3:00 to 2:00 with play
+going on (the operator took off a minute), so "start + 18:00 minus the clock" is a minute off after such a jump. The 2nd ended on a goal against with
+about 2 s left, and the operator then ran the clock to 0.0 with no play, so end the period at the goal. The board ran 3:00 for
+our 2nd-period minor. After it ran out, the referees sent the player back for 4 s at the next whistle (the panel
+re-posted "81 0:04"). He was in the box through the whole stoppage and the faceoff: that is a second `pk` span, with
+an `on` span for him in between.
 
 Views: `rink` 0–3840 × 380–1536; `left-net` 200–1400 × 380–760; `right-net` 2600–3800 × 380–760.
 

@@ -84,7 +84,8 @@ misses; the record has no `rinkName` either. The schedule view can also skip gam
 and Oct 4 games never showed up in it, between games that did, and `opponentGames` had both with their sheets (so
 did Beerteam's Sep 27 game, 32972, found through their Oct 25 game against the same Cascadiens). Beerteam's Oct 4 game
 vs Jackalopes had no later game against them; it was 32973, the id between the team's cached 32972 (Sep 27) and 32974
-(Oct 10), so probe the ids between a team's cached games first. With no upcoming game against
+(Oct 10), so probe the ids between a team's cached games first. LADA R's Oct 5 game vs Best Vibes was missing too
+and was 32966, the id right after the team's cached 32965 (Sep 28); `sheet $W --lada 32966 --team r` then worked. With no upcoming game against
 that opponent (Doofers' Sep 13 game vs Jurassic Puck, their real first), probe `game/<id>` next to the other
 teams' games that day: 32947 sat between Blue Wings' 32945/32946 and Beerteam's 32949.
 

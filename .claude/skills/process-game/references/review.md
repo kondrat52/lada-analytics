@@ -151,6 +151,8 @@ number). Tell the user which rows you labeled by hand, and say so in `game.json`
   the prompts' goalie line comes from the roster's first goalie and an empty-row line said #79 (a regular who
   played all game, number rarely readable) probably hadn't played. Both were fixed by hand in every prompt
   before launch, with `--note`s saying the same. Mark a sub who played goal absent (he isn't a skater) and read the
-  goalie and empty-row lines of one prompt before launching any. On Beerteam's Sep 20 game the goalie was a spare
+  goalie and empty-row lines of one prompt before launching any. On Oct 5 (Perry in goal again) marking the
+  regular goalie #35 absent along with #99 made `review` write "Our goalie is not on the card" by itself. A
+  `--note` named Perry, so the prompts needed no hand edits. On Beerteam's Sep 20 game the goalie was a spare
   not on `roster.json` at all (David Pfeifer, number never readable), and the prompts' "#1 is the goalie" line was
   replaced in every prompt with sed before launch.
