@@ -189,6 +189,16 @@ as 3600x1440 and get scaled up.
   Our player dropped into the near-right box. Rainucks' white jerseys with blue numbers and green-and-blue stripes
   passed the light-blue test (`unknown` listed six of their numbers, #96 with more reads than any of ours), and the
   goalies were told apart by colour (ours red, theirs white). Shots OCR read 20-20 for the board's 25-32.
+- The operator can start the clock late. On LADA Y's Oct 5 game (9:45 PM, LiveBarn recording again, home, white
+  jerseys on the right-of-center bench) the board sat at 18:00 for the first 55 s of video while the game went on:
+  opening faceoff at 0:05, a goal against at 0:41 (the sheet's 17:50 is the scorekeeper's guess), and the clock first
+  counted down at the faceoff after it. The "18:00 starting to count" rule put P1 at 55, prepare cut its segments
+  from there, and only the goals check found the earlier goal. Before prepare, look at the first minute of video
+  (`frames --view rink 0 4 8 ... 40`) for play under a frozen 18:00. Once the period's review had started, P1 was
+  moved to 5 in `periods.json` without preparing again: `on` spans for the five seen from the opening faceoff (and the
+  changes after the goal) fill the seconds before the first segment, and solve came to 100%. The clock ran through
+  stoppages in the 1st and 2nd except the last minute, and stopped at whistles in the 3rd. Shots OCR read 8-35 for
+  the board's 25-39. BladeRunners wear red; nothing of theirs passed the white test (`unknown` listed no numbers).
 
 Views: `rink` 0–3840 × 320–1536; `left-net` 150–1350 × 400–800; `right-net` 2600–3800 × 400–800.
 

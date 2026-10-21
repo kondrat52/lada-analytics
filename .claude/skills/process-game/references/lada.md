@@ -85,7 +85,8 @@ and Oct 4 games never showed up in it, between games that did, and `opponentGame
 did Beerteam's Sep 27 game, 32972, found through their Oct 25 game against the same Cascadiens). Beerteam's Oct 4 game
 vs Jackalopes had no later game against them; it was 32973, the id between the team's cached 32972 (Sep 27) and 32974
 (Oct 10), so probe the ids between a team's cached games first. LADA R's Oct 5 game vs Best Vibes was missing too
-and was 32966, the id right after the team's cached 32965 (Sep 28); `sheet $W --lada 32966 --team r` then worked. With no upcoming game against
+and was 32966, the id right after the team's cached 32965 (Sep 28); `sheet $W --lada 32966 --team r` then worked.
+LADA Y's Oct 5 game vs BladeRunners was likewise 32968, right after Y's cached 32967 (Sep 28). With no upcoming game against
 that opponent (Doofers' Sep 13 game vs Jurassic Puck, their real first), probe `game/<id>` next to the other
 teams' games that day: 32947 sat between Blue Wings' 32945/32946 and Beerteam's 32949.
 
