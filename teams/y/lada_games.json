@@ -37,6 +37,17 @@
     "opponentGoals": 4,
     "boxscoreLink": "https://app.sportninja.com/public/game/M3fbr5Vt4D93e6FX"
   },
+  "32967": {
+    "date": "2026-09-28T22:15:00",
+    "opponentName": "LADA R",
+    "rinkName": "Renton",
+    "playHome": false,
+    "rinkId": 2070,
+    "lines": "{\"offence\":[[\"11129\",\"18293\",\"20326\"],[\"20420\",\"20414\",\"11110\"],[\"20421\",\"11166\",\"20416\"]],\"defence\":[[\"20419\",\"5942\"],[\"20417\",\"20418\"],[\"20381\",null]],\"goalie\":[[\"9080\"]],\"beer\":null}",
+    "teamGoals": 2,
+    "opponentGoals": 2,
+    "boxscoreLink": "https://app.sportninja.com/public/game/lpEe1DZGDpUHwf92"
+  },
   "32993": {
     "date": "2026-10-12T20:45:00",
     "opponentName": "Weekday Benders",

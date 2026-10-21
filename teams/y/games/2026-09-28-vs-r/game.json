@@ -1,0 +1,311 @@
+{
+  "id": "2026-09-28-vs-r",
+  "date": "2026-09-28",
+  "title": "LADA Y vs LADA R, Sep 28",
+  "eyebrow": "Mon Sep 28, 2026 · 10:15 PM · Renton",
+  "opponent": "R",
+  "video": "https://youtu.be/KppXfDmGY_k",
+  "periods": [
+    {
+      "label": "P1",
+      "start": 23,
+      "end": 1117
+    },
+    {
+      "label": "P2",
+      "start": 1213,
+      "end": 2294
+    },
+    {
+      "label": "P3",
+      "start": 2388,
+      "end": 3942
+    }
+  ],
+  "nets": {
+    "P1": 540,
+    "P2": 3245,
+    "P3": 540
+  },
+  "penalty_kills": [
+    {
+      "period": "P2",
+      "start": 1289,
+      "end": 1497,
+      "player": 78
+    },
+    {
+      "period": "P3",
+      "start": 3703,
+      "end": 3942,
+      "player": 70
+    }
+  ],
+  "notes": [
+    "Away game at Renton against LADA R, LADA's other team: we wore light blue on the left (away) bench, LADA R white with blue numbers. The video came as 3246x1440 and was scaled up to Renton's usual 3840x1702. The same video was processed for LADA R's site.",
+    "Periods from the arena scoreboard: 0:23-18:37, 20:13-38:14 and 39:48-65:42 of the video (the empty-ice proposal found a single period). The board ran a 1:00 intermission countdown after the 1st and the 2nd. The clock ran through stoppages in the 1st and 2nd and stopped at whistles in the 3rd; the video reaches the final horn. Hilfer #31 was in our net, the left one in the 1st and 3rd, the right in the 2nd.",
+    "Goals from SportNinja's game sheet, placed in the video by the scoreboard and checked by eye: ours at 5:12 (clock 13:05, 1st, Akulov #37 from Barkov #97 and Lisitsyn #70) and 16:08 (2:05, 1st, Barkov #97 from Olyanich #89 and Unuchek #49); LADA R's at 26:49 (11:15, 2nd, #57 Moshchuk from #12) and 46:58 (12:28, 3rd, #57 Moshchuk from #12 and #64). Final 2-2.",
+    "Shots on goal from the board: LADA Y 31, LADA R 22 (14-4, 7-6, 10-12 by period). SportNinja's sheet has us at 32 (11 in the 3rd).",
+    "Penalties, from the board's panels and the players skating into the box: Shakhov #78 tripping in the 2nd (whistle at 21:29 of the video; the board ran 3:00, the first 76 s 4 on 4 while LADA R's #10 finished his hooking minor from the 1st) and Lisitsyn #70 slashing in the 3rd (61:43; 2:00, with 0:42 left at the final horn). The sheet calls both 2-minute minors.",
+    "Played: 13 skaters, LADA's planned lines without Beregovoy #87. Didn't play: Belousenko #11, Kondratenko #12, Beregovoy (#67 and #87) and Mischenko #72; the sheet agrees, and none of their nameplates was read. The 598 reads of 12 were LADA R's #12 Sergeev, whose white jersey with blue numbers passes part of our light-blue test.",
+    "No review rows were labeled by hand. Three lineup stretches were checked in full frames and fixed with on/off entries: P1 from the 13:02 line change (Sokolov #4 on), P1 15:26-16:42 (Olyanich #89 on, at the net for Barkov's goal; Podkorytov #82 off) and P3 44:13-44:42 (Akulov #37 off)."
+  ],
+  "video_ends_early": false,
+  "fun": {
+    "name_reads": {
+      "49": 373,
+      "37": 256,
+      "18": 207,
+      "97": 201,
+      "29": 146,
+      "78": 129,
+      "4": 93,
+      "89": 78,
+      "14": 75,
+      "82": 45
+    }
+  },
+  "pipeline": {
+    "detections": 689275,
+    "crops": 110915,
+    "reads": 12651,
+    "reviewed": 592
+  },
+  "lada_game_id": 32967,
+  "stoppages": [
+    [
+      23,
+      25
+    ],
+    [
+      278,
+      304
+    ],
+    [
+      304,
+      340
+    ],
+    [
+      354,
+      412
+    ],
+    [
+      412,
+      472
+    ],
+    [
+      687,
+      705
+    ],
+    [
+      772,
+      802
+    ],
+    [
+      813,
+      836
+    ],
+    [
+      960,
+      999
+    ],
+    [
+      1058,
+      1087
+    ],
+    [
+      1213,
+      1216
+    ],
+    [
+      1222,
+      1248
+    ],
+    [
+      1289,
+      1319
+    ],
+    [
+      1366,
+      1393
+    ],
+    [
+      1393,
+      1425
+    ],
+    [
+      1607,
+      1636
+    ],
+    [
+      1666,
+      1702
+    ],
+    [
+      1713,
+      1720
+    ],
+    [
+      1833,
+      1872
+    ],
+    [
+      1998,
+      2026
+    ],
+    [
+      2140,
+      2163
+    ],
+    [
+      2388,
+      2390
+    ],
+    [
+      2461,
+      2497
+    ],
+    [
+      2636,
+      2662
+    ],
+    [
+      2662,
+      2714
+    ],
+    [
+      2757,
+      2781
+    ],
+    [
+      2802,
+      2850
+    ],
+    [
+      2862,
+      2885
+    ],
+    [
+      2901,
+      2928
+    ],
+    [
+      3036,
+      3054
+    ],
+    [
+      3101,
+      3129
+    ],
+    [
+      3308,
+      3339
+    ],
+    [
+      3541,
+      3566
+    ],
+    [
+      3603,
+      3624
+    ],
+    [
+      3637,
+      3656
+    ],
+    [
+      3715,
+      3797
+    ],
+    [
+      3797,
+      3841
+    ],
+    [
+      3874,
+      3894
+    ],
+    [
+      3905,
+      3937
+    ]
+  ],
+  "highlights": [
+    {
+      "type": "goal",
+      "team": "for",
+      "t": 312,
+      "scorer": 37,
+      "assists": [
+        97,
+        70
+      ],
+      "clip": "clips/goal-1.mp4",
+      "poster": "clips/goal-1.jpg",
+      "note": "1st period, clock 13:05: Akulov #37 pokes it in from a scramble at the crease, 1-0"
+    },
+    {
+      "type": "goal",
+      "team": "for",
+      "t": 968,
+      "scorer": 97,
+      "assists": [
+        89,
+        49
+      ],
+      "clip": "clips/goal-2.mp4",
+      "poster": "clips/goal-2.jpg",
+      "note": "1st period, clock 2:05: Barkov #97 drives in on the goalie and scores, 2-0"
+    },
+    {
+      "type": "goal",
+      "team": "against",
+      "t": 1609,
+      "clip": "clips/goal-3.mp4",
+      "poster": "clips/goal-3.jpg",
+      "note": "2nd period, clock 11:15: LADA R's #57 Moshchuk cuts in and shoots, 2-1"
+    },
+    {
+      "type": "goal",
+      "team": "against",
+      "t": 2818,
+      "clip": "clips/goal-4.mp4",
+      "poster": "clips/goal-4.jpg",
+      "note": "3rd period, clock 12:28: LADA R's #57 Moshchuk again, from a scramble at the crease, 2-2"
+    },
+    {
+      "type": "penalty",
+      "player": 78,
+      "t": 1287,
+      "clip": "clips/penalty-78.mp4",
+      "poster": "clips/penalty-78.jpg",
+      "note": "2nd period, clock 16:16: tripping; the board ran 3:00, 4 on 4 for the first 76 s"
+    },
+    {
+      "type": "penalty",
+      "player": 70,
+      "t": 3701,
+      "clip": "clips/penalty-70.mp4",
+      "poster": "clips/penalty-70.jpg",
+      "note": "3rd period, clock 1:18: slashing, 2:00; 0:42 still to serve at the final horn"
+    }
+  ],
+  "shots": {
+    "P1": [
+      14,
+      4
+    ],
+    "P2": [
+      7,
+      6
+    ],
+    "P3": [
+      10,
+      12
+    ]
+  },
+  "zones": {
+    "offence": 0.4331,
+    "defence": 0.3521
+  }
+}
