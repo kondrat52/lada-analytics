@@ -32,7 +32,7 @@
     "Away game at Renton: we wore light blue and had the left bench (the pipeline's defaults). The 3246x1440 video was scaled up to the rink's usual frame. The game sheet (SportNinja, read through its public API) gave the score, the goals with scorers, the shots and who played, and had no penalties; the arena scoreboard and the video confirmed them. LADA's schedule view never listed this game; its id (32972) came from the games against Cascadiens.",
     "Periods by the scoreboard clock (we were GUEST): 0:17-18:41, 20:13-38:15 and 39:55-66:58 of the video. The clock ran through stoppages in the 1st and 2nd and stopped at whistles in the 3rd, and the board counted a 1:00 intermission after the 1st and the 2nd. The video runs to the final horn. Shots on goal 39-25 (9-5, 11-8, 19-12), as on the sheet and the board.",
     "Goals at 32:32 (Cascadiens #91 Farina), 36:33 (Solovyov #87, assists Zhaksilikov #23 and Zakharov #34), 46:50 (#8 Garbelman), 55:24 (Bogdanov #10, assist Tverskoy #44) and 65:06 (the winner, 40 s left) of the video, each found by eye and matched to the board. The sheet puts Bogdanov's goal at 17:17 of the 3rd; the board's clock stopped at 7:17 for it.",
-    "The winner is credited to Kleiman #69, as the video shows: he carries the puck in alone, scores and raises his arms. The game sheet credits Shikhanov #70, unassisted (he was on the ice for it).",
+    "The winner is Shikhanov #70's, unassisted, as the game sheet credits and the team confirmed: he carries the puck in alone and scores. A frame check had read the scorer as Kleiman #69, who was also on the ice, and the page credited Kleiman until the team corrected it.",
     "Khristoforov #7 went down injured by our net at 41:25 of the video, early in the 3rd, skated slowly to the bench at 42:25 and didn't come back. Volkov #94 played defence with Papusha #24 for the rest of the game.",
     "Twelve skaters and Mayorov #1 in goal. Absent: Zhaksilikov #5, Belousenko #11, Papusha #25, Gilderman #41, goalie Starodubtsev #20 and all the subs.",
     "Labeled by hand after a frame check: #70 going off at our bench at 30:34 while #24 came on (P2 row R93), #70 on the ice for the winning goal (P3 row R229, his number read at 64:58-65:03), and #7 off from his injury to the end."
@@ -107,8 +107,8 @@
       "t": 3906,
       "clip": "clips/goal-5.mp4",
       "poster": "clips/goal-5.jpg",
-      "scorer": 69,
-      "note": "3rd period, clock 0:40: the winner, 3-2. Kleiman #69 carries in alone, scores and raises his arms (the game sheet credits Shikhanov #70, unassisted)"
+      "scorer": 70,
+      "note": "3rd period, clock 0:40: the winner, 3-2. Shikhanov #70 carries in alone and scores, unassisted"
     }
   ],
   "lada_game_id": 32972,

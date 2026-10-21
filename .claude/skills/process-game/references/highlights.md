@@ -28,12 +28,12 @@ the 2nd, but nothing happened then, and 34 s into the 3rd the board's clock stop
 and shots went up. A sheet goal with no candidate near its time is worth looking for at the same clock in the
 next or previous period. The credited scorer can be wrong too: on Doofers' Sep 27 game the sheet gave the first goal to
 Babkin #26, who wasn't on the ice (two frame checks agreed; he came on for the faceoff after it, and Albantov #29 was
-at the crease). The reverse slips through: on Beerteam's Sep 27 game the sheet credited the winner to Shikhanov #70,
-unassisted, while the video plainly shows Kleiman #69 carrying in alone and scoring. #70 was on the ice, so the
-lineup check passed and only the frame check caught it; read the scorer's number on every goal. When the video
-plainly shows who scored, credit that player in `highlights.json` (the user asked for Kleiman) and say in the goal's
-note and `game.json`'s notes what the sheet credits; when the video doesn't settle it, keep the sheet's credit. A
-credited scorer who wasn't on the ice stays in the lineup check's list, which is expected. A clock time can lose a digit too: that sheet put Bogdanov's goal at 17:17 of the 3rd, where nothing
+at the crease). The page keeps the sheet's credit, the goal's note and `game.json`'s notes say what the video shows,
+and the lineup check keeps listing it, which is expected. A frame check can misread the scorer too: on Beerteam's
+Sep 27 game it read the winner's scorer as Kleiman #69 where the sheet had Shikhanov #70, both were on the ice, and
+the page credited Kleiman until the team confirmed Shikhanov, which the video shows as well. So `highlights.json`
+always keeps the sheet's scorer. When a frame check names someone else who was also on the ice, the page doesn't
+say so: ask the user in the summary to check with the team, and change the credit only on their word. A clock time can lose a digit too: on Beerteam's Sep 27 game the sheet put Bogdanov's goal at 17:17 of the 3rd, where nothing
 happened, and the board's clock stopped at 7:17 for it. The sheet's time for a power-play goal can be the penalty's, not the goal's: on TK's Oct 17
 game it had Roadrunners' goal at 12:25, but the board's clock read 11:48 when it went in, 37 s later, and the penalty
 panel went dark then. Where the video has sound (Renton's new camera), the whistle after a goal is audible and pins
