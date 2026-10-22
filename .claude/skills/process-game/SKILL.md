@@ -253,7 +253,8 @@ Write `notes` in `game.json` (they survive a republish): the rink if new, who sa
 came from, the subs, absent players, and anything labeled by hand or read differently from the board. Open the
 page locally (`docs/<slug>/games/<id>/index.html`), show the user the table and the notable fun stats, then ask
 before committing and pushing: the site is public. After the push, check the page is live (Pages takes about a
-minute; add `?v=<random>` to skip the cache).
+minute; add `?v=<random>` to skip the cache; the github.io address answers 301 to the custom domain lada.gay, so
+`curl -L`).
 
 ## 9. Archive, and record what you learned
 
