@@ -90,6 +90,25 @@ calls 2:00, lit the panel during the stoppage and started it at the faceoff, and
 
 Views: `rink` 0–3840 × 220–1920; `left-net` 100–1300 × 480–1080; `right-net` 2600–3800 × 470–1070.
 
+### The same camera with a black band (`renton2band`)
+
+LADA Y's Oct 12 game (8:45 PM) already came from this camera, five days before Oct 17, but as LiveBarn's 3600x1800 with
+a black band and the LiveBarn logo over the top 264 rows (of 1920 once scaled up): the picture is Oct 17's at the
+same scale, 266 px lower (the far boards curve is Oct 17's plus 266 at every x) and cut off at the bottom by as much.
+Fetch with `--rink renton2` stopped at "new framing" only because `--rink renton` was given first; under `renton2`
+detection ran fine (the band is above the ice), but the scoreboard crop showed the ceiling. `renton2band` moves
+everything with a y down by 266 and puts the scoreboard at (3434, 838). Tell the two apart on `frame600.png`: a black
+band across the top. If a fetch under `renton2` already ran, switch `rink` in `$W/full/rink.json`, move
+`scoreboard.npy` aside and run `scoreboard.py $W` again; the detections and crops stay.
+
+On Oct 12 the board was dark (flicker) for whole stretches, 1196–1250 s of video among them, right across the 2nd
+period's faceoff, so that start came from the clock counting 1:1 afterwards (16:47 at 1290) and a frame check of the
+drop. The clock ran through stoppages in the 1st and 2nd and stopped at whistles in the 3rd; the 1:00 intermission
+countdown ran after the 1st and 2nd; the minor ran 3:00 on the panel from the faceoff, lit during the stoppage. The
+board's shots matched the game sheet's totals but lagged a shot each at the 1st's end.
+
+Views: `rink` 0–3840 × 486–1920; `left-net` 100–1300 × 746–1346; `right-net` 2600–3800 × 736–1336.
+
 ## Snoqualmie A (`snoqualmie`, a 3840x1536 strip)
 
 Blue Wings' home rink. Camera high on the near side at center, very wide. Both benches are on the near side at the

@@ -73,7 +73,7 @@ Home or away decides our jersey and bench: home has worn white (blue numbers and
 ## 1. Fetch (background)
 
 ```sh
-$PY pipeline/run_game.py fetch "<url>" $W --team <slug> --rink <renton|renton2|snoqualmie|snoqualmie2|kirkland> [--jersey white] [--bench right]
+$PY pipeline/run_game.py fetch "<url>" $W --team <slug> --rink <renton|renton2|renton2band|snoqualmie|snoqualmie2|kirkland> [--jersey white] [--bench right]
 ```
 
 Run it in the background and watch `$W/full/log.txt` with a Monitor that also matches `Traceback|Error`. Fetch

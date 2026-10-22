@@ -24,7 +24,9 @@ scorekeeper can also be slow or wrong: on Sep 14 the board first credited our go
 minutes later. The sheet's clock lags the goal itself: on Doofers' Sep 13 game all five goals were 6–13 s of video
 before the time the sheet's clock implies, even in a period whose clock ran through stoppages. It isn't always that
 far: on Doofers' Oct 10 game (Snoqualmie B) the 1st period's three goals were 1–5 s before it and the 2nd's matched
-it, so search from about 15 s before the implied time to 5 s after.
+it, so search from about 15 s before the implied time to 5 s after. On LADA Y's Oct 12 game (Renton, clock running
+through stoppages in the 1st and 2nd) five goals were 2–7 s before it, but the 2nd period's last one was 7 s after:
+widen the search to 10 s after when the first pass finds nothing.
 The game sheet can put a goal in the wrong period: on LADA R's Sep 21 game it had Moshchuk's goal at 17:26 of
 the 2nd, but nothing happened then, and 34 s into the 3rd the board's clock stopped at 17:26 and the home score
 and shots went up. A sheet goal with no candidate near its time is worth looking for at the same clock in the

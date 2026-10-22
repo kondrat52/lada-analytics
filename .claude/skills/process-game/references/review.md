@@ -113,6 +113,11 @@ number). Tell the user which rows you labeled by hand, and say so in `game.json`
   bench door, not trust the labels; the fixes go in as `on`/`off` spans, or as zfix lines when the piece is a
   review row (`manifest.csv` maps `tid` to row). When a reviewer and a full-frame check disagree, a zoom on the
   player at the bench door settles it.
+- **A long row whose number shows only late.** On Y's Oct 12 game a 98 s row was labeled #18 "high" from its
+  later crops, while #18's own row ran in parallel until 3531.6; the early crops showed no number, and the gap check
+  read 97 on that player three times after he climbed over the bench boards. The tracker had swapped identities when
+  #18's track ended. Two rows with the same label overlapping in time is the sign: the zfix line gives the early
+  player with a switch to the late one at the other track's end.
 - **Shifts under 20 s are dropped** (`final_stats.py`'s `MIN_SHIFT`), including a real shift cut short by the final
   horn: Sep 21's last 16 s show 3 skaters because Ber and Beregovoy came on 17–19 s before the end. That flag stays.
 - **A timeout with the goalie pulled.** On Beerteam's Sep 20 game Cluster Pucks called a timeout the moment our
