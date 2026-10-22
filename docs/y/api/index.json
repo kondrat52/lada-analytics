@@ -6,11 +6,35 @@
   "lada_team_id": 20
  },
  "site_url": "https://kondrat52.github.io/lada-analytics/y/",
- "updated": "2026-10-05",
+ "updated": "2026-10-12",
  "season_url": "https://kondrat52.github.io/lada-analytics/y/api/season.json",
  "roster_url": "https://kondrat52.github.io/lada-analytics/y/api/roster.json",
  "trends_url": "https://kondrat52.github.io/lada-analytics/y/api/trends.json",
  "games": [
+  {
+   "id": "2026-10-12-vs-wb",
+   "date": "2026-10-12",
+   "title": "LADA Y vs Weekday Benders, Oct 12",
+   "subtitle": "Mon Oct 12, 2026 · 8:45 PM · Renton",
+   "time": "8:45 PM",
+   "rink": "Renton",
+   "opponent": {
+    "code": "WB",
+    "name": "Weekday Benders"
+   },
+   "lada_game_id": 32993,
+   "goals_on_video": {
+    "for": 0,
+    "against": 6
+   },
+   "shots": {
+    "for": 24,
+    "against": 24
+   },
+   "highlights": 7,
+   "page_url": "https://kondrat52.github.io/lada-analytics/y/games/2026-10-12-vs-wb/",
+   "json_url": "https://kondrat52.github.io/lada-analytics/y/api/games/2026-10-12-vs-wb.json"
+  },
   {
    "id": "2026-10-05-vs-br",
    "date": "2026-10-05",

@@ -1,0 +1,257 @@
+{
+  "id": "2026-10-12-vs-wb",
+  "date": "2026-10-12",
+  "title": "LADA Y vs Weekday Benders, Oct 12",
+  "eyebrow": "Mon Oct 12, 2026 · 8:45 PM · Renton",
+  "opponent": "WB",
+  "video": "https://youtu.be/vdaif0T1S2I",
+  "periods": [
+    {
+      "label": "P1",
+      "start": 19,
+      "end": 1100
+    },
+    {
+      "label": "P2",
+      "start": 1218,
+      "end": 2299
+    },
+    {
+      "label": "P3",
+      "start": 2397,
+      "end": 3611
+    }
+  ],
+  "nets": {
+    "P1": 560,
+    "P2": 3345,
+    "P3": 560
+  },
+  "penalty_kills": [
+    {
+      "period": "P1",
+      "start": 258,
+      "end": 462,
+      "player": 70
+    }
+  ],
+  "notes": [
+    "Away game at Renton against Weekday Benders: we wore light blue on the away bench left of center, the Benders white with red numbers. The video is from Renton's new fisheye camera (as on Oct 17), but LiveBarn's 3600x1800 with a black logo band across the top, scaled up to 3840x1920; the picture sits 266 px lower than Oct 17's, a new `renton2band` geometry.",
+    "Periods from the arena scoreboard: 0:19-18:20, 20:18-38:19 and 39:57-60:11 of the video. The board ran a 1:00 intermission countdown after the 1st and the 2nd, and was dark (LED flicker) across the 2nd period's faceoff, which came from the clock counting afterwards and a frame check. The clock ran through stoppages in the 1st and 2nd; the video reaches the final horn. Hilfer #31 was in our net, the left one in the 1st and 3rd, the right in the 2nd.",
+    "Goals from SportNinja's game sheet, placed in the video and checked by eye, all Weekday Benders': 13:22 (clock 4:53, 1st, #13 Malyuk), 22:56 (15:15, 2nd, #36 Paradee), 24:02 (14:11, #42 Brown), 28:47 (9:29, #36 Paradee), 35:55 (2:30, #36 Paradee) and 53:58 (6:10, 3rd, #13 Malyuk). Final 0-6.",
+    "Penalty: Lisitsyn #70, tripping at 4:07 of the video (clock 13:38 of the 1st) by the Benders' net. The board ran it 3:00 from the faceoff; we killed it (4:18-7:42 of video, from the whistle to the panel going dark).",
+    "Shots 24-24 (ours 8, 4, 12; theirs 6, 11, 7) from the game sheet. The board had the same totals and the same 17-12 after the 2nd, but logged a shot each early in the 2nd that the sheet has in the 1st.",
+    "Absent: Sokolov #4, Belousenko #11, Akulov #37, Beregovoy #67/#87, Mischenko #72 and Shakhov #78. The game sheet marked Shakhov #78 as playing and Lisitsyn #83 as not, but no #78 appears in the video, and #83 played all game (his number was read about 1200 times).",
+    "Labeled by hand: one review row in the 3rd (Barkov #97 climbing on at 58:08 on a track that switches to Petrov #18 at 58:52; a frame check read 97 three times). The lineup check still lists two stretches with six of ours counted, both seen on video: the change during the stoppage after the 4th goal (28:48-29:03), and Lisitsyn #83 coming off about 20 s after Kondratenko #12 and Unuchek #49 stepped on in the 3rd (58:45-59:00)."
+  ],
+  "video_ends_early": false,
+  "fun": {
+    "name_reads": {
+      "18": 468,
+      "29": 302,
+      "89": 240,
+      "49": 122,
+      "82": 120,
+      "97": 112,
+      "12": 39,
+      "14": 1
+    }
+  },
+  "pipeline": {
+    "detections": 625545,
+    "crops": 121430,
+    "reads": 10204,
+    "reviewed": 661
+  },
+  "lada_game_id": 32993,
+  "stoppages": [
+    [
+      19,
+      21
+    ],
+    [
+      75,
+      108
+    ],
+    [
+      381,
+      409
+    ],
+    [
+      563,
+      598
+    ],
+    [
+      684,
+      714
+    ],
+    [
+      745,
+      771
+    ],
+    [
+      801,
+      836
+    ],
+    [
+      841,
+      864
+    ],
+    [
+      926,
+      966
+    ],
+    [
+      1371,
+      1410
+    ],
+    [
+      1441,
+      1472
+    ],
+    [
+      1559,
+      1574
+    ],
+    [
+      1596,
+      1623
+    ],
+    [
+      1638,
+      1666
+    ],
+    [
+      1717,
+      1751
+    ],
+    [
+      1862,
+      1907
+    ],
+    [
+      1991,
+      2029
+    ],
+    [
+      2144,
+      2185
+    ],
+    [
+      2206,
+      2229
+    ],
+    [
+      2491,
+      2531
+    ],
+    [
+      2531,
+      2569
+    ],
+    [
+      2900,
+      2953
+    ],
+    [
+      3138,
+      3157
+    ],
+    [
+      3168,
+      3190
+    ],
+    [
+      3229,
+      3266
+    ],
+    [
+      3307,
+      3331
+    ],
+    [
+      3331,
+      3378
+    ],
+    [
+      3505,
+      3554
+    ]
+  ],
+  "highlights": [
+    {
+      "type": "goal",
+      "team": "against",
+      "t": 802,
+      "clip": "clips/goal-1.mp4",
+      "poster": "clips/goal-1.jpg",
+      "note": "1st period, clock 4:53: Weekday Benders' #13 Malyuk from Ono #10, out of a scramble at our crease after a rush down the left side, 0-1"
+    },
+    {
+      "type": "goal",
+      "team": "against",
+      "t": 1376,
+      "clip": "clips/goal-2.mp4",
+      "poster": "clips/goal-2.jpg",
+      "note": "2nd period, clock 15:15: #36 Paradee, unassisted, jammed in at the near post after a battle along the boards, 0-2"
+    },
+    {
+      "type": "goal",
+      "team": "against",
+      "t": 1442,
+      "clip": "clips/goal-3.mp4",
+      "poster": "clips/goal-3.jpg",
+      "note": "2nd period, clock 14:11: #42 Brown from Kabealo #17 and Balaban #30, a goal-mouth scramble, 0-3"
+    },
+    {
+      "type": "goal",
+      "team": "against",
+      "t": 1727,
+      "clip": "clips/goal-4.mp4",
+      "poster": "clips/goal-4.jpg",
+      "note": "2nd period, clock 9:29: #36 Paradee from Malyuk #13 and Balaban #30, wrapped across the crease past our sprawled goalie, 0-4"
+    },
+    {
+      "type": "goal",
+      "team": "against",
+      "t": 2155,
+      "clip": "clips/goal-5.mp4",
+      "poster": "clips/goal-5.jpg",
+      "note": "2nd period, clock 2:30: #36 Paradee from Ono #10, his hat trick, out of a scramble at the crease, 0-5"
+    },
+    {
+      "type": "goal",
+      "team": "against",
+      "t": 3238,
+      "clip": "clips/goal-6.mp4",
+      "poster": "clips/goal-6.jpg",
+      "note": "3rd period, clock 6:10: #13 Malyuk from Kabealo #17, on a rebound with our goalie down, 0-6"
+    },
+    {
+      "type": "penalty",
+      "player": 70,
+      "t": 247,
+      "clip": "clips/penalty-70.mp4",
+      "poster": "clips/penalty-70.jpg",
+      "note": "1st period, clock 13:38: tripping by the Benders' net; the board ran it 3:00 from the faceoff, and we killed it"
+    }
+  ],
+  "shots": {
+    "P1": [
+      8,
+      6
+    ],
+    "P2": [
+      4,
+      11
+    ],
+    "P3": [
+      12,
+      7
+    ]
+  },
+  "zones": {
+    "offence": 0.3537,
+    "defence": 0.3973
+  }
+}
