@@ -50,7 +50,7 @@ sys.path.insert(0, os.path.dirname(os.path.abspath(__file__)))
 from build_report import build
 from build_feed import season_table, game_doc, write_feed
 import build_trends
-from roster import SKATERS, SUBS, TEAM, SLUG, GAMES_DIR, SITE_DIR, opponent_name
+from roster import SKATERS, SUBS, ALIASES, TEAM, SLUG, GAMES_DIR, SITE_DIR, opponent_name
 
 fmt = lambda s: f"{int(round(s)) // 60}:{int(round(s)) % 60:02d}"
 
@@ -58,7 +58,7 @@ games, allsh, docs = [], [], {}
 for gd in sorted(glob.glob(f"{GAMES_DIR}/*/")):
     game, A, data = build(gd, f"{SITE_DIR}/games/{os.path.basename(os.path.normpath(gd))}/index.html")
     docs[game["id"]] = game_doc(game, A, data["players"], data["highlights"])
-    A = A.assign(game=game["id"])
+    A = A.assign(game=game["id"], player=A.player.replace(ALIASES))
     # shifts cut off by the recording ending mid-play don't count as short shifts
     cut = game["periods"][-1]["end"] if game.get("video_ends_early") else None
     A["cut"] = (A.t1 >= cut - 1) if cut else False

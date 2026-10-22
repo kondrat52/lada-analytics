@@ -77,57 +77,6 @@
    ]
   },
   {
-   "number": 78,
-   "name": "Shakhov",
-   "lada_player_id": 20419,
-   "games_played": 3,
-   "shifts": 41,
-   "toi": 5391,
-   "toi_per_game": 1797,
-   "play": 3597,
-   "avg_shift": 131.5,
-   "longest_shift": 231,
-   "shortest_shift": 44,
-   "games": [
-    {
-     "id": "2026-10-05-vs-br",
-     "date": "2026-10-05",
-     "opponent": {
-      "code": "BR",
-      "name": "BladeRunners"
-     },
-     "toi": 1953,
-     "shifts": 14,
-     "avg_shift": 139.5,
-     "play": 1273
-    },
-    {
-     "id": "2026-09-28-vs-r",
-     "date": "2026-09-28",
-     "opponent": {
-      "code": "R",
-      "name": "LADA R"
-     },
-     "toi": 1958,
-     "shifts": 15,
-     "avg_shift": 130.5,
-     "play": 1364
-    },
-    {
-     "id": "2026-09-14-vs-tm",
-     "date": "2026-09-14",
-     "opponent": {
-      "code": "TM",
-      "name": "Teamy McTeamface"
-     },
-     "toi": 1480,
-     "shifts": 12,
-     "avg_shift": 123.3,
-     "play": 960
-    }
-   ]
-  },
-  {
    "number": 29,
    "name": "Yafunyaev",
    "lada_player_id": 20417,
@@ -175,6 +124,57 @@
      "shifts": 12,
      "avg_shift": 143.1,
      "play": 1158
+    }
+   ]
+  },
+  {
+   "number": 78,
+   "name": "Shakhov",
+   "lada_player_id": 20419,
+   "games_played": 3,
+   "shifts": 41,
+   "toi": 5391,
+   "toi_per_game": 1797,
+   "play": 3597,
+   "avg_shift": 131.5,
+   "longest_shift": 231,
+   "shortest_shift": 44,
+   "games": [
+    {
+     "id": "2026-10-05-vs-br",
+     "date": "2026-10-05",
+     "opponent": {
+      "code": "BR",
+      "name": "BladeRunners"
+     },
+     "toi": 1953,
+     "shifts": 14,
+     "avg_shift": 139.5,
+     "play": 1273
+    },
+    {
+     "id": "2026-09-28-vs-r",
+     "date": "2026-09-28",
+     "opponent": {
+      "code": "R",
+      "name": "LADA R"
+     },
+     "toi": 1958,
+     "shifts": 15,
+     "avg_shift": 130.5,
+     "play": 1364
+    },
+    {
+     "id": "2026-09-14-vs-tm",
+     "date": "2026-09-14",
+     "opponent": {
+      "code": "TM",
+      "name": "Teamy McTeamface"
+     },
+     "toi": 1480,
+     "shifts": 12,
+     "avg_shift": 123.3,
+     "play": 960
     }
    ]
   },
@@ -560,44 +560,17 @@
    ]
   },
   {
-   "number": 87,
-   "name": "Beregovoy",
-   "lada_player_id": 20381,
-   "games_played": 1,
-   "shifts": 11,
-   "toi": 1246,
-   "toi_per_game": 1246,
-   "play": 719,
-   "avg_shift": 113.3,
-   "longest_shift": 179,
-   "shortest_shift": 39,
-   "games": [
-    {
-     "id": "2026-09-14-vs-tm",
-     "date": "2026-09-14",
-     "opponent": {
-      "code": "TM",
-      "name": "Teamy McTeamface"
-     },
-     "toi": 1246,
-     "shifts": 11,
-     "avg_shift": 113.3,
-     "play": 719
-    }
-   ]
-  },
-  {
    "number": 67,
    "name": "Beregovoy",
    "lada_player_id": 20381,
-   "games_played": 2,
-   "shifts": 17,
-   "toi": 2448,
-   "toi_per_game": 1224,
-   "play": 1690,
-   "avg_shift": 144,
+   "games_played": 3,
+   "shifts": 28,
+   "toi": 3694,
+   "toi_per_game": 1231.3,
+   "play": 2409,
+   "avg_shift": 131.9,
    "longest_shift": 242,
-   "shortest_shift": 82,
+   "shortest_shift": 39,
    "games": [
     {
      "id": "2026-10-05-vs-br",
@@ -622,6 +595,18 @@
      "shifts": 8,
      "avg_shift": 142.5,
      "play": 815
+    },
+    {
+     "id": "2026-09-14-vs-tm",
+     "date": "2026-09-14",
+     "opponent": {
+      "code": "TM",
+      "name": "Teamy McTeamface"
+     },
+     "toi": 1246,
+     "shifts": 11,
+     "avg_shift": 113.3,
+     "play": 719
     }
    ]
   },

@@ -40,6 +40,8 @@ ALL_SKATERS = {int(k): v for part in ("skaters", "subs") for k, v in _r.get(part
 GOALIES = [int(k) for k in _r.get("goalies", {}) if int(k) not in ABSENT]   # the first one is in goal this game
 GOALIE_NAMES = {int(k): v for k, v in _r.get("goalies", {}).items()}
 LADA_IDS = {int(k): v for k, v in _r.get("lada_player_ids", {}).items()}  # number -> LADA player id (team roster)
+ALIASES = {int(k): v for k, v in _r.get("aliases", {}).items()}  # a player's second number -> his primary one: the
+# game pages keep the number he wore, totals across games (season, trends) go under the primary number
 
 _opp = f"{TEAM_DIR}/opponents.json"
 OPPONENTS = json.load(open(_opp)) if os.path.exists(_opp) else {}   # code -> full name

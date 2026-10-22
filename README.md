@@ -66,7 +66,9 @@ python pipeline/build_site.py
    them against the jerseys. It never changes what's already there. A spare who isn't on LADA's roster goes under
    `subs` by hand (the team's SportNinja roster has them; screenshots work). A player LADA lists under another number
    than his jersey's (Y's #87 Beregovoy is #67 on LADA) goes under his jersey number, with `"lada_numbers": {"87": 67}`
-   so `lada_ids.py` matches him and doesn't add LADA's number. Without `--write` it only compares.
+   so `lada_ids.py` matches him and doesn't add LADA's number. A player who wears two numbers (Beregovoy wears 67
+   on the white jersey) is under both, with the same LADA id, and `"aliases": {"87": 67}` lists him once, under 67,
+   on the season table, trends page and feed. Without `--write` it only compares.
 3. `python pipeline/build_site.py`: the team gets its site, listed at the root, and its feed (empty until the first
    game) right away.
 4. Process a game with `--team <slug>`. Check the jerseys and benches on a frame first: `rink.py` knows our two

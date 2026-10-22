@@ -51,8 +51,9 @@ Beregovoy is LADA's #67). A team's first game: if `roster.json` has no players, 
 
 A player can wear different numbers on the two jerseys: Beregovoy is BEREGOVOY 87 on Y's light blue and 67 on the
 white. `unknown` finds it (138 reads of 67 with his nameplate). He is in `roster.json` under both numbers with the
-same LADA id, and the number he didn't wear goes on that game's absent list. The trends page then shows two rows
-for him; merging them needs a per-game alias that the pipeline doesn't have yet.
+same LADA id, and the number he didn't wear goes on that game's absent list. `"aliases": {"87": 67}` makes 67 his
+primary number: the game pages keep the number he wore, and the season table, trends page and feed totals list him
+once, under 67.
 
 ## SportNinja game sheets
 
@@ -104,6 +105,8 @@ goalies, skaters, subs           number -> surname as on the back; subs are tagg
                                  apart in the feed
 lada_player_ids                  number -> LADA player id
 lada_numbers                     jersey number -> LADA's number, where they differ
+aliases                          a player's second number -> his primary one, where he wears two (totals go
+                                 under the primary number)
 ```
 
 A surname two players share (a father and son) counts as a name read for neither; only their numbers tell them

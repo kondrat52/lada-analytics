@@ -12,7 +12,7 @@ goes away; adding fields doesn't need a bump.
 """
 import os, json
 import numpy as np, pandas as pd
-from roster import SKATERS, MEMBERS, SUBS, GOALIE_NAMES, LADA_IDS, TEAM_NAME, TEAM_SHORT, LADA_TEAM_ID, SITE_URL, OPPONENTS
+from roster import SKATERS, MEMBERS, SUBS, GOALIE_NAMES, LADA_IDS, ALIASES, TEAM_NAME, TEAM_SHORT, LADA_TEAM_ID, SITE_URL, OPPONENTS
 
 SCHEMA = 1
 
@@ -141,12 +141,13 @@ def trends_doc(rows):
 
 
 def _per_game(docs_by_game, games):
-    """number -> [{id, date, opponent, toi, shifts, avg_shift, play}], newest game first."""
+    """number -> [{id, date, opponent, toi, shifts, avg_shift, play}], newest game first; a second number's games
+    go under the primary one."""
     out = {}
     for g in sorted(games, key=lambda g: g["date"], reverse=True):
         doc = docs_by_game[g["id"]]
         for p in doc["players"]:
-            out.setdefault(p["number"], []).append({
+            out.setdefault(ALIASES.get(p["number"], p["number"]), []).append({
                 "id": g["id"], "date": g["date"], "opponent": doc["opponent"],
                 "toi": p["toi"], "shifts": p["shifts"], "avg_shift": p["avg_shift"], "play": p["play"]})
     return out
@@ -186,9 +187,13 @@ def write_feed(site_dir, games, docs_by_game, season):
                     for p, r in season.iterrows()],
     }
     json.dump(season_doc, open(f"{api}/season.json", "w"), ensure_ascii=False, indent=1)
+    others = {}   # primary number -> the player's other numbers
+    for n, p in ALIASES.items():
+        others.setdefault(p, []).append(n)
+    listed = lambda n: {**_player(n), "other_numbers": sorted(others[n])} if n in others else _player(n)
     roster_doc = {"schema": SCHEMA, "team": _team(),
-                  "skaters": [_player(n) for n in sorted(MEMBERS)],
-                  "subs": [_player(n) for n in sorted(SUBS)],
+                  "skaters": [listed(n) for n in sorted(MEMBERS) if n not in ALIASES],
+                  "subs": [listed(n) for n in sorted(SUBS) if n not in ALIASES],
                   "goalies": [_player(n) for n in sorted(GOALIE_NAMES)]}
     json.dump(roster_doc, open(f"{api}/roster.json", "w"), ensure_ascii=False, indent=1)
     return len(docs_by_game)

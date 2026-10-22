@@ -6,7 +6,7 @@ import os, sys, json, glob
 from html import escape
 import numpy as np, pandas as pd
 sys.path.insert(0, os.path.dirname(os.path.abspath(__file__)))
-from roster import SKATERS, SUBS, TEAM, SLUG, REPO, GAMES_DIR, SITE_DIR, teams, site_of, opponent_name
+from roster import SKATERS, SUBS, ALIASES, TEAM, SLUG, REPO, GAMES_DIR, SITE_DIR, teams, site_of, opponent_name
 from build_feed import trends_doc
 
 HERE = os.path.dirname(os.path.abspath(__file__))
@@ -26,6 +26,7 @@ def penalties(game):
 def game_rows(gd):
     game = json.load(open(f"{gd}/game.json"))
     A = pd.read_csv(f"{gd}/shifts.csv")
+    A["player"] = A.player.replace(ALIASES)   # a player's second number trends with his primary one
     periods = game["periods"]
     length = sum(p["end"] - p["start"] for p in periods)
     T = int(max(p["end"] for p in periods)) + 2

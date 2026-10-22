@@ -54,7 +54,10 @@
   {
    "number": 67,
    "name": "Beregovoy",
-   "lada_player_id": 20381
+   "lada_player_id": 20381,
+   "other_numbers": [
+    87
+   ]
   },
   {
    "number": 70,
@@ -80,11 +83,6 @@
    "number": 83,
    "name": "Lisitsyn",
    "lada_player_id": 5942
-  },
-  {
-   "number": 87,
-   "name": "Beregovoy",
-   "lada_player_id": 20381
   },
   {
    "number": 89,

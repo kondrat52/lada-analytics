@@ -92,12 +92,14 @@ them (`for` = us), or `null` for a game whose board wasn't read.
 
 `players[]` sorted by ice time per game: `{number, name, lada_player_id, games_played, shifts, toi, toi_per_game,
 play, avg_shift, longest_shift, shortest_shift, games[]}`. `games[]` lists that player's games, newest first:
-`{id, date, opponent: {code, name}, toi, shifts, avg_shift, play}`.
+`{id, date, opponent: {code, name}, toi, shifts, avg_shift, play}`. A player who wears a second number (another jersey's)
+has one entry, under his primary number, with the games he wore either; the game files keep the number he wore.
 
 ## `roster.json`
 
 `skaters[]` and `goalies[]`, each `{number, name, lada_player_id}`, and `subs[]`: skaters who have subbed for the
-team without being on it. Edit the repo's `teams/<slug>/roster.json` to change them.
+team without being on it. A player who also wears a second number is listed once, under his primary number, with
+`other_numbers` (e.g. `[87]`). Edit the repo's `teams/<slug>/roster.json` to change them.
 
 ## `trends.json`
 
@@ -114,4 +116,4 @@ earlier" comparisons are left to the reader.
 | `avg_shift` | The team's average shift (seconds) |
 | `play_share` | Share of the periods' time that was live play (0–1), estimated like `play` |
 | `penalties` | `{count, short_handed, goals_against}`: our penalties (one carried over an intermission counts once), seconds spent killing them, and goals against during the kills |
-| `players[]` | Sorted by ice time: the player fields, `shifts, toi, avg_shift`, `toi_share` (share of the team's skater ice time; an equal split is `1 / skaters`), `avg_shift_p1` and `avg_shift_p3` (average shift in the first and third periods, `null` without a shift there) and `plus_minus` (goals for minus goals against while on the ice, from the goals on video) |
+| `players[]` | Sorted by ice time: the player fields, `shifts, toi, avg_shift`, `toi_share` (share of the team's skater ice time; an equal split is `1 / skaters`), `avg_shift_p1` and `avg_shift_p3` (average shift in the first and third periods, `null` without a shift there) and `plus_minus` (goals for minus goals against while on the ice, from the goals on video). A second number a player wore is under his primary one, as in `season.json` |
