@@ -238,8 +238,21 @@ class Renton2(Kirkland):
         return (np.abs(x - net_x) < 160) & (y > self.NET_Y - 50) & (y < self.NET_Y + 90)
 
 
+class Renton2Band(Renton2):
+    """Renton's new camera as LADA Y's Oct 12 video came (LiveBarn, 3600x1800, scaled up to 3840x1920): a black band
+    with the LiveBarn logo over the top 264 rows, and the picture 266 px lower than Oct 17's at the same scale (the
+    far boards curve fits Oct 17's plus 266 at every x), cut off at the bottom by as much. Everything with a y moves
+    down by DY; crop_top stays, since crops.py finds the crops by it and the band is above the ice anyway."""
+    DY = 266
+    board_band = (0.29, 0.70)
+    NET_Y = Renton2.NET_Y + DY
+    scoreboard = (3434, 838, 150, 126)    # measured on the Oct 12 frame (the board at x 3445-3573, y 845-957)
+    views = {"rink": (0, 3840, 486, 1920), "left-net": (100, 1300, 746, 1346), "right-net": (2600, 3800, 736, 1336)}
+    ICE = Path(Renton2.ICE.vertices + (0, DY))
+
+
 RINKS = {"renton": Renton, "snoqualmie": Snoqualmie, "snoqualmie2": Snoqualmie2, "kirkland": Kirkland,
-         "renton2": Renton2}
+         "renton2": Renton2, "renton2band": Renton2Band}
 
 # Our jersey that game, as tests on process.py's torso colour fractions (the dets.csv columns, or a dict of them):
 # `ours` picks our players for tracking, the looser `crop` which detections get a 4K crop for OCR and review.
