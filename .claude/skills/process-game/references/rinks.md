@@ -155,6 +155,16 @@ bench. Referees and Sentinels' black jerseys with a cream shoulder yoke passed t
 review sheets (twice the usual) and `run_game.py skaters` read 8–10: check penalties at the box by eye. Our goalie
 wore white with dark pads, theirs light blue; in a lopsided period the play sits at their net, which tells the nets
 apart.
+Doofers' Oct 10 game (home, 10:10 PM, again only 2548x1440 on YouTube) followed the same clock: the board sat at 18:00
+until the opening faceoff (0:11 of video), every period ran to 0.0, a 1:00 intermission countdown followed the 1st and
+2nd, and the clock ran through stoppages in the 1st and 2nd and stopped at whistles in the 3rd. The proposal found all
+three periods this time but 11–40 s off at the edges; its nets were right (our goalie left in the 1st and 3rd, as in
+every home game at Snoqualmie). The board ran 3:00 for the 2nd's minor and 2:00 for the 3rd's, and posted the 2nd's
+about 16 s after the whistle. The box attendant kept #61 in for 22 s after the panel went dark, so that kill ends
+when he steps out. Frost Giants' dark navy jerseys with a white shoulder yoke passed the white test like Sentinels'
+(223 review sheets; `unknown` listed their #10, #14, #19 and #43), and their #13 and #16 were read hundreds of times,
+so our own #13 and #16, both absent, had to be on the absent list. Shots OCR was wrong in every period (10-9, 6-7,
+11-20 for the board's 5-8, 12-9, 10-19). The opponents' box is the mirror of ours, near side next to their bench.
 
 Views: `rink` 0–3824 × 800–2160; `left-net` 80–1280 × 820–1370; `right-net` 2620–3820 × 820–1370. The nets sit
 at about (645, 1015) and (3250, 1020) in the frame, checked on the Oct 10 video; early in that video the right net

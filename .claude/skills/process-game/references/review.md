@@ -156,3 +156,14 @@ number). Tell the user which rows you labeled by hand, and say so in `game.json`
   `--note` named Perry, so the prompts needed no hand edits. On Beerteam's Sep 20 game the goalie was a spare
   not on `roster.json` at all (David Pfeifer, number never readable), and the prompts' "#1 is the goalie" line was
   replaced in every prompt with sed before launch.
+- **"Noise" doesn't clear a label.** The template's answer format allows a number, "?" or "G", so most reviewers
+  mark an opponent or referee row "?" with "noise" in the note, and a few write "noise" as the player.
+  `apply_review` leaves an OCR label in place for "noise" and only weakens it for "?". On Doofers' Oct 10 game
+  (opponents' yokes passing the white test) 50 of P1's 538 rows were opponents or referees still carrying one of our
+  numbers from OCR. Solve still came to 100–102% per period, and the gap check fixed what it put on the ice. A
+  "noise" code in the template plus clearing the label in `apply_review` would fix it, but it changes re-solves of
+  archived folders, so it waits for the regression pass.
+- **A quick rest gets joined into one shift.** `final_stats.py` joins a player's shifts across gaps under 15 s
+  (`MERGE_GAP`, meant for tracking loss), so a real 8 s rest at a goal shows him on for it. On Oct 10, #29 went off
+  about 185 and came back at 193, and the goal at 191 listed six. An `off` span of 15 s (178–193) kept the shifts
+  apart at the cost of 7 s of his time.
