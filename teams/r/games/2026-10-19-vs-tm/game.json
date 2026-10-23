@@ -1,0 +1,434 @@
+{
+  "id": "2026-10-19-vs-tm",
+  "date": "2026-10-19",
+  "title": "LADA R vs Teamy McTeamface, Oct 19",
+  "eyebrow": "Mon Oct 19, 2026 · 8:45 PM · Renton",
+  "opponent": "TM",
+  "video": "https://youtu.be/ieqfAUi3KMk",
+  "periods": [
+    {
+      "label": "P1",
+      "start": 12,
+      "end": 1112
+    },
+    {
+      "label": "P2",
+      "start": 1204,
+      "end": 2285
+    },
+    {
+      "label": "P3",
+      "start": 2391,
+      "end": 4137
+    }
+  ],
+  "nets": {
+    "P1": 3345,
+    "P2": 560,
+    "P3": 3345
+  },
+  "penalty_kills": [
+    {
+      "period": "P1",
+      "start": 923,
+      "end": 1112,
+      "player": 9
+    },
+    {
+      "period": "P2",
+      "start": 1204,
+      "end": 1245,
+      "player": 9
+    },
+    {
+      "period": "P2",
+      "start": 1559,
+      "end": 1755,
+      "player": 10
+    }
+  ],
+  "notes": [
+    "Home game at Renton against Teamy McTeamface: we wore white with blue numbers on the right (home) bench; Teamy McTeamface wore navy with sky-blue panels and white numbers, and most of their jerseys passed our usual white test, so this game has its own jersey test. The LiveBarn video came at 2560x1280 at best (no 4K on YouTube) and was scaled up to 3840x1920. It comes from Renton's new fisheye camera, with the picture 62 px lower than on Oct 17. From about 45:30 to 66:00 of the video the recording carries only about 2 distinct frames a second, so tracking is coarser there and the clips of the 4-2, 4-3 and 5-3 goals are choppy.",
+    "Periods from the arena scoreboard: 0:12-18:32, 20:04-38:05 and 39:51-68:57 of the video, each run to 0.0, with a 1:00 to 1:30 intermission countdown on the board in between. The clock ran through stoppages in the 1st and 2nd and stopped at whistles in the 3rd.",
+    "Goals from SportNinja's game sheet, placed in the video by the scoreboard and checked by eye. Ours: 10:22 (1st, clock 7:25, Bekker #66 from Makhalov #36 and Bogdanov #10), 29:25 (2nd, 8:32, Shanygin #8 from Soubochev #9 and Shachak #92, 10 s after a penalty kill), 42:41 (3rd, 15:55, Moshchuk #57), 46:11 (13:57, Shachak #92 from Soubochev #9), 57:41 (7:44, Sergeev #12) and 68:55 (0:03, Shachak #92 from Soubochev #9, into the empty net from the neutral zone just before the horn). Teamy McTeamface's: 37:06 (2nd, 0:50, #19 Zejdlik), 40:26 (3rd, 17:21, #19 Zejdlik) and 51:12 (10:53, #41 Wright). The 1st and 2nd period sheet times run 10-25 s behind the play because the clock kept running through stoppages.",
+    "Shots on goal from SportNinja's game sheet: LADA R 21, Teamy McTeamface 33 (5-8, 5-11, 11-14 by period).",
+    "Penalties: Soubochev #9, holding in the 1st, tangled with a forward along the right-end boards at 15:20 of the video, whistle 15:23, in the box at 15:36. He sat to the end of the 1st and came out at 20:45, 41 s into the 2nd (the board's panel lit only at 15:50 and went dark at 20:54). Bogdanov #10, tripping in the 2nd at 25:46 in a battle on the right-side boards, a delayed call until we touched the puck at 25:59, in the box at 26:06; the kill ran until the panel went dark at 29:15. Teamy McTeamface's #41 Wright (tripping, 1st) and #19 Zejdlik (holding, 2nd) are on the sheet too; neither power play scored.",
+    "Played: 14 skaters, the same as the sheet's list. Perry #99 (a sub) played goal, so he has no skater time. Didn't play: Willis #35, Belousenko #11, Shanygin #72 and Severtokov #84. Dotsenko #81 played two shifts early in the 1st, then isn't seen from about 4:26 until 49:37 of the video (no number reads, nothing on the review sheets); the video doesn't show why.",
+    "No review rows were labeled by hand. Thirteen lineup stretches were checked in full frames over two passes and fixed with 34 on/off entries. Among them: P1 1:30-3:00, Shikhanov #70 off and Rabotyagov #79 on (a tracker piece had switched from #70 to #80); P2 22:44-23:51, Fateev #80 on (his track carried #39's label); P2 20:53-21:08, Sergeev #12 on until the change at the bench, not Shanygin #8; P3 51:31-56:31, two referee tracks labeled as ours. One stretch is left: P3 53:15-53:31, 6 on during a stoppage, a slow change (the solver may have #9 where #79 was)."
+  ],
+  "video_ends_early": false,
+  "fun": {
+    "name_reads": {
+      "66": 201,
+      "36": 172,
+      "80": 167,
+      "12": 130,
+      "9": 108,
+      "92": 94,
+      "57": 42,
+      "70": 30,
+      "8": 28,
+      "64": 25,
+      "79": 9,
+      "10": 6
+    }
+  },
+  "pipeline": {
+    "detections": 749399,
+    "crops": 211905,
+    "reads": 5269,
+    "reviewed": 1769
+  },
+  "lada_game_id": 33007,
+  "stoppages": [
+    [
+      12,
+      15
+    ],
+    [
+      83,
+      105
+    ],
+    [
+      175,
+      197
+    ],
+    [
+      299,
+      323
+    ],
+    [
+      477,
+      539
+    ],
+    [
+      861,
+      884
+    ],
+    [
+      906,
+      953
+    ],
+    [
+      1071,
+      1090
+    ],
+    [
+      1250,
+      1286
+    ],
+    [
+      1297,
+      1312
+    ],
+    [
+      1350,
+      1375
+    ],
+    [
+      1402,
+      1437
+    ],
+    [
+      1598,
+      1632
+    ],
+    [
+      1689,
+      1737
+    ],
+    [
+      1757,
+      1793
+    ],
+    [
+      1807,
+      1851
+    ],
+    [
+      1851,
+      1887
+    ],
+    [
+      1943,
+      1991
+    ],
+    [
+      2226,
+      2254
+    ],
+    [
+      2391,
+      2457
+    ],
+    [
+      2508,
+      2534
+    ],
+    [
+      2563,
+      2589
+    ],
+    [
+      2647,
+      2672
+    ],
+    [
+      2699,
+      2724
+    ],
+    [
+      2752,
+      2769
+    ],
+    [
+      2775,
+      2799
+    ],
+    [
+      2817,
+      2854
+    ],
+    [
+      2880,
+      2888
+    ],
+    [
+      2888,
+      2895
+    ],
+    [
+      2895,
+      2913
+    ],
+    [
+      2981,
+      3007
+    ],
+    [
+      3029,
+      3033
+    ],
+    [
+      3072,
+      3100
+    ],
+    [
+      3100,
+      3141
+    ],
+    [
+      3151,
+      3230
+    ],
+    [
+      3247,
+      3262
+    ],
+    [
+      3262,
+      3272
+    ],
+    [
+      3272,
+      3291
+    ],
+    [
+      3372,
+      3402
+    ],
+    [
+      3428,
+      3441
+    ],
+    [
+      3441,
+      3456
+    ],
+    [
+      3456,
+      3515
+    ],
+    [
+      3552,
+      3558
+    ],
+    [
+      3612,
+      3621
+    ],
+    [
+      3621,
+      3647
+    ],
+    [
+      3778,
+      3802
+    ],
+    [
+      3808,
+      3824
+    ],
+    [
+      3846,
+      3865
+    ],
+    [
+      3880,
+      3890
+    ],
+    [
+      3890,
+      3896
+    ],
+    [
+      3910,
+      3914
+    ],
+    [
+      3914,
+      3927
+    ],
+    [
+      3927,
+      3944
+    ],
+    [
+      3944,
+      3957
+    ],
+    [
+      3967,
+      4011
+    ]
+  ],
+  "highlights": [
+    {
+      "type": "goal",
+      "team": "for",
+      "t": 622,
+      "scorer": 66,
+      "assists": [
+        36,
+        10
+      ],
+      "clip": "clips/goal-1.mp4",
+      "poster": "clips/goal-1.jpg",
+      "note": "1st period, clock 7:25: Bekker #66 from Makhalov #36 and Bogdanov #10, a drive to the net with their goalie going down, 1-0"
+    },
+    {
+      "type": "penalty",
+      "player": 9,
+      "t": 920,
+      "clip": "clips/penalty-9.mp4",
+      "poster": "clips/penalty-9.jpg",
+      "note": "1st period, clock 2:32: holding, tangled with a Teamy forward along the right-end boards; he sat the last 3:09 of the 1st and the first 0:49 of the 2nd"
+    },
+    {
+      "type": "penalty",
+      "player": 10,
+      "t": 1546,
+      "clip": "clips/penalty-10.mp4",
+      "poster": "clips/penalty-10.jpg",
+      "note": "2nd period, clock 11:58: tripping in a battle on the right-side boards, a delayed call until we touched the puck"
+    },
+    {
+      "type": "goal",
+      "team": "for",
+      "t": 1765,
+      "scorer": 8,
+      "assists": [
+        9,
+        92
+      ],
+      "clip": "clips/goal-2.mp4",
+      "poster": "clips/goal-2.jpg",
+      "note": "2nd period, clock 8:32: Shanygin #8 from Soubochev #9 and Shachak #92, out of a scramble in the crease seconds after the kill ended, 2-0"
+    },
+    {
+      "type": "goal",
+      "team": "against",
+      "t": 2226,
+      "clip": "clips/goal-3.mp4",
+      "poster": "clips/goal-3.jpg",
+      "note": "2nd period, clock 0:50: Teamy McTeamface's #19 Zejdlik from #24 and #41 Wright, out of a scramble at our net, 2-1"
+    },
+    {
+      "type": "goal",
+      "team": "against",
+      "t": 2426,
+      "clip": "clips/goal-4.mp4",
+      "poster": "clips/goal-4.jpg",
+      "note": "3rd period, clock 17:21: #19 Zejdlik from #41 Wright, jammed in at our net 35 s into the period, 2-2"
+    },
+    {
+      "type": "goal",
+      "team": "for",
+      "t": 2561,
+      "scorer": 57,
+      "clip": "clips/goal-5.mp4",
+      "poster": "clips/goal-5.jpg",
+      "note": "3rd period, clock 15:55: Moshchuk #57, unassisted, finishing a 2-on-0 with Sergeev #12, 3-2"
+    },
+    {
+      "type": "goal",
+      "team": "for",
+      "t": 2771,
+      "scorer": 92,
+      "assists": [
+        9
+      ],
+      "clip": "clips/goal-6.mp4",
+      "poster": "clips/goal-6.jpg",
+      "note": "3rd period, clock 13:57: Shachak #92 from Soubochev #9 on a rush, 4-2"
+    },
+    {
+      "type": "goal",
+      "team": "against",
+      "t": 3072,
+      "clip": "clips/goal-7.mp4",
+      "poster": "clips/goal-7.jpg",
+      "note": "3rd period, clock 10:53: #41 Wright, unassisted, off a rush and a scramble at our crease, 4-3"
+    },
+    {
+      "type": "goal",
+      "team": "for",
+      "t": 3461,
+      "scorer": 12,
+      "clip": "clips/goal-8.mp4",
+      "poster": "clips/goal-8.jpg",
+      "note": "3rd period, clock 7:44: Sergeev #12, unassisted, out of a scramble at their net, 5-3"
+    },
+    {
+      "type": "goal",
+      "team": "for",
+      "t": 4135,
+      "scorer": 92,
+      "assists": [
+        9
+      ],
+      "clip": "clips/goal-9.mp4",
+      "poster": "clips/goal-9.jpg",
+      "note": "3rd period, clock 0:03: Shachak #92 from Soubochev #9, from the neutral zone into the empty net with their goalie pulled, just before the horn, 6-3"
+    }
+  ],
+  "shots": {
+    "P1": [
+      5,
+      8
+    ],
+    "P2": [
+      5,
+      11
+    ],
+    "P3": [
+      11,
+      14
+    ]
+  },
+  "shots_source": "sheet",
+  "zones": {
+    "offence": 0.2966,
+    "defence": 0.487
+  }
+}

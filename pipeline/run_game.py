@@ -1019,7 +1019,7 @@ def cmd_gaps(a):
                                rink_desc=rink_desc, frame_size=f"{R.size[0]}x{R.size[1]}", bench_desc=bench_desc,
                                box_desc=box_desc, events=ev_txt,
                                windows="\n".join(wl[c:c + chunk]) or "(none this period; only the bench pieces below)",
-                               sitters=st_txt if c == 0 else "", out_file=f"{scratch}/fixes.json")
+                               sitters=st_txt if c == 0 else "", out_file=f"{scratch}/fixes.json", period=lab)
             pf = f"{gdir}/prompt_{p}{suffix}.md"
             open(pf, "w", encoding="utf-8").write(text)
             plan.append(f"{lab}{suffix}: {len(wl[c:c + chunk])} window(s)" + (f", {len(sitters)} bench piece(s)" if sitters and c == 0 else "") + f" -> {pf}")
@@ -1062,8 +1062,10 @@ def apply_fixes(W, files):
                 player, t0, t1 = int(e["player"]), float(e["start"]), float(e["end"])
             except (KeyError, TypeError, ValueError):
                 print(f"  bad entry, skipped: {e}"); continue
-            P = next((P for P in Ps if P["label"] == e.get("period")), None) or \
-                next((P for P in Ps if P["start"] <= t0 <= P["end"]), None)
+            # the times decide the period (a checker may copy a label from the brief's template); the label only
+            # places a span that starts in a break
+            P = next((P for P in Ps if P["start"] <= t0 <= P["end"]), None) or \
+                next((P for P in Ps if P["label"] == e.get("period")), None)
             if P is None or t1 <= t0:
                 print(f"  no period for {e}; skipped"); continue
             t0, t1 = max(t0, P["start"]), min(t1, P["end"])

@@ -116,6 +116,21 @@ a shot each at the 1st's end.
 
 Views: `rink` 0–3840 × 486–1920; `left-net` 100–1300 × 746–1346; `right-net` 2600–3800 × 736–1336.
 
+### A thin band (`renton2thin`)
+
+LADA R's Oct 19 game (8:45 PM) came at 2560x1280 at best (no 4K on YouTube), with a thin black band over the top
+~60 rows (of 1920 once scaled up) and LiveBarn's timeline bar along the bottom. Fetch under `renton2` raises no
+error, since the size matches. Compare `full/boards_poly.npy` with an Oct 17 or later `renton2` game's: on Oct 19
+it was Oct 17's plus 62 px at every x, so `renton2thin` shifts everything with a y by 62 and reads the scoreboard
+at (3456, 638). Any other shift is another class like it (or `renton2band`'s 266). Switching `rink` in
+`$W/full/rink.json` before fetch reaches the scoreboard scan saves rescanning the board; detection uses only
+`crop_top`, so it doesn't care. That night the clock ran through stoppages in the 1st and 2nd and stopped at whistles
+only in the 3rd, so the penalty panel lit about 25 s after the whistle (#9 was in the box at 936, the panel at 950):
+take a kill's start from the frames, not the panel. The intermissions were a 1:00–1:30 countdown on the board with
+players on the ice, so the empty-ice proposal found one period; the clock gave 12–1112, 1204–2285, 2391–4137.
+
+Views: `rink` 0–3840 × 282–1920; `left-net` 100–1300 × 542–1142; `right-net` 2600–3800 × 532–1132.
+
 ## Snoqualmie A (`snoqualmie`, a 3840x1536 strip)
 
 Blue Wings' home rink. Camera high on the near side at center, very wide. Both benches are on the near side at the

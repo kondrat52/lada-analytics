@@ -310,8 +310,20 @@ class Renton2Band(Renton2):
     ICE = Path(Renton2.ICE.vertices + (0, DY))
 
 
+class Renton2Thin(Renton2):
+    """Renton's new camera as LADA R's Oct 19 video came (LiveBarn, 2560x1280 at best on YouTube, scaled up to
+    3840x1920): a thin black band over the top ~60 rows and the picture 62 px lower than Oct 17's at the same scale
+    (the far boards curve fits Oct 17's plus 62 at every x). Renton2Band's shift, smaller."""
+    DY = 62
+    board_band = (0.18, 0.59)
+    NET_Y = Renton2.NET_Y + DY
+    scoreboard = (3456, 638, 150, 126)
+    views = {"rink": (0, 3840, 282, 1920), "left-net": (100, 1300, 542, 1142), "right-net": (2600, 3800, 532, 1132)}
+    ICE = Path(Renton2.ICE.vertices + (0, DY))
+
+
 RINKS = {"renton": Renton, "snoqualmie": Snoqualmie, "snoqualmie2": Snoqualmie2, "kirkland": Kirkland,
-         "renton2": Renton2, "renton2band": Renton2Band}
+         "renton2": Renton2, "renton2band": Renton2Band, "renton2thin": Renton2Thin}
 
 # Our jersey that game, as tests on process.py's torso colour fractions (the dets.csv columns, or a dict of them):
 # `ours` picks our players for tracking, the looser `crop` which detections get a 4K crop for OCR and review.
@@ -331,6 +343,13 @@ JERSEYS = {
     # their white numbers and trim; our blue numbers are rarely 30% of the torso
     "white vs light blue": dict(ours=lambda c: JERSEYS["white"]["ours"](c) & (c["blue"] < 0.3),
                                 crop=lambda c: JERSEYS["white"]["crop"](c)),
+    # our white against Teamy McTeamface's navy with sky-blue panels and white numbers (LADA R, Oct 19): 89% of
+    # theirs pass the plain white test. Their blue is a greener hue (bhue ~107, ours ~118) and more of it; this kept
+    # 90% of the crops read as our numbers and 11% of theirs
+    "white vs navy and sky blue": dict(
+        ours=lambda c: JERSEYS["white"]["ours"](c) & ~(((c["bhue"] >= 100) & (c["bhue"] <= 111)) &
+                                                       (c["blue"] + c["lblue"] > 0.15)),
+        crop=lambda c: JERSEYS["white"]["crop"](c)),
 }
 
 

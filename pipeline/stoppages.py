@@ -22,12 +22,22 @@ def speed_per_second(full):
     d = d[d.onice & (d.conf >= 0.3)]
     fr = {f: g[["fx", "fy", "h"]].values for f, g in d.groupby("frame")}
     rows = []
+    def nearest(a, b):
+        return np.hypot(a[:, None, 0] - b[None, :, 0], a[:, None, 1] - b[None, :, 1]).min(1)
+
     for f, a in fr.items():
-        b = fr.get(f + 1)
-        if b is None:
+        # a stuttering stream repeats frames (LADA R's Oct 19 video had ~2 distinct frames/s for 20 minutes), which
+        # read as standing still: compare with the next frame that isn't a repeat, over the time between them. A
+        # repeat leaves most boxes exactly where they were (some drop out or shift); a new frame, even of players
+        # standing still, moves most boxes by a pixel or more of detector noise
+        g = f + 1
+        D = nearest(a, fr[g]) if g in fr else None
+        while D is not None and np.median(D) < 0.01 and g - f < FPS and g + 1 in fr:
+            g += 1
+            D = nearest(a, fr[g])
+        if D is None:
             continue
-        D = np.hypot(a[:, None, 0] - b[None, :, 0], a[:, None, 1] - b[None, :, 1])
-        v = D.min(1) / a[:, 2] * FPS
+        v = D / a[:, 2] * FPS / (g - f)
         v = v[v < 8]
         if len(v) >= 4:
             rows.append((f / FPS, np.quantile(v, 0.75)))

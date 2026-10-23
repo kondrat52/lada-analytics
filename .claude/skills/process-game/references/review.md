@@ -199,3 +199,15 @@ a crossing.
   (`MERGE_GAP`, meant for tracking loss), so a real 8 s rest at a goal shows him on for it. On Oct 10, #29 went off
   about 185 and came back at 193, and the goal at 191 listed six. An `off` span of 15 s (178–193) kept the shifts
   apart at the cost of 7 s of his time.
+- **An opponent who passes our jersey test triples the review.** On LADA R's Oct 19 game (we in white) Teamy
+  McTeamface wore navy with big sky-blue panels and white numbers, and 89% of the crops read as their numbers passed
+  the plain white test: the first prepare made 295 sheets (80–120 is usual). Before launching reviewers, compare the
+  `dets.csv` colour fractions of crops OCR'd as our numbers with those read as `unknown`'s opponent numbers (join
+  `ocr_*.csv` on frame and box index); their blue was a greener hue (`bhue` ~107, ours ~118) and more of it, and the
+  `"white vs navy and sky blue"` test in `rink.py` kept 90% of ours and 11% of theirs. Set `jersey` in
+  `$W/full/rink.json`, move `p*` and `rev_p*` aside and prepare again (222 sheets; the rest came from the stutter below).
+- **A stuttering stream.** The same video carried only ~2 distinct frames a second from 45:30 to 66:00 (YouTube's
+  copy too, so a re-download doesn't help). Tracks fragmented (P3 had 1890 pieces against ~700 per period before),
+  and the stoppage estimate saw everyone standing still for 21 minutes until `stoppages.py` learned to skip repeated
+  frames. Check with ffmpeg's `mpdecimate` over 10 s in a suspect stretch (about 230 frames kept is normal at 24 fps).
+  Tell the gap checkers about it: frames at least 0.5 s apart.
