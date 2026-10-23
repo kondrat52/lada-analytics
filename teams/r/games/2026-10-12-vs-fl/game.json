@@ -1,0 +1,315 @@
+{
+  "id": "2026-10-12-vs-fl",
+  "date": "2026-10-12",
+  "title": "LADA R vs Flounders, Oct 12",
+  "eyebrow": "Mon Oct 12, 2026 · 10:10 PM · Snoqualmie A",
+  "opponent": "FL",
+  "video": "https://youtu.be/aeUrS7Ap-Qc",
+  "periods": [
+    {
+      "label": "P1",
+      "start": 6,
+      "end": 1088
+    },
+    {
+      "label": "P2",
+      "start": 1180,
+      "end": 2261
+    },
+    {
+      "label": "P3",
+      "start": 2374,
+      "end": 3984
+    }
+  ],
+  "nets": {
+    "P1": 3260,
+    "P2": 630,
+    "P3": 3260
+  },
+  "penalty_kills": [
+    {
+      "period": "P1",
+      "start": 258,
+      "end": 471,
+      "player": 10
+    },
+    {
+      "period": "P3",
+      "start": 2849,
+      "end": 3041,
+      "player": 57
+    }
+  ],
+  "notes": [
+    "Away game at Snoqualmie A against Flounders: we wore light blue with white numbers on the right (away) bench; Flounders wore white with light-blue trim, and a few of their jerseys passed our colour test. The LiveBarn video came as 3438x1374 and was scaled up to Snoqualmie's usual 3840x1536. It has sound, so the clips have the referees' whistles.",
+    "Periods from the arena scoreboard: 0:06-18:08, 19:40-37:41 and 39:34-66:24 of the video (the empty-ice proposal found only two). Every period ran to 0.0, and the board counted a 1:00 intermission down after the 1st and the 2nd. The clock ran through stoppages in the 1st and 2nd and stopped at whistles in the 3rd. The video reaches the final horn. Perry #99 was in our net in a black jersey, the right one in the 1st and 3rd and the left one in the 2nd.",
+    "Goals from SportNinja's game sheet, placed in the video by the scoreboard and checked by eye, all in the 3rd. Ours: 42:06 (clock 16:18, Shachak #92 from Soubochev #9) and 60:27 (3:32, Shachak #92 from Bekker #66 and Soubochev #9). Flounders': 46:26 (13:43, #12 Bush) and 58:23 (4:47, #8 Greer, shorthanded). Each came 0.5-1.5 s before the board's clock stopped; the board was slow to post our first goal. Final 2-2.",
+    "Shots on goal from SportNinja's game sheet: LADA R 34, Flounders 25 (9-8, 9-6, 16-11 by period). This scoreboard doesn't show shots.",
+    "Penalties: Bogdanov #10, slashing in the 1st, a chop at a puck carrier's legs at 4:15 of the video, whistle at about 4:18. The board ran 3:00 from 4:51 (the sheet's 13:15 is when it started counting), and he came out at 7:51. Moshchuk #57, hooking in the 3rd at 47:25 (clock 13:08). The board ran 2:00, and he came out at 50:41. Flounders had #3 Nowak's tripping in the 2nd (3:00 on the board, the end of it carried into the 3rd) and #57 Shuster's body checking in the 3rd; Greer's goal came during Shuster's penalty.",
+    "Played: 11 skaters, the same as the sheet's list, with Perry #99 (a sub) in goal, so he has no skater time. Didn't play: Willis #35, Shanygin #8, Belousenko #11, Vorobyov #39, Shanygin #72, Fateev #80 and Severtokov #84. The 717 reads of \"8\" were partial reads of Dotsenko #81, and the \"99\" reads were Bekker #66.",
+    "No review rows were labeled by hand. Thirteen lineup stretches were checked in full frames and fixed with 25 on/off entries. Most were players sitting at our bench, right by the camera here, whom the tracker counted as on the ice. P1 7:22-7:38: Shachak #92 at the bench during the kill. P1 9:06-10:45: a long change, with Bogdanov #10, Bekker #66 and Makhalov #36 at the bench and Shikhanov #70 and Rabotyagov #79 on. P1 13:08-13:23: #66 off. P1 17:10-18:08: Soubochev #9 on to the end of the period. P2 21:05-21:28: #57 off. P2 25:57-26:24: #36 off. P2 29:00-29:27: #10 off and #36 on. P2 32:57-33:24 and 34:22-34:36: slow changes in stoppages. P2 36:30-37:13: #66, #79, #81 and #70 at the bench. P2 30:30-30:47 really had six of ours on during a slow change in a stoppage, so it was left as is."
+  ],
+  "video_ends_early": false,
+  "fun": {
+    "name_reads": {
+      "66": 2636,
+      "9": 1285,
+      "12": 1263,
+      "70": 1140,
+      "36": 1004,
+      "81": 572,
+      "92": 548,
+      "57": 488,
+      "79": 361,
+      "10": 342,
+      "64": 263
+    }
+  },
+  "pipeline": {
+    "detections": 819815,
+    "crops": 277840,
+    "reads": 21516,
+    "reviewed": 489
+  },
+  "highlights": [
+    {
+      "type": "goal",
+      "team": "for",
+      "t": 2526,
+      "scorer": 92,
+      "assists": [
+        9
+      ],
+      "clip": "clips/goal-1.mp4",
+      "poster": "clips/goal-1.jpg",
+      "note": "3rd period, clock 16:18: Shachak #92 from Soubochev #9, out of a scramble at the crease, 1-0"
+    },
+    {
+      "type": "goal",
+      "team": "against",
+      "t": 2786,
+      "clip": "clips/goal-2.mp4",
+      "poster": "clips/goal-2.jpg",
+      "note": "3rd period, clock 13:43: Flounders' #12 Bush from #3 Nowak and #57 Shuster, in a scramble at our crease with our goalie down, 1-1"
+    },
+    {
+      "type": "penalty",
+      "player": 57,
+      "t": 2845,
+      "clip": "clips/penalty-57.mp4",
+      "poster": "clips/penalty-57.jpg",
+      "note": "3rd period, clock 13:08: hooking, holding up a Flounders forward along the near boards in our zone; the board ran 2:00"
+    },
+    {
+      "type": "goal",
+      "team": "against",
+      "t": 3503,
+      "clip": "clips/goal-3.mp4",
+      "poster": "clips/goal-3.jpg",
+      "note": "3rd period, clock 4:47: Flounders' #8 Greer from #3 Nowak, shorthanded, on a rush down the right side with our goalie down, 1-2"
+    },
+    {
+      "type": "goal",
+      "team": "for",
+      "t": 3627,
+      "scorer": 92,
+      "assists": [
+        66,
+        9
+      ],
+      "clip": "clips/goal-4.mp4",
+      "poster": "clips/goal-4.jpg",
+      "note": "3rd period, clock 3:32: Shachak #92 from Bekker #66 and Soubochev #9, out of a scramble at the crease, 2-2"
+    },
+    {
+      "type": "penalty",
+      "player": 10,
+      "t": 255,
+      "clip": "clips/penalty-10.mp4",
+      "poster": "clips/penalty-10.jpg",
+      "note": "1st period, clock 13:51: slashing, a chop at a Flounders puck carrier's legs up the far boards. The board ran 3:00 (the sheet's 13:15 is when it started counting)"
+    }
+  ],
+  "lada_game_id": 32992,
+  "zones": {
+    "offence": 0.3972,
+    "defence": 0.3548
+  },
+  "shots": {
+    "P1": [
+      9,
+      8
+    ],
+    "P2": [
+      9,
+      6
+    ],
+    "P3": [
+      16,
+      11
+    ]
+  },
+  "stoppages": [
+    [
+      6,
+      8
+    ],
+    [
+      168,
+      198
+    ],
+    [
+      258,
+      289
+    ],
+    [
+      357,
+      414
+    ],
+    [
+      530,
+      558
+    ],
+    [
+      610,
+      647
+    ],
+    [
+      657,
+      688
+    ],
+    [
+      688,
+      706
+    ],
+    [
+      783,
+      800
+    ],
+    [
+      812,
+      829
+    ],
+    [
+      920,
+      954
+    ],
+    [
+      1017,
+      1045
+    ],
+    [
+      1200,
+      1246
+    ],
+    [
+      1295,
+      1318
+    ],
+    [
+      1514,
+      1535
+    ],
+    [
+      1577,
+      1628
+    ],
+    [
+      1638,
+      1662
+    ],
+    [
+      1680,
+      1706
+    ],
+    [
+      1820,
+      1846
+    ],
+    [
+      1880,
+      1934
+    ],
+    [
+      1974,
+      2010
+    ],
+    [
+      2038,
+      2102
+    ],
+    [
+      2102,
+      2140
+    ],
+    [
+      2374,
+      2377
+    ],
+    [
+      2520,
+      2555
+    ],
+    [
+      2622,
+      2645
+    ],
+    [
+      2694,
+      2725
+    ],
+    [
+      2735,
+      2775
+    ],
+    [
+      2775,
+      2813
+    ],
+    [
+      2848,
+      2887
+    ],
+    [
+      2887,
+      2913
+    ],
+    [
+      3006,
+      3027
+    ],
+    [
+      3158,
+      3182
+    ],
+    [
+      3244,
+      3264
+    ],
+    [
+      3501,
+      3532
+    ],
+    [
+      3610,
+      3660
+    ],
+    [
+      3775,
+      3797
+    ],
+    [
+      3815,
+      3840
+    ],
+    [
+      3856,
+      3883
+    ],
+    [
+      3925,
+      3959
+    ]
+  ]
+}
