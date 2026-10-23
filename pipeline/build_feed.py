@@ -12,7 +12,8 @@ goes away; adding fields doesn't need a bump.
 """
 import os, json
 import numpy as np, pandas as pd
-from roster import SKATERS, MEMBERS, SUBS, GOALIE_NAMES, LADA_IDS, ALIASES, TEAM_NAME, TEAM_SHORT, LADA_TEAM_ID, SITE_URL, OPPONENTS
+from roster import MEMBERS, SUBS, GOALIE_NAMES, LADA_IDS, ALIASES, TEAM_NAME, TEAM_SHORT, LADA_TEAM_ID, SITE_URL, OPPONENTS
+from roster import guest_key, number_of, name_of, is_sub
 
 SCHEMA = 1
 
@@ -21,10 +22,11 @@ def _team():
     return {"name": TEAM_NAME, "short_name": TEAM_SHORT, "lada_team_id": LADA_TEAM_ID}
 
 
-def _player(num):
-    num = int(num)
-    p = {"number": num, "name": SKATERS.get(num, GOALIE_NAMES.get(num, "")), "lada_player_id": LADA_IDS.get(num)}
-    return {**p, "sub": True} if num in SUBS else p
+def _player(key, game=None):
+    """key: a number, or a guest's key (roster.guest_key); with game, a number worn in that game."""
+    key = guest_key(key, game) if game else int(key)
+    p = {"number": number_of(key), "name": name_of(key) or GOALIE_NAMES.get(key, ""), "lada_player_id": LADA_IDS.get(key)}
+    return {**p, "sub": True} if is_sub(key) else p
 
 
 def _num(x, nd=1):
@@ -90,9 +92,9 @@ def game_doc(game, A, players, highlights):
         "periods": [{"label": p["label"], "start": p["start"], "end": p["end"], "length": p["end"] - p["start"]}
                     for p in game["periods"]],
         "penalty_kills": [{"period": k["period"], "start": k["start"], "end": k["end"],
-                           "player": _player(k["player"]) if k.get("player") is not None else None}
+                           "player": _player(k["player"], game) if k.get("player") is not None else None}
                           for k in game.get("penalty_kills", [])],
-        "players": [{**_player(p["num"]),
+        "players": [{**_player(p["num"], game),
                      "shifts": p["shifts"], "toi": _num(p["toi"]), "play": _num(p.get("play")),
                      "avg_shift": _num(p["avg"]), "median_shift": _num(p["median"]),
                      "longest_shift": _num(p["longest"]), "shortest_shift": _num(p.get("shortest")),
@@ -105,11 +107,11 @@ def game_doc(game, A, players, highlights):
                     "start_in_period": _num(r.t0 - pstart[r.period])}
                    for r in A.sort_values(["t0", "player"]).itertuples()],
         "highlights": [{"type": h["type"], "team": h.get("team"), "title": h.get("title"),
-                        "player": _player(h["player"]) if h.get("player") is not None else None,
+                        "player": _player(h["player"], game) if h.get("player") is not None else None,
                         "t": h["t"], "period": h.get("period"),
                         "t_in_period": _num(h["t"] - pstart[h["period"]]) if h.get("period") in pstart else None,
                         "clip_url": base + h["clip"], "poster_url": base + h["poster"], "note": h.get("note"),
-                        "on_ice": [_player(n) for n in h.get("on_ice", [])]}
+                        "on_ice": [_player(n, game) for n in h.get("on_ice", [])]}
                        for h in highlights],
         "stoppages": game.get("stoppages", []),
     }
@@ -132,7 +134,7 @@ def trends_doc(rows):
             "penalties": {"count": t["penalties"],
                           "short_handed": _num(sum(k["end"] - k["start"] for k in game.get("penalty_kills", []))),
                           "goals_against": t["pk_ga"]},
-            "players": [{**_player(p["num"]), "shifts": p["shifts"], "toi": _num(p["toi"]),
+            "players": [{**_player(p["key"]), "shifts": p["shifts"], "toi": _num(p["toi"]),
                          "avg_shift": _num(p["avg_shift"]), "toi_share": _num(p["toi_share"], 4),
                          "avg_shift_p1": _num(p["p1"]), "avg_shift_p3": _num(p["p3"]), "plus_minus": p["plus_minus"]}
                         for p in sorted(players, key=lambda p: -p["toi"])],
@@ -142,12 +144,13 @@ def trends_doc(rows):
 
 def _per_game(docs_by_game, games):
     """number -> [{id, date, opponent, toi, shifts, avg_shift, play}], newest game first; a second number's games
-    go under the primary one."""
+    go under the primary one, a guest's under his own key."""
     out = {}
     for g in sorted(games, key=lambda g: g["date"], reverse=True):
         doc = docs_by_game[g["id"]]
         for p in doc["players"]:
-            out.setdefault(ALIASES.get(p["number"], p["number"]), []).append({
+            k = guest_key(p["number"], g)
+            out.setdefault(ALIASES.get(k, k), []).append({
                 "id": g["id"], "date": g["date"], "opponent": doc["opponent"],
                 "toi": p["toi"], "shifts": p["shifts"], "avg_shift": p["avg_shift"], "play": p["play"]})
     return out

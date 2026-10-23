@@ -43,6 +43,28 @@ LADA_IDS = {int(k): v for k, v in _r.get("lada_player_ids", {}).items()}  # numb
 ALIASES = {int(k): v for k, v in _r.get("aliases", {}).items()}  # a player's second number -> his primary one: the
 # game pages keep the number he wore, totals across games (season, trends) go under the primary number
 
+_GUESTS = {}   # guest key -> (number worn, surname)
+
+
+def guest_key(num, game):
+    """A skater's key in `game`: his number, or for a guest a key of his own, 1000·k + the number. A guest is a sub
+    wearing a roster player's number that game (game.json "guests": {"31": "Vasyliev"}); his own key keeps his time
+    off the roster player's totals. Game pages and game files keep the number worn."""
+    name = (game.get("guests") or {}).get(str(int(num)))
+    if not name:
+        return int(num)
+    for k, v in _GUESTS.items():
+        if v == (int(num), name):
+            return k
+    k = 1000 * (len(_GUESTS) + 1) + int(num)
+    _GUESTS[k] = (int(num), name)
+    return k
+
+
+number_of = lambda key: _GUESTS[key][0] if key in _GUESTS else key                # the jersey number to show
+name_of = lambda key: _GUESTS[key][1] if key in _GUESTS else SKATERS.get(key, "")
+is_sub = lambda key: key in _GUESTS or key in SUBS
+
 _opp = f"{TEAM_DIR}/opponents.json"
 OPPONENTS = json.load(open(_opp)) if os.path.exists(_opp) else {}   # code -> full name
 

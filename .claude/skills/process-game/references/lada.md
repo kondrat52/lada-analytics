@@ -113,6 +113,14 @@ A surname two players share (a father and son) counts as a name read for neither
 apart. New players go in before prepare (then prepare again); which part they go in changes only the site. Players
 who didn't play a game are marked with `run_game.py absent`, never by editing this file.
 
+A sub can wear a roster player's number: on Doofers' Oct 18 game Vasyliev (Turbo Kings) wore #31, Sourov's, with
+VASYLIEV on the nameplate and the game sheet naming him. Solve him as that number (mark nobody absent for it; tell
+the reviewers with `review --note`), and after publish add `"guests": {"31": "Vasyliev"}` to the game's
+`game.json` (publish keeps it) and rebuild with `pipeline/build_site.py`. The game page and game file show #31
+Vasyliev, tagged sub; the season table, trends and feed give him his own row, off Sourov's totals. The sheet can
+also list a goalie under LADA's number with a digit added (#290 for Wheeler, roster #0 with LADA number 29), which
+`absent --suggest` then proposes as absent: keep him.
+
 `opponents.json` maps the opponent code to the full name. `lada_games.json` is the API cache above; commit it
 with the game.
 

@@ -1379,7 +1379,7 @@ def cmd_publish(a):
     if os.path.exists(gj):  # keep hand-written fields (notes, title tweaks) from an earlier publish
         old = json.load(open(gj))
         for k in ("notes", "title", "eyebrow", "highlights", "video_ends_early", "lada_game_id", "opponent_name", "zones",
-                  "shots", "shots_source"):
+                  "shots", "shots_source", "guests"):
             if old.get(k):
                 game[k] = old[k]
         if game["pipeline"]["crops"] is None and (old.get("pipeline") or {}).get("crops"):

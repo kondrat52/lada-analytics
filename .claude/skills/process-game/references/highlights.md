@@ -93,6 +93,8 @@ On LADA R's Sep 21 game two penalties on the sheet were never served at all (our
 tripping): no panel, an empty box, and the player kept playing. A coincidental pair (one each) leaves 4-on-4 with
 a `pk` for ours. A major or misconduct can have another player serve the minor: Sep 21's #81 got boarding plus a
 10-minute misconduct, #10 sat the minor (the `pk`'s `player`), and #81 never came back (an `off` to the end).
+Doofers' Oct 18 game had the same: #61's boarding plus misconduct, #61 in the box for half a minute, then Panova #75
+climbed in from the bench and sat the 2:00 (the panel still said 61).
 
 A penalty shot replaces the minor, and SportNinja's game sheet doesn't record it: on BW's Oct 18 game it still listed
 #88's hooking as a 2-minute minor. The board gives it away: the panel posts "88 2:00" while the clock is stopped, then

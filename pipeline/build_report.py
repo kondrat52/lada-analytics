@@ -3,12 +3,13 @@ import sys, os, json
 from itertools import combinations
 import numpy as np, pandas as pd
 sys.path.insert(0, os.path.dirname(os.path.abspath(__file__)))
-from roster import SKATERS, SUBS, TEAM, opponent_name
+from roster import TEAM, opponent_name, guest_key, name_of, is_sub
 
 
 
-def player_rows(A, labels, cut=None):
-    """cut: video time where the recording stops mid-play; shifts ending there don't count as shortest."""
+def player_rows(A, labels, cut=None, game={}):
+    """cut: video time where the recording stops mid-play; shifts ending there don't count as shortest. game: its
+    "guests" name a sub who wore a roster player's number."""
     players = []
     for num, g in A.groupby("player"):
         full = g[g.t1 < cut - 1] if cut else g
@@ -16,7 +17,8 @@ def player_rows(A, labels, cut=None):
         for lab in labels:
             h = g[g.period == lab]
             per.append([int(len(h)), float(h.dur.sum()), float(h.dur.mean())] if len(h) else None)
-        players.append(dict(num=int(num), name=SKATERS.get(int(num), ""), sub=int(num) in SUBS,
+        key = guest_key(num, game)
+        players.append(dict(num=int(num), name=name_of(key), sub=is_sub(key),
                             shifts=int(len(g)), toi=float(g.dur.sum()),
                             avg=float(g.dur.mean()), median=float(g.dur.median()), longest=float(g.dur.max()),
                             shortest=float(full.dur.min()) if len(full) else None,
@@ -76,7 +78,7 @@ def build(gamedir, out):
     A = pd.read_csv(f"{gamedir}/shifts.csv")
     periods = game["periods"]
     cut = periods[-1]["end"] if game.get("video_ends_early") else None
-    data = dict(periods=periods, players=player_rows(A, [p["label"] for p in periods], cut),
+    data = dict(periods=periods, players=player_rows(A, [p["label"] for p in periods], cut, game),
                 highlights=highlights(A, game), opponent=opponent_name(game), team=TEAM,
                 stoppages=game.get("stoppages", []),
                 shifts=[dict(player=int(r.player), period=r.period, t0=float(r.t0), t1=float(r.t1)) for r in A.itertuples()],

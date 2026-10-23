@@ -35,7 +35,9 @@ is Renton. Pick the rink by the frame size and view of `frame600.png`, not by LA
   so a kill runs from the whistle the box trip shows to the panel going dark, and the sheet's clock time is the
   posting's or the faceoff's. A box attendant has kept a player in 22 s after the panel went dark (the kill ends
   when he steps out), and referees have sent one back for 4 s at the next whistle (a second `pk` span, with an `on`
-  span for him in between).
+  span for him in between). A power-play goal against ends the minor while the panel can stay lit (Doofers' Oct 18:
+  frozen at 0:44 for 33 s after the player left the box): end the `pk` when he steps out. A minor carried into the
+  3rd is rescaled to the 2:00 length there (1:14 left at the 2nd's buzzer showed 0:50 through the intermission).
 - **Scorekeepers slip.** Penalties on the wrong team's panel (Kirkland: ours on the guest panel while the score sat
   on the home side), a penalty posted and removed at the same stoppage, the guests shown a goal too many for a
   while, a goal counted that never happened (Beerteam's Oct 4: the score and a shot went up with the clock frozen

@@ -377,7 +377,7 @@ lineChart({
 
 /* ---------- players ---------- */
 const byNum = {};
-DATA.players.forEach(p => { (byNum[p.num] ??= { num: p.num, name: p.name, sub: p.sub, games: [] }).games.push(p); });
+DATA.players.forEach(p => { (byNum[p.key ?? p.num] ??= { num: p.num, name: p.name, sub: p.sub, games: [] }).games.push(p); });
 const order = Object.fromEntries(games.map((g, i) => [g.id, i]));
 const players = Object.values(byNum).map(P => {
   P.games.sort((a, b) => order[a.game] - order[b.game]);

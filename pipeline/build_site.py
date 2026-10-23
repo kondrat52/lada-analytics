@@ -50,7 +50,7 @@ sys.path.insert(0, os.path.dirname(os.path.abspath(__file__)))
 from build_report import build
 from build_feed import season_table, game_doc, write_feed
 import build_trends
-from roster import SKATERS, SUBS, ALIASES, TEAM, SLUG, GAMES_DIR, SITE_DIR, opponent_name
+from roster import ALIASES, TEAM, SLUG, GAMES_DIR, SITE_DIR, opponent_name, guest_key, number_of, name_of, is_sub
 
 fmt = lambda s: f"{int(round(s)) // 60}:{int(round(s)) % 60:02d}"
 
@@ -58,7 +58,7 @@ games, allsh, docs = [], [], {}
 for gd in sorted(glob.glob(f"{GAMES_DIR}/*/")):
     game, A, data = build(gd, f"{SITE_DIR}/games/{os.path.basename(os.path.normpath(gd))}/index.html")
     docs[game["id"]] = game_doc(game, A, data["players"], data["highlights"])
-    A = A.assign(game=game["id"], player=A.player.replace(ALIASES))
+    A = A.assign(game=game["id"], player=[ALIASES.get(k, k) for k in (guest_key(p, game) for p in A.player)])
     # shifts cut off by the recording ending mid-play don't count as short shifts
     cut = game["periods"][-1]["end"] if game.get("video_ends_early") else None
     A["cut"] = (A.t1 >= cut - 1) if cut else False
@@ -72,10 +72,10 @@ def cell(v, text=None):
     return f"<td data-v='{float(v) if ok else ''}'>{text if text is not None else (v if ok else '–')}</td>"
 
 
-sub_tag = lambda p: "<span class='sub'>sub</span>" if p in SUBS else ""
+sub_tag = lambda p: "<span class='sub'>sub</span>" if is_sub(p) else ""
 rows = "\n".join(
-    f"<tr><td class='l num' data-v='{p}'>{p}</td><td class='l name' data-v='{html.escape(SKATERS.get(p, ''))}'>"
-    f"{html.escape(SKATERS.get(p, ''))}{sub_tag(p)}</td>{cell(int(r.gp))}{cell(int(r.shifts))}{cell(r.toi, fmt(r.toi))}"
+    f"<tr><td class='l num' data-v='{number_of(p)}'>{number_of(p)}</td><td class='l name' data-v='{html.escape(name_of(p))}'>"
+    f"{html.escape(name_of(p))}{sub_tag(p)}</td>{cell(int(r.gp))}{cell(int(r.shifts))}{cell(r.toi, fmt(r.toi))}"
     f"{cell(r.toi_gp, fmt(r.toi_gp))}{cell(r.play if r.play > 0 else None, fmt(r.play) if r.play > 0 else '–')}"
     f"{cell(r.avg, fmt(r.avg))}{cell(r.longest, fmt(r.longest))}"
     f"{cell(r.shortest if r.shortest == r.shortest else None, fmt(r.shortest) if r.shortest == r.shortest else '–')}</tr>"

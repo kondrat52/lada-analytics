@@ -94,6 +94,8 @@ them (`for` = us), or `null` for a game whose board wasn't read.
 play, avg_shift, longest_shift, shortest_shift, games[]}`. `games[]` lists that player's games, newest first:
 `{id, date, opponent: {code, name}, toi, shifts, avg_shift, play}`. A player who wears a second number (another jersey's)
 has one entry, under his primary number, with the games he wore either; the game files keep the number he wore.
+A sub who wore a roster player's number in one game (a "guest") has an entry of his own, with that number, `sub:
+true` and his own name, so two entries can share a `number`.
 
 ## `roster.json`
 
