@@ -65,6 +65,24 @@ class Renton:
         """Our goalie's spot in front of net_x (the goalie's detections are dropped from skater tracking)."""
         return (np.abs(x - net_x) < 110) & (rel > 0) & (rel < 75)
 
+    # where our bench and penalty box are in the picture, by the side we sit on (run_game.py gaps tells the checkers)
+    bench_where = {"left": "behind the far boards, left of center (only heads show above the boards; line changes "
+                           "are tracks ending or starting at those boards)",
+                   "right": "behind the far boards, right of center (only heads show above the boards; line changes "
+                            "are tracks ending or starting at those boards)"}
+    box_where = {"left": "the glassed compartment just right of our bench (x about 1740-1770)",
+                 "right": "the compartment just left of our bench (x about 1945-2055)"}
+
+    @property
+    def side(self):
+        return ("right" if self.bench_side == "left" else "left") if self.mirror else self.bench_side
+
+    def bench_view(self):
+        """A crop of our bench and its door for `run_game.py frames --view bench`: x0, x1, y0, y1 in the frame."""
+        x0, x1 = sorted((self._bench_x(1300), self._bench_x(1800)))
+        y = float(np.polyval(self.P, (x0 + x1) / 2)) if self.P is not None else 1000.0
+        return int(x0) - 100, int(x1) + 100, int(y) - 170, int(y) + 60
+
 
 class Snoqualmie(Renton):
     """Rink A: camera high on the near side at center, very wide (3840x1536). Both benches are on the near side at
@@ -93,10 +111,26 @@ class Snoqualmie(Renton):
     shots_boxes = {"home": (136, 76, 157, 95), "guest": (171, 76, 197, 95)}
     views = {"rink": (0, 3840, 380, 1536), "left-net": (200, 1400, 380, 760), "right-net": (2600, 3800, 380, 760)}
 
+    bench_where = {"left": "on the near side at the LEFT edge of the frame, right by the camera (players sitting "
+                           "there are big, often get tracked as if on the ice, and climb over the boards to go on)",
+                   "right": "on the near side at the RIGHT edge of the frame, right by the camera (players sitting "
+                            "there are big, often get tracked as if on the ice, and climb over the boards to go on)"}
+    box_where = {"left": "on the near side just right of our bench, at the bottom of the frame",
+                 "right": "on the near side just left of our bench (x about 3450-3700)"}
+    BENCH_VIEWS = {"left": (0, 900, 700, 1536), "right": (2940, 3840, 700, 1536)}
+
     def __init__(self, board_poly, bench=None):
         super().__init__(board_poly)
         side = bench or self.bench_side
+        self._side = side
         self.BENCH, self.BENCH_Y = self.BENCHES[side], self.BENCH_YS[side]
+
+    @property
+    def side(self):
+        return self._side
+
+    def bench_view(self):
+        return self.BENCH_VIEWS[self._side]
 
     def _xy(self, x, rel):
         x = np.asarray(x, float); rel = np.asarray(rel, float)
@@ -153,9 +187,12 @@ class Snoqualmie2(Snoqualmie):
     # about (645, 1015) and (3250, 1020) in the frame (checked on the Oct 10 video), centered in the net views
     views = {"rink": (0, 3824, 800, 2160), "left-net": (80, 1280, 820, 1370), "right-net": (2620, 3820, 820, 1370)}
 
+    BENCH_VIEWS = {"left": (100, 1100, 1250, 2160), "right": (2724, 3724, 1250, 2160)}
+
     def __init__(self, board_poly, bench=None):
         self.P = board_poly
-        self.BENCH = self.BENCHES[bench or self.bench_side]
+        self._side = bench or self.bench_side
+        self.BENCH = self.BENCHES[self._side]
 
     def open_ice(self, x, rel):
         x = np.asarray(x, float)
@@ -185,9 +222,26 @@ class Kirkland(Renton):
                 (3440, 1450), (3400, 1536), (560, 1536), (400, 1317), (333, 1183), (260, 1090), (150, 870),
                 (40, 650), (0, 640)])
 
+    bench_where = {"left": "behind the far boards, left of center, its door at the blue post (x 1612); only heads "
+                           "show above the boards",
+                   "right": "behind the far boards, right of center, its door at the blue post (x 2265); only heads "
+                            "show above the boards"}
+    box_where = {"right": "the near corner at the bottom-RIGHT of the frame (a player drops out of the frame as he sits)",
+                 "left": "the near corner at the bottom-LEFT of the frame (a player drops out of the frame as he sits)"}
+
     def __init__(self, board_poly, bench=None):
         self.P = board_poly
-        self.bench_x = self.BENCHES[bench or self.bench_side]
+        self._side = bench or self.bench_side
+        self.bench_x = self.BENCHES[self._side]
+
+    @property
+    def side(self):
+        return self._side
+
+    def bench_view(self):
+        x0, x1 = self.bench_x
+        y = float(np.polyval(self.P, (x0 + x1) / 2)) if self.P is not None else 600.0
+        return x0 - 200, x1 + 200, int(y) - 170, int(y) + 60
 
     def onice(self, x, rel):
         x = np.asarray(x, float); rel = np.asarray(rel, float)
@@ -222,6 +276,11 @@ class Renton2(Kirkland):
     # x at the boards: the away bench runs from the glass post at 1380 to its box (1735-1865, a boxed player is
     # "at the bench" as with the old camera), the home bench from its box (2020-2150) to 2500
     BENCHES = {"left": (1380, 1800), "right": (2080, 2500)}
+    bench_where = {"left": "behind the far boards, from the glass post at x 1380 to about 1735 (only heads show "
+                           "above the boards; the scorekeeper's window is at center)",
+                   "right": "behind the far boards, from about 2150 to 2500 (only heads show above the boards; the "
+                            "scorekeeper's window is at center)"}
+    box_where = {"left": "between the benches, x 1735-1865", "right": "between the benches, x 2020-2150"}
     scoreboard = (3456, 576, 150, 126)    # even sides: ffmpeg rounds an odd crop of yuv420 video down, misaligning frames
     shots_boxes = {"home": (36, 57, 48, 69), "guest": (50, 66, 64, 79)}
     views = {"rink": (0, 3840, 220, 1920), "left-net": (100, 1300, 480, 1080), "right-net": (2600, 3800, 470, 1070)}

@@ -21,7 +21,7 @@ Shift sheets for LADA's rec hockey teams: shifts, ice time and average shift len
 | `teams/<slug>/roster.json` | Jersey number → surname, LADA player ids, team name, LADA team id and where its site goes. Add new players here. |
 | `teams/<slug>/opponents.json` | Opponent code → full name. |
 | `teams/<slug>/lada_games.json` | The team's games as LADA's API has shown them (ids, home/away, rink, lines, scores); the pipeline keeps it current and takes each game's LADA id from it. |
-| `pipeline/` | The scripts that turn a game video into `shifts.csv`, and `build_site.py`, which renders `docs/`. They work on one team at a time, picked by `TEAM` (`tk` unless set). |
+| `pipeline/` | The scripts that turn a game video into `shifts.csv`, and `build_site.py`, which renders `docs/`. They work on one team at a time, picked by `TEAM` (`tk` unless set). `regress.py` re-solves every archived game and diffs the published sheets, for checking a pipeline change. |
 | `RUNBOOK.md` | The manual steps behind the skill, for debugging or running by hand. |
 | `WINDOWS.md`, `setup_windows.ps1` | Setting up a Windows PC with an NVIDIA GPU to run the pipeline (one command). |
 | `.claude/skills/process-game/` | The Claude Code skill for the weekly run. |
@@ -39,8 +39,9 @@ give it one, asks for the opponent and any new players, finds periods, goals, pe
 scoreboard and the video, then runs `pipeline/run_game.py` (fetch → absent → prepare → review → solve → publish)
 and asks before pushing. Only the score confirmation and the push wait for you.
 
-It takes about an hour on the Windows PC (30 minutes of fetch, then the visual review of the uncertain moments and
-the solve), or a few hours on an M-series Mac, where detection alone is about two hours.
+It takes one and a half to three hours on the Windows PC (30–40 minutes of fetch, 15–25 of visual review, then
+the by-eye checks of the lineup, goals and penalties), or a few hours more on an M-series Mac, where detection alone
+is about two hours.
 
 On a Windows PC with an NVIDIA GPU, detection runs on CUDA and should be much faster. To set one up, run this in
 PowerShell; `WINDOWS.md` has the details and the steps by hand:
@@ -89,3 +90,27 @@ python pipeline/build_site.py
 
 Ice time is real elapsed time on the ice, including stoppages, because the video has no game clock. The
 recordings' audio is silent, so nothing relies on sound.
+
+## TODO
+
+Two pipeline changes measured as worth making in the Oct 22, 2026 review of the first 29 processed games, not made
+yet:
+
+1. **One decode of the video for detection and the scoreboard.** `fetch` decodes the 4K video three times:
+   `process.py` (8 fps, cropped to the rink, for YOLO), `crops.py` (8 fps again, for the jersey crops) and
+   `scoreboard.py scan` (every frame, cropped to the board, keeping the brightest of each second; 3–5 minutes per
+   game, run after OCR). Detection is GPU-bound, so the cheapest version runs the scan in a thread or process
+   alongside `detect()` and joins it before `ocr()`; the tidier one adds the board crop to `process.py`'s ffmpeg
+   graph (`split` into the 8 fps rink crop and a full-rate board crop) so the video is read once. Either needs a
+   game video to test (archives keep none): at the next game run the old scan too and compare `scoreboard.npy`
+   frame by frame, and time the fetch.
+2. **Periods and a game clock from the board, by OCR.** The empty-ice proposal (`periods_proposed.json`) has been
+   wrong at nearly every game, so the period edges are read by eye off `sb.jpg` every time (`references/rinks.md`
+   has the rules: the clock counts down from 18:00, runs through stoppages in the 1st and 2nd and stops at whistles
+   in the 3rd, an intermission countdown of 1:00–2:00 between periods, operators who reset or run the clock on an
+   empty rink). Reading the clock digits off every second of the board, the way `shots.py` reads the shots digits
+   (RapidOCR on an upscaled crop, then a fit that allows only the moves a clock makes), gives the period spans
+   directly and a video time for every clock time, which also places the game sheet's goals and penalties in the
+   video without a frame hunt. It needs a clock box per rink next to `shots_boxes` in `rink.py`, and data to
+   develop on: `archive` keeps the board as JPEGs (`scoreboard_jpg.npz`) since Oct 22, so every game from then on
+   provides a test case; the hand-read periods in each archived `periods.json` are the ground truth.

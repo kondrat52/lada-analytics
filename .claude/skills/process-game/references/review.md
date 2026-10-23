@@ -63,6 +63,19 @@ R326,69,med,3776,90,med,checked by hand: 69 looks at the net for the goal; 90 wh
 A later file overrides an earlier answer for the same row, so a zfix line replaces a reviewer's "?" (or a wrong
 number). Tell the user which rows you labeled by hand, and say so in `game.json`'s notes.
 
+## The lineup check and the gap briefs
+
+Solve's lineup check lists every stretch of 15+ s where the shifts don't put the expected number of us on the ice,
+with who was on and how many of its seconds were live play (slow line changes during stoppages are legitimate
+6-on stretches). `run_game.py gaps $W` turns the list into one brief per period (`pipeline/gap_prompt.md` filled
+with the team's look, the rink's bench and box, our net, the roster, the known events, each window's tracked pieces
+with their review row ids, and the long pieces that sit in our bench zone) for a general-purpose subagent to check
+by eye with `frames` (`--view rink`, `--view bench`, the net zooms). The checker writes `fixes.json`, `gaps --apply`
+merges the `on`/`off` spans into `periods.json`, and solve runs again. Before Oct 22 every game's brief was written
+by hand (28 of them in 23 sessions); the generated one carries what those learned: judge from the frames, not the
+labels; watch the bench door; a piece that starts at the bench counts from its first frame; two pieces can swap at
+a crossing.
+
 ## What went wrong before
 
 - **A late arrival looks absent.** On BW's Sep 20 game #55 Lisenko arrived mid-second period; her P1 card row was
@@ -101,8 +114,8 @@ number). Tell the user which rows you labeled by hand, and say so in `game.json`
   player (compare positions and times in `segs_final.csv`), and a zfix line closes the gap. Conversely, a segment
   that starts behind the bench boards counts as on-ice from its first frame, so players stepping on during a
   goal can be listed as on; an `"off"` entry until the goal fixes it. Trimming segments to their first on-ice
-  detection in shifts.py would fix this for every line change, but changes every game's numbers, so it waits for a
-  regression pass over the archived folders.
+  detection in shifts.py would fix this for every line change but changes every game's numbers; `pipeline/regress.py`
+  now measures such a change on every archived game, so it is the next solve change to try.
 - **A two-digit number OCR keeps reading as one.** On Y's Sep 21 game #14 Ber had no card row in any period
   (OCR took his 14 for Sokolov's 4), though 112 confident "14" reads were all him on the ice. A `--note` that he
   played all game, and to read 14 against 4 carefully, got him labeled. Before review, sheet a few crops of any
@@ -161,20 +174,27 @@ number). Tell the user which rows you labeled by hand, and say so in `game.json`
   `--note` named Perry, so the prompts needed no hand edits. On Beerteam's Sep 20 game the goalie was a spare
   not on `roster.json` at all (David Pfeifer, number never readable), and the prompts' "#1 is the goalie" line was
   replaced in every prompt with sed before launch.
-- **"Noise" doesn't clear a label.** The template's answer format allows a number, "?" or "G", so most reviewers
-  mark an opponent or referee row "?" with "noise" in the note, and a few write "noise" as the player.
-  `apply_review` leaves an OCR label in place for "noise" and only weakens it for "?". On Doofers' Oct 10 game
+- **"Noise" clears the label (since Oct 22).** The template's answer format allowed a number, "?" or "G", so most
+  reviewers marked an opponent or referee row "?" with "noise" in the note, and a few wrote "noise" as the player;
+  `apply_review` left the OCR label in place for "noise" and only weakened it for "?". On Doofers' Oct 10 game
   (opponents' yokes passing the white test) 50 of P1's 538 rows were opponents or referees still carrying one of our
-  numbers from OCR. Solve still came to 100–102% per period, and the gap check fixed what it put on the ice. A
-  "noise" code in the template plus clearing the label in `apply_review` would fix it, but it changes re-solves of
-  archived folders, so it waits for the regression pass.
+  numbers from OCR. Solve still came to 100–102% per period, and the gap check fixed what it put on the ice. Now
+  reviewers answer "N" for a row with nobody of ours in it, and `apply_review` clears the OCR label for "N" and for
+  a "?" whose note is about noise, opponents or referees in every part (split at "then", "and" and commas), how
+  reviewers wrote it before. The first version of that rule took any note that started with "opponent", which
+  includes "opponent at start then white skater, number unreadable", one of ours: `regress.py` showed it as a new
+  19 s lineup gap in Doofers' Oct 10 game, hence the every-part rule. Measured on the 25 archived games: 18
+  unchanged, five moved by up to 45 s of one player's time (Doofers' Sep 19 referee-as-#97 lost his 45 s; Doofers'
+  Oct 10 moved 24 shifts), plus the two Blue Wings games that differed already. The five were re-solved from their
+  archives and republished on Oct 22, with a note in each `game.json` saying what moved.
 - **Seated players counted as on.** On LADA R's Oct 12 game at Snoqualmie A (our bench at the frame edge, right by
   the camera) the first lineup check listed eight "6 on" windows, and almost every one was a player sitting at our
   bench: his track, full of confident number reads, started there and the solver counted it as on the ice. The gap
   subagent found each by the nameplate on the bench and the moment he went over the boards. Because the solver keeps
   5 on, such tracks rarely show as a window, so a second pass over P2's segments that start at our bench and stay
-  there found nine more. 25 on/off entries took the periods from 104/104/102% to 102/103/102%. At a rink like this,
-  ask the gap subagent for that scan from the start.
+  there found nine more. 25 on/off entries took the periods from 104/104/102% to 102/103/102%. `gaps` now lists
+  every long piece that spends most of its frames in the bench zone in the brief, so that scan is part of the first
+  pass at every rink.
 - **A quick rest gets joined into one shift.** `final_stats.py` joins a player's shifts across gaps under 15 s
   (`MERGE_GAP`, meant for tracking loss), so a real 8 s rest at a goal shows him on for it. On Oct 10, #29 went off
   about 185 and came back at 193, and the goal at 191 listed six. An `off` span of 15 s (178–193) kept the shifts

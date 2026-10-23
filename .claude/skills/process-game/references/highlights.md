@@ -72,7 +72,8 @@ one general-purpose subagent:
 > (left/right), `team` (for/against), and a one-line `note` of what you saw. Candidates: <list>. Reply with one
 > line per candidate.
 
-Give it the scoresheet's times when you have them and tell it which net is ours.
+Give it the scoresheet's times when you have them and tell it which net is ours. The lineup windows have their own
+generated briefs (`run_game.py gaps`, step 6 of the skill); this one is for goals and penalties.
 
 ## Penalties
 

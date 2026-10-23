@@ -1,7 +1,7 @@
 # Runbook: processing a new game
 
 Normally you run `/process-game <link>` in Claude Code, and `pipeline/run_game.py` chains these steps
-(`fetch`, `sheet`, `absent`, `prepare`, `review`, `check`, `solve`, `publish`). This page is the manual version, useful when
+(`fetch`, `sheet`, `absent`, `prepare`, `review`, `check`, `solve`, `gaps`, `publish`). This page is the manual version, useful when
 something needs fixing; the skill (`.claude/skills/process-game/`) has the checks and the lessons per rink.
 
 Written for Claude Code (or anyone patient). Commands assume the repo root as the working directory,
@@ -99,8 +99,10 @@ $PY pipeline/ovsheet.py $W/full/ov $W/ov.jpg 0 4000 30 3     # the 10-second ove
 
 Breaks show the ice empty with both teams at the benches for about a minute. Our goalie switches ends each
 period. Net x: see `nets` in `pipeline/rink.py` (Renton ≈ 540 left, ≈ 3245 right).
-`pipeline/shots.py $W --us home|guest` reads shots on goal off the board into `$W/shots.json`; check it against
-`$W/shots_check.jpg`, fix the per-period counts, and set `"checked": true` so publish puts them in game.json.
+Publish takes the game sheet's shots per period from `sheet.json` (`shots_source: sheet` in game.json).
+`pipeline/shots.py $W --us home|guest` reads them off the board into `$W/shots.json` instead (its OCR is wrong at
+most rinks); check it against `$W/shots_check.jpg`, fix the per-period counts, and set `"checked": true` so publish
+prefers the board's.
 `run_game.py sheet $W` prints SportNinja's game sheet (score, shots, goals with scorers, penalties, who played) and
 writes `$W/sheet.json`; `run_game.py goals` then shows each goal's video time from the period clock.
 
@@ -119,7 +121,7 @@ them. Look at `roster_card.jpg`. Every row should be one player. The card only h
 in the team's `roster.json`, with a crop sheet each): add ours to it, team members under `skaters` and subs under
 `subs` (ask which); other teams' jerseys are opponents. Roster numbers that didn't play are marked with
 `run_game.py absent $W 3 15 ...` (stored in `$W/full/rink.json`; by hand, `ROSTER_ABSENT=3,15` in the environment
-of every script): a number that didn't play soaks up partial reads of other numbers. Don't edit `roster.json` for
+of every script; `absent $W --suggest` tables the evidence per player): a number that didn't play soaks up partial reads of other numbers. Don't edit `roster.json` for
 that.
 
 ## 7. Visual review (Claude subagents, ~15 min in parallel)
@@ -151,7 +153,11 @@ them (and goals without 5 of us on the ice) as a lineup check. Labels you decide
 whose shift runs on (his track ends mid-ice) goes in that period's `"off"` list in `periods.json`
 (`{"start", "end", "player"}`): `run_game.py solve` passes it to `run2.py` as `[start, end, 5, player]`; a player seen on the ice whose track was
 lost goes in the period's `"on"` list the same way (`[start, end, 5, player, "on"]`). `solve` also prints each period's shift
-seconds against 5 × its length, and the lineup check names who was on the ice in each gap.
+seconds against 5 × its length, and the lineup check names who was on the ice in each gap and how much of it was
+live play. `run_game.py gaps $W` writes one by-eye check brief per period for those gaps
+(`$W/scratch/gaps/prompt_pN.md`, filled from `pipeline/gap_prompt.md`: the windows, the segments behind them, the
+known events, the bench and box), each one subagent's job; `gaps $W --apply` merges their `fixes.json` into
+`periods.json` as on/off spans.
 
 ## 9. Play time and highlights
 
@@ -177,4 +183,6 @@ git add -A && git commit -m "Add <date> vs <opp>" && git push
 ```
 
 GitHub Pages redeploys in about a minute. Then `run_game.py archive $W` drops the video, crops and sheets and keeps
-the game's data (~100 MB), so it can be re-solved later. Keep every game's archive.
+the game's data (~100 MB, the scoreboard frames as JPEGs among it), so it can be re-solved later. Keep every game's
+archive: `pipeline/regress.py` re-solves all of them and diffs each against its published `shifts.csv`, which is how
+a change to the solve is checked before any site is rebuilt.

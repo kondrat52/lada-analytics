@@ -2,6 +2,21 @@
 import io, re, numpy as np, pandas as pd
 
 W = {"high": 8, "med": 4}
+# a row the reviewer called noise: "N" (the template's code since Oct 2026), or "?" with a note whose every part
+# (split at "then", "and" and commas) is about an opponent or a referee, how reviewers wrote it before. The row's OCR
+# label was a misread of an opponent or a referee, so it is cleared. "opponent at start then white skater, number
+# unreadable" is one of ours: that row keeps its weak OCR label.
+NOISE = re.compile(r"^\W*(noise|opponent|opp\b|referee|ref\b|linesman|official|not ours|other team)", re.I)
+FILLER = re.compile(r"^(?:(?:noise|mostly|all tiles|blurry|\d+)\s*)+$", re.I)
+
+
+def is_noise(player, note):
+    if player.upper() in ("N", "NOISE"):
+        return True
+    if player != "?":
+        return False
+    parts = [x.strip() for x in re.split(r"\bthen\b|\band\b|[,;/]", note or "", flags=re.I) if x.strip()]
+    return bool(parts) and bool(NOISE.match(parts[0])) and all(NOISE.match(x) or FILLER.match(x) for x in parts[1:])
 
 
 def parse_review(text):
@@ -42,6 +57,8 @@ def apply(S, tr, review, manifest, R):
         p1 = r.player; c1 = r.confidence
         if p1 == "G":
             drop.append(i); continue
+        if is_noise(p1, r.note) and not (r.switch_time and r.player2):
+            S.loc[i, ["num", "nreads", "src"]] = [-1, 0, ""]; continue
         if r.switch_time and r.player2:
             try:
                 ts = float(r.switch_time)

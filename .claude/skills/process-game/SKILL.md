@@ -16,6 +16,7 @@ Details that only matter sometimes live next to it, read them when their step sa
 | `references/highlights.md` | finding goals and penalties by eye, clips, `highlights.json` |
 | `references/lada.md` | LADA's API, SportNinja game sheets, player ids, `roster.json` fields |
 | `RUNBOOK.md` | the same pipeline step by step, for running pieces by hand |
+| `pipeline/regress.py` | before changing anything the solve depends on: it re-solves every archived game and diffs the published sheets |
 
 Teams: `tk` LADA Turbo Kings (LADA team 24), `bw` Blue Wings (10), `bt` Beerteam (5), `df` Doofers (17), `y` LADA Y
 (20), `r` LADA R (2). Each has `teams/<slug>/` with `roster.json`, `opponents.json`, `games/` and `lada_games.json`,
@@ -31,18 +32,21 @@ W=~/hockey-work/<slug>-<YYYY-MM-DD>-vs-<opp>      # outside the repo, ~5 GB; Tur
 ```
 
 Detection needs the local GPU, so none of this runs in the cloud. On the Windows PC (RTX 5090, set up with
-`pipeline\setup_env.ps1`, see `WINDOWS.md`) fetch takes about 30 minutes and the review 15 to 20, so a game is about
-an hour of session time; `run_game.py` keeps Windows awake. On the Mac fetch takes about 2 hours and needs
-`nohup caffeinate -dims -t 28800 >/dev/null 2>&1 &` first: a sleeping Mac stalls detection and kills reviewers
+`pipeline\setup_env.ps1`, see `WINDOWS.md`) fetch takes 30 to 40 minutes (download 5 to 15, detection 11 to 16,
+OCR about 5, the scoreboard scan 3 to 5), prepare 6 to 11, the review 15 to 25, and the lineup checks after the
+first solve anywhere from 15 minutes to two hours (the 29 games so far needed 0 to 76 on/off spans each, most of
+them found by eye), so a game is one and a half to three hours of session time; `run_game.py` keeps Windows awake.
+On the Mac fetch takes about 2 hours and needs `nohup caffeinate -dims -t 28800 >/dev/null 2>&1 &` first: a sleeping Mac stalls detection and kills reviewers
 mid-sheet. Keep the user posted with one line per stage.
 
 The user often leaves during a run. Only two points need them: confirming the score and highlights before
 publish, and the push itself. Everything else runs to "ready to publish" on sensible assumptions, with each
 assumption written down for the summary. Don't stop to ask about a new player, a sub, a spelling or a penalty.
 
-Keep the main session small: two of the last three runs were summarized mid-game, mostly from reading images.
-Read a sheet once, crop tight, delegate the by-eye verification of goals and penalties (`references/highlights.md`
-has the brief), and read the Gantt charts only when the lineup check lists something.
+Keep the main session small: half of the game sessions so far were compacted mid-game, and the by-eye work is what
+grows them. Read a sheet once, crop tight, and delegate every frames job: the goals and penalties
+(`references/highlights.md` has the brief) and the lineup windows (`run_game.py gaps` writes those briefs). Read
+the Gantt charts only when the lineup check lists something, and start a new session for each game.
 
 ## 0. Inputs (one message, then start)
 
@@ -108,17 +112,18 @@ each period. Prepare drops our goalie's detections at that net, so check it on a
 period (`frames --view left-net`). If the proposal has a single period, the breaks weren't empty enough (Kirkland:
 a referee stays out): take the periods from the clock, as `references/rinks.md` describes.
 
-Shots, once `periods.json` is right:
+Shots come from the game sheet: publish copies `sheet.json`'s per-period counts into `game.json` (`shots_source:
+sheet`). The board's digits are a few pixels tall and `shots.py`'s OCR has been wrong at most games, so run it only
+when the sheet has no shots or looks wrong, once `periods.json` is right:
 
 ```sh
 $PY pipeline/shots.py $W --us <home|guest>      # ~5 min -> W/shots.json + W/shots_check.jpg
 ```
 
-Read `shots_check.jpg` (the board 25 s after each period, when the scorekeeper has caught up) and make
-`"periods"` in `shots.json` match it, `[ours, theirs]` per period, not cumulative, then set `"checked": true`;
-publish only takes checked shots. In the last minute the
-clock shows tenths, which tells whether the video reaches the final horn; if it doesn't, publish with
-`--video-ends-early`.
+Read `shots_check.jpg` (the board 25 s after each period, when the scorekeeper has caught up), make `"periods"` in
+`shots.json` match it, `[ours, theirs]` per period, not cumulative, and set `"checked": true`; publish then prefers
+the board's. In the last minute the clock shows tenths, which tells whether the video reaches the final horn; if it
+doesn't, publish with `--video-ends-early`.
 
 ## 3. Penalty kills
 
@@ -146,6 +151,7 @@ skates six with a skater standing in at the net: an `extra` span over the whole 
 ```sh
 $PY pipeline/run_game.py unknown $W                 # numbers read hundreds of times that aren't on the roster
 $PY pipeline/run_game.py absent $W 3 15 26          # roster numbers that didn't play
+$PY pipeline/run_game.py absent $W --suggest        # the evidence per player: sheet, LADA's lines, reads, card rows
 ```
 
 `unknown` sheets each candidate (`$W/unknown_<N>.jpg`): our jersey means a new player or sub, another team's
@@ -153,7 +159,8 @@ jersey that passes our colour test is an opponent to ignore. Add ours to `roster
 `skaters` and subs under `subs` (number → surname as on the back; tell the user the spelling), and put a player in
 `subs` when unsure: moving him later changes only the site. Don't assume a missing number is a sub: the captain's
 was missing once. Then mark absent everyone on the roster who didn't
-play, including the subs who didn't come: a number that didn't play soaks up partial reads of others (a "3" off
+play, including the subs who didn't come (`absent --suggest` tables the evidence per player and prints a list to
+start from): a number that didn't play soaks up partial reads of others (a "3" off
 43, 53 and 35 gave #3 ice time she never had). Decide from the sheet's "not marked playing" list, LADA's lines,
 `unknown`'s read counts and the roster cards, but keep anyone LADA's lines list unless every period's card and
 the reads are empty for them: a late arrival or a covered number looks the same as absence, and the sheet is the
@@ -198,21 +205,32 @@ $PY pipeline/run_game.py solve $W
 
 Solve applies the reviews, infers who is on the ice every second, estimates stoppages from player motion for live
 play time (the audio is silent, so no whistles), writes `$W/gantt_pN.png`, prints the stats table, each period's shift seconds against 5 × its length (minus penalty-kill seconds; expect about
-100%), and a lineup check: stretches of 15+ s without 5 of us on (4 in a kill), with who was on, and goals in
-`highlights.json` without 5 on. Each is a missed player, an unlisted penalty or a bad label. Look at the segments
-in that window (`$W/pN/segs_final.csv`, `num` -1 = unlabeled; `$W/rev_pN/manifest.csv` maps a track to its review
-row) and their crops (`pipeline/sheet.py`; `$W/pN/tracks_v1.csv` names each track's crop files). A whole unit with
-one player missing usually means his tracks are unlabeled; the reviewers' "?" plus his gear and who else is
-accounted for usually settle it.
+100%), and a lineup check: stretches of 15+ s without 5 of us on (4 in a kill, 6 with the goalie pulled), with who
+was on and how much of the stretch was live play, and goals in `highlights.json` without 5 on or with a credited player
+off the ice. Each is a missed player, an unlisted penalty, a bad label, or a slow line change during a stoppage.
+Seeing who was on is a frames job, and the briefs for it are generated:
 
-Write what you decide to `$W/rev_pN/review_zfix.txt` in the review CSV format with a note starting "checked by
-hand"; it sorts last and overrides the reviewers' "?", e.g.
-`R326,69,med,3776,90,med,checked by hand: 69 looks at the net for the goal; 90 white helmet from 3779`. A player
-whose track ends mid-ice stays on until the next bench activity and the solver drops someone else to keep 5 on, so
-when you've seen who went off add `"off": [{"start": 1737, "end": 1775, "player": 43}]` to that period in
-`periods.json`; a player you've seen on the ice whose track was lost gets the same entry under `"on"`. Seeing
-who was on is a frames job: hand the gap windows to a subagent with the roster card and the bench location, as in
-`references/highlights.md`. Solve again, and tell the user which rows you labeled by hand.
+```sh
+$PY pipeline/run_game.py gaps $W                    # one checker brief per period: W/scratch/gaps/prompt_pN.md
+$PY pipeline/run_game.py gaps $W --apply            # merge the checkers' fixes.json into periods.json, then solve again
+```
+
+Each brief has the team's look, the rink, the bench and box, our net, the roster, the known events (kills, goals,
+a pulled goalie), every window with the tracked pieces behind it (`segs_final.csv` rows with their review row ids),
+and any long piece that sits in our bench zone (a seated player the tracker counted as on; common at Snoqualmie,
+where the bench is by the camera). Launch one general-purpose subagent per brief, all at once, with the prompt
+"Read <file> and do exactly what it says. Reply with one line per window." Each writes `fixes.json`: `on` spans for
+a player seen on the ice whose track was lost, `off` spans for one the solver kept on after he left (a track that
+ends mid-ice stays on until the next bench activity, and the solver drops someone else to keep 5 on). `--apply`
+prints each span as it merges it into `periods.json`, skips duplicates and renames the file; solve again. Two
+passes are normal, and a window the checker calls a slow change in a stoppage stays as it is (the check says how
+many of its seconds were live).
+
+A wrong label rather than a lost track (a whole unit with one player missing usually means his tracks carry someone
+else's number or none; the window's pieces show it) is a zfix line instead: write it to `$W/rev_pN/review_zfix.txt`
+in the review CSV format with a note starting "checked by hand"; it sorts last and overrides the reviewers' answer,
+e.g. `R326,69,med,3776,90,med,checked by hand: 69 looks at the net for the goal; 90 white helmet from 3779`. Tell
+the user which rows you labeled by hand and how many spans the checkers added.
 
 ## 7. Highlights: goals and penalties
 
@@ -242,9 +260,9 @@ the two things that wait for them.
 $PY pipeline/run_game.py publish $W <YYYY-MM-DD>-vs-<opp> --opponent <OPP> --eyebrow "Sun Oct 4, 2026 · 7:50 PM · Renton" [--video-ends-early]
 ```
 
-This writes `teams/<slug>/games/<id>/game.json` and `shifts.csv` (with play time, stoppages, highlights, checked
-shots, and time in offence and defence from the detections), finds the game's LADA id in `lada_games.json` (fetch
-keeps it current; `references/lada.md` if it can't), and rebuilds every team's site: game pages, the trends page
+This writes `teams/<slug>/games/<id>/game.json` and `shifts.csv` (with play time, stoppages, highlights, the game
+sheet's shots, or the board's once `shots.json` is checked, and time in offence and defence from the detections),
+finds the game's LADA id in `lada_games.json` (fetch keeps it current; `references/lada.md` if it can't), and rebuilds every team's site: game pages, the trends page
 and the JSON feed in `api/` (`API.md`). A new opponent's code
 and full name go in `opponents.json` (the user's spelling wins; LADA's exact spelling finds the logo in the app).
 A new player needs a LADA id, which only the user can fetch: give them the exact `lada_ids.py` line to run.
@@ -262,6 +280,14 @@ minute; add `?v=<random>` to skip the cache; the github.io address answers 301 t
 $PY pipeline/run_game.py archive $W                 # drops the video, crops and sheets (~5 GB), keeps the data (~100 MB)
 ```
 
-Offer it once the user is happy. Never `rm -rf` a work folder: the kept data re-solves with a later pipeline and
-serves as a regression test. Anything this game taught about a rink, a jersey, the scoreboard or the reviewers
+Offer it once the user is happy. Never `rm -rf` a work folder: the kept data (with the scoreboard frames as JPEGs)
+re-solves with a later pipeline, and `$PY pipeline/regress.py` does that for every archived game and diffs each
+against its published `shifts.csv`, game by game and player by player. Run it after any change to `shifts.py`,
+`apply_review.py`, `solver.py`, `run2.py`, `final_stats.py` or `stoppages.py`, before rebuilding a site, and say in
+the commit what moved. On Oct 22, 2026 the baseline was identical for 23 of 25 archived games (Blue Wings' Sep 20
+and Sep 27 games predate the Oct 15 solver fixes and differ by up to a minute for one player), and the noise-label
+fix made that day moved five more by up to 45 s of one player's time; those five were re-solved from their archives
+and republished the same day, with a note in each `game.json` saying what moved. Larger changes measured as worth
+making but not made yet are listed under TODO in `README.md`.
+Anything this game taught about a rink, a jersey, the scoreboard or the reviewers
 goes into the matching `references/*.md` now, not into memory: memory stays on one machine, the skill travels.

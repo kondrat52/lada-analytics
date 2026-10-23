@@ -31,8 +31,9 @@ def read_all(W):
     """Per second and side: (value or -1, score)."""
     from rapidocr import RapidOCR
     eng = RapidOCR(params={"Global.use_det": False, "Global.use_cls": False})
+    from scoreboard import load as load_board
     boxes = rink(f"{W}/full").shots_boxes
-    a = np.load(f"{W}/scoreboard.npy", mmap_mode="r")
+    a = load_board(W)
     out = {s: [] for s in boxes}
     for t in range(len(a)):
         f = np.array(a[t])

@@ -9,8 +9,9 @@
                                              crops from the video (~5 min) and OCR them
   run_game.py skaters W T0 T1               our skaters detected on the ice per 5 s (find penalty kills)
   run_game.py unknown W                      numbers/surnames read that aren't on the roster (new players?)
-  run_game.py absent  W [N ...]              roster numbers that didn't play this game (their partial reads would
-                                             label others): recorded in W/full/rink.json, honoured by every step
+  run_game.py absent  W [N ...] [--suggest]  roster numbers that didn't play this game (their partial reads would
+                                             label others): recorded in W/full/rink.json, honoured by every step;
+                                             --suggest tables the evidence (sheet, lines, reads, card rows)
   run_game.py schedule W                     the team's games from LADA's public API (ids, home/away, rink, lines)
   run_game.py sheet   W [--sn ID | --lada ID]  the game sheet from SportNinja's public API: score, shots, goals with
                                              scorers, penalties, who played -> W/sheet.json (goals/solve use it)
@@ -19,8 +20,11 @@
                                              sheets (W/rev_pN/prompt_cNN.md) and the plan of what is still to do
   run_game.py check   W                      which review rows are still missing or unreadable, per sheet
   run_game.py solve   W                      per period: apply reviews + solve; gantt charts; stats table; checks
+  run_game.py gaps    W [--apply [F ...]]    write the by-eye check briefs for the lineup check's windows
+                                             (W/scratch/gaps/prompt_pN.md, one subagent each); --apply merges the
+                                             checkers' fixes.json into periods.json as on/off spans
   run_game.py goals   W                      candidate goals: center-ice faceoffs + long stoppages (verify by eye)
-  run_game.py frames  W OUT.jpg --view rink|left-net|right-net t1 t2 ...   4K frames (cropped) as a sheet, for
+  run_game.py frames  W OUT.jpg --view rink|left-net|right-net|bench t1 t2 ...   4K frames (cropped) as a sheet, for
                                              verifying; --range T0 T1 STEP instead of times; or the crop by hand:
                                              X0 X1 Y0 Y1 TILE_W COLS t1 t2 ...
   run_game.py clip    W GAME_ID NAME T0 T1 POSTER_T [FOCUS]          zoomed clip into <site>/games/<id>/clips;
@@ -456,11 +460,14 @@ def cmd_frames(a):
     if not os.path.exists(vid):
         sys.exit(f"no {vid}: frames need the video (archived folders have none; fetch downloads it again)")
     rest = list(a.rest)
-    if a.view:   # a crop the rink knows (rink.py views): the whole rink, or a zoom on one net
+    if a.view:   # a crop the rink knows (rink.py views): the whole rink, a zoom on one net, or our bench
         R = rink(f"{a.W}/full")
-        if a.view not in R.views:
-            sys.exit(f"unknown view {a.view!r}; this rink has: {', '.join(R.views)}")
-        x0, x1, y0, y1 = R.views[a.view]
+        if a.view == "bench" and "bench" not in R.views:
+            x0, x1, y0, y1 = R.bench_view()
+        elif a.view not in R.views:
+            sys.exit(f"unknown view {a.view!r}; this rink has: {', '.join(R.views)}, bench")
+        else:
+            x0, x1, y0, y1 = R.views[a.view]
         tile_w = a.tile or (1000 if a.view == "rink" else 660)
         cols = a.cols or (2 if a.view == "rink" else 3)
     else:
@@ -511,9 +518,85 @@ def cmd_clip(a):
     sh(*cmd + ([focus] if focus else []))
 
 
+def _lines_numbers(W):
+    """Jersey numbers in LADA's planned lines for this game (lada_games.json by the folder's date), or None."""
+    from roster import LADA_IDS
+    m = re.search(r"\d{4}-\d{2}-\d{2}", os.path.basename(W))
+    p = lada_games_path()
+    if not m or not os.path.exists(p):
+        return None
+    for g in json.load(open(p, encoding="utf-8")).values():
+        if str(g.get("date", ""))[:10] != m.group(0):
+            continue
+        lines = g.get("lines")
+        if isinstance(lines, str):
+            try:
+                lines = json.loads(lines)
+            except ValueError:
+                return None
+        if not isinstance(lines, dict):
+            return None
+        ids = {int(x) for grp in ("offence", "defence", "goalie") for ln in lines.get(grp, []) or [] for x in ln if x}
+        return {n for n, i in LADA_IDS.items() if i in ids}
+    return None
+
+
+def suggest_absent(W):
+    """Who probably didn't play, from the game sheet, LADA's lines, the OCR reads and the roster cards (after
+    prepare). A table to decide from, not a verdict: the sheet is the scorekeeper's, the lines are a plan, and a
+    covered number reads like absence."""
+    from roster import ALL_SKATERS, GOALIE_NAMES, SUBS
+    from reads import load_reads
+    sheet_ = json.load(open(f"{W}/sheet.json", encoding="utf-8")) if os.path.exists(f"{W}/sheet.json") else None
+    played = set(sheet_["played"]) if sheet_ else None
+    lines = _lines_numbers(W)
+    reads, names = load_reads(f"{W}/full")
+    dig = reads[reads.src == "digit"].num.value_counts(); nm = names.num.value_counts()
+    cards = {}
+    for P in (periods(W) if os.path.exists(f"{W}/periods.json") else []):
+        p = f"{W}/rev_{P['label'].lower()}/card_empty.json"
+        if os.path.exists(p):
+            cards[P["label"]] = set(json.load(open(p)))
+    print(f"{'num':>4} {'name':<14} {'sheet':<8} {'lines':<6} {'digits':>6} {'names':>5} {'card rows':<12} suggestion")
+    out = []
+    for n, name in sorted({**ALL_SKATERS, **GOALIE_NAMES}.items()):
+        on_sheet = None if played is None else (n in played)
+        in_lines = None if lines is None else (n in lines)
+        d, m_ = int(dig.get(n, 0)), int(nm.get(n, 0))
+        card = "".join("x" if n in cards[k] else "o" for k in sorted(cards)) if cards else "-"
+        evidence = d + 3 * m_
+        if n in GOALIE_NAMES:
+            why = "goalie: absent unless he played" if on_sheet is False else "goalie"
+        elif on_sheet is False and in_lines is not True and evidence < 30 and "o" not in card:
+            why = "absent"
+        elif on_sheet is False and in_lines is not True and evidence < 100:
+            why = "absent? (a few reads)"
+        elif evidence < 30 and "o" not in card and in_lines is not True:
+            why = "absent? (not on the sheet's out list; nothing read)" if on_sheet else "absent? (nothing read)"
+        elif on_sheet is False or in_lines is False:
+            why = "check: reads say he played" if evidence >= 100 else "check"
+            if n < 10 and m_ == 0:
+                why += " (a single digit: often partial reads of a two-digit number)"
+        else:
+            why = "played"
+        if n in SUBS and why == "played" and evidence < 30:
+            why = "sub, nothing read: absent?"
+        out.append((n, why))
+        fmt = lambda v: "-" if v is None else ("yes" if v else "NO")
+        print(f"{n:>4} {name:<14} {fmt(on_sheet):<8} {fmt(in_lines):<6} {d:>6} {m_:>5} {card:<12} {why}")
+    sug = [n for n, w in out if w.startswith("absent") or w.startswith("sub") or w.startswith("goalie: absent")]
+    print("card rows: o = has a row on that period's roster card, x = empty (after prepare); digits = confident reads "
+          "of the full number, names = nameplate reads")
+    if sug:
+        print(f"suggested: run_game.py absent {W} " + " ".join(str(n) for n in sug))
+    print("Keep anyone LADA's lines list unless every card row and the reads are empty (a late arrival looks absent); "
+          "an absent goalie makes the next one the goalie of the game.")
+
+
 def cmd_absent(a):
     """Record roster numbers that didn't play (W/full/rink.json "absent"); with no numbers, show the roster as the
-    pipeline sees it. `--clear` forgets the list. Everything after prepare must be redone when it changes."""
+    pipeline sees it. `--suggest` tables the evidence per player. `--clear` forgets the list. Everything after
+    prepare must be redone when it changes."""
     W = os.path.abspath(a.W)
     p = f"{W}/full/rink.json"
     cfg = json.load(open(p)) if os.path.exists(p) else {}
@@ -522,6 +605,8 @@ def cmd_absent(a):
     elif a.numbers:
         cfg["absent"] = sorted({int(n) for n in a.numbers} | set(cfg.get("absent", []))); json.dump(cfg, open(p, "w"))
     os.environ["ROSTER_ABSENT"] = ",".join(str(n) for n in cfg.get("absent", []))
+    if a.suggest:
+        suggest_absent(W)
     from roster import MEMBERS, SUBS, GOALIE_NAMES, ALL_SKATERS, TEAM
     absent = cfg.get("absent", [])
     print(f"{TEAM}: absent this game: " +
@@ -723,47 +808,279 @@ def live_spans(P):
     return spans + [[t, P["end"]]]
 
 
-def lineup_check(W, min_len=15):
-    """Stretches of min_len+ seconds where the published shifts (shifts_all.csv) don't put 5 of us on the ice (4
-    during a penalty kill), and goals in highlights.json without that many on the ice. Each one is a missed player
-    or a bad label to look at; fix it with a review_zfix.txt (see the skill) and solve again."""
+def _target(Ps, T):
+    """Skaters expected on the ice per second: 5, one fewer per penalty kill (never under 3), one more with the
+    goalie pulled, none during a penalty shot against us."""
+    tgt = np.full(T, 5.0)
+    for P in Ps:
+        for k in P.get("pk", []):
+            tgt[int(k["start"]):int(k["end"])] -= 1
+        for k in P.get("extra", []):
+            tgt[int(k["start"]):int(k["end"])] += 1
+    tgt = np.maximum(tgt, 3)
+    for P in Ps:
+        for k in P.get("ps", []):
+            tgt[int(k["start"]):int(k["end"])] = 0
+    return tgt
+
+
+def lineup_windows(W, min_len=15):
+    """Stretches of min_len+ seconds where the published shifts (shifts_all.csv) don't put the expected number of us
+    on the ice, and goals in highlights.json with the wrong count or a credited player off the ice. Returns
+    (windows, goal_notes): each window a dict with period, t0, t1, n_on, expected, mid, on_mid (who the shifts have
+    on at the midpoint) and live (seconds of the window outside the estimated stoppages, None without
+    stoppages.json); goal_notes are strings."""
     A = pd.read_csv(f"{W}/shifts_all.csv")
     Ps = periods(W)
-    def target(t):   # each penalty kill takes a skater off; two at once (a 5-on-3) take two; a pulled goalie adds one
-        if any(k["start"] <= t < k["end"] for P in Ps for k in P.get("ps", [])):
-            return 0   # a penalty shot against: everyone at the bench
-        return max(3, 5 - sum(k["start"] <= t < k["end"] for P in Ps for k in P.get("pk", []))
-                   + sum(k["start"] <= t < k["end"] for P in Ps for k in P.get("extra", [])))
+    T = int(max(P["end"] for P in Ps)) + 2
+    tgt = _target(Ps, T)
+    cnt = np.zeros(T)
+    for r in A.itertuples():   # a shift covers the seconds t with t0 <= t < t1
+        cnt[int(np.ceil(r.t0)):min(int(np.ceil(r.t1)), T)] += 1
+    live = None
+    if os.path.exists(f"{W}/stoppages.json"):
+        live = np.zeros(T, bool)
+        for P in Ps:
+            live[int(P["start"]):int(P["end"])] = True
+        for a, b in json.load(open(f"{W}/stoppages.json")):
+            live[int(a):int(b)] = False
     def on(t):
         return sorted(int(p) for p in A[(A.t0 <= t) & (A.t1 > t)].player)
-    bad = []
+    windows = []
     for P in Ps:
         run = None
         for t in range(P["start"], P["end"] + 1):
-            d = (len(on(t)) - target(t)) if t < P["end"] else None
+            d = (cnt[t] - tgt[t]) if t < P["end"] else None
             if run and d != run[1]:
                 if t - run[0] >= min_len:
                     mid = (run[0] + t) // 2
-                    bad.append(f"  {P['label']} {run[0]}-{t} ({t - run[0]} s): {target(run[0]) + run[1]} on the ice, "
-                               f"expected {target(run[0])}; on at {mid}: {on(mid)}")
+                    windows.append(dict(period=P["label"], t0=run[0], t1=t, n_on=int(tgt[run[0]] + run[1]),
+                                        expected=int(tgt[run[0]]), mid=mid, on_mid=on(mid),
+                                        live=int(live[run[0]:t].sum()) if live is not None else None))
                 run = None
             if d and not run:
                 run = (t, d)
+    notes = []
     hp = f"{W}/highlights.json"
     for h in (json.load(open(hp)) if os.path.exists(hp) else []):
         if h["type"] != "goal":
             continue
-        if len(on(h["t"])) != target(h["t"]):
-            bad.append(f"  goal at {h['t']}: on the ice {on(h['t'])}, expected {target(h['t'])} skaters")
+        t = int(h["t"])
+        if len(on(t)) != tgt[t]:
+            notes.append(f"  goal at {t}: on the ice {on(t)}, expected {int(tgt[t])} skaters")
         # the game sheet's scorer and assists (optional "scorer": 54, "assists": [36]) must be on the ice
         credited = [int(h["scorer"])] if h.get("scorer") else []
         credited += [int(x) for x in h.get("assists", [])]
         for p in credited:
-            if h.get("team", "for") == "for" and p not in on(h["t"]):
-                bad.append(f"  goal at {h['t']}: #{p} is credited on the game sheet but not on the ice ({on(h['t'])})")
+            if h.get("team", "for") == "for" and p not in on(t):
+                notes.append(f"  goal at {t}: #{p} is credited on the game sheet but not on the ice ({on(t)})")
+    return windows, notes
+
+
+def _window_line(w):
+    s = (f"  {w['period']} {w['t0']}-{w['t1']} ({w['t1'] - w['t0']} s): {w['n_on']} on the ice, expected "
+         f"{w['expected']}; on at {w['mid']}: {w['on_mid']}")
+    if w["live"] is not None:
+        s += "; all of it in a stoppage" if w["live"] == 0 else f"; {w['live']} s of it live"
+    return s
+
+
+def lineup_check(W, min_len=15):
+    """Print the lineup check (see lineup_windows). Each window is a missed player, an unlisted penalty, a bad label
+    or a slow line change during a stoppage; `run_game.py gaps` writes the briefs for checking them by eye."""
+    windows, notes = lineup_windows(W, min_len)
+    bad = [_window_line(w) for w in windows] + notes
     log("lineup check: " + ("OK" if not bad else f"{len(bad)} to look at"))
     for b in bad:
         print(b)
+    if windows:
+        print(f"  -> `run_game.py gaps {W}` writes the by-eye check briefs for these windows")
+    return windows
+
+
+# ---------------------------------------------------------------- gaps: the by-eye check of the lineup windows
+
+def _bench_sitters(W, P, R, min_len=20, min_frac=0.6):
+    """Labeled segments of min_len+ s that spend most of their frames in our bench zone: a player sitting at the
+    bench whom the tracker followed as if he were on the ice (Snoqualmie's benches sit right by the camera)."""
+    p = P["label"].lower()
+    S = pd.read_csv(f"{W}/{p}/segs_final.csv"); tr = pd.read_csv(f"{W}/{p}/tracks_v1.csv")
+    tr = tr.assign(bz=np.asarray(R.bench_zone(tr.fx, tr.rel)))
+    out = []
+    for s_ in S[(S.plabel >= 0) & (S.t1 - S.t0 >= min_len)].itertuples():
+        g = tr[(tr.tid == s_.tid) & (tr.t >= s_.t0) & (tr.t <= s_.t1)]
+        if len(g) and g.bz.mean() >= min_frac:
+            out.append((int(s_.plabel), int(s_.tid), s_.t0, s_.t1, float(g.bz.mean())))
+    return out
+
+
+def cmd_gaps(a):
+    """From the lineup check's windows write one filled checker prompt per period (W/scratch/gaps/prompt_pN.md,
+    pipeline/gap_prompt.md): the team's look, the rink, the roster, the known events, each window with the tracked
+    pieces behind it, and long pieces that sit at our bench. Each prompt is one general-purpose subagent's whole job;
+    it writes fixes.json in its scratch folder. `gaps W --apply` then merges every fixes.json into periods.json
+    (on/off spans) for the next solve."""
+    from roster import SKATERS, GOALIES, ABSENT, TEAM, GOALIE_NAMES
+    W = os.path.abspath(a.W).replace("\\", "/")
+    gdir = f"{W}/scratch/gaps"; os.makedirs(gdir, exist_ok=True)
+    if a.apply is not None:
+        return apply_fixes(W, a.apply or sorted(glob.glob(f"{gdir}/*/fixes.json")))
+    if not os.path.exists(f"{W}/shifts_all.csv"):
+        sys.exit("no shifts_all.csv: solve first")
+    R = rink(f"{W}/full")
+    Ps = periods(W)
+    windows, notes = lineup_windows(W, a.min_len)
+    pending = sorted(glob.glob(f"{gdir}/*/fixes.json"))
+    if pending:
+        print("fixes not yet applied (`gaps --apply` merges them into periods.json):", ", ".join(pending))
+    cfg = json.load(open(f"{W}/full/rink.json")) if os.path.exists(f"{W}/full/rink.json") else {}
+    opt = _review_options(W)
+    jersey = cfg.get("jersey", "light blue")
+    jersey_desc = ("WHITE jerseys with blue numbers and blue trim" if jersey.startswith("white")
+                   else "LIGHT-BLUE jerseys with white numbers")
+    opp_desc = (opt.get("opp") or ("dark or red jerseys" if jersey.startswith("white") else "white or dark jerseys")).rstrip(".")
+    notes_txt = "".join(f" {n.rstrip('.')}." for n in opt.get("notes", []))
+    roster = ", ".join(f"#{n} {v.upper()}" for n, v in sorted(SKATERS.items()))
+    if GOALIES:
+        goalie_line = f"Our goalie is #{GOALIES[0]} {GOALIE_NAMES.get(GOALIES[0], '').upper()} (big leg pads), never a skater."
+    else:
+        goalie_line = "Our goalie isn't on the roster card (a sub in goal, big leg pads); he is never a skater."
+    side = lambda P: "LEFT" if P["net"] < R.center_x else "RIGHT"
+    nets_line = "Our net is the " + ", ".join(f"{side(P)} one in {P['label']}" for P in Ps) + " (the goalie's end)."
+    cards = [f"{W}/rev_{P['label'].lower()}/roster_card.jpg" for P in Ps]
+    card = next((c for c in cards if os.path.exists(c)), cards[0])
+    bside = R.side
+    bx0, bx1, by0, by1 = R.bench_view()
+    rink_desc = f"{cfg.get('rink', 'renton')}: {(R.__class__.__doc__ or '').strip().split('. ')[0].rstrip('.')}."
+    bench_desc = (f"Our bench is {R.bench_where[bside]}; `--view bench` crops x {bx0}-{bx1}, y {by0}-{by1}. "
+                  f"The opponents' bench is the other one.")
+    box_desc = f" Our penalty box is {R.box_where[bside]}; a boxed player is off the ice (the solver knows the pk spans)."
+    hl = json.load(open(f"{W}/highlights.json")) if os.path.exists(f"{W}/highlights.json") else []
+    sheet_ = json.load(open(f"{W}/sheet.json", encoding="utf-8")) if os.path.exists(f"{W}/sheet.json") else {}
+    tmpl = open(f"{HERE}/gap_prompt.md", encoding="utf-8").read()
+    man = {}
+    for P in Ps:
+        mp = f"{W}/rev_{P['label'].lower()}/manifest.csv"
+        if os.path.exists(mp):
+            m = pd.read_csv(mp); man[P["label"]] = dict(zip(m.tid, m.row_id))
+    plan = []
+    for P in Ps:
+        lab = P["label"]; p = lab.lower()
+        ws = [w for w in windows if w["period"] == lab]
+        sitters = _bench_sitters(W, P, R) if os.path.exists(f"{W}/{p}/tracks_v1.csv") else []
+        if not ws and not sitters:
+            continue
+        ev = []
+        for k in P.get("pk", []):
+            ev.append(f"penalty kill {k['start']}-{k['end']}" + (f" with #{k['player']} in the box" if k.get("player") else "")
+                      + " (4 skaters expected)")
+        for k in P.get("extra", []):
+            ev.append(f"goalie pulled {k['start']}-{k['end']} (6 skaters expected)")
+        for k in P.get("ps", []):
+            ev.append(f"penalty shot against us {k['start']}-{k['end']} (nobody of ours on the ice)")
+        goals = [(int(h["t"]), h.get("team", "for"), h.get("scorer")) for h in hl if h.get("type") == "goal"] or \
+                [(g["video_t"], g["team"], g.get("scorer")) for g in sheet_.get("goals", []) if g.get("video_t")]
+        for t, team, sc in sorted(goals):
+            if P["start"] <= t <= P["end"]:
+                ev.append(f"goal {'for us' if team == 'for' else 'against us'} at about {t}" + (f" (#{sc})" if team == "for" and sc else ""))
+        ev_txt = (f"\nKnown events in {lab} ({P['start']}-{P['end']} s of video): " + "; ".join(ev) + ".\n") if ev else ""
+        S = pd.read_csv(f"{W}/{p}/segs_final.csv") if os.path.exists(f"{W}/{p}/segs_final.csv") else None
+        wl = []
+        for k, w in enumerate(ws, 1):
+            live = "" if w["live"] is None else (" all of it in a stoppage;" if w["live"] == 0 else f" {w['live']} s of it live;")
+            line = (f"{k}. {lab} {w['t0']}-{w['t1']} ({w['t1'] - w['t0']} s;{live} the solver has {w['n_on']} on, "
+                    f"expected {w['expected']}): {w['on_mid']}.")
+            if S is not None:
+                ov = S[(S.t1 > w["t0"] - 3) & (S.t0 < w["t1"] + 3) & ((S.plabel >= 0) | (S.t1 - S.t0 >= 5))]
+                pieces = []
+                for s_ in ov.sort_values("t0").itertuples():
+                    who = f"#{int(s_.plabel)}" if s_.plabel >= 0 else "unlabeled"
+                    src = f", label {'reviewed' if s_.src == 'review' else 'read'}" if s_.num >= 0 else ""
+                    row = man.get(lab, {}).get(s_.tid)
+                    ends = (" starts at the bench" if s_.bench0 else "") + (" ends at the bench" if s_.bench1 else "")
+                    pieces.append(f"{who} tid {int(s_.tid)}{f' ({row})' if row else ''} {s_.t0:.0f}-{s_.t1:.0f}{src}{ends}")
+                if pieces:
+                    line += "\n   pieces: " + "; ".join(pieces)
+            wl.append(line)
+        st_txt = ""
+        if sitters:
+            st_txt = ("\nLong tracked pieces that stay in our bench zone (a player sitting at the bench whom the tracker "
+                      "counted as on the ice? check each: if he was sitting, that is an \"off\" span over the piece "
+                      "until he climbs over the boards):\n" +
+                      "\n".join(f"- #{pl} tid {tid}{f' ({man.get(lab, {}).get(tid)})' if man.get(lab, {}).get(tid) else ''} "
+                                f"{t0:.0f}-{t1:.0f}, {fr:.0%} of its frames at the bench" for pl, tid, t0, t1, fr in sitters) + "\n")
+        chunk = max(1, a.chunk)
+        for c in range(0, max(len(wl), 1), chunk):
+            suffix = "" if len(wl) <= chunk else "abcdefgh"[c // chunk]
+            scratch = f"{gdir}/{p}{suffix}"
+            text = tmpl.format(W=W, PY=PY.replace("\\", "/"), ROOT=ROOT.replace("\\", "/"), scratch=scratch,
+                               team_desc=TEAM, jersey_desc=jersey_desc, opp_desc=opp_desc, roster=roster,
+                               notes=notes_txt, goalie_line=goalie_line, nets_line=nets_line, card=card,
+                               rink_desc=rink_desc, frame_size=f"{R.size[0]}x{R.size[1]}", bench_desc=bench_desc,
+                               box_desc=box_desc, events=ev_txt,
+                               windows="\n".join(wl[c:c + chunk]) or "(none this period; only the bench pieces below)",
+                               sitters=st_txt if c == 0 else "", out_file=f"{scratch}/fixes.json")
+            pf = f"{gdir}/prompt_{p}{suffix}.md"
+            open(pf, "w", encoding="utf-8").write(text)
+            plan.append(f"{lab}{suffix}: {len(wl[c:c + chunk])} window(s)" + (f", {len(sitters)} bench piece(s)" if sitters and c == 0 else "") + f" -> {pf}")
+    for n in notes:
+        print(n)
+    if not plan:
+        print("lineup check: OK; nothing to brief" + (f"; {len(notes)} goal note(s) above" if notes else ""))
+        return
+    print("\n".join(plan))
+    print(f"{len(plan)} prompt(s): for each, one general-purpose subagent whose whole prompt is\n"
+          f"  'Read <prompt file> and do exactly what it says. Reply with one line per window.'\n"
+          f"  Then `run_game.py gaps {a.W} --apply` merges their fixes.json files into periods.json, and solve again.")
+    if ABSENT:
+        print("absent (not on the roster above):", ", ".join(f"#{n}" for n in sorted(ABSENT)))
+
+
+def apply_fixes(W, files):
+    """Merge gap checkers' fixes.json files ([{"period", "kind": "on"|"off", "player", "start", "end", "why"}, ...])
+    into periods.json; entries with "ok" or "unsure" are printed, not applied. Applied files are renamed."""
+    Ps = periods(W)
+    have = {(P["label"], k, int(e["player"]), round(float(e["start"]), 1), round(float(e["end"]), 1))
+            for P in Ps for k in ("on", "off") for e in P.get(k, [])}
+    added = 0
+    if not files:
+        print("no fixes.json to apply (checkers write W/scratch/gaps/<period>/fixes.json)")
+        return
+    for f in files:
+        try:
+            fixes = json.load(open(f, encoding="utf-8"))
+        except ValueError as e:
+            print(f"{f}: not JSON ({e}); skipped"); continue
+        print(f"{f}:")
+        for e in fixes if isinstance(fixes, list) else [fixes]:
+            if not isinstance(e, dict):
+                continue
+            if e.get("kind") not in ("on", "off"):
+                print(f"  noted {e.get('period', '')} {e.get('window', '')}: {e.get('ok') or e.get('unsure') or e}")
+                continue
+            try:
+                player, t0, t1 = int(e["player"]), float(e["start"]), float(e["end"])
+            except (KeyError, TypeError, ValueError):
+                print(f"  bad entry, skipped: {e}"); continue
+            P = next((P for P in Ps if P["label"] == e.get("period")), None) or \
+                next((P for P in Ps if P["start"] <= t0 <= P["end"]), None)
+            if P is None or t1 <= t0:
+                print(f"  no period for {e}; skipped"); continue
+            t0, t1 = max(t0, P["start"]), min(t1, P["end"])
+            key = (P["label"], e["kind"], player, round(t0, 1), round(t1, 1))
+            if key in have:
+                print(f"  already in periods.json: {P['label']} {e['kind']} #{player} {t0}-{t1}"); continue
+            P.setdefault(e["kind"], []).append(dict(start=t0, end=t1, player=player))
+            have.add(key); added += 1
+            print(f"  + {P['label']} {e['kind']:3s} #{player} {t0}-{t1}: {e.get('why') or e.get('note', '')}")
+        os.replace(f, f[:-5] + ".applied.json")
+    if added:
+        for P in Ps:
+            for k in ("on", "off"):
+                if k in P:
+                    P[k] = sorted(P[k], key=lambda x: (x["start"], x["player"]))
+        json.dump(Ps, open(f"{W}/periods.json", "w"), indent=1)
+    print(f"{added} span(s) added to {W}/periods.json" + ("; solve again" if added else ""))
 
 
 LADA_API = "https://api.ladaseattle.com/api/v1"
@@ -1053,15 +1370,18 @@ def cmd_publish(a):
         notes=[], video_ends_early=bool(a.video_ends_early),
         fun=dict(name_reads={str(k): int(v) for k, v in names.num.value_counts().items() if k in played}),
         pipeline=dict(detections=sum(1 for _ in open(f"{W}/full/dets.csv")),
-                      crops=len(os.listdir(f"{W}/full/crops")), reads=int(len(reads)),
+                      crops=len(os.listdir(f"{W}/full/crops")) if os.path.isdir(f"{W}/full/crops") else None,
+                      reads=int(len(reads)),
                       reviewed=int(sum(len(pd.read_csv(m)) for m in glob.glob(f"{W}/rev_p*/manifest.csv")))))
     gj = f"{gd}/game.json"
     if os.path.exists(gj):  # keep hand-written fields (notes, title tweaks) from an earlier publish
         old = json.load(open(gj))
         for k in ("notes", "title", "eyebrow", "highlights", "video_ends_early", "lada_game_id", "opponent_name", "zones",
-                  "shots"):
+                  "shots", "shots_source"):
             if old.get(k):
                 game[k] = old[k]
+        if game["pipeline"]["crops"] is None and (old.get("pipeline") or {}).get("crops"):
+            game["pipeline"]["crops"] = old["pipeline"]["crops"]   # an archived folder has no crops any more
     if not game.get("lada_game_id"):  # links the game to the LADA app's schedule and scores
         game["lada_game_id"] = lada_game_id(date)
     if os.path.exists(f"{W}/stoppages.json"):
@@ -1070,6 +1390,13 @@ def cmd_publish(a):
         game["highlights"] = json.load(open(f"{W}/highlights.json"))
     if os.path.exists(f"{W}/shots.json") and json.load(open(f"{W}/shots.json")).get("checked"):
         game["shots"] = json.load(open(f"{W}/shots.json"))["periods"]   # shots.py, once checked against the board
+        game["shots_source"] = "board"
+    elif not game.get("shots") and os.path.exists(f"{W}/sheet.json"):
+        # the game sheet's shots per period (SportNinja); the board's OCR is wrong more often than not
+        sh_shots = json.load(open(f"{W}/sheet.json", encoding="utf-8")).get("shots") or {}
+        if all(P["label"] in sh_shots for P in Ps):
+            game["shots"] = {P["label"]: sh_shots[P["label"]] for P in Ps}
+            game["shots_source"] = "sheet"
     from zones import zone_shares   # time in offence / defence for the trends page (needs the detections)
     game["zones"] = zone_shares(f"{W}/full", game) or game.get("zones")
     json.dump(game, open(gj, "w"), indent=2, ensure_ascii=False)
@@ -1093,6 +1420,9 @@ def cmd_archive(a):
     if not os.path.exists(f"{W}/shifts_all.csv"):
         sys.exit(f"{W} has no shifts_all.csv: archive a game only after solve and publish")
     before = _size(W)
+    if os.path.exists(f"{W}/scoreboard.npy"):   # the board every second as JPEGs (~20 MB): re-checks without the video
+        from scoreboard import compress
+        compress(W)
     drop = [f"{W}/{n}" for n in ("video.webm", "audio.m4a", "yolo11m.pt", "scoreboard.npy", "full/crops", "full/ov")]
     drop += glob.glob(f"{W}/*.jpg") + glob.glob(f"{W}/*.png") + glob.glob(f"{W}/rev_p*/*.jpg")
     drop += glob.glob(f"{W}/full/ocr_done_*.txt") + glob.glob(f"{W}/p*/crops")
@@ -1129,6 +1459,7 @@ if __name__ == "__main__":
     sub.add_parser("check").add_argument("W")
     ab = sub.add_parser("absent"); ab.add_argument("W"); ab.add_argument("numbers", type=int, nargs="*")
     ab.add_argument("--clear", action="store_true", help="forget the absent list")
+    ab.add_argument("--suggest", action="store_true", help="table the evidence per player: sheet, LADA lines, reads, card rows")
     rv = sub.add_parser("review"); rv.add_argument("W")
     rv.add_argument("--opp", help="the opponents' look, e.g. 'white jerseys; they also wear #11 and #43'")
     rv.add_argument("--note", action="append", help="a sentence for every reviewer, e.g. a player's look (repeatable)")
@@ -1142,6 +1473,10 @@ if __name__ == "__main__":
     c = sub.add_parser("clip"); c.add_argument("W"); c.add_argument("game_id"); c.add_argument("name")
     c.add_argument("t0"); c.add_argument("t1"); c.add_argument("poster"); c.add_argument("focus", nargs="?")
     sub.add_parser("solve").add_argument("W")
+    gp = sub.add_parser("gaps"); gp.add_argument("W")
+    gp.add_argument("--apply", nargs="*", metavar="FIXES.json", help="merge checkers' fixes into periods.json (default: every scratch/gaps/*/fixes.json)")
+    gp.add_argument("--chunk", type=int, default=6, help="windows per checker prompt (6)")
+    gp.add_argument("--min-len", type=int, default=15, help="shortest window to list, in seconds (15)")
     p = sub.add_parser("publish"); p.add_argument("W"); p.add_argument("game_id")
     p.add_argument("--opponent", required=True); p.add_argument("--eyebrow", required=True)
     p.add_argument("--date"); p.add_argument("--title"); p.add_argument("--video")
@@ -1166,4 +1501,4 @@ if __name__ == "__main__":
     {"fetch": cmd_fetch, "skaters": cmd_skaters, "prepare": cmd_prepare, "solve": cmd_solve, "goals": cmd_goals,
      "frames": cmd_frames, "clip": cmd_clip, "publish": cmd_publish, "unknown": cmd_unknown,
      "archive": cmd_archive, "jersey": cmd_jersey, "absent": cmd_absent, "review": cmd_review, "check": cmd_check,
-     "schedule": cmd_schedule, "sheet": cmd_sheet}[a.cmd](a)
+     "schedule": cmd_schedule, "sheet": cmd_sheet, "gaps": cmd_gaps}[a.cmd](a)

@@ -3,7 +3,8 @@
 second's frames.
 
   scoreboard.py W                 one pass over the video -> W/scoreboard.npy (~5 min; fetch does this)
-  scoreboard.py W OUT.jpg t1 t2 …  the board at those seconds of video as a sheet, 2.5x (scans first if needed)
+  scoreboard.py W OUT.jpg t1 t2 …  the board at those seconds of video as a sheet, 2.5x (scans first if needed;
+                                   an archived folder's scoreboard_jpg.npz serves too)
 """
 import os, subprocess, sys
 import numpy as np, cv2, imageio_ffmpeg
@@ -30,10 +31,32 @@ def scan(W):
     print(f"{W}/scoreboard.npy: {len(best)} s")
 
 
+def compress(W):
+    """scoreboard.npy -> scoreboard_jpg.npz, the same frames as JPEGs (~20 MB instead of ~150-400): what archive keeps."""
+    a = np.load(f"{W}/scoreboard.npy", mmap_mode="r")
+    jpgs = [cv2.imencode(".jpg", np.asarray(f), [cv2.IMWRITE_JPEG_QUALITY, 90])[1].tobytes() for f in a]
+    np.savez(f"{W}/scoreboard_jpg.npz", data=np.frombuffer(b"".join(jpgs), np.uint8),
+             ends=np.cumsum([len(j) for j in jpgs]), shape=np.array(a.shape[1:3]))
+    print(f"{W}/scoreboard_jpg.npz: {len(jpgs)} s")
+
+
+def load(W):
+    """The board per second: scoreboard.npy, else the JPEGs an archive keeps, else a scan of the video."""
+    if os.path.exists(f"{W}/scoreboard.npy"):
+        return np.load(f"{W}/scoreboard.npy")
+    if os.path.exists(f"{W}/scoreboard_jpg.npz"):
+        z = np.load(f"{W}/scoreboard_jpg.npz")
+        data, ends = z["data"], z["ends"]
+        starts = np.r_[0, ends[:-1]]
+        return np.array([cv2.imdecode(data[s:e], cv2.IMREAD_COLOR) for s, e in zip(starts, ends)])
+    if not os.path.exists(f"{W}/video.webm"):
+        raise SystemExit(f"{W}: no scoreboard.npy, scoreboard_jpg.npz or video.webm to read the board from")
+    scan(W)
+    return np.load(f"{W}/scoreboard.npy")
+
+
 def sheet(W, out, ts, cols=6):
-    if not os.path.exists(f"{W}/scoreboard.npy"):
-        scan(W)
-    a = np.load(f"{W}/scoreboard.npy")
+    a = load(W)
     h, w = a.shape[1:3]
     tw = 325; th = int(tw * h / w)
     tiles = []
