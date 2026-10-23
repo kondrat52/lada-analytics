@@ -71,10 +71,10 @@
    "lada_player_id": 5725,
    "games_played": 5,
    "shifts": 71,
-   "toi": 9305,
-   "toi_per_game": 1861,
-   "play": 6190,
-   "avg_shift": 131.1,
+   "toi": 9324,
+   "toi_per_game": 1864.8,
+   "play": 6207,
+   "avg_shift": 131.3,
    "longest_shift": 224,
    "shortest_shift": 39,
    "games": [
@@ -97,10 +97,10 @@
       "code": "BV",
       "name": "Best Vibes"
      },
-     "toi": 1848,
+     "toi": 1867,
      "shifts": 16,
-     "avg_shift": 115.5,
-     "play": 1237
+     "avg_shift": 116.7,
+     "play": 1254
     },
     {
      "id": "2026-09-28-vs-y",
@@ -146,10 +146,10 @@
    "lada_player_id": 5827,
    "games_played": 3,
    "shifts": 44,
-   "toi": 5519,
-   "toi_per_game": 1839.7,
-   "play": 3929,
-   "avg_shift": 125.4,
+   "toi": 5523,
+   "toi_per_game": 1841,
+   "play": 3933,
+   "avg_shift": 125.5,
    "longest_shift": 203,
    "shortest_shift": 21,
    "games": [
@@ -172,10 +172,10 @@
       "code": "BV",
       "name": "Best Vibes"
      },
-     "toi": 1847,
+     "toi": 1851,
      "shifts": 15,
-     "avg_shift": 123.1,
-     "play": 1352
+     "avg_shift": 123.4,
+     "play": 1356
     },
     {
      "id": "2026-09-28-vs-y",
@@ -197,9 +197,9 @@
    "lada_player_id": 20413,
    "games_played": 5,
    "shifts": 62,
-   "toi": 9144,
-   "toi_per_game": 1828.8,
-   "play": 5930,
+   "toi": 9148,
+   "toi_per_game": 1829.6,
+   "play": 5932,
    "avg_shift": 147.5,
    "longest_shift": 455,
    "shortest_shift": 20,
@@ -223,10 +223,10 @@
       "code": "BV",
       "name": "Best Vibes"
      },
-     "toi": 1196,
+     "toi": 1200,
      "shifts": 10,
-     "avg_shift": 119.6,
-     "play": 826
+     "avg_shift": 120,
+     "play": 828
     },
     {
      "id": "2026-09-28-vs-y",
@@ -272,10 +272,10 @@
    "lada_player_id": 56,
    "games_played": 5,
    "shifts": 69,
-   "toi": 8709,
-   "toi_per_game": 1741.8,
-   "play": 5821,
-   "avg_shift": 126.2,
+   "toi": 8722,
+   "toi_per_game": 1744.4,
+   "play": 5834,
+   "avg_shift": 126.4,
    "longest_shift": 277,
    "shortest_shift": 23,
    "games": [
@@ -298,10 +298,10 @@
       "code": "BV",
       "name": "Best Vibes"
      },
-     "toi": 1727,
+     "toi": 1740,
      "shifts": 15,
-     "avg_shift": 115.1,
-     "play": 1154
+     "avg_shift": 116,
+     "play": 1167
     },
     {
      "id": "2026-09-28-vs-y",
@@ -347,10 +347,10 @@
    "lada_player_id": 3425,
    "games_played": 5,
    "shifts": 64,
-   "toi": 8578,
-   "toi_per_game": 1715.6,
-   "play": 5838,
-   "avg_shift": 134.0,
+   "toi": 8589,
+   "toi_per_game": 1717.8,
+   "play": 5836,
+   "avg_shift": 134.2,
    "longest_shift": 408,
    "shortest_shift": 22,
    "games": [
@@ -373,10 +373,10 @@
       "code": "BV",
       "name": "Best Vibes"
      },
-     "toi": 1592,
+     "toi": 1603,
      "shifts": 10,
-     "avg_shift": 159.2,
-     "play": 1071
+     "avg_shift": 160.3,
+     "play": 1069
     },
     {
      "id": "2026-09-28-vs-y",
@@ -461,10 +461,10 @@
    "lada_player_id": 5690,
    "games_played": 5,
    "shifts": 62,
-   "toi": 7729,
-   "toi_per_game": 1545.8,
-   "play": 5201,
-   "avg_shift": 124.7,
+   "toi": 7736,
+   "toi_per_game": 1547.2,
+   "play": 5207,
+   "avg_shift": 124.8,
    "longest_shift": 215,
    "shortest_shift": 28,
    "games": [
@@ -487,10 +487,10 @@
       "code": "BV",
       "name": "Best Vibes"
      },
-     "toi": 1237,
+     "toi": 1244,
      "shifts": 10,
-     "avg_shift": 123.7,
-     "play": 950
+     "avg_shift": 124.4,
+     "play": 956
     },
     {
      "id": "2026-09-28-vs-y",
@@ -626,10 +626,10 @@
    "lada_player_id": 5761,
    "games_played": 3,
    "shifts": 36,
-   "toi": 4499,
-   "toi_per_game": 1499.7,
+   "toi": 4498,
+   "toi_per_game": 1499.3,
    "play": 2838,
-   "avg_shift": 125.0,
+   "avg_shift": 124.9,
    "longest_shift": 218,
    "shortest_shift": 28,
    "games": [
@@ -652,9 +652,9 @@
       "code": "BV",
       "name": "Best Vibes"
      },
-     "toi": 1320,
+     "toi": 1319,
      "shifts": 10,
-     "avg_shift": 132,
+     "avg_shift": 131.9,
      "play": 885
     },
     {
@@ -677,12 +677,12 @@
    "lada_player_id": 5867,
    "games_played": 5,
    "shifts": 56,
-   "toi": 6630,
-   "toi_per_game": 1326,
-   "play": 4426,
-   "avg_shift": 118.4,
+   "toi": 6612,
+   "toi_per_game": 1322.4,
+   "play": 4406,
+   "avg_shift": 118.1,
    "longest_shift": 236,
-   "shortest_shift": 32,
+   "shortest_shift": 27,
    "games": [
     {
      "id": "2026-10-12-vs-fl",
@@ -703,10 +703,10 @@
       "code": "BV",
       "name": "Best Vibes"
      },
-     "toi": 1131,
+     "toi": 1113,
      "shifts": 10,
-     "avg_shift": 113.1,
-     "play": 777
+     "avg_shift": 111.3,
+     "play": 757
     },
     {
      "id": "2026-09-28-vs-y",
@@ -752,10 +752,10 @@
    "lada_player_id": 259,
    "games_played": 5,
    "shifts": 57,
-   "toi": 6513,
-   "toi_per_game": 1302.6,
+   "toi": 6512,
+   "toi_per_game": 1302.4,
    "play": 4243,
-   "avg_shift": 114.3,
+   "avg_shift": 114.2,
    "longest_shift": 196,
    "shortest_shift": 23,
    "games": [
@@ -778,9 +778,9 @@
       "code": "BV",
       "name": "Best Vibes"
      },
-     "toi": 1165,
+     "toi": 1164,
      "shifts": 10,
-     "avg_shift": 116.5,
+     "avg_shift": 116.4,
      "play": 827
     },
     {
@@ -827,9 +827,9 @@
    "lada_player_id": 5683,
    "games_played": 4,
    "shifts": 40,
-   "toi": 4910,
-   "toi_per_game": 1227.5,
-   "play": 3288,
+   "toi": 4912,
+   "toi_per_game": 1228,
+   "play": 3290,
    "avg_shift": 122.8,
    "longest_shift": 209,
    "shortest_shift": 29,
@@ -841,10 +841,10 @@
       "code": "BV",
       "name": "Best Vibes"
      },
-     "toi": 1232,
+     "toi": 1234,
      "shifts": 10,
-     "avg_shift": 123.2,
-     "play": 930
+     "avg_shift": 123.4,
+     "play": 932
     },
     {
      "id": "2026-09-28-vs-y",
@@ -890,10 +890,10 @@
    "lada_player_id": 2,
    "games_played": 5,
    "shifts": 51,
-   "toi": 5842,
-   "toi_per_game": 1168.4,
-   "play": 3969,
-   "avg_shift": 114.5,
+   "toi": 5844,
+   "toi_per_game": 1168.8,
+   "play": 3971,
+   "avg_shift": 114.6,
    "longest_shift": 219,
    "shortest_shift": 34,
    "games": [
@@ -916,10 +916,10 @@
       "code": "BV",
       "name": "Best Vibes"
      },
-     "toi": 1474,
+     "toi": 1476,
      "shifts": 10,
-     "avg_shift": 147.4,
-     "play": 916
+     "avg_shift": 147.6,
+     "play": 918
     },
     {
      "id": "2026-09-28-vs-y",

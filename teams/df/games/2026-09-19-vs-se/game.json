@@ -55,7 +55,8 @@
     "Sourov #31 arrived late: he walked into the bench about 14 minutes into the 1st and first stepped on near the end of the period.",
     "Penalties: Sourov's tripping with 1:06 left in the 2nd (coincidental with Sentinels #17) wasn't served in the 2nd, where we played 5 on 4 to the end; he sat the first 2:00 of the 3rd, 4-on-4. Albantov's interference at 2:43 of the 3rd, 2 minutes. The last one (tripping at 0:30 of the 3rd) is Sourov's on the game sheet, but Akulov #37 went to the box, as the board showed.",
     "Shots from the board, matching the game sheet.",
-    "Labeled by hand: two review rows that read 19 off a sleeve (no one wears 19; one was Kleiman) set to unknown, and on/off corrections from a frame-by-frame check of every lineup gap: #16 and #69 swapped early in the 1st, a referee counted as #97 in the 2nd, players missed at goals 1, 2, 4, 6 and 7, and several line changes."
+    "Labeled by hand: two review rows that read 19 off a sleeve (no one wears 19; one was Kleiman) set to unknown, and on/off corrections from a frame-by-frame check of every lineup gap: #16 and #69 swapped early in the 1st, a referee counted as #97 in the 2nd, players missed at goals 1, 2, 4, 6 and 7, and several line changes.",
+    "Republished Oct 22, 2026 after a pipeline fix: a review row the reviewer called noise (an opponent or a referee, nobody of ours) now loses its OCR label instead of keeping it weakly. Ice time moved by #97 -45 s, #31 +21 s, #69 +18 s, #26 +6 s, #46 -4 s, #16 +2 s, #37 +2 s, #44 -2 s."
   ],
   "video_ends_early": false,
   "fun": {
@@ -78,7 +79,148 @@
     "reads": 5027,
     "reviewed": 1673
   },
+  "highlights": [
+    {
+      "type": "goal",
+      "team": "for",
+      "t": 325,
+      "scorer": 69,
+      "assists": [
+        37
+      ],
+      "clip": "clips/goal-1.mp4",
+      "poster": "clips/goal-1.jpg",
+      "note": "1st period, clock 12:45: a scramble in their crease, Kleiman #69 from Akulov, 1-0"
+    },
+    {
+      "type": "goal",
+      "team": "for",
+      "t": 1013,
+      "scorer": 37,
+      "assists": [
+        26,
+        61
+      ],
+      "clip": "clips/goal-2.mp4",
+      "poster": "clips/goal-2.jpg",
+      "note": "1st period, clock 1:11: Babkin feeds from the left and Akulov #37 finishes at the back door with the goalie down, 2-0"
+    },
+    {
+      "type": "goal",
+      "team": "for",
+      "t": 1598,
+      "scorer": 97,
+      "assists": [
+        29
+      ],
+      "clip": "clips/goal-3.mp4",
+      "poster": "clips/goal-3.jpg",
+      "note": "2nd period, clock 11:50: a scramble with the goalie down, Zakharankau #97 from Albantov, 3-0"
+    },
+    {
+      "type": "goal",
+      "team": "for",
+      "t": 2536,
+      "scorer": 44,
+      "assists": [
+        26,
+        37
+      ],
+      "clip": "clips/goal-4.mp4",
+      "poster": "clips/goal-4.jpg",
+      "note": "3rd period, clock 17:08: a crash on the net 4-on-4, Tverskoy #44 from Babkin and Akulov, 4-0"
+    },
+    {
+      "type": "goal",
+      "team": "for",
+      "t": 2813,
+      "scorer": 26,
+      "assists": [
+        44
+      ],
+      "clip": "clips/goal-5.mp4",
+      "poster": "clips/goal-5.jpg",
+      "note": "3rd period, clock 14:26: Babkin #26 from Tverskoy, 5-0"
+    },
+    {
+      "type": "goal",
+      "team": "for",
+      "t": 3653,
+      "scorer": 97,
+      "assists": [
+        69,
+        44
+      ],
+      "clip": "clips/goal-6.mp4",
+      "poster": "clips/goal-6.jpg",
+      "note": "3rd period, clock 5:45 (the board stopped at 5:37): power play, Zakharankau #97 drives the right side and scores with the goalie sprawled, 6-0"
+    },
+    {
+      "type": "goal",
+      "team": "for",
+      "t": 3726,
+      "scorer": 44,
+      "assists": [
+        26
+      ],
+      "clip": "clips/goal-7.mp4",
+      "poster": "clips/goal-7.jpg",
+      "note": "3rd period, clock 4:31: a scramble with the goalie down, Tverskoy #44 from Babkin, 7-0"
+    },
+    {
+      "type": "goal",
+      "team": "for",
+      "t": 3766,
+      "scorer": 37,
+      "assists": [],
+      "clip": "clips/goal-8.mp4",
+      "poster": "clips/goal-8.jpg",
+      "note": "3rd period, clock 3:53: Akulov #37 carries in alone and jams it in at the post, 8-0"
+    },
+    {
+      "type": "penalty",
+      "player": 31,
+      "t": 2248,
+      "clip": "clips/penalty-31.mp4",
+      "poster": "clips/penalty-31.jpg",
+      "note": "2nd period, clock 1:06: tripping, coincidental with Sentinels #17's slashing; Sourov sat out the first 3 minutes of the 3rd (2:00 of clock), 4-on-4"
+    },
+    {
+      "type": "penalty",
+      "player": 29,
+      "t": 3834,
+      "clip": "clips/penalty-29.mp4",
+      "poster": "clips/penalty-29.jpg",
+      "note": "3rd period, clock 2:43: interference away from the puck near the left circle, 2 minutes"
+    },
+    {
+      "type": "penalty",
+      "player": 37,
+      "t": 4045,
+      "clip": "clips/penalty-37.mp4",
+      "poster": "clips/penalty-37.jpg",
+      "note": "3rd period, clock 0:30: tripping; the game sheet has #31 Sourov, but Akulov #37 went to the box (as the board shows) for the last 32 s"
+    }
+  ],
   "lada_game_id": 32948,
+  "zones": {
+    "offence": 0.5367,
+    "defence": 0.1991
+  },
+  "shots": {
+    "P1": [
+      11,
+      4
+    ],
+    "P2": [
+      12,
+      0
+    ],
+    "P3": [
+      19,
+      8
+    ]
+  },
   "stoppages": [
     [
       12,
@@ -237,145 +379,5 @@
       4081
     ]
   ],
-  "highlights": [
-    {
-      "type": "goal",
-      "team": "for",
-      "t": 325,
-      "scorer": 69,
-      "assists": [
-        37
-      ],
-      "clip": "clips/goal-1.mp4",
-      "poster": "clips/goal-1.jpg",
-      "note": "1st period, clock 12:45: a scramble in their crease, Kleiman #69 from Akulov, 1-0"
-    },
-    {
-      "type": "goal",
-      "team": "for",
-      "t": 1013,
-      "scorer": 37,
-      "assists": [
-        26,
-        61
-      ],
-      "clip": "clips/goal-2.mp4",
-      "poster": "clips/goal-2.jpg",
-      "note": "1st period, clock 1:11: Babkin feeds from the left and Akulov #37 finishes at the back door with the goalie down, 2-0"
-    },
-    {
-      "type": "goal",
-      "team": "for",
-      "t": 1598,
-      "scorer": 97,
-      "assists": [
-        29
-      ],
-      "clip": "clips/goal-3.mp4",
-      "poster": "clips/goal-3.jpg",
-      "note": "2nd period, clock 11:50: a scramble with the goalie down, Zakharankau #97 from Albantov, 3-0"
-    },
-    {
-      "type": "goal",
-      "team": "for",
-      "t": 2536,
-      "scorer": 44,
-      "assists": [
-        26,
-        37
-      ],
-      "clip": "clips/goal-4.mp4",
-      "poster": "clips/goal-4.jpg",
-      "note": "3rd period, clock 17:08: a crash on the net 4-on-4, Tverskoy #44 from Babkin and Akulov, 4-0"
-    },
-    {
-      "type": "goal",
-      "team": "for",
-      "t": 2813,
-      "scorer": 26,
-      "assists": [
-        44
-      ],
-      "clip": "clips/goal-5.mp4",
-      "poster": "clips/goal-5.jpg",
-      "note": "3rd period, clock 14:26: Babkin #26 from Tverskoy, 5-0"
-    },
-    {
-      "type": "goal",
-      "team": "for",
-      "t": 3653,
-      "scorer": 97,
-      "assists": [
-        69,
-        44
-      ],
-      "clip": "clips/goal-6.mp4",
-      "poster": "clips/goal-6.jpg",
-      "note": "3rd period, clock 5:45 (the board stopped at 5:37): power play, Zakharankau #97 drives the right side and scores with the goalie sprawled, 6-0"
-    },
-    {
-      "type": "goal",
-      "team": "for",
-      "t": 3726,
-      "scorer": 44,
-      "assists": [
-        26
-      ],
-      "clip": "clips/goal-7.mp4",
-      "poster": "clips/goal-7.jpg",
-      "note": "3rd period, clock 4:31: a scramble with the goalie down, Tverskoy #44 from Babkin, 7-0"
-    },
-    {
-      "type": "goal",
-      "team": "for",
-      "t": 3766,
-      "scorer": 37,
-      "assists": [],
-      "clip": "clips/goal-8.mp4",
-      "poster": "clips/goal-8.jpg",
-      "note": "3rd period, clock 3:53: Akulov #37 carries in alone and jams it in at the post, 8-0"
-    },
-    {
-      "type": "penalty",
-      "player": 31,
-      "t": 2248,
-      "clip": "clips/penalty-31.mp4",
-      "poster": "clips/penalty-31.jpg",
-      "note": "2nd period, clock 1:06: tripping, coincidental with Sentinels #17's slashing; Sourov sat out the first 3 minutes of the 3rd (2:00 of clock), 4-on-4"
-    },
-    {
-      "type": "penalty",
-      "player": 29,
-      "t": 3834,
-      "clip": "clips/penalty-29.mp4",
-      "poster": "clips/penalty-29.jpg",
-      "note": "3rd period, clock 2:43: interference away from the puck near the left circle, 2 minutes"
-    },
-    {
-      "type": "penalty",
-      "player": 37,
-      "t": 4045,
-      "clip": "clips/penalty-37.mp4",
-      "poster": "clips/penalty-37.jpg",
-      "note": "3rd period, clock 0:30: tripping; the game sheet has #31 Sourov, but Akulov #37 went to the box (as the board shows) for the last 32 s"
-    }
-  ],
-  "shots": {
-    "P1": [
-      11,
-      4
-    ],
-    "P2": [
-      12,
-      0
-    ],
-    "P3": [
-      19,
-      8
-    ]
-  },
-  "zones": {
-    "offence": 0.5367,
-    "defence": 0.1991
-  }
+  "shots_source": "board"
 }

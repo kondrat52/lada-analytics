@@ -373,9 +373,9 @@
    "lada_player_id": 248,
    "games_played": 4,
    "shifts": 62,
-   "toi": 6807,
-   "toi_per_game": 1701.8,
-   "play": 4774,
+   "toi": 6808,
+   "toi_per_game": 1702,
+   "play": 4775,
    "avg_shift": 109.8,
    "longest_shift": 192,
    "shortest_shift": 27,
@@ -411,10 +411,10 @@
       "code": "CP",
       "name": "Cluster Pucks"
      },
-     "toi": 1217,
+     "toi": 1218,
      "shifts": 13,
-     "avg_shift": 93.6,
-     "play": 818
+     "avg_shift": 93.7,
+     "play": 819
     },
     {
      "id": "2026-09-13-vs-pb",
@@ -526,10 +526,10 @@
    "lada_player_id": 297,
    "games_played": 4,
    "shifts": 48,
-   "toi": 5905,
-   "toi_per_game": 1476.2,
+   "toi": 5925,
+   "toi_per_game": 1481.2,
    "play": 3933,
-   "avg_shift": 123.0,
+   "avg_shift": 123.4,
    "longest_shift": 226,
    "shortest_shift": 49,
    "games": [
@@ -564,9 +564,9 @@
       "code": "CP",
       "name": "Cluster Pucks"
      },
-     "toi": 1403,
+     "toi": 1423,
      "shifts": 12,
-     "avg_shift": 116.9,
+     "avg_shift": 118.6,
      "play": 942
     },
     {
@@ -652,8 +652,8 @@
    "lada_player_id": 81,
    "games_played": 4,
    "shifts": 55,
-   "toi": 5620,
-   "toi_per_game": 1405,
+   "toi": 5621,
+   "toi_per_game": 1405.2,
    "play": 3833,
    "avg_shift": 102.2,
    "longest_shift": 199,
@@ -690,9 +690,9 @@
       "code": "CP",
       "name": "Cluster Pucks"
      },
-     "toi": 1199,
+     "toi": 1200,
      "shifts": 13,
-     "avg_shift": 92.2,
+     "avg_shift": 92.3,
      "play": 826
     },
     {

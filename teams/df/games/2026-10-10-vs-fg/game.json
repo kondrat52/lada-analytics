@@ -54,7 +54,8 @@
     "Wheeler #0 in goal (his number wasn't readable on the video; white jersey, dark pads, as on Sep 19). Eleven skaters, two of them subs: Babkin #26 and Prozhogin #61. Absent: #1, #4, #11, #12, #13, #16, #20, #25, #27, #37, #44, #52, #54, #69, #76. The game sheet marks Joye #27 as playing, but no 27 appears on the video and the eleven fill the ice time.",
     "Penalties: Prozhogin #61's hooking in the 2nd ran 3:00 on the board (2 minutes on the sheet); we played four from the whistle at 25:01 of video, and the box door opened 22 s after the penalty ran out (29:09). Polyanskiy #46's hooking in the 3rd, 2 minutes (46:07 to 48:55), killed off. Babkin #26's slashing came with 14 s left and he sat to the end. Frost Giants' Bentivenga #13 sat 2 minutes for tripping in the 3rd.",
     "Shots on goal from the board, matching the game sheet: Doofers 27, Frost Giants 36.",
-    "Labeled by hand: on/off corrections from a frame-by-frame check of every lineup gap, mostly line changes made during stoppages. Zakharankau #97 was on for two 2nd-period stretches his tracks missed and for his goal. Albantov #29 left the ice at about 3:05 and came back right after the 2nd goal against; his change is set at 2:58 so the two shifts aren't joined across the goal."
+    "Labeled by hand: on/off corrections from a frame-by-frame check of every lineup gap, mostly line changes made during stoppages. Zakharankau #97 was on for two 2nd-period stretches his tracks missed and for his goal. Albantov #29 left the ice at about 3:05 and came back right after the 2nd goal against; his change is set at 2:58 so the two shifts aren't joined across the goal.",
+    "Republished Oct 22, 2026 after a pipeline fix: a review row the reviewer called noise (an opponent or a referee, nobody of ours) now loses its OCR label instead of keeping it weakly. Ice time moved by #97 -42 s, #61 +14 s, #98 -14 s, #75 -10 s, #26 -9 s, #38 +6 s, #31 -4 s, #29 -4 s, #6 -2 s, #46 +2 s."
   ],
   "video_ends_early": false,
   "fun": {
@@ -315,5 +316,6 @@
       3746,
       3796
     ]
-  ]
+  ],
+  "shots_source": "board"
 }

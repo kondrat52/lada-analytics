@@ -100,10 +100,10 @@
    "sub": true,
    "games_played": 3,
    "shifts": 42,
-   "toi": 6540,
-   "toi_per_game": 2180,
+   "toi": 6554,
+   "toi_per_game": 2184.7,
    "play": 4656,
-   "avg_shift": 155.7,
+   "avg_shift": 156.0,
    "longest_shift": 865,
    "shortest_shift": 32,
    "games": [
@@ -114,9 +114,9 @@
       "code": "FG",
       "name": "Frost Giants"
      },
-     "toi": 1424,
+     "toi": 1438,
      "shifts": 16,
-     "avg_shift": 89,
+     "avg_shift": 89.9,
      "play": 891
     },
     {
@@ -185,14 +185,65 @@
    ]
   },
   {
+   "number": 37,
+   "name": "Akulov",
+   "lada_player_id": 14218,
+   "games_played": 3,
+   "shifts": 48,
+   "toi": 6306,
+   "toi_per_game": 2102,
+   "play": 4068,
+   "avg_shift": 131.4,
+   "longest_shift": 230,
+   "shortest_shift": 44,
+   "games": [
+    {
+     "id": "2026-09-27-vs-rn",
+     "date": "2026-09-27",
+     "opponent": {
+      "code": "RN",
+      "name": "Rainucks"
+     },
+     "toi": 1902,
+     "shifts": 15,
+     "avg_shift": 126.8,
+     "play": 1189
+    },
+    {
+     "id": "2026-09-19-vs-se",
+     "date": "2026-09-19",
+     "opponent": {
+      "code": "SE",
+      "name": "Sentinels"
+     },
+     "toi": 2092,
+     "shifts": 15,
+     "avg_shift": 139.5,
+     "play": 1270
+    },
+    {
+     "id": "2026-09-13-vs-jp",
+     "date": "2026-09-13",
+     "opponent": {
+      "code": "JP",
+      "name": "Jurassic Puck"
+     },
+     "toi": 2312,
+     "shifts": 18,
+     "avg_shift": 128.4,
+     "play": 1609
+    }
+   ]
+  },
+  {
    "number": 6,
    "name": "Zaychikov",
    "lada_player_id": 5874,
    "games_played": 4,
    "shifts": 52,
-   "toi": 8408,
-   "toi_per_game": 2102,
-   "play": 5892,
+   "toi": 8406,
+   "toi_per_game": 2101.5,
+   "play": 5890,
    "avg_shift": 161.7,
    "longest_shift": 382,
    "shortest_shift": 20,
@@ -204,10 +255,10 @@
       "code": "FG",
       "name": "Frost Giants"
      },
-     "toi": 2050,
+     "toi": 2048,
      "shifts": 12,
-     "avg_shift": 170.8,
-     "play": 1381
+     "avg_shift": 170.7,
+     "play": 1379
     },
     {
      "id": "2026-10-04-vs-fg",
@@ -248,64 +299,13 @@
    ]
   },
   {
-   "number": 37,
-   "name": "Akulov",
-   "lada_player_id": 14218,
-   "games_played": 3,
-   "shifts": 48,
-   "toi": 6304,
-   "toi_per_game": 2101.3,
-   "play": 4068,
-   "avg_shift": 131.3,
-   "longest_shift": 230,
-   "shortest_shift": 44,
-   "games": [
-    {
-     "id": "2026-09-27-vs-rn",
-     "date": "2026-09-27",
-     "opponent": {
-      "code": "RN",
-      "name": "Rainucks"
-     },
-     "toi": 1902,
-     "shifts": 15,
-     "avg_shift": 126.8,
-     "play": 1189
-    },
-    {
-     "id": "2026-09-19-vs-se",
-     "date": "2026-09-19",
-     "opponent": {
-      "code": "SE",
-      "name": "Sentinels"
-     },
-     "toi": 2090,
-     "shifts": 15,
-     "avg_shift": 139.3,
-     "play": 1270
-    },
-    {
-     "id": "2026-09-13-vs-jp",
-     "date": "2026-09-13",
-     "opponent": {
-      "code": "JP",
-      "name": "Jurassic Puck"
-     },
-     "toi": 2312,
-     "shifts": 18,
-     "avg_shift": 128.4,
-     "play": 1609
-    }
-   ]
-  },
-  {
    "number": 46,
    "name": "Polyanskiy",
    "lada_player_id": 5876,
    "games_played": 4,
    "shifts": 63,
-   "toi": 8271,
-   "toi_per_game": 2067.8,
+   "toi": 8269,
+   "toi_per_game": 2067.2,
    "play": 5395,
    "avg_shift": 131.3,
    "longest_shift": 344,
@@ -318,9 +318,9 @@
       "code": "FG",
       "name": "Frost Giants"
      },
-     "toi": 1926,
+     "toi": 1928,
      "shifts": 15,
-     "avg_shift": 128.4,
+     "avg_shift": 128.5,
      "play": 1248
     },
     {
@@ -342,9 +342,9 @@
       "code": "SE",
       "name": "Sentinels"
      },
-     "toi": 2448,
+     "toi": 2444,
      "shifts": 14,
-     "avg_shift": 174.9,
+     "avg_shift": 174.6,
      "play": 1546
     },
     {
@@ -368,10 +368,10 @@
    "sub": true,
    "games_played": 3,
    "shifts": 44,
-   "toi": 5776,
-   "toi_per_game": 1925.3,
-   "play": 3770,
-   "avg_shift": 131.3,
+   "toi": 5773,
+   "toi_per_game": 1924.3,
+   "play": 3764,
+   "avg_shift": 131.2,
    "longest_shift": 282,
    "shortest_shift": 23,
    "games": [
@@ -382,10 +382,10 @@
       "code": "FG",
       "name": "Frost Giants"
      },
-     "toi": 1770,
+     "toi": 1761,
      "shifts": 13,
-     "avg_shift": 136.2,
-     "play": 1182
+     "avg_shift": 135.5,
+     "play": 1170
     },
     {
      "id": "2026-09-27-vs-rn",
@@ -406,10 +406,10 @@
       "code": "SE",
       "name": "Sentinels"
      },
-     "toi": 1974,
+     "toi": 1980,
      "shifts": 17,
-     "avg_shift": 116.1,
-     "play": 1229
+     "avg_shift": 116.5,
+     "play": 1235
     }
    ]
   },
@@ -419,10 +419,10 @@
    "lada_player_id": 5890,
    "games_played": 2,
    "shifts": 33,
-   "toi": 3630,
-   "toi_per_game": 1815,
+   "toi": 3636,
+   "toi_per_game": 1818,
    "play": 2407,
-   "avg_shift": 110,
+   "avg_shift": 110.2,
    "longest_shift": 256,
    "shortest_shift": 35,
    "games": [
@@ -433,9 +433,9 @@
       "code": "FG",
       "name": "Frost Giants"
      },
-     "toi": 1796,
+     "toi": 1802,
      "shifts": 16,
-     "avg_shift": 112.2,
+     "avg_shift": 112.6,
      "play": 1225
     },
     {
@@ -458,10 +458,10 @@
    "lada_player_id": 5880,
    "games_played": 4,
    "shifts": 65,
-   "toi": 7204,
-   "toi_per_game": 1801,
+   "toi": 7194,
+   "toi_per_game": 1798.5,
    "play": 4930,
-   "avg_shift": 110.8,
+   "avg_shift": 110.7,
    "longest_shift": 302,
    "shortest_shift": 22,
    "games": [
@@ -472,9 +472,9 @@
       "code": "FG",
       "name": "Frost Giants"
      },
-     "toi": 1505,
+     "toi": 1495,
      "shifts": 17,
-     "avg_shift": 88.5,
+     "avg_shift": 87.9,
      "play": 866
     },
     {
@@ -521,10 +521,10 @@
    "lada_player_id": 20327,
    "games_played": 5,
    "shifts": 65,
-   "toi": 8982,
-   "toi_per_game": 1796.4,
-   "play": 6146,
-   "avg_shift": 138.2,
+   "toi": 8978,
+   "toi_per_game": 1795.6,
+   "play": 6142,
+   "avg_shift": 138.1,
    "longest_shift": 322,
    "shortest_shift": 43,
    "games": [
@@ -535,10 +535,10 @@
       "code": "FG",
       "name": "Frost Giants"
      },
-     "toi": 1797,
+     "toi": 1793,
      "shifts": 12,
-     "avg_shift": 149.8,
-     "play": 1144
+     "avg_shift": 149.4,
+     "play": 1140
     },
     {
      "id": "2026-10-04-vs-fg",
@@ -598,7 +598,7 @@
    "shifts": 51,
    "toi": 7108,
    "toi_per_game": 1777,
-   "play": 5007,
+   "play": 5009,
    "avg_shift": 139.4,
    "longest_shift": 365,
    "shortest_shift": 24,
@@ -613,7 +613,7 @@
      "toi": 1597,
      "shifts": 14,
      "avg_shift": 114.1,
-     "play": 1109
+     "play": 1111
     },
     {
      "id": "2026-10-04-vs-fg",
@@ -699,10 +699,10 @@
    "sub": true,
    "games_played": 1,
    "shifts": 14,
-   "toi": 1738,
-   "toi_per_game": 1738,
+   "toi": 1740,
+   "toi_per_game": 1740,
    "play": 1099,
-   "avg_shift": 124.1,
+   "avg_shift": 124.3,
    "longest_shift": 190,
    "shortest_shift": 44,
    "games": [
@@ -713,9 +713,9 @@
       "code": "SE",
       "name": "Sentinels"
      },
-     "toi": 1738,
+     "toi": 1740,
      "shifts": 14,
-     "avg_shift": 124.1,
+     "avg_shift": 124.3,
      "play": 1099
     }
    ]
@@ -726,12 +726,12 @@
    "lada_player_id": 14185,
    "games_played": 3,
    "shifts": 39,
-   "toi": 5210,
-   "toi_per_game": 1736.7,
-   "play": 3436,
-   "avg_shift": 133.6,
+   "toi": 5123,
+   "toi_per_game": 1707.7,
+   "play": 3382,
+   "avg_shift": 131.4,
    "longest_shift": 246,
-   "shortest_shift": 25,
+   "shortest_shift": 22,
    "games": [
     {
      "id": "2026-10-10-vs-fg",
@@ -740,10 +740,10 @@
       "code": "FG",
       "name": "Frost Giants"
      },
-     "toi": 1645,
+     "toi": 1603,
      "shifts": 14,
-     "avg_shift": 117.5,
-     "play": 1001
+     "avg_shift": 114.5,
+     "play": 982
     },
     {
      "id": "2026-10-04-vs-fg",
@@ -764,10 +764,38 @@
       "code": "SE",
       "name": "Sentinels"
      },
-     "toi": 1681,
+     "toi": 1636,
      "shifts": 15,
-     "avg_shift": 112.1,
-     "play": 1011
+     "avg_shift": 109.1,
+     "play": 976
+    }
+   ]
+  },
+  {
+   "number": 69,
+   "name": "Kleiman",
+   "lada_player_id": 20329,
+   "sub": true,
+   "games_played": 1,
+   "shifts": 15,
+   "toi": 1620,
+   "toi_per_game": 1620,
+   "play": 985,
+   "avg_shift": 108,
+   "longest_shift": 194,
+   "shortest_shift": 22,
+   "games": [
+    {
+     "id": "2026-09-19-vs-se",
+     "date": "2026-09-19",
+     "opponent": {
+      "code": "SE",
+      "name": "Sentinels"
+     },
+     "toi": 1620,
+     "shifts": 15,
+     "avg_shift": 108,
+     "play": 985
     }
    ]
   },
@@ -778,10 +806,10 @@
    "sub": true,
    "games_played": 1,
    "shifts": 14,
-   "toi": 1606,
-   "toi_per_game": 1606,
+   "toi": 1604,
+   "toi_per_game": 1604,
    "play": 974,
-   "avg_shift": 114.7,
+   "avg_shift": 114.6,
    "longest_shift": 208,
    "shortest_shift": 25,
    "games": [
@@ -792,38 +820,10 @@
       "code": "SE",
       "name": "Sentinels"
      },
-     "toi": 1606,
+     "toi": 1604,
      "shifts": 14,
-     "avg_shift": 114.7,
+     "avg_shift": 114.6,
      "play": 974
-    }
-   ]
-  },
-  {
-   "number": 69,
-   "name": "Kleiman",
-   "lada_player_id": 20329,
-   "sub": true,
-   "games_played": 1,
-   "shifts": 16,
-   "toi": 1602,
-   "toi_per_game": 1602,
-   "play": 983,
-   "avg_shift": 100.1,
-   "longest_shift": 182,
-   "shortest_shift": 22,
-   "games": [
-    {
-     "id": "2026-09-19-vs-se",
-     "date": "2026-09-19",
-     "opponent": {
-      "code": "SE",
-      "name": "Sentinels"
-     },
-     "toi": 1602,
-     "shifts": 16,
-     "avg_shift": 100.1,
-     "play": 983
     }
    ]
   },
@@ -833,11 +833,11 @@
    "lada_player_id": 15242,
    "games_played": 3,
    "shifts": 40,
-   "toi": 4035,
-   "toi_per_game": 1345,
-   "play": 2472,
-   "avg_shift": 100.9,
-   "longest_shift": 168,
+   "toi": 4052,
+   "toi_per_game": 1350.7,
+   "play": 2493,
+   "avg_shift": 101.3,
+   "longest_shift": 174,
    "shortest_shift": 22,
    "games": [
     {
@@ -847,9 +847,9 @@
       "code": "FG",
       "name": "Frost Giants"
      },
-     "toi": 1197,
+     "toi": 1193,
      "shifts": 14,
-     "avg_shift": 85.5,
+     "avg_shift": 85.2,
      "play": 832
     },
     {
@@ -871,10 +871,10 @@
       "code": "SE",
       "name": "Sentinels"
      },
-     "toi": 1315,
+     "toi": 1336,
      "shifts": 11,
-     "avg_shift": 119.5,
-     "play": 745
+     "avg_shift": 121.5,
+     "play": 766
     }
    ]
   },
@@ -884,10 +884,10 @@
    "lada_player_id": 5898,
    "games_played": 2,
    "shifts": 27,
-   "toi": 2632,
-   "toi_per_game": 1316,
+   "toi": 2618,
+   "toi_per_game": 1309,
    "play": 1608,
-   "avg_shift": 97.5,
+   "avg_shift": 97.0,
    "longest_shift": 145,
    "shortest_shift": 57,
    "games": [
@@ -898,9 +898,9 @@
       "code": "FG",
       "name": "Frost Giants"
      },
-     "toi": 1044,
+     "toi": 1030,
      "shifts": 12,
-     "avg_shift": 87,
+     "avg_shift": 85.8,
      "play": 599
     },
     {

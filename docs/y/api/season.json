@@ -473,10 +473,10 @@
    "lada_player_id": 11166,
    "games_played": 5,
    "shifts": 54,
-   "toi": 7129,
-   "toi_per_game": 1425.8,
+   "toi": 7132,
+   "toi_per_game": 1426.4,
    "play": 4863,
-   "avg_shift": 132.0,
+   "avg_shift": 132.1,
    "longest_shift": 260,
    "shortest_shift": 37,
    "games": [
@@ -535,9 +535,9 @@
       "code": "TM",
       "name": "Teamy McTeamface"
      },
-     "toi": 1392,
+     "toi": 1395,
      "shifts": 10,
-     "avg_shift": 139.2,
+     "avg_shift": 139.5,
      "play": 747
     }
    ]
