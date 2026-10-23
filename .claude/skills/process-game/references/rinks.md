@@ -152,6 +152,16 @@ about 2 s left, and the operator then ran the clock to 0.0 with no play, so end 
 our 2nd-period minor. After it ran out, the referees sent the player back for 4 s at the next whistle (the panel
 re-posted "81 0:04"). He was in the box through the whole stoppage and the faceoff: that is a second `pk` span, with
 an `on` span for him in between.
+LADA R's Oct 12 game (away, 10:10 PM, light blue, right bench) was the same LiveBarn recording with sound. Every period
+ran to 0.0 with a 1:00 intermission countdown after the 1st and 2nd; the clock ran through stoppages in the 1st and 2nd
+and stopped at whistles in the 3rd. The proposal found two periods. Away, our goalie (Perry in a black jersey; both
+goalies had white pads) was in the right net in the 1st and 3rd and the left in the 2nd, the mirror of every home game;
+a goal against settled it. This board shows no shots at all (shots.py read 1-0 for the game), so shots come from the
+game sheet. Our away box is on the near side just left of our bench (x about 3450–3700): the player sat about 20 s after
+the whistle. The board posted the 1st's minor 14 s after the whistle and started its 3:00 at the faceoff 33 s after it,
+so the sheet's time is the faceoff's. Flounders' white with light-blue trim passed our light-blue test a little (their
+#12 BUSH read 47 times). With the bench right by the camera, seated players were tracked as on the ice: see
+`references/review.md`, "Seated players counted as on".
 
 Views: `rink` 0–3840 × 380–1536; `left-net` 200–1400 × 380–760; `right-net` 2600–3800 × 380–760.
 

@@ -168,6 +168,13 @@ number). Tell the user which rows you labeled by hand, and say so in `game.json`
   numbers from OCR. Solve still came to 100–102% per period, and the gap check fixed what it put on the ice. A
   "noise" code in the template plus clearing the label in `apply_review` would fix it, but it changes re-solves of
   archived folders, so it waits for the regression pass.
+- **Seated players counted as on.** On LADA R's Oct 12 game at Snoqualmie A (our bench at the frame edge, right by
+  the camera) the first lineup check listed eight "6 on" windows, and almost every one was a player sitting at our
+  bench: his track, full of confident number reads, started there and the solver counted it as on the ice. The gap
+  subagent found each by the nameplate on the bench and the moment he went over the boards. Because the solver keeps
+  5 on, such tracks rarely show as a window, so a second pass over P2's segments that start at our bench and stay
+  there found nine more. 25 on/off entries took the periods from 104/104/102% to 102/103/102%. At a rink like this,
+  ask the gap subagent for that scan from the start.
 - **A quick rest gets joined into one shift.** `final_stats.py` joins a player's shifts across gaps under 15 s
   (`MERGE_GAP`, meant for tracking loss), so a real 8 s rest at a goal shows him on for it. On Oct 10, #29 went off
   about 185 and came back at 193, and the goal at 191 listed six. An `off` span of 15 s (178–193) kept the shifts
