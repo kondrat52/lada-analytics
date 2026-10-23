@@ -1,0 +1,345 @@
+{
+  "id": "2026-10-18-vs-rn",
+  "date": "2026-10-18",
+  "title": "LADA Doofers vs Rainucks, Oct 18",
+  "eyebrow": "Sun Oct 18, 2026 · 10:10 PM · Snoqualmie A",
+  "opponent": "RN",
+  "video": "https://youtu.be/ZEWQgpLycCg",
+  "periods": [
+    {
+      "label": "P1",
+      "start": 9,
+      "end": 1089
+    },
+    {
+      "label": "P2",
+      "start": 1185,
+      "end": 2269
+    },
+    {
+      "label": "P3",
+      "start": 2467,
+      "end": 4151
+    }
+  ],
+  "nets": {
+    "P1": 3260,
+    "P2": 630,
+    "P3": 3260
+  },
+  "penalty_kills": [
+    {
+      "period": "P1",
+      "start": 544,
+      "end": 689,
+      "player": 90
+    },
+    {
+      "period": "P2",
+      "start": 1434,
+      "end": 1647,
+      "player": 61
+    },
+    {
+      "period": "P2",
+      "start": 2132,
+      "end": 2269,
+      "player": 29
+    },
+    {
+      "period": "P3",
+      "start": 2467,
+      "end": 2537,
+      "player": 29
+    },
+    {
+      "period": "P3",
+      "start": 3449,
+      "end": 3712,
+      "player": 75
+    }
+  ],
+  "notes": [
+    "Snoqualmie A, a LiveBarn recording (3438x1374 scaled up, with sound): whistles in the audio pinned most calls to the second.",
+    "Wheeler #0 in goal (#290 on the game sheet). Ten skaters, the same ten as the game sheet. Two subs from Turbo Kings: Ivanov #90 and Vasyliev, who wore #31 (VASYLIEV on the nameplate; the game sheet has him as #31 Vasyliev). Sourov #31 didn't play, so #31 here is Vasyliev, kept apart from Sourov's totals. Prozhogin #61 subbed as well. Absent: #1, #4, #6, #11, #12, #13, #16, #20, #25, #26, #27, #37, #38, #44, #52, #54, #69.",
+    "Periods from the board's clock: the clock ran through stoppages in the 1st and 2nd and stopped at whistles in the 3rd. Goal times from the video, each 2-5 s before the board's clock stopped; all five match the game sheet's scorers and periods.",
+    "Rainucks' first goal came on the power play during Ivanov's tripping minor, which it ended (he left the box at 689 s; the board's panel wasn't cleared until 722 s). Panov's goal was shorthanded.",
+    "Albantov's holding minor with 1:46 left in the 2nd had 1:14 left at the buzzer; the board showed 0:50 through the intermission and he served that from the 3rd period's faceoff.",
+    "Prozhogin's boarding at 6:31 of the 3rd came with a 10-minute misconduct: Panova #75 served the 2-minute minor, and Prozhogin sat out the rest of the game. Our shorthanded goal didn't end the minor.",
+    "Checked by eye after the first solve: 4 lineup windows, 30 on/off spans added (line changes the tracker missed, and bench sitters it counted as on the ice). One window left, a line change during a stoppage at 8:20 of the 3rd that the stoppage estimate missed."
+  ],
+  "video_ends_early": false,
+  "fun": {
+    "name_reads": {
+      "46": 1942,
+      "29": 1814,
+      "97": 1470,
+      "61": 835,
+      "71": 543,
+      "90": 361,
+      "98": 328,
+      "75": 20
+    }
+  },
+  "pipeline": {
+    "detections": 894605,
+    "crops": 276172,
+    "reads": 22493,
+    "reviewed": 512
+  },
+  "lada_game_id": 33009,
+  "stoppages": [
+    [
+      9,
+      11
+    ],
+    [
+      44,
+      53
+    ],
+    [
+      87,
+      127
+    ],
+    [
+      247,
+      262
+    ],
+    [
+      365,
+      410
+    ],
+    [
+      536,
+      580
+    ],
+    [
+      733,
+      755
+    ],
+    [
+      980,
+      992
+    ],
+    [
+      1061,
+      1074
+    ],
+    [
+      1185,
+      1219
+    ],
+    [
+      1258,
+      1290
+    ],
+    [
+      1418,
+      1484
+    ],
+    [
+      1684,
+      1711
+    ],
+    [
+      1763,
+      1824
+    ],
+    [
+      1885,
+      1934
+    ],
+    [
+      2467,
+      2469
+    ],
+    [
+      2469,
+      2502
+    ],
+    [
+      2570,
+      2595
+    ],
+    [
+      2689,
+      2709
+    ],
+    [
+      2764,
+      2803
+    ],
+    [
+      2803,
+      2843
+    ],
+    [
+      2926,
+      2955
+    ],
+    [
+      2976,
+      3028
+    ],
+    [
+      3149,
+      3232
+    ],
+    [
+      3334,
+      3372
+    ],
+    [
+      3446,
+      3538
+    ],
+    [
+      3637,
+      3676
+    ],
+    [
+      3735,
+      3796
+    ],
+    [
+      3796,
+      3824
+    ],
+    [
+      3846,
+      3896
+    ],
+    [
+      3903,
+      3922
+    ],
+    [
+      4005,
+      4044
+    ],
+    [
+      4059,
+      4079
+    ],
+    [
+      4110,
+      4136
+    ]
+  ],
+  "highlights": [
+    {
+      "type": "goal",
+      "team": "against",
+      "t": 677,
+      "scorer": 67,
+      "assists": [
+        33
+      ],
+      "clip": "clips/goal-1.mp4",
+      "poster": "clips/goal-1.jpg",
+      "note": "1st period, clock 6:48: Rainucks score from a scramble at our crease on the power play (Ivanov in the box), 0-1"
+    },
+    {
+      "type": "penalty",
+      "player": 90,
+      "t": 535,
+      "clip": "clips/penalty-90.mp4",
+      "poster": "clips/penalty-90.jpg",
+      "note": "1st period, clock 8:31: tripping at their net, 3 minutes, ended by their power-play goal at 6:48"
+    },
+    {
+      "type": "penalty",
+      "player": 61,
+      "t": 1416,
+      "clip": "clips/penalty-61.mp4",
+      "poster": "clips/penalty-61.jpg",
+      "note": "2nd period, clock 13:18: roughing along the left boards, 3 minutes, killed"
+    },
+    {
+      "type": "goal",
+      "team": "against",
+      "t": 2070,
+      "scorer": 19,
+      "assists": [
+        77
+      ],
+      "clip": "clips/goal-2.mp4",
+      "poster": "clips/goal-2.jpg",
+      "note": "2nd period, clock 3:13: a rush down the left side and a shot past Wheeler, 0-2"
+    },
+    {
+      "type": "penalty",
+      "player": 29,
+      "t": 2125,
+      "clip": "clips/penalty-29.mp4",
+      "poster": "clips/penalty-29.jpg",
+      "note": "2nd period, clock 1:46: holding Rainucks #67 by the left boards; 1:14 left at the buzzer, and the last 0:50 served at the start of the 3rd, killed"
+    },
+    {
+      "type": "goal",
+      "team": "against",
+      "t": 3148,
+      "scorer": 19,
+      "assists": [
+        38
+      ],
+      "clip": "clips/goal-3.mp4",
+      "poster": "clips/goal-3.jpg",
+      "note": "3rd period, clock 9:28: Pate #19 again, from a scramble at our crease, 0-3"
+    },
+    {
+      "type": "goal",
+      "team": "for",
+      "t": 3332,
+      "scorer": 97,
+      "assists": [
+        71
+      ],
+      "clip": "clips/goal-4.mp4",
+      "poster": "clips/goal-4.jpg",
+      "note": "3rd period, clock 7:50: Zakharankau finishes a two-man rush with Fedotov, 1-3"
+    },
+    {
+      "type": "penalty",
+      "player": 61,
+      "t": 3445,
+      "clip": "clips/penalty-61b.mp4",
+      "poster": "clips/penalty-61b.jpg",
+      "note": "3rd period, clock 6:31: boarding in the corner behind our net, 2 minutes plus a 10-minute misconduct; Panova #75 served the minor and Prozhogin sat out the rest of the game"
+    },
+    {
+      "type": "goal",
+      "team": "for",
+      "t": 3636,
+      "scorer": 76,
+      "assists": [
+        90
+      ],
+      "clip": "clips/goal-5.mp4",
+      "poster": "clips/goal-5.jpg",
+      "note": "3rd period, clock 5:04: shorthanded, Panov in front of the net, 2-3"
+    }
+  ],
+  "shots": {
+    "P1": [
+      13,
+      12
+    ],
+    "P2": [
+      8,
+      10
+    ],
+    "P3": [
+      10,
+      16
+    ]
+  },
+  "shots_source": "sheet",
+  "zones": {
+    "offence": 0.3077,
+    "defence": 0.4296
+  },
+  "guests": {
+    "31": "Vasyliev"
+  }
+}

@@ -6,11 +6,35 @@
   "lada_team_id": 17
  },
  "site_url": "https://kondrat52.github.io/lada-analytics/df/",
- "updated": "2026-10-10",
+ "updated": "2026-10-18",
  "season_url": "https://kondrat52.github.io/lada-analytics/df/api/season.json",
  "roster_url": "https://kondrat52.github.io/lada-analytics/df/api/roster.json",
  "trends_url": "https://kondrat52.github.io/lada-analytics/df/api/trends.json",
  "games": [
+  {
+   "id": "2026-10-18-vs-rn",
+   "date": "2026-10-18",
+   "title": "LADA Doofers vs Rainucks, Oct 18",
+   "subtitle": "Sun Oct 18, 2026 · 10:10 PM · Snoqualmie A",
+   "time": "10:10 PM",
+   "rink": "Snoqualmie A",
+   "opponent": {
+    "code": "RN",
+    "name": "Rainucks"
+   },
+   "lada_game_id": 33009,
+   "goals_on_video": {
+    "for": 2,
+    "against": 3
+   },
+   "shots": {
+    "for": 31,
+    "against": 38
+   },
+   "highlights": 9,
+   "page_url": "https://kondrat52.github.io/lada-analytics/df/games/2026-10-18-vs-rn/",
+   "json_url": "https://kondrat52.github.io/lada-analytics/df/api/games/2026-10-18-vs-rn.json"
+  },
   {
    "id": "2026-10-10-vs-fg",
    "date": "2026-10-10",

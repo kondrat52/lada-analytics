@@ -137,6 +137,12 @@
    "name": "Kleiman",
    "lada_player_id": 20329,
    "sub": true
+  },
+  {
+   "number": 90,
+   "name": "Ivanov",
+   "lada_player_id": null,
+   "sub": true
   }
  ],
  "goalies": [
