@@ -1,10 +1,10 @@
 # Rinks, benches, jerseys, scoreboards
 
 Each rink films from a different spot, so the camera geometry lives in a class in `pipeline/rink.py`: the detection
-crop, where the far boards are, the ice polygon, our bench, the nets, the scoreboard box, the shots digits, and the
-`views` that `run_game.py frames --view` crops (`rink`, `left-net`, `right-net`, and `bench`: our bench and its
-door, mirrored to the side we sit on). `fetch --rink` records the rink in `$W/full/rink.json`; a folder without one
-is Renton. Pick the rink by the frame size and view of `frame600.png`, not by LADA's `rinkName` alone.
+crop, where the far boards are, the ice polygon, our bench, the nets, the scoreboard box, the clock and shots digits,
+and the `views` that `run_game.py frames --view` crops (`rink`, `left-net`, `right-net`, and `bench`: our bench and
+its door, mirrored to the side we sit on). `fetch --rink` records the rink in `$W/full/rink.json`; a folder without
+one is Renton. Pick the rink by the frame size and view of `frame600.png`, not by LADA's `rinkName` alone.
 
 ## What has held at every rink so far (29 games)
 
@@ -17,14 +17,21 @@ is Renton. Pick the rink by the frame size and view of `frame600.png`, not by LA
   and HOME on Kirkland's board on Sep 14.
 - **The period clock is the only reliable period source.** The empty-ice proposal has been wrong at nearly every
   game: periods merged (two into one, or the whole video as one), a 3rd started 90 s early inside the intermission
-  countdown, nets reversed, edges 11–40 s off. Take every edge from the clock on `sb.jpg`, then a 2 s sheet around
-  it (`scoreboard.py $W out.jpg $(seq a 2 b)`): a period starts when the clock first counts down from 18:00 (the
-  opening faceoff; the board can sit at 18:00 through a minute of play first, see Kirkland) and ends at its first
-  0.0, or earlier where play stopped and the operator ran the rest off on an empty rink (`run_game.py skaters`
-  drops from 6, `break_*.jpg` shows nobody playing). After the 1st and 2nd the board counts a 1:00 intermission
-  down (1:30 and 2:00 seen) with the old period still lit, which looks like a last minute of play: play's last
-  minute shows tenths ("45.9"), a countdown shows m:ss. On the one-a-minute `sb.jpg` the tenths read like minutes
-  ("43.1" looks like 4:31).
+  countdown, nets reversed, edges 11–40 s off. Since Oct 24 fetch reads the clock off every second of the board
+  (`clock.py`) and takes the periods from it; check them on `clock_check.jpg`, and a 2 s sheet around any edge that
+  looks off (`scoreboard.py $W out.jpg $(seq a 2 b)`). A period starts when the clock first counts down from 18:00
+  (the opening faceoff; the board can sit at 18:00 through a minute of play first, see Kirkland) and ends at its
+  first 0.0, or earlier where play stopped and the operator ran the rest off on an empty rink (`run_game.py skaters`
+  drops from 6, `break_*.jpg` shows nobody playing): the reader can't see those, so move such an edge by hand.
+  After the 1st and 2nd the board counts a 1:00 intermission down (1:30 and 2:00 seen) with the old period still
+  lit, which looks like a last minute of play: play's last minute shows tenths ("45.9"), a countdown shows 0:ss
+  ("0:45"). On the one-a-minute `sb.jpg` the tenths read like minutes ("43.1" looks like 4:31).
+- **Reading the clock** (`clock.py`; what its fit allows for). The recogniser reads the seconds well and the minutes
+  badly: it drops a thin leading 1, runs "16" together into one character at Snoqualmie A, and reads 18:00 as "800" at
+  Snoqualmie B. Renton's boards (both cameras) draw the last minute's ss.t one cell left of m:ss, Kirkland's lights a
+  decimal point, Snoqualmie's use the same cells. The LEDs can stay dark for 15 s and more (Renton's new camera with
+  the band, Y's Oct 12), and then the fit assumes the clock kept running, so an edge in a dark stretch is an estimate.
+  `clock.py $W` on an archived folder (`scoreboard_jpg.npz`) reads it again and prints where `periods.json` differs.
 - **The clock runs through stoppages in the 1st and 2nd and stops at whistles in the 3rd**, in every game so far
   (Kirkland: it also stops in the last minute or two of the 1st and 2nd). So "period start + 18:00 minus the clock"
   gives a 1st or 2nd period event's video time to a second or two, until the operator takes a minute off (LADA R's
@@ -54,7 +61,9 @@ is Renton. Pick the rink by the frame size and view of `frame600.png`, not by LA
   shot or two at period ends.
 - **The board flickers.** Its LEDs are dark in most single frames at Renton, and dark for whole stretches on Oct 12
   (1196–1250 s, right across a faceoff), so `scoreboard.py` keeps the brightest frame of each second; fetch scans
-  it into `$W/scoreboard.npy` and `$W/sb.jpg`, and archive keeps the frames as `scoreboard_jpg.npz`.
+  it into `$W/scoreboard.npy` and `$W/sb.jpg`, and archive keeps the frames as `scoreboard_jpg.npz`. The camera
+  isn't framed the same every game (Snoqualmie A's board sat 50 px lower in its crop on Oct 12 and 18), so
+  `clock.py` moves `clock_box` to where the board changes most from second to second before reading.
 - **Sound.** The original wide cuts are silent. LiveBarn recordings (3438x1374, LiveBarn's score panel top-left and
   a timeline bar along the bottom, both outside the ice) and Renton's new camera have audio: the whistles (about
   2.4 kHz) pin goals and calls to a fraction of a second and the clips keep the sound. Check each recording.
@@ -146,10 +155,14 @@ at 630 and 3260. Intermissions are short (`min_break` 10 s): players stand at th
 warm up, so the proposal merges periods here almost every time and once split the 3rd at a long power-play-goal
 stoppage into two.
 
-Period ends haven't followed one rule here, so read the clock every time: on BW's Oct 11 and Y's Sep 21 games the
-1st and 2nd stopped with 1:25, 1:03 and about 55 s on the clock, the teams changed ends while the board ran the rest
-off on an empty rink, and the next period began about 25 s after 0:00 (so a period ends where `run_game.py skaters`
-drops from 6 and starts at the faceoff, not at the skate-out the proposal picks); every later game (Beerteam Sep 20
+On LADA R's Oct 12 and Doofers' Oct 18 games the board sat about 50 px lower in the frame than on the other games
+(Blue Wings' game the same day as Doofers' had the usual framing): the clock was still found, but the shots panel fell
+below the scoreboard crop (likely why "the board showed no shots" on Oct 12, above) and `shots_boxes` lands on the
+clock's digits, so `shots.py` reads nothing useful on that framing. Period ends haven't followed one rule here, so
+read the clock every time: on BW's Oct 11 and Y's Sep 21 games the 1st and 2nd stopped with 1:25, 1:03 and about 55 s
+on the clock, the teams changed ends while the board ran the rest off on an empty rink, and the next period began
+about 25 s after 0:00 (so a period ends where `run_game.py skaters` drops from 6 and starts at the faceoff, not at the
+skate-out the proposal picks); every later game (Beerteam Sep 20
 and Oct 4, BW Oct 18, LADA R Oct 5 and Oct 12) ran each period to 0.0, with the 1:00 countdown after the 1st and 2nd
 (about 1:30 after the 2nd on Oct 5). On Oct 5 the 2nd ended on a goal against with about 2 s left and the operator
 then ran the clock to 0.0 with no play: end the period at the goal. On Oct 4 both goalies wore white with white
@@ -239,7 +252,12 @@ U=$($PY -m yt_dlp -g -f 313 "<url>"); $FF -loglevel error -ss 600 -i "$U" -frame
 Add a class: `crop_top` above the heads of players at the far boards (a wrong crop silently loses them), the board
 band, the ice polygon, the benches (with `bench_where`, `box_where` and `bench_view` for the checkers' briefs), the
 nets, `scoreboard` (x, y, w, h, all even: ffmpeg rounds an odd crop of yuv420 video down, every raw frame read then
-drifts a row, and the scan shows two half boards and runs short of the video, 3706 s for 3736), `shots_boxes` (the
-home and guest shot digits inside that crop), `views`, and `board_lowest` if there's yellow lettering above the
-boards. Run `boards.py` on the frame and draw its curve over it; check it all the way to the frame edges. Then YOLO
-on a few frames and the jersey test under that lighting, and only then detection. Register the class in `RINKS`.
+drifts a row, and the scan shows two half boards and runs short of the video, 3706 s for 3736), `clock_box` (the
+period clock's four digit cells inside that crop, x0, y0, x1, y1, as a level rectangle) with `clock_tilt` (degrees it
+is turned about its centre to lie on the digits, positive when they slope down to the right; 31 at Renton's new
+camera), `shots_boxes` (the home and guest shot digits inside that crop), `views`, and `board_lowest` if there's
+yellow lettering above the boards. Run `boards.py` on the frame and draw its curve over it; check it all the way to
+the frame edges. Then YOLO on a few frames and the jersey test under that lighting, and only then detection. Register
+the class in `RINKS`. Once the board is scanned, `clock.py $W` prints the box's offset (a few px is normal; tens of px
+means the box was measured on another framing) and writes `clock_check.jpg`: each row should show 18:00, 18:00, 17:59
+and then the period's last seconds to 00.0.

@@ -28,6 +28,7 @@ class Renton:
     bench_side = "left"           # our usual bench; rink.json "bench" can pick the other one
     scoreboard = (3290, 690, 130, 80)  # x, y, w, h of the arena scoreboard (scoreboard.py)
     shots_boxes = {"home": (47, 39, 59, 50), "guest": (65, 40, 78, 51)}   # shots-on-goal digits, in that crop (shots.py)
+    clock_box, clock_tilt = (50, 3, 84, 19), 0   # period clock digits in that crop, levelled by the tilt (clock.py)
     white_v, dark_v = 160, 60     # process.py's torso colours: "white" = unsaturated and at least this bright, "dark" below
     jerseys = {}                  # this rink's own colour tests for a jersey, in place of JERSEYS'
     # crops of the 4K frame for checking goals and penalties by eye (run_game.py frames --view): x0, x1, y0, y1
@@ -109,6 +110,7 @@ class Snoqualmie(Renton):
     bench_side = "right"
     scoreboard = (1790, 262, 280, 116)
     shots_boxes = {"home": (136, 76, 157, 95), "guest": (171, 76, 197, 95)}
+    clock_box = (115, 18, 166, 43)        # the usual framing; ~50 px lower on Oct 12 and 18 (clock.py finds it)
     views = {"rink": (0, 3840, 380, 1536), "left-net": (200, 1400, 380, 760), "right-net": (2600, 3800, 380, 760)}
 
     bench_where = {"left": "on the near side at the LEFT edge of the frame, right by the camera (players sitting "
@@ -183,6 +185,7 @@ class Snoqualmie2(Snoqualmie):
                              crop=lambda c: (c["white"] >= 0.1) & (c["dark"] < 0.5) & (c["red"] < 0.1))}
     scoreboard = (1810, 640, 270, 110)
     shots_boxes = {"home": (124, 68, 156, 91), "guest": (168, 68, 200, 91)}
+    clock_box = (110, 7, 169, 32)
     # the whole fisheye frame: ice from the far boards (y ~870 at center) to the near boards (~2100). The nets sit at
     # about (645, 1015) and (3250, 1020) in the frame (checked on the Oct 10 video), centered in the net views
     views = {"rink": (0, 3824, 800, 2160), "left-net": (80, 1280, 820, 1370), "right-net": (2620, 3820, 820, 1370)}
@@ -216,6 +219,7 @@ class Kirkland(Renton):
     BENCHES = {"left": (1340, 1720), "right": (2160, 2560)}   # x at the boards, with Renton's ~30 px margins
     scoreboard = (358, 396, 136, 82)
     shots_boxes = {"home": (55, 54, 71, 68), "guest": (73, 52, 90, 65)}
+    clock_box = (50, 18, 87, 35)
     views = {"rink": (0, 3840, 320, 1536), "left-net": (150, 1350, 400, 800), "right-net": (2600, 3800, 400, 800)}
     # the ice inside the end and near boards (the far boards curve is the top)
     ICE = Path([(0, 0), (3840, 0), (3840, 690), (3800, 717), (3707, 917), (3653, 1037), (3560, 1277),
@@ -283,6 +287,7 @@ class Renton2(Kirkland):
     box_where = {"left": "between the benches, x 1735-1865", "right": "between the benches, x 2020-2150"}
     scoreboard = (3456, 576, 150, 126)    # even sides: ffmpeg rounds an odd crop of yuv420 video down, misaligning frames
     shots_boxes = {"home": (36, 57, 48, 69), "guest": (50, 66, 64, 79)}
+    clock_box, clock_tilt = (51, 31, 87, 45), 31   # the board hangs at an angle
     views = {"rink": (0, 3840, 220, 1920), "left-net": (100, 1300, 480, 1080), "right-net": (2600, 3800, 470, 1070)}
     # the ice inside the near boards, which bow down to the frame's bottom edge at center (the far boards curve is the
     # top)
@@ -306,6 +311,7 @@ class Renton2Band(Renton2):
     board_band = (0.29, 0.70)
     NET_Y = Renton2.NET_Y + DY
     scoreboard = (3434, 838, 150, 126)    # measured on the Oct 12 frame (the board at x 3445-3573, y 845-957)
+    clock_box = (70, 30, 110, 44)
     views = {"rink": (0, 3840, 486, 1920), "left-net": (100, 1300, 746, 1346), "right-net": (2600, 3800, 736, 1336)}
     ICE = Path(Renton2.ICE.vertices + (0, DY))
 

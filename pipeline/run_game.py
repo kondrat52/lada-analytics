@@ -1,10 +1,11 @@
 """Driver for processing one game. Run with the hockey env's python (see setup_env.sh).
 
   run_game.py fetch   URL W [--team SLUG] [--rink NAME] [--jersey NAME] [--bench SIDE] [--limit SEC]   download,
-                                             calibrate, detect (auto-restart), OCR, propose periods; --team: whose
-                                             game, a folder in teams/ (tk); --rink: camera geometry from rink.py
-                                             (renton); --jersey: our jersey that game (light blue, white); --bench:
-                                             left or right, our bench (the rink's usual one unless set)
+                                             calibrate, detect (auto-restart), OCR, read the board's clock, propose
+                                             periods; --team: whose game, a folder in teams/ (tk); --rink: camera
+                                             geometry from rink.py (renton); --jersey: our jersey that game (light
+                                             blue, white); --bench: left or right, our bench (the rink's usual one
+                                             unless set)
   run_game.py jersey  W NAME                 we wore another jersey than fetch was told: switch to it, cut its
                                              crops from the video (~5 min) and OCR them
   run_game.py skaters W T0 T1               our skaters detected on the ice per 5 s (find penalty kills)
@@ -232,8 +233,8 @@ def ocr(W):
 
 
 def propose_periods(W):
-    """Breaks = min_break+ seconds (rink.py) with nobody out on the open ice. Our goalie's net side per period from
-    detections in our jersey standing in each crease."""
+    """The periods the board's clock gives (clock.json), else breaks = min_break+ seconds (rink.py) with nobody out
+    on the open ice. Our goalie's net side per period from detections in our jersey standing in each crease."""
     from track import load
     R = rink(f"{W}/full")
     d = load(f"{W}/full/dets.csv"); d["rel"] = d.fy - d.board
@@ -256,6 +257,13 @@ def propose_periods(W):
     for a, b in zip(edges[0::2], edges[1::2]):
         if b - a >= 240:
             periods.append([a, b])
+    clk = json.load(open(f"{W}/clock.json")) if os.path.exists(f"{W}/clock.json") else None
+    if clk and clk["periods"]:
+        log("periods from the board's clock: " + ", ".join(f"{P['label']} {P['start']}-{P['end']}" for P in clk["periods"])
+            + "; empty ice would say " + ", ".join(f"{a}-{b}" for a, b in periods)
+            + ("" if len(clk["periods"]) == 3 else f". {len(clk['periods'])} periods on the clock, not 3: take them "
+               f"from {W}/sb.jpg by eye"))
+        periods = [[P["start"], P["end"]] for P in clk["periods"]]
     us = d[d.ours]
     res = []
     for k, (a, b) in enumerate(periods, 1):
@@ -294,6 +302,15 @@ def scoreboard_sheet(W):
     sheet(W, f"{W}/sb.jpg", list(range(30, n, 60)), cols=6)
 
 
+def read_clock(W):
+    """The period clock off the board (clock.py, about 1.5 minutes of OCR the first time) -> W/clock.json: the
+    periods' edges for propose_periods and the video second of every clock time for sheet and goals;
+    W/clock_check.jpg to check them."""
+    import clock
+    log("clock: reading the period clock off the board")
+    clock.run(W)
+
+
 def cmd_fetch(a):
     W = os.path.abspath(a.W); os.makedirs(f"{W}/full", exist_ok=True)
     set_config(W, team=a.team, rink=a.rink, jersey=a.jersey, bench=a.bench)
@@ -305,10 +322,12 @@ def cmd_fetch(a):
     calibrate(vid, W)
     detect(vid, W, a.limit)
     ocr(W)
-    propose_periods(W)
     if not a.limit:
         scoreboard_sheet(W)
-    sb = f"{W}/sb.jpg (the scoreboard every 60 s), " if os.path.exists(f"{W}/sb.jpg") else ""
+        read_clock(W)
+    propose_periods(W)
+    sb = (f"{W}/clock_check.jpg (each period's edges on the board), {W}/sb.jpg (the board every 60 s), "
+          if os.path.exists(f"{W}/sb.jpg") else "")
     log(f"fetch done. Check {W}/periods.json against {sb}break_*.jpg and video_end.jpg")
 
 
@@ -373,11 +392,17 @@ def cmd_goals(a):
         P = next((P for P in Ps if P["start"] <= t <= P["end"]), None)
         return P["label"] if P else "break"
     if os.path.exists(f"{W}/sheet.json"):
+        import clock as clock_
         sheet_ = json.load(open(f"{W}/sheet.json", encoding="utf-8"))
-        print("Game sheet (SportNinja) goals, with the video time the period clock implies (exact where the clock runs "
-              "through stoppages, otherwise the earliest possible):")
+        clk = clock_.load(W)
+        print("Game sheet (SportNinja) goals, with the video time the period clock implies (the second the board's clock "
+              "showed it, where clock.json was read; otherwise exact only where the clock runs through stoppages):")
         for x in sheet_["goals"]:
             t_ = x.get("video_t")
+            if clk:   # sheet.json is usually written before fetch has read the clock
+                m_, s_ = (int(v) for v in x["clock"].split(":"))
+                t_ = clock_.video_t(clk, x["period"], m_ * 60 + s_) or t_
+                x["video_t"] = t_
             print(f"  {x['period']} {x['clock']} {x['team']:<7} #{x['scorer']} {x['scorer_name']}" + (f"  ~{t_ // 60}:{t_ % 60:02d}" if t_ else ""))
         # sheet.json written before periods.json has no video times (each goal used to print as its period's start)
         if not any(x.get("video_t") for x in sheet_["goals"]):
@@ -1234,9 +1259,9 @@ def sportninja_id(date, lada_id=None):
 def cmd_sheet(a):
     """SportNinja's game sheet, public at metal-api.sportninja.net: which side we were, the score, shots per period,
     every goal with its period clock, scorer and assists, every penalty with the player, type and minutes, and who
-    played. Prints it and writes W/sheet.json. With periods.json in place, each goal and penalty gets an estimated
-    video time (period start + what the clock had run; exact where the clock runs through stoppages, otherwise the
-    earliest it can be)."""
+    played. Prints it and writes W/sheet.json. Each goal and penalty gets a video time: the second the board's clock
+    first showed its clock time (clock.json; a goal stops the clock there), or without clock.json, once periods.json
+    is in place, period start + what the clock had run (exact only where the clock runs through stoppages)."""
     import urllib.request
     from roster import TEAM_NAME, TEAM, ALL_SKATERS, GOALIE_NAMES, SKATERS
     from lada_ids import fold
@@ -1262,8 +1287,13 @@ def cmd_sheet(a):
     plabel = {p["id"]: f"P{p['period_type']['sort_order']}" for p in g["periods"]}
     pdur = {p["id"]: int(p["duration"] / 1000) for p in g["periods"]}
     Ps = {P["label"]: P for P in periods(W)} if W and os.path.exists(f"{W}/periods.json") else {}
+    import clock as clock_
+    clk = clock_.load(W) if W else None
     def video_t(period_id, clock):
         P = Ps.get(plabel[period_id])
+        C = next((C for C in clk["periods"] if C["label"] == plabel[period_id]), None) if clk else None
+        if C and (not P or (C["start"] < P["end"] and P["start"] < C["end"])):   # the same period by both counts
+            return clock_.video_t(clk, plabel[period_id], _clock_s(clock))
         if not P:
             return None
         return int(P["start"] + pdur[period_id] - _clock_s(clock))
@@ -1318,7 +1348,8 @@ def cmd_sheet(a):
     if out["playing_not_in_roster"]:
         print("marked playing but not in roster.json:", ", ".join(out["playing_not_in_roster"]))
     if W:
-        print(f"wrote {W}/sheet.json" + ("" if Ps else "; video times appear once periods.json exists"))
+        print(f"wrote {W}/sheet.json" + ("" if Ps or clk else "; video times appear once periods.json exists")
+              + (" (video times from the board's clock)" if clk else ""))
 
 
 def cmd_schedule(a):

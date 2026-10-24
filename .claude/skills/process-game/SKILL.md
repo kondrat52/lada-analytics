@@ -33,9 +33,10 @@ W=~/hockey-work/<slug>-<YYYY-MM-DD>-vs-<opp>      # outside the repo, ~5 GB; Tur
 
 Detection needs the local GPU, so none of this runs in the cloud. On the Windows PC (RTX 5090, set up with
 `pipeline\setup_env.ps1`, see `WINDOWS.md`) fetch takes 30 to 40 minutes (download 5 to 15, detection 11 to 16,
-OCR about 5, the scoreboard scan 3 to 5), prepare 6 to 11, the review 15 to 25, and the lineup checks after the
-first solve anywhere from 15 minutes to two hours (the 29 games so far needed 0 to 76 on/off spans each, most of
-them found by eye), so a game is one and a half to three hours of session time; `run_game.py` keeps Windows awake.
+OCR about 5, the scoreboard scan 3 to 5, reading its clock about 1.5), prepare 6 to 11, the review 15 to 25, and
+the lineup checks after the first solve anywhere from 15 minutes to two hours (the 29 games so far needed 0 to 76
+on/off spans each, most of them found by eye), so a game is one and a half to three hours of session time;
+`run_game.py` keeps Windows awake.
 On the Mac fetch takes about 2 hours and needs `nohup caffeinate -dims -t 28800 >/dev/null 2>&1 &` first: a sleeping Mac stalls detection and kills reviewers
 mid-sheet. Keep the user posted with one line per stage.
 
@@ -82,8 +83,9 @@ $PY pipeline/run_game.py fetch "<url>" $W --team <slug> --rink <renton|renton2|r
 
 Run it in the background and watch `$W/full/log.txt` with a Monitor that also matches `Traceback|Error`. Fetch
 downloads the 4K video (and scales a smaller one up to the rink's usual frame), calibrates the far boards, runs
-detection (restarting itself if it slows down), OCRs the crops, proposes periods, and scans the arena scoreboard
-into `$W/sb.jpg` (one tile per minute). It resumes after any interruption, so re-run it if a background job is
+detection (restarting itself if it slows down), OCRs the crops, scans the arena scoreboard into `$W/sb.jpg` (one
+tile per minute), reads the period clock off it (`pipeline/clock.py`: `$W/clock.json`, `$W/clock_check.jpg`) and
+proposes periods from the clock. It resumes after any interruption, so re-run it if a background job is
 stopped (the Mac's shell jobs stop after 2 hours; detection alone can take longer there). Don't run anything heavy
 meanwhile: OCR and other jobs starve the video decoder. YouTube sometimes answers "Sign in to confirm you're not a
 bot" for every client (every `player_client` alike): on Oct 19 it cleared by itself after about 25 minutes, and
@@ -103,14 +105,21 @@ adding `"bench": "right"` to `$W/full/rink.json` before prepare, or at the lates
 
 Read `$W/sb.jpg` first: the period clock, score, shots, and the home and guest penalty panels. From it: which
 side we are (go by the final score, not LADA's `playHome`), every score change, every penalty, and whether the
-clock ran out. Then check `$W/periods.json` against it and against `break_*.jpg` and `video_end.jpg`. The
-empty-ice proposal is right to a few seconds at Renton but has merged periods and reversed every net before: fix
-anything that's off. A finer sheet is one command: `$PY pipeline/scoreboard.py $W $W/sb2.jpg $(seq 1090 2 1130)`.
+clock ran out. Then check `$W/periods.json`. Fetch takes the periods from the board's clock (`clock.py` reads
+every second of it): each runs from the last second the clock shows 18:00 to its first 00.0, and the log prints
+the empty-ice proposal beside them. Read `$W/clock_check.jpg`, one row per period: the board 1 s before, at and
+after its start (18:00, 18:00, 17:59) and its end (00.0 from the middle tile on). On the 13 archived games it was
+tried on, 70 of 78 edges were within 2 s of the hand-read ones. The clock knows nothing about play: fix an edge
+where play and the clock part (`references/rinks.md`: a board left at 18:00 through a minute of play, a clock run
+off on an empty rink, an intermission set while play had stopped), or where the board was dark (the reader then
+assumes the clock kept running; check with `break_*.jpg` and `run_game.py skaters`). When the clock doesn't give
+three periods (fetch's log says so) take them from `sb.jpg` by eye; when it gives none (a board the reader can't make
+out, a `clock_box` that misses the clock), fetch falls back on the empty-ice proposal, which has merged periods and
+reversed nets before. A finer sheet is one command: `$PY pipeline/scoreboard.py $W $W/sb2.jpg $(seq 1090 2 1130)`.
 
 `net` is where our goalie plays that period (`nets` in `rink.py`; Renton 540 = left, 3245 = right) and switches
 each period. Prepare drops our goalie's detections at that net, so check it on a zoom of both creases in each
-period (`frames --view left-net`). If the proposal has a single period, the breaks weren't empty enough (Kirkland:
-a referee stays out): take the periods from the clock, as `references/rinks.md` describes.
+period (`frames --view left-net`).
 
 Shots come from the game sheet: publish copies `sheet.json`'s per-period counts into `game.json` (`shots_source:
 sheet`). The board's digits are a few pixels tall and `shots.py`'s OCR has been wrong at most games, so run it only
@@ -238,11 +247,13 @@ the user which rows you labeled by hand and how many spans the checkers added.
 $PY pipeline/run_game.py goals $W                   # candidates: center-ice faceoffs that aren't period starts
 ```
 
-With `sheet.json` in place it first prints the sheet's goals with the video time the period clock implies (exact
-where the clock runs through stoppages, otherwise the earliest possible). Every goal is followed by a center
-faceoff, and the board's score changes a few seconds after the clock stops. Confirm each by eye, or hand the list
-to one subagent with the brief in `references/highlights.md`, which also covers finding each of our penalties'
-infraction and framing the clips:
+With `sheet.json` in place it first prints the sheet's goals with the second the board's clock showed each one's
+time (`clock.json`; 82 of 96 goals on the archived games came 2 s before to 8 s after the goal itself, since the
+clock stops just after it; most of the rest were the sheet's time lagging by 15–25 s where the clock runs through
+stoppages, or a power-play goal given the penalty's time; without `clock.json`, period start plus the elapsed clock, exact only where the clock runs
+through stoppages). Every goal is followed by a center faceoff, and the board's score changes a few seconds after
+the clock stops. Confirm each by eye, or hand the list to one subagent with the brief in
+`references/highlights.md`, which also covers finding each of our penalties' infraction and framing the clips:
 
 ```sh
 $PY pipeline/run_game.py frames $W $W/g.jpg --view rink --range <t-60> <t> 3        # the minute before the faceoff

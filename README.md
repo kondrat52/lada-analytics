@@ -93,8 +93,8 @@ recordings' audio is silent, so nothing relies on sound.
 
 ## TODO
 
-Two pipeline changes measured as worth making in the Oct 22, 2026 review of the first 29 processed games, not made
-yet:
+A pipeline change measured as worth making in the Oct 22, 2026 review of the first 29 processed games, not made
+yet (the other one, periods and a game clock read off the board, is `pipeline/clock.py` since Oct 24):
 
 1. **One decode of the video for detection and the scoreboard.** `fetch` decodes the 4K video three times:
    `process.py` (8 fps, cropped to the rink, for YOLO), `crops.py` (8 fps again, for the jersey crops) and
@@ -104,13 +104,3 @@ yet:
    graph (`split` into the 8 fps rink crop and a full-rate board crop) so the video is read once. Either needs a
    game video to test (archives keep none): at the next game run the old scan too and compare `scoreboard.npy`
    frame by frame, and time the fetch.
-2. **Periods and a game clock from the board, by OCR.** The empty-ice proposal (`periods_proposed.json`) has been
-   wrong at nearly every game, so the period edges are read by eye off `sb.jpg` every time (`references/rinks.md`
-   has the rules: the clock counts down from 18:00, runs through stoppages in the 1st and 2nd and stops at whistles
-   in the 3rd, an intermission countdown of 1:00–2:00 between periods, operators who reset or run the clock on an
-   empty rink). Reading the clock digits off every second of the board, the way `shots.py` reads the shots digits
-   (RapidOCR on an upscaled crop, then a fit that allows only the moves a clock makes), gives the period spans
-   directly and a video time for every clock time, which also places the game sheet's goals and penalties in the
-   video without a frame hunt. It needs a clock box per rink next to `shots_boxes` in `rink.py`, and data to
-   develop on: `archive` keeps the board as JPEGs (`scoreboard_jpg.npz`) since Oct 22, so every game from then on
-   provides a test case; the hand-read periods in each archived `periods.json` are the ground truth.

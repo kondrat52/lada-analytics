@@ -89,9 +89,13 @@ The arena scoreboard is in frame at every rink: `pipeline/scoreboard.py $W` keep
 `pipeline/scoreboard.py $W out.jpg t1 t2 ...` sheets it at any seconds. It shows the period clock, the score, the
 shots, and each penalty with the player's number and time left, so periods, goals and penalties come from it; don't
 ask the team about penalties. Check which team each penalty belongs to by who skates into a penalty box:
-scorekeepers have put penalties on the wrong panel. When the empty-ice breaks aren't found (Kirkland: short breaks
-with a referee on the ice), take the periods from the clock (00.0, a 1:00 intermission countdown, then 18:00). A
-penalty carried over an intermission is a penalty kill in both periods.
+scorekeepers have put penalties on the wrong panel. `pipeline/clock.py $W` reads the period clock off every second
+of the board (`clock_box` in `rink.py`) into `$W/clock.json`: each period from the last second at 18:00 to the first
+00.0, and the video second of every clock time, which `run_game.py sheet` and `goals` use for the game sheet's goals
+and penalties. Fetch runs it and proposes the periods from it; check them on `$W/clock_check.jpg` (`--write` puts
+the clock's periods into `periods.json` by hand). Where the clock doesn't give three periods, take them from the clock
+by eye (00.0, a 1:00 intermission countdown, then 18:00). A penalty carried over an intermission is a penalty kill
+in both periods.
 
 ```sh
 $PY pipeline/ovsheet.py $W/full/ov $W/ov.jpg 0 4000 30 3     # the 10-second overview frames, to see the breaks
@@ -104,7 +108,7 @@ Publish takes the game sheet's shots per period from `sheet.json` (`shots_source
 most rinks); check it against `$W/shots_check.jpg`, fix the per-period counts, and set `"checked": true` so publish
 prefers the board's.
 `run_game.py sheet $W` prints SportNinja's game sheet (score, shots, goals with scorers, penalties, who played) and
-writes `$W/sheet.json`; `run_game.py goals` then shows each goal's video time from the period clock.
+writes `$W/sheet.json`; `run_game.py goals` then shows each goal's video time from the period clock (`clock.json`).
 
 ## 6. Track each period
 

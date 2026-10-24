@@ -3,8 +3,9 @@
 ## Finding the goals
 
 `run_game.py goals $W` first prints the game sheet's goals (`sheet.json`, from `run_game.py sheet`) with the
-video time each period clock implies: period start plus the clock's elapsed time, exact where the clock runs
-through stoppages and otherwise the earliest the goal can be (every stoppage before it pushes it later). Then it
+video time each period clock implies: the second the board's clock first showed the goal's time (`clock.json`,
+read by fetch), which the clock stops at in the 3rd too; without `clock.json`, period start plus the clock's elapsed
+time, exact where the clock runs through stoppages and otherwise the earliest the goal can be. Then it
 lists candidate goals from the video: center-ice faceoff formations that aren't period starts, and long stoppages
 with where play restarted (a goal is always followed by a center faceoff). It prints which net is ours each
 period, so goals for and against can be told apart. The scoreboard narrows each candidate: the clock stops a
@@ -106,8 +107,10 @@ center ice and misses the save, so pass the net's x as the focus (630 or 3260 at
 leaves our shooter on the ice, which `ps` doesn't model yet: `ps` plus an `on` for the shooter would conflict.
 
 For each of our penalties, find the infraction: the referee raises an arm right after it (a delayed penalty),
-play goes on until our team touches the puck, then the whistle and the penalty-kill faceoff. The clock stops at
-the whistle, so start 10–20 s before it. The referee may signal from the far end, so look where the penalized
+play goes on until our team touches the puck, then the whistle and the penalty-kill faceoff. In the 3rd the clock
+stops at the whistle and the sheet's video time lands there, 1–10 s after the infraction, so start 10–20 s before
+it. In the 1st and 2nd the clock runs through the stoppage, and the sheet's time is usually 20–50 s after the
+infraction (up to 73 s on the archived games), so look back from there. The referee may signal from the far end, so look where the penalized
 player was in the seconds before the arm went up: his track in `$W/pN/segs_final.csv` (`plabel` = his number) and
 full-rink frames 1 s apart. An opponent going down near him is the usual sign.
 
