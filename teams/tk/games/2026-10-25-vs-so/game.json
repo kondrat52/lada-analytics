@@ -1,0 +1,288 @@
+{
+  "id": "2026-10-25-vs-so",
+  "date": "2026-10-25",
+  "title": "LADA Turbo Kings vs SEA Otters, Oct 25",
+  "eyebrow": "Sun Oct 25, 2026 · 9:25 PM · Snoqualmie",
+  "opponent": "SO",
+  "video": "https://youtu.be/zXBpPqJKO4Q",
+  "periods": [
+    {
+      "label": "P1",
+      "start": 1,
+      "end": 1100
+    },
+    {
+      "label": "P2",
+      "start": 1197,
+      "end": 2279
+    },
+    {
+      "label": "P3",
+      "start": 2373,
+      "end": 3888
+    }
+  ],
+  "nets": {
+    "P1": 680,
+    "P2": 3270,
+    "P3": 680
+  },
+  "penalty_kills": [
+    {
+      "period": "P3",
+      "start": 2955,
+      "end": 3155,
+      "player": 12
+    }
+  ],
+  "notes": [
+    "Home game at Snoqualmie B: we wore white and had the left bench; SEA Otters wore red and black. This time YouTube had the video at the camera's full 3824x2160, so nothing was scaled. LADA's schedule lists the game at 8:25 PM; the video's title says 9:25 PM PDT, which the header follows.",
+    "Periods, goals and the penalty come from the arena scoreboard (Lada TK was HOME), the game sheet and the video. The 1st and 2nd ran on a running clock, the 3rd on a stop clock. Goals at 4:47, 5:53 (SO), 26:36 and 62:48 of the video, each checked by eye. The video runs to the final horn. Shots on goal from the game sheet, which the board matches at the end: Lada TK 37, SO 20.",
+    "Penalty kill: Kondratenko #12, 2:00 for interference at 10:41 of the 3rd (the infraction at 49:08 of the video, the whistle at 49:15). He sat from 49:25 to 52:35, and nothing went in. SEA Otters' two minors (#44 hooking in the 1st, #19 tripping in the 2nd) ran 3:00 on the board, where the sheet says 2.",
+    "SEA Otters pulled their goalie with about 1:30 left (from about 61:10 of the video), and Belov's long shot went into the empty net. In the stoppage before it the board's clock was run down to 0:00 and set back to 1:22, and a minute later it was set from 1:05 back to 1:09, so the 3rd's end was read off the board by hand.",
+    "Didn't play: Sokolov #4, Vasyliev #31, Unuchek #49, Kleiman #69, Podkorytov #82. Bronnikov #74 played, though the game sheet doesn't mark him. No subs.",
+    "Lineups checked by eye: 51 on/off spans from frame checks of the 16 stretches the lineup check listed, #13's long shifts and three bench pieces (missed players, players sitting at the bench counted as on, and two referee tracks that had carried #13 and #61 late in the 3rd), plus 3 spans taken from the tracks around 54:05-54:46 and confirmed on video. Belousenko's 36:33 is real: he played the whole penalty kill and the last 3:24 of the game."
+  ],
+  "video_ends_early": false,
+  "fun": {
+    "name_reads": {
+      "78": 632,
+      "13": 455,
+      "90": 388,
+      "12": 280,
+      "89": 263,
+      "26": 250,
+      "64": 160,
+      "18": 138,
+      "14": 102,
+      "74": 41,
+      "61": 36,
+      "33": 4
+    }
+  },
+  "pipeline": {
+    "detections": 703423,
+    "crops": 247960,
+    "reads": 5529,
+    "reviewed": 1576
+  },
+  "highlights": [
+    {
+      "type": "goal",
+      "team": "for",
+      "t": 287,
+      "scorer": 14,
+      "assists": [
+        13,
+        89
+      ],
+      "clip": "clips/goal-1.mp4",
+      "poster": "clips/goal-1.jpg",
+      "note": "1st period, clock 13:13: Radutskiy jams it in at the crease with their goalie down, 1-0"
+    },
+    {
+      "type": "goal",
+      "team": "against",
+      "t": 353,
+      "scorer": 9,
+      "assists": [],
+      "clip": "clips/goal-2.mp4",
+      "poster": "clips/goal-2.jpg",
+      "note": "1st period, clock 12:08: a forward cuts in past the defence and jams it past our sprawled goalie, 1-1"
+    },
+    {
+      "type": "goal",
+      "team": "for",
+      "t": 1596,
+      "scorer": 13,
+      "assists": [],
+      "clip": "clips/goal-3.mp4",
+      "poster": "clips/goal-3.jpg",
+      "note": "2nd period, clock 11:21: Belousenko out of a scramble at their net, 2-1"
+    },
+    {
+      "type": "penalty",
+      "player": 12,
+      "t": 2948,
+      "clip": "clips/penalty-12.mp4",
+      "poster": "clips/penalty-12.jpg",
+      "note": "3rd period, clock 10:41: interference, riding their puck carrier off the far boards toward our net; 2:00 served, no goal"
+    },
+    {
+      "type": "goal",
+      "team": "for",
+      "t": 3768,
+      "scorer": 64,
+      "assists": [],
+      "clip": "clips/goal-4.mp4",
+      "poster": "clips/goal-4.jpg",
+      "note": "3rd period, clock 0:49: Belov's long shot into the empty net with their goalie pulled for a sixth skater, 3-1"
+    }
+  ],
+  "lada_game_id": 33016,
+  "zones": {
+    "offence": 0.4448,
+    "defence": 0.3257
+  },
+  "shots": {
+    "P1": [
+      7,
+      7
+    ],
+    "P2": [
+      17,
+      4
+    ],
+    "P3": [
+      13,
+      9
+    ]
+  },
+  "shots_source": "sheet",
+  "stoppages": [
+    [
+      1,
+      3
+    ],
+    [
+      285,
+      324
+    ],
+    [
+      354,
+      384
+    ],
+    [
+      384,
+      438
+    ],
+    [
+      470,
+      508
+    ],
+    [
+      608,
+      638
+    ],
+    [
+      658,
+      701
+    ],
+    [
+      816,
+      853
+    ],
+    [
+      968,
+      993
+    ],
+    [
+      1049,
+      1071
+    ],
+    [
+      1197,
+      1201
+    ],
+    [
+      1278,
+      1305
+    ],
+    [
+      1345,
+      1418
+    ],
+    [
+      1458,
+      1475
+    ],
+    [
+      1502,
+      1525
+    ],
+    [
+      1556,
+      1588
+    ],
+    [
+      1588,
+      1622
+    ],
+    [
+      1633,
+      1652
+    ],
+    [
+      1941,
+      1995
+    ],
+    [
+      2089,
+      2113
+    ],
+    [
+      2139,
+      2166
+    ],
+    [
+      2373,
+      2375
+    ],
+    [
+      2454,
+      2485
+    ],
+    [
+      2505,
+      2525
+    ],
+    [
+      2525,
+      2564
+    ],
+    [
+      2576,
+      2606
+    ],
+    [
+      2647,
+      2669
+    ],
+    [
+      2808,
+      2841
+    ],
+    [
+      2950,
+      2980
+    ],
+    [
+      3122,
+      3154
+    ],
+    [
+      3413,
+      3443
+    ],
+    [
+      3567,
+      3586
+    ],
+    [
+      3676,
+      3737
+    ],
+    [
+      3761,
+      3800
+    ],
+    [
+      3831,
+      3848
+    ],
+    [
+      3859,
+      3876
+    ]
+  ]
+}

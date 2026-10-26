@@ -182,14 +182,19 @@ brightness levels (`white_v`, `dark_v`) and its own white-jersey test (little da
 from TTT's navy). Referees' stripes and dark jerseys with a cream or white shoulder yoke (Sentinels, Frost Giants)
 pass that test: twice the usual review sheets (210–223), `run_game.py skaters` reading 8–10 (check penalties at the
 box by eye), `unknown` listing their numbers, and their #13 and #16 read hundreds of times on Oct 10, so our own
-absent #13 and #16 had to be on the absent list. LADA's schedule calls it "Snoqualmie B". YouTube has had these
-videos only at 2548x1440 (Sep 19, Oct 10): fetch takes the best webm and scales it up, and the geometry fits.
+absent #13 and #16 had to be on the absent list. LADA's schedule calls it "Snoqualmie B". YouTube had these
+videos only at 2548x1440 on Sep 19 and Oct 10 (fetch takes the best webm and scales it up, and the geometry fits);
+TK's Oct 25 video came at the full 3824x2160 (format 313), so nothing was scaled. Against red and black jerseys
+(SEA Otters, Oct 25) the white test held: 199 review sheets and no opponent numbers in `unknown`.
 
 Seen here: the proposal merged the 1st and 2nd (Sep 19) or found all three 11–40 s off (Oct 10, nets right); after
 the 2nd on Sep 19 the board counted a 2:00 intermission; on Oct 10 the board sat at 18:00 until the opening faceoff
 at 0:11, and the box attendant kept #61 in for 22 s after the panel went dark. Our goalie wore white with dark pads,
 theirs light blue; in a lopsided period the play sits at their net, which tells the nets apart. Shots OCR was wrong
-in every period of both games.
+in every period of both games. On Oct 25 the 1st and 2nd ran on a running clock with 3:00 minors and the 3rd on a
+stop clock with 2:00 minors. With 1:05 left in the 3rd the operator set the clock back to 1:09, and `clock.py` ended
+the period there (3754) instead of at the 00.0 at 3888: a period end that isn't 00.0 on `clock_check.jpg` needs a
+sheet of the board up to the video's end.
 
 Views: `rink` 0–3824 × 800–2160; `left-net` 80–1280 × 820–1370; `right-net` 2620–3820 × 820–1370; `bench` 100–1100 ×
 1250–2160 (left) or 2724–3724 × 1250–2160 (right). The nets sit at about (645, 1015) and (3250, 1020) in the frame,

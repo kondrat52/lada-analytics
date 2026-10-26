@@ -26,6 +26,30 @@
     "playHome": true,
     "rinkId": 2085,
     "rinkName": "Snoqualmie B",
-    "lines": "{\"offence\":[[\"12165\",\"14208\",\"11144\"],[\"11140\",\"20394\",\"19314\"]],\"defence\":[[\"14209\",null],[\"11138\",\"20411\"]],\"goalie\":[[\"17285\"]],\"beer\":null}"
+    "lines": "{\"offence\":[[\"12165\",\"14208\",\"11144\"],[\"11140\",\"20394\",\"19314\"]],\"defence\":[[\"14209\",null],[\"11138\",\"20411\"]],\"goalie\":[[\"17285\"]],\"beer\":null}",
+    "teamGoals": 3,
+    "opponentGoals": 1,
+    "boxscoreLink": "https://app.sportninja.com/public/game/ErkCbl7vbVa63MNC"
+  },
+  "33032": {
+    "date": "2026-11-08T18:25:00",
+    "opponentName": "Hosers",
+    "playHome": false,
+    "rinkId": 2083,
+    "rinkName": "Renton"
+  },
+  "33033": {
+    "date": "2026-11-14T22:40:00",
+    "opponentName": "SEA Otters",
+    "playHome": true,
+    "rinkId": 2083,
+    "rinkName": "Renton"
+  },
+  "33034": {
+    "date": "2026-11-22T17:00:00",
+    "opponentName": "Hosers",
+    "playHome": true,
+    "rinkId": 2083,
+    "rinkName": "Renton"
   }
 }
