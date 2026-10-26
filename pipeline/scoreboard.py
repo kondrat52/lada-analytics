@@ -12,11 +12,18 @@ sys.path.insert(0, os.path.dirname(os.path.abspath(__file__)))
 from rink import rink
 
 
-def scan(W):
+def scan(W, out=None, low_priority=False):
+    """low_priority: fetch runs this alongside detection, so the decode gets 4 threads at below-normal priority.
+    On a 4-minute slice of the Oct 25 video that slowed detection by 16%, all threads by 31%."""
+    out = out or f"{W}/scoreboard.npy"
     x, y, w, h = rink(f"{W}/full").scoreboard
-    p = subprocess.Popen([imageio_ffmpeg.get_ffmpeg_exe(), "-nostdin", "-loglevel", "error", "-threads", "0",
+    nice = dict(creationflags=subprocess.BELOW_NORMAL_PRIORITY_CLASS) if low_priority and sys.platform == "win32" else {}
+    p = subprocess.Popen([imageio_ffmpeg.get_ffmpeg_exe(), "-nostdin", "-loglevel", "error",
+                          "-threads", "4" if low_priority else "0",
                           "-i", f"{W}/video.webm", "-vf", f"crop={w}:{h}:{x}:{y}", "-f", "rawvideo", "-pix_fmt", "bgr24",
-                          "-"], stdout=subprocess.PIPE, bufsize=w * h * 3 * 64)
+                          "-"], stdout=subprocess.PIPE, bufsize=w * h * 3 * 64, **nice)
+    if low_priority and sys.platform != "win32":
+        os.setpriority(os.PRIO_PROCESS, p.pid, 10)
     fps = next(imageio_ffmpeg.read_frames(f"{W}/video.webm"))["fps"]   # 24 at first, 30 since Oct 2026
     best, lit, n = [], [], 0
     while len(buf := p.stdout.read(w * h * 3)) == w * h * 3:
@@ -27,8 +34,10 @@ def scan(W):
         elif v > lit[s]:
             best[s], lit[s] = f.copy(), v
         n += 1
-    np.save(f"{W}/scoreboard.npy", np.array(best))
-    print(f"{W}/scoreboard.npy: {len(best)} s")
+    p.wait()
+    np.save(out[:-4] + ".tmp.npy", np.array(best))   # a scan cut short leaves no scoreboard.npy for load() to trust
+    os.replace(out[:-4] + ".tmp.npy", out)
+    print(f"{out}: {len(best)} s")
 
 
 def compress(W):

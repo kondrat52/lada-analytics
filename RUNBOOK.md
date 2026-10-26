@@ -85,7 +85,7 @@ for k in 0 1 2 3; do PYTHONHASHSEED=0 $PY pipeline/ocr_worker.py $W/full 1000000
 ## 5. Find the periods
 
 The arena scoreboard is in frame at every rink: `pipeline/scoreboard.py $W` keeps its brightest frame per second
-(the LEDs flicker; `run_game.py fetch` does this pass and writes `$W/sb.jpg`, the board every 60 s), and
+(the LEDs flicker; `run_game.py fetch` does this pass alongside detection and writes `$W/sb.jpg`, the board every 60 s), and
 `pipeline/scoreboard.py $W out.jpg t1 t2 ...` sheets it at any seconds. It shows the period clock, the score, the
 shots, and each penalty with the player's number and time left, so periods, goals and penalties come from it; don't
 ask the team about penalties. Check which team each penalty belongs to by who skates into a penalty box:

@@ -93,14 +93,18 @@ recordings' audio is silent, so nothing relies on sound.
 
 ## TODO
 
-A pipeline change measured as worth making in the Oct 22, 2026 review of the first 29 processed games, not made
-yet (the other one, periods and a game clock read off the board, is `pipeline/clock.py` since Oct 24):
+What's left of a pipeline change measured as worth making in the Oct 22, 2026 review of the first 29 processed
+games (the other one, periods and a game clock read off the board, is `pipeline/clock.py` since Oct 24):
 
-1. **One decode of the video for detection and the scoreboard.** `fetch` decodes the 4K video three times:
-   `process.py` (8 fps, cropped to the rink, for YOLO), `crops.py` (8 fps again, for the jersey crops) and
-   `scoreboard.py scan` (every frame, cropped to the board, keeping the brightest of each second; 3–5 minutes per
-   game, run after OCR). Detection is GPU-bound, so the cheapest version runs the scan in a thread or process
-   alongside `detect()` and joins it before `ocr()`; the tidier one adds the board crop to `process.py`'s ffmpeg
-   graph (`split` into the 8 fps rink crop and a full-rate board crop) so the video is read once. Either needs a
-   game video to test (archives keep none): at the next game run the old scan too and compare `scoreboard.npy`
-   frame by frame, and time the fetch.
+1. **One decode of the video for detection and the scoreboard.** Since Oct 26 `fetch` runs `scoreboard.py`'s scan
+   (every frame, cropped to the board, keeping the brightest of each second) in a thread while `process.py`
+   detects, its ffmpeg at below-normal priority, and joins it before OCR. On TK's Oct 25 game (64 minutes of
+   native 4K VP9, Snoqualmie B) the scan alone took 6.3–6.7 minutes. Alongside detection, with all decoder threads,
+   it took 7.8 minutes and slowed detection from 34 to 25 fps meanwhile, which cost about 2 minutes, and its
+   `scoreboard.npy` matched the old scan's frame by frame: about 4.5 minutes saved per fetch. On a 4-minute slice
+   of that video 4 decoder threads cost detection half as much (16% slower instead of 31%), so the scan now uses 4;
+   the next fetch log ("scanned in N min alongside detection", and the `rate=` lines in `full/log.txt`) will show
+   the full-game effect. The rest would go with one decode: `process.py` already decodes every frame (its
+   `fps=8` filter drops the rest), so a full-rate board crop `split` off its ffmpeg graph would make the scan
+   nearly free. That needs a second output stream from one ffmpeg (a named pipe on Windows) and per-second picks
+   that survive `detect()`'s restarts, which isn't worth it for the minute or two left.

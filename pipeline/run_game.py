@@ -291,6 +291,27 @@ def set_config(W, **kw):
         json.dump(cfg, open(p, "w"))
 
 
+def scoreboard_alongside(W):
+    """The scoreboard's pass over the video (3-5 minutes on its own) in a thread while process.py detects, its
+    decode at below-normal priority so it only takes CPU detection leaves idle. Returns the thread to join before
+    OCR; if the scan fails, scoreboard_sheet scans again."""
+    if os.path.exists(f"{W}/scoreboard.npy"):
+        return None
+    import threading
+    from scoreboard import scan
+    def run():
+        t0 = time.time()
+        try:
+            scan(W, low_priority=True)
+            log(f"scoreboard: scanned in {(time.time() - t0) / 60:.1f} min alongside detection")
+        except Exception as e:
+            log(f"scoreboard scan alongside detection failed ({e!r})")
+    log("scoreboard: one pass over the video, alongside detection")
+    th = threading.Thread(target=run, daemon=True)
+    th.start()
+    return th
+
+
 def scoreboard_sheet(W):
     """The arena scoreboard every 60 s (W/sb.jpg) from one pass over the video (W/scoreboard.npy): periods, score,
     penalties and shots are read off it, since the empty-ice period proposal is often wrong."""
@@ -320,7 +341,10 @@ def cmd_fetch(a):
     fit_size(vid, W)
     download_audio(a.url, W)
     calibrate(vid, W)
+    board = None if a.limit else scoreboard_alongside(W)
     detect(vid, W, a.limit)
+    if board:
+        board.join()
     ocr(W)
     if not a.limit:
         scoreboard_sheet(W)

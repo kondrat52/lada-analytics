@@ -32,8 +32,8 @@ W=~/hockey-work/<slug>-<YYYY-MM-DD>-vs-<opp>      # outside the repo, ~5 GB; Tur
 ```
 
 Detection needs the local GPU, so none of this runs in the cloud. On the Windows PC (RTX 5090, set up with
-`pipeline\setup_env.ps1`, see `WINDOWS.md`) fetch takes 30 to 40 minutes (download 5 to 15, detection 11 to 16,
-OCR about 5, the scoreboard scan 3 to 5, reading its clock about 1.5), prepare 6 to 11, the review 15 to 25, and
+`pipeline\setup_env.ps1`, see `WINDOWS.md`) fetch takes 30 to 40 minutes (download 3 to 15, detection 11 to 17
+with the scoreboard scan running beside it, OCR 5 to 11, reading the board's clock about 1.5), prepare 6 to 11, the review 15 to 25, and
 the lineup checks after the first solve anywhere from 15 minutes to two hours (the 29 games so far needed 0 to 76
 on/off spans each, most of them found by eye), so a game is one and a half to three hours of session time;
 `run_game.py` keeps Windows awake.
@@ -83,8 +83,8 @@ $PY pipeline/run_game.py fetch "<url>" $W --team <slug> --rink <renton|renton2|r
 
 Run it in the background and watch `$W/full/log.txt` with a Monitor that also matches `Traceback|Error`. Fetch
 downloads the 4K video (and scales a smaller one up to the rink's usual frame), calibrates the far boards, runs
-detection (restarting itself if it slows down), OCRs the crops, scans the arena scoreboard into `$W/sb.jpg` (one
-tile per minute), reads the period clock off it (`pipeline/clock.py`: `$W/clock.json`, `$W/clock_check.jpg`) and
+detection (restarting itself if it slows down) with a pass over the arena scoreboard beside it, OCRs the crops,
+sheets the board into `$W/sb.jpg` (one tile per minute), reads the period clock off it (`pipeline/clock.py`: `$W/clock.json`, `$W/clock_check.jpg`) and
 proposes periods from the clock. It resumes after any interruption, so re-run it if a background job is
 stopped (the Mac's shell jobs stop after 2 hours; detection alone can take longer there). Don't run anything heavy
 meanwhile: OCR and other jobs starve the video decoder. YouTube sometimes answers "Sign in to confirm you're not a
