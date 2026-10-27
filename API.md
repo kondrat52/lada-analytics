@@ -80,7 +80,7 @@ them (`for` = us), or `null` for a game whose board wasn't read.
 | `periods[]` | `{label: "P1", start, end, length}` in video seconds |
 | `penalty_kills[]` | `{period, start, end, player}`: our skater in the box; 4 skaters on the ice for the window |
 | `shots` | Shots on goal from the arena scoreboard: `{for, against, periods[]}`, `periods[]` with `{label, for, against}`; `null` when not read. Read at the end of each period, so a shot counted late by the scorekeeper lands in the next one |
-| `players[]` | Sorted by ice time: `shifts, toi, play, avg_shift, median_shift, longest_shift, shortest_shift`, and `periods[]` with `{label, shifts, toi, avg_shift}` |
+| `players[]` | Sorted by ice time: `shifts, toi, play, avg_shift, median_shift, longest_shift, shortest_shift`, `plus_minus` (goals for minus goals against while on the ice, from the goals on video, as in `trends.json`), and `periods[]` with `{label, shifts, toi, avg_shift}` |
 | `shifts[]` | Every shift: `{number, period, start, end, duration, play, start_in_period}` |
 | `highlights[]` | `{type: "goal" \| "penalty" \| "moment", team: "for" \| "against" (goals), title (moments), player (penalties), t, period, t_in_period, clip_url, poster_url, note, on_ice[]}`. Clips are 1280×720 H.264 MP4 without audio, about 5 MB. `on_ice` lists our skaters on the ice for a goal or a moment (a play worth a clip that isn't a goal or a penalty) |
 | `stoppages[]` | `[start, end]` pairs: estimated stoppages (whistle to puck drop) |

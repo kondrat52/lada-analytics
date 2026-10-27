@@ -98,6 +98,7 @@ def game_doc(game, A, players, highlights):
                      "shifts": p["shifts"], "toi": _num(p["toi"]), "play": _num(p.get("play")),
                      "avg_shift": _num(p["avg"]), "median_shift": _num(p["median"]),
                      "longest_shift": _num(p["longest"]), "shortest_shift": _num(p.get("shortest")),
+                     "plus_minus": p["plus_minus"],
                      "periods": [{"label": lab, "shifts": x[0], "toi": _num(x[1]), "avg_shift": _num(x[2])} if x else
                                  {"label": lab, "shifts": 0, "toi": 0, "avg_shift": None}
                                  for lab, x in zip([q["label"] for q in game["periods"]], p["per"])]}
