@@ -26,6 +26,7 @@
    "avg_shift": 145.8,
    "longest_shift": 355,
    "shortest_shift": 32,
+   "plus_minus": -4,
    "games": [
     {
      "id": "2026-10-12-vs-wb",
@@ -37,7 +38,8 @@
      "toi": 1918,
      "shifts": 13,
      "avg_shift": 147.5,
-     "play": 1365
+     "play": 1365,
+     "plus_minus": -2
     },
     {
      "id": "2026-10-05-vs-br",
@@ -49,7 +51,8 @@
      "toi": 2023,
      "shifts": 15,
      "avg_shift": 134.9,
-     "play": 1508
+     "play": 1508,
+     "plus_minus": 0
     },
     {
      "id": "2026-09-28-vs-r",
@@ -61,7 +64,8 @@
      "toi": 2222,
      "shifts": 15,
      "avg_shift": 148.1,
-     "play": 1540
+     "play": 1540,
+     "plus_minus": -2
     },
     {
      "id": "2026-09-21-vs-wa",
@@ -73,7 +77,8 @@
      "toi": 1794,
      "shifts": 11,
      "avg_shift": 163.1,
-     "play": 1295
+     "play": 1295,
+     "plus_minus": 1
     },
     {
      "id": "2026-09-14-vs-tm",
@@ -85,7 +90,8 @@
      "toi": 1811,
      "shifts": 13,
      "avg_shift": 139.3,
-     "play": 865
+     "play": 865,
+     "plus_minus": -1
     }
    ]
   },
@@ -101,6 +107,7 @@
    "avg_shift": 135.2,
    "longest_shift": 220,
    "shortest_shift": 33,
+   "plus_minus": -3,
    "games": [
     {
      "id": "2026-10-12-vs-wb",
@@ -112,7 +119,8 @@
      "toi": 1910,
      "shifts": 14,
      "avg_shift": 136.4,
-     "play": 1363
+     "play": 1363,
+     "plus_minus": -2
     },
     {
      "id": "2026-10-05-vs-br",
@@ -124,7 +132,8 @@
      "toi": 1927,
      "shifts": 14,
      "avg_shift": 137.6,
-     "play": 1444
+     "play": 1444,
+     "plus_minus": 1
     },
     {
      "id": "2026-09-28-vs-r",
@@ -136,7 +145,8 @@
      "toi": 1747,
      "shifts": 14,
      "avg_shift": 124.8,
-     "play": 1229
+     "play": 1229,
+     "plus_minus": 0
     },
     {
      "id": "2026-09-21-vs-wa",
@@ -148,7 +158,8 @@
      "toi": 1717,
      "shifts": 12,
      "avg_shift": 143.1,
-     "play": 1158
+     "play": 1158,
+     "plus_minus": -2
     }
    ]
   },
@@ -164,6 +175,7 @@
    "avg_shift": 131.5,
    "longest_shift": 231,
    "shortest_shift": 44,
+   "plus_minus": -4,
    "games": [
     {
      "id": "2026-10-05-vs-br",
@@ -175,7 +187,8 @@
      "toi": 1953,
      "shifts": 14,
      "avg_shift": 139.5,
-     "play": 1273
+     "play": 1273,
+     "plus_minus": -3
     },
     {
      "id": "2026-09-28-vs-r",
@@ -187,7 +200,8 @@
      "toi": 1958,
      "shifts": 15,
      "avg_shift": 130.5,
-     "play": 1364
+     "play": 1364,
+     "plus_minus": 0
     },
     {
      "id": "2026-09-14-vs-tm",
@@ -199,7 +213,8 @@
      "toi": 1480,
      "shifts": 12,
      "avg_shift": 123.3,
-     "play": 960
+     "play": 960,
+     "plus_minus": -1
     }
    ]
   },
@@ -215,6 +230,7 @@
    "avg_shift": 129.1,
    "longest_shift": 228,
    "shortest_shift": 57,
+   "plus_minus": -9,
    "games": [
     {
      "id": "2026-10-12-vs-wb",
@@ -226,7 +242,8 @@
      "toi": 1553,
      "shifts": 14,
      "avg_shift": 110.9,
-     "play": 1132
+     "play": 1132,
+     "plus_minus": -4
     },
     {
      "id": "2026-10-05-vs-br",
@@ -238,7 +255,8 @@
      "toi": 1810,
      "shifts": 14,
      "avg_shift": 129.3,
-     "play": 1187
+     "play": 1187,
+     "plus_minus": -4
     },
     {
      "id": "2026-09-21-vs-wa",
@@ -250,7 +268,8 @@
      "toi": 1660,
      "shifts": 11,
      "avg_shift": 150.9,
-     "play": 1172
+     "play": 1172,
+     "plus_minus": -2
     },
     {
      "id": "2026-09-14-vs-tm",
@@ -262,7 +281,8 @@
      "toi": 1688,
      "shifts": 13,
      "avg_shift": 129.8,
-     "play": 1054
+     "play": 1054,
+     "plus_minus": 1
     }
    ]
   },
@@ -278,6 +298,7 @@
    "avg_shift": 106.4,
    "longest_shift": 192,
    "shortest_shift": 30,
+   "plus_minus": -2,
    "games": [
     {
      "id": "2026-10-12-vs-wb",
@@ -289,7 +310,8 @@
      "toi": 1537,
      "shifts": 14,
      "avg_shift": 109.8,
-     "play": 1138
+     "play": 1138,
+     "plus_minus": -4
     },
     {
      "id": "2026-09-28-vs-r",
@@ -301,7 +323,8 @@
      "toi": 1569,
      "shifts": 14,
      "avg_shift": 112.1,
-     "play": 1033
+     "play": 1033,
+     "plus_minus": 2
     },
     {
      "id": "2026-09-14-vs-tm",
@@ -313,7 +336,8 @@
      "toi": 1470,
      "shifts": 15,
      "avg_shift": 98,
-     "play": 1023
+     "play": 1023,
+     "plus_minus": 0
     }
    ]
   },
@@ -329,6 +353,7 @@
    "avg_shift": 128.5,
    "longest_shift": 214,
    "shortest_shift": 32,
+   "plus_minus": -3,
    "games": [
     {
      "id": "2026-10-12-vs-wb",
@@ -340,7 +365,8 @@
      "toi": 1447,
      "shifts": 11,
      "avg_shift": 131.5,
-     "play": 993
+     "play": 993,
+     "plus_minus": -2
     },
     {
      "id": "2026-10-05-vs-br",
@@ -352,7 +378,8 @@
      "toi": 1946,
      "shifts": 14,
      "avg_shift": 139,
-     "play": 1370
+     "play": 1370,
+     "plus_minus": -5
     },
     {
      "id": "2026-09-28-vs-r",
@@ -364,7 +391,8 @@
      "toi": 1413,
      "shifts": 11,
      "avg_shift": 128.5,
-     "play": 944
+     "play": 944,
+     "plus_minus": 2
     },
     {
      "id": "2026-09-21-vs-wa",
@@ -376,7 +404,8 @@
      "toi": 1512,
      "shifts": 12,
      "avg_shift": 126,
-     "play": 1042
+     "play": 1042,
+     "plus_minus": 2
     },
     {
      "id": "2026-09-14-vs-tm",
@@ -388,7 +417,8 @@
      "toi": 1262,
      "shifts": 11,
      "avg_shift": 114.7,
-     "play": 811
+     "play": 811,
+     "plus_minus": 0
     }
    ]
   },
@@ -404,6 +434,7 @@
    "avg_shift": 114.9,
    "longest_shift": 237,
    "shortest_shift": 30,
+   "plus_minus": -3,
    "games": [
     {
      "id": "2026-10-12-vs-wb",
@@ -415,7 +446,8 @@
      "toi": 1659,
      "shifts": 13,
      "avg_shift": 127.6,
-     "play": 1223
+     "play": 1223,
+     "plus_minus": -3
     },
     {
      "id": "2026-10-05-vs-br",
@@ -427,7 +459,8 @@
      "toi": 1266,
      "shifts": 12,
      "avg_shift": 105.5,
-     "play": 792
+     "play": 792,
+     "plus_minus": -1
     },
     {
      "id": "2026-09-28-vs-r",
@@ -439,7 +472,8 @@
      "toi": 1449,
      "shifts": 12,
      "avg_shift": 120.8,
-     "play": 858
+     "play": 858,
+     "plus_minus": 0
     },
     {
      "id": "2026-09-21-vs-wa",
@@ -451,7 +485,8 @@
      "toi": 1552,
      "shifts": 13,
      "avg_shift": 119.4,
-     "play": 1235
+     "play": 1235,
+     "plus_minus": 2
     },
     {
      "id": "2026-09-14-vs-tm",
@@ -463,7 +498,8 @@
      "toi": 1311,
      "shifts": 13,
      "avg_shift": 100.8,
-     "play": 726
+     "play": 726,
+     "plus_minus": -1
     }
    ]
   },
@@ -479,6 +515,7 @@
    "avg_shift": 132.1,
    "longest_shift": 260,
    "shortest_shift": 37,
+   "plus_minus": -3,
    "games": [
     {
      "id": "2026-10-12-vs-wb",
@@ -490,7 +527,8 @@
      "toi": 1312,
      "shifts": 10,
      "avg_shift": 131.2,
-     "play": 968
+     "play": 968,
+     "plus_minus": -2
     },
     {
      "id": "2026-10-05-vs-br",
@@ -502,7 +540,8 @@
      "toi": 1967,
      "shifts": 14,
      "avg_shift": 140.5,
-     "play": 1343
+     "play": 1343,
+     "plus_minus": 1
     },
     {
      "id": "2026-09-28-vs-r",
@@ -514,7 +553,8 @@
      "toi": 1211,
      "shifts": 10,
      "avg_shift": 121.1,
-     "play": 814
+     "play": 814,
+     "plus_minus": -2
     },
     {
      "id": "2026-09-21-vs-wa",
@@ -526,7 +566,8 @@
      "toi": 1247,
      "shifts": 10,
      "avg_shift": 124.7,
-     "play": 991
+     "play": 991,
+     "plus_minus": 1
     },
     {
      "id": "2026-09-14-vs-tm",
@@ -538,7 +579,8 @@
      "toi": 1395,
      "shifts": 10,
      "avg_shift": 139.5,
-     "play": 747
+     "play": 747,
+     "plus_minus": -1
     }
    ]
   },
@@ -554,6 +596,7 @@
    "avg_shift": 138.6,
    "longest_shift": 260,
    "shortest_shift": 55,
+   "plus_minus": -5,
    "games": [
     {
      "id": "2026-10-12-vs-wb",
@@ -565,7 +608,8 @@
      "toi": 1496,
      "shifts": 11,
      "avg_shift": 136,
-     "play": 1139
+     "play": 1139,
+     "plus_minus": -5
     },
     {
      "id": "2026-09-28-vs-r",
@@ -577,7 +621,8 @@
      "toi": 1265,
      "shifts": 10,
      "avg_shift": 126.5,
-     "play": 904
+     "play": 904,
+     "plus_minus": 1
     },
     {
      "id": "2026-09-21-vs-wa",
@@ -589,7 +634,8 @@
      "toi": 1217,
      "shifts": 9,
      "avg_shift": 135.2,
-     "play": 916
+     "play": 916,
+     "plus_minus": -1
     },
     {
      "id": "2026-09-14-vs-tm",
@@ -601,7 +647,8 @@
      "toi": 1565,
      "shifts": 10,
      "avg_shift": 156.5,
-     "play": 1107
+     "play": 1107,
+     "plus_minus": 0
     }
    ]
   },
@@ -617,6 +664,7 @@
    "avg_shift": 126.6,
    "longest_shift": 234,
    "shortest_shift": 20,
+   "plus_minus": 1,
    "games": [
     {
      "id": "2026-10-12-vs-wb",
@@ -628,7 +676,8 @@
      "toi": 1753,
      "shifts": 15,
      "avg_shift": 116.9,
-     "play": 1197
+     "play": 1197,
+     "plus_minus": -1
     },
     {
      "id": "2026-10-05-vs-br",
@@ -640,7 +689,8 @@
      "toi": 1346,
      "shifts": 9,
      "avg_shift": 149.6,
-     "play": 1023
+     "play": 1023,
+     "plus_minus": -1
     },
     {
      "id": "2026-09-28-vs-r",
@@ -652,7 +702,8 @@
      "toi": 1312,
      "shifts": 12,
      "avg_shift": 109.3,
-     "play": 809
+     "play": 809,
+     "plus_minus": 0
     },
     {
      "id": "2026-09-21-vs-wa",
@@ -664,7 +715,8 @@
      "toi": 1349,
      "shifts": 9,
      "avg_shift": 149.9,
-     "play": 894
+     "play": 894,
+     "plus_minus": 2
     },
     {
      "id": "2026-09-14-vs-tm",
@@ -676,7 +728,8 @@
      "toi": 821,
      "shifts": 7,
      "avg_shift": 117.3,
-     "play": 569
+     "play": 569,
+     "plus_minus": 1
     }
    ]
   },
@@ -692,6 +745,7 @@
    "avg_shift": 126.7,
    "longest_shift": 247,
    "shortest_shift": 42,
+   "plus_minus": 0,
    "games": [
     {
      "id": "2026-09-28-vs-r",
@@ -703,7 +757,8 @@
      "toi": 1395,
      "shifts": 12,
      "avg_shift": 116.2,
-     "play": 956
+     "play": 956,
+     "plus_minus": 1
     },
     {
      "id": "2026-09-21-vs-wa",
@@ -715,7 +770,8 @@
      "toi": 1351,
      "shifts": 10,
      "avg_shift": 135.1,
-     "play": 1076
+     "play": 1076,
+     "plus_minus": 2
     },
     {
      "id": "2026-09-14-vs-tm",
@@ -727,7 +783,8 @@
      "toi": 1182,
      "shifts": 9,
      "avg_shift": 131.3,
-     "play": 604
+     "play": 604,
+     "plus_minus": -3
     }
    ]
   },
@@ -743,6 +800,7 @@
    "avg_shift": 131.9,
    "longest_shift": 242,
    "shortest_shift": 39,
+   "plus_minus": -3,
    "games": [
     {
      "id": "2026-10-05-vs-br",
@@ -754,7 +812,8 @@
      "toi": 1308,
      "shifts": 9,
      "avg_shift": 145.3,
-     "play": 875
+     "play": 875,
+     "plus_minus": -1
     },
     {
      "id": "2026-09-21-vs-wa",
@@ -766,7 +825,8 @@
      "toi": 1140,
      "shifts": 8,
      "avg_shift": 142.5,
-     "play": 815
+     "play": 815,
+     "plus_minus": -1
     },
     {
      "id": "2026-09-14-vs-tm",
@@ -778,7 +838,8 @@
      "toi": 1246,
      "shifts": 11,
      "avg_shift": 113.3,
-     "play": 719
+     "play": 719,
+     "plus_minus": -1
     }
    ]
   },
@@ -794,6 +855,7 @@
    "avg_shift": 106.0,
    "longest_shift": 208,
    "shortest_shift": 26,
+   "plus_minus": -9,
    "games": [
     {
      "id": "2026-10-12-vs-wb",
@@ -805,7 +867,8 @@
      "toi": 1439,
      "shifts": 12,
      "avg_shift": 119.9,
-     "play": 1002
+     "play": 1002,
+     "plus_minus": -3
     },
     {
      "id": "2026-10-05-vs-br",
@@ -817,7 +880,8 @@
      "toi": 1092,
      "shifts": 12,
      "avg_shift": 91,
-     "play": 839
+     "play": 839,
+     "plus_minus": -3
     },
     {
      "id": "2026-09-28-vs-r",
@@ -829,7 +893,8 @@
      "toi": 957,
      "shifts": 10,
      "avg_shift": 95.7,
-     "play": 794
+     "play": 794,
+     "plus_minus": 0
     },
     {
      "id": "2026-09-21-vs-wa",
@@ -841,7 +906,8 @@
      "toi": 1304,
      "shifts": 11,
      "avg_shift": 118.5,
-     "play": 807
+     "play": 807,
+     "plus_minus": -4
     },
     {
      "id": "2026-09-14-vs-tm",
@@ -853,7 +919,8 @@
      "toi": 1036,
      "shifts": 10,
      "avg_shift": 103.6,
-     "play": 623
+     "play": 623,
+     "plus_minus": 1
     }
    ]
   },
@@ -869,6 +936,7 @@
    "avg_shift": 116.8,
    "longest_shift": 255,
    "shortest_shift": 32,
+   "plus_minus": -6,
    "games": [
     {
      "id": "2026-10-12-vs-wb",
@@ -880,7 +948,8 @@
      "toi": 1101,
      "shifts": 8,
      "avg_shift": 137.6,
-     "play": 851
+     "play": 851,
+     "plus_minus": -2
     },
     {
      "id": "2026-10-05-vs-br",
@@ -892,7 +961,8 @@
      "toi": 1012,
      "shifts": 9,
      "avg_shift": 112.4,
-     "play": 721
+     "play": 721,
+     "plus_minus": -3
     },
     {
      "id": "2026-09-28-vs-r",
@@ -904,7 +974,8 @@
      "toi": 1068,
      "shifts": 10,
      "avg_shift": 106.8,
-     "play": 824
+     "play": 824,
+     "plus_minus": -1
     },
     {
      "id": "2026-09-21-vs-wa",
@@ -916,7 +987,8 @@
      "toi": 1216,
      "shifts": 11,
      "avg_shift": 110.5,
-     "play": 797
+     "play": 797,
+     "plus_minus": 2
     },
     {
      "id": "2026-09-14-vs-tm",
@@ -928,7 +1000,8 @@
      "toi": 1207,
      "shifts": 10,
      "avg_shift": 120.7,
-     "play": 580
+     "play": 580,
+     "plus_minus": -2
     }
    ]
   },
@@ -944,6 +1017,7 @@
    "avg_shift": 99.7,
    "longest_shift": 193,
    "shortest_shift": 27,
+   "plus_minus": -4,
    "games": [
     {
      "id": "2026-09-28-vs-r",
@@ -955,7 +1029,8 @@
      "toi": 1149,
      "shifts": 11,
      "avg_shift": 104.5,
-     "play": 840
+     "play": 840,
+     "plus_minus": -1
     },
     {
      "id": "2026-09-21-vs-wa",
@@ -967,7 +1042,8 @@
      "toi": 989,
      "shifts": 10,
      "avg_shift": 98.9,
-     "play": 612
+     "play": 612,
+     "plus_minus": -3
     },
     {
      "id": "2026-09-14-vs-tm",
@@ -979,7 +1055,8 @@
      "toi": 1051,
      "shifts": 11,
      "avg_shift": 95.5,
-     "play": 674
+     "play": 674,
+     "plus_minus": 0
     }
    ]
   },
@@ -995,6 +1072,7 @@
    "avg_shift": 121.6,
    "longest_shift": 171,
    "shortest_shift": 69,
+   "plus_minus": 1,
    "games": [
     {
      "id": "2026-10-05-vs-br",
@@ -1006,7 +1084,8 @@
      "toi": 1320,
      "shifts": 11,
      "avg_shift": 120,
-     "play": 948
+     "play": 948,
+     "plus_minus": 0
     },
     {
      "id": "2026-09-21-vs-wa",
@@ -1018,7 +1097,8 @@
      "toi": 748,
      "shifts": 6,
      "avg_shift": 124.7,
-     "play": 513
+     "play": 513,
+     "plus_minus": 1
     }
    ]
   }

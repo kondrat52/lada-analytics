@@ -54,16 +54,19 @@ from roster import ALIASES, TEAM, SLUG, GAMES_DIR, SITE_DIR, opponent_name, gues
 
 fmt = lambda s: f"{int(round(s)) // 60}:{int(round(s)) % 60:02d}"
 
-games, allsh, docs = [], [], {}
+games, allsh, docs, pm = [], [], {}, {}   # pm: season +/- per player key
 for gd in sorted(glob.glob(f"{GAMES_DIR}/*/")):
     game, A, data = build(gd, f"{SITE_DIR}/games/{os.path.basename(os.path.normpath(gd))}/index.html")
     docs[game["id"]] = game_doc(game, A, data["players"], data["highlights"])
+    for p in data["players"]:
+        k = guest_key(p["num"], game)
+        pm[ALIASES.get(k, k)] = pm.get(ALIASES.get(k, k), 0) + p["plus_minus"]
     A = A.assign(game=game["id"], player=[ALIASES.get(k, k) for k in (guest_key(p, game) for p in A.player)])
     # shifts cut off by the recording ending mid-play don't count as short shifts
     cut = game["periods"][-1]["end"] if game.get("video_ends_early") else None
     A["cut"] = (A.t1 >= cut - 1) if cut else False
     games.append(game); allsh.append(A)
-season = season_table(pd.concat(allsh)) if games else pd.DataFrame()
+season = season_table(pd.concat(allsh)).assign(plus_minus=pd.Series(pm)) if games else pd.DataFrame()
 
 
 def cell(v, text=None):
@@ -72,12 +75,13 @@ def cell(v, text=None):
     return f"<td data-v='{float(v) if ok else ''}'>{text if text is not None else (v if ok else '–')}</td>"
 
 
+signed = lambda x: ("+" if x > 0 else "−" if x < 0 else "±") + str(abs(int(x)))
 sub_tag = lambda p: "<span class='sub'>sub</span>" if is_sub(p) else ""
 rows = "\n".join(
     f"<tr><td class='l num' data-v='{number_of(p)}'>{number_of(p)}</td><td class='l name' data-v='{html.escape(name_of(p))}'>"
     f"{html.escape(name_of(p))}{sub_tag(p)}</td>{cell(int(r.gp))}{cell(int(r.shifts))}{cell(r.toi, fmt(r.toi))}"
     f"{cell(r.toi_gp, fmt(r.toi_gp))}{cell(r.play if r.play > 0 else None, fmt(r.play) if r.play > 0 else '–')}"
-    f"{cell(r.avg, fmt(r.avg))}{cell(r.longest, fmt(r.longest))}"
+    f"{cell(int(r.plus_minus), signed(r.plus_minus))}{cell(r.avg, fmt(r.avg))}{cell(r.longest, fmt(r.longest))}"
     f"{cell(r.shortest if r.shortest == r.shortest else None, fmt(r.shortest) if r.shortest == r.shortest else '–')}</tr>"
     for p, r in season.iterrows())
 cards = "\n".join(
@@ -110,7 +114,7 @@ SORT_JS = """<script>
 """
 
 main = (f"""<section><h2>Games</h2><ul class="games">{cards}</ul></section>
-<section><h2>Season</h2><div class="tablebox"><table id="season"><thead><tr><th class="l" tabindex="0">#</th><th class="l" tabindex="0" data-text="1">Player</th><th tabindex="0">GP</th><th tabindex="0">Shifts</th><th tabindex="0">Ice time</th><th tabindex="0" aria-sort="descending">Per game</th><th tabindex="0">Live play</th><th tabindex="0">Avg shift</th><th tabindex="0">Longest</th><th tabindex="0">Shortest</th></tr></thead>
+<section><h2>Season</h2><div class="tablebox"><table id="season"><thead><tr><th class="l" tabindex="0">#</th><th class="l" tabindex="0" data-text="1">Player</th><th tabindex="0">GP</th><th tabindex="0">Shifts</th><th tabindex="0">Ice time</th><th tabindex="0" aria-sort="descending">Per game</th><th tabindex="0">Live play</th><th tabindex="0" title="Goals for minus goals against while on the ice (goals on video)">+/−</th><th tabindex="0">Avg shift</th><th tabindex="0">Longest</th><th tabindex="0">Shortest</th></tr></thead>
 <tbody>{rows}</tbody></table></div></section>""" if games else
         "<section><h2>Games</h2><p class='note'>No games yet. Shift sheets show up here once a game video is "
         "processed.</p></section>")

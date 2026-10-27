@@ -144,7 +144,7 @@ def trends_doc(rows):
 
 
 def _per_game(docs_by_game, games):
-    """number -> [{id, date, opponent, toi, shifts, avg_shift, play}], newest game first; a second number's games
+    """number -> [{id, date, opponent, toi, shifts, avg_shift, play, plus_minus}], newest game first; a second number's games
     go under the primary one, a guest's under his own key."""
     out = {}
     for g in sorted(games, key=lambda g: g["date"], reverse=True):
@@ -153,7 +153,8 @@ def _per_game(docs_by_game, games):
             k = guest_key(p["number"], g)
             out.setdefault(ALIASES.get(k, k), []).append({
                 "id": g["id"], "date": g["date"], "opponent": doc["opponent"],
-                "toi": p["toi"], "shifts": p["shifts"], "avg_shift": p["avg_shift"], "play": p["play"]})
+                "toi": p["toi"], "shifts": p["shifts"], "avg_shift": p["avg_shift"], "play": p["play"],
+                "plus_minus": p["plus_minus"]})
     return out
 
 
@@ -187,6 +188,7 @@ def write_feed(site_dir, games, docs_by_game, season):
         "players": [{**_player(p), "games_played": int(r.gp), "shifts": int(r.shifts), "toi": _num(r.toi),
                      "toi_per_game": _num(r.toi_gp), "play": _num(r.play) if r.play > 0 else None,
                      "avg_shift": _num(r.avg), "longest_shift": _num(r.longest), "shortest_shift": _num(r.shortest),
+                     "plus_minus": int(r.plus_minus),
                      "games": per_game.get(int(p), [])}
                     for p, r in season.iterrows()],
     }
