@@ -674,8 +674,8 @@
    "lada_player_id": 11145,
    "games_played": 6,
    "shifts": 78,
-   "toi": 8876,
-   "toi_per_game": 1479.3,
+   "toi": 8877,
+   "toi_per_game": 1479.5,
    "play": 6355,
    "avg_shift": 113.8,
    "longest_shift": 217,
@@ -688,7 +688,7 @@
       "code": "SO",
       "name": "SEA Otters"
      },
-     "toi": 1166,
+     "toi": 1167,
      "shifts": 12,
      "avg_shift": 97.2,
      "play": 822
@@ -761,10 +761,10 @@
    "lada_player_id": 11140,
    "games_played": 6,
    "shifts": 78,
-   "toi": 8794,
-   "toi_per_game": 1465.7,
+   "toi": 8817,
+   "toi_per_game": 1469.5,
    "play": 6345,
-   "avg_shift": 112.7,
+   "avg_shift": 113.0,
    "longest_shift": 241,
    "shortest_shift": 23,
    "games": [
@@ -775,9 +775,9 @@
       "code": "SO",
       "name": "SEA Otters"
      },
-     "toi": 1693,
+     "toi": 1716,
      "shifts": 19,
-     "avg_shift": 89.1,
+     "avg_shift": 90.3,
      "play": 1297
     },
     {
@@ -998,10 +998,10 @@
    "lada_player_id": 20394,
    "games_played": 5,
    "shifts": 64,
-   "toi": 7053,
-   "toi_per_game": 1410.6,
+   "toi": 7030,
+   "toi_per_game": 1406,
    "play": 5373,
-   "avg_shift": 110.2,
+   "avg_shift": 109.8,
    "longest_shift": 238,
    "shortest_shift": 38,
    "games": [
@@ -1012,9 +1012,9 @@
       "code": "SO",
       "name": "SEA Otters"
      },
-     "toi": 1350,
+     "toi": 1327,
      "shifts": 13,
-     "avg_shift": 103.8,
+     "avg_shift": 102.1,
      "play": 1024
     },
     {
@@ -1073,10 +1073,10 @@
    "lada_player_id": 19314,
    "games_played": 5,
    "shifts": 58,
-   "toi": 6661,
-   "toi_per_game": 1332.2,
+   "toi": 6662,
+   "toi_per_game": 1332.4,
    "play": 4784,
-   "avg_shift": 114.8,
+   "avg_shift": 114.9,
    "longest_shift": 218,
    "shortest_shift": 23,
    "games": [
@@ -1087,7 +1087,7 @@
       "code": "SO",
       "name": "SEA Otters"
      },
-     "toi": 1154,
+     "toi": 1155,
      "shifts": 13,
      "avg_shift": 88.8,
      "play": 766

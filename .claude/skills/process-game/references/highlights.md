@@ -151,4 +151,8 @@ every opponent finds too many runs to use alone (the white test misses opponents
 scoresheet; the lineup check in solve and publish then flags a credited player who isn't on the ice at `t`, which
 catches a shift the solver ran on past a line change (on Oct 3, #43's track ended mid-ice, his shift ran through
 the goal, and the scorer lost 10 s at the net; an `"off"` entry in `periods.json` fixed it). The page shows who
-was on the ice for each goal.
+was on the ice for each goal. The check only covers the credited players and the count, so a wrong uncredited
+skater gets through: on TK's Oct 25 game the empty-netter (scorer only) showed #33 in #89's place, because #89's
+track was lost 9 s before the goal and the next piece was chained to #33. The frame check had read #89 in the
+fist-bump line, and the user caught it on the page. So before publishing, compare the frame check's on-ice reads
+with the solver's lineup at every goal (`pN/shifts_final.csv` rows with `t0 <= t < t1`).
