@@ -39,9 +39,10 @@
     "Home game at Snoqualmie B: we wore white and had the left bench; SEA Otters wore red and black. This time YouTube had the video at the camera's full 3824x2160, so nothing was scaled. LADA's schedule lists the game at 8:25 PM; the video's title says 9:25 PM PDT, which the header follows.",
     "Periods, goals and the penalty come from the arena scoreboard (Lada TK was HOME), the game sheet and the video. The 1st and 2nd ran on a running clock, the 3rd on a stop clock. Goals at 4:47, 5:53 (SO), 26:36 and 62:48 of the video, each checked by eye. The video runs to the final horn. Shots on goal from the game sheet, which the board matches at the end: Lada TK 37, SO 20.",
     "Penalty kill: Kondratenko #12, 2:00 for interference at 10:41 of the 3rd (the infraction at 49:08 of the video, the whistle at 49:15). He sat from 49:25 to 52:35, and nothing went in. SEA Otters' two minors (#44 hooking in the 1st, #19 tripping in the 2nd) ran 3:00 on the board, where the sheet says 2.",
-    "SEA Otters pulled their goalie with about 1:30 left (from about 61:10 of the video), and Belov's long shot went into the empty net. In the stoppage before it the board's clock was run down to 0:00 and set back to 1:22, and a minute later it was set from 1:05 back to 1:09, so the 3rd's end was read off the board by hand.",
+    "SEA Otters pulled their goalie with about 1:30 left (from about 61:10 of the video), and Belov's poke from a battle on the far boards at their blue line slid into the empty net. In the stoppage before it the board's clock was run down to 0:00 and set back to 1:22, and a minute later it was set from 1:05 back to 1:09, so the 3rd's end was read off the board by hand.",
     "Didn't play: Sokolov #4, Vasyliev #31, Unuchek #49, Kleiman #69, Podkorytov #82. Bronnikov #74 played, though the game sheet doesn't mark him. No subs.",
-    "Lineups checked by eye: 51 on/off spans from frame checks of the 16 stretches the lineup check listed, #13's long shifts and three bench pieces (missed players, players sitting at the bench counted as on, and two referee tracks that had carried #13 and #61 late in the 3rd), plus 3 spans taken from the tracks around 54:05-54:46 and confirmed on video. At the empty-netter #89 Olyanich was on the ice (read in the fist-bump line at 63:04); a lost track had put #33 in his place from 62:45 until the change at 63:07, fixed after the first publish. Belousenko's 36:33 is real: he played the whole penalty kill and the last 3:24 of the game."
+    "Lineups checked by eye: 51 on/off spans from frame checks of the 16 stretches the lineup check listed, #13's long shifts and three bench pieces (missed players, players sitting at the bench counted as on, and two referee tracks that had carried #13 and #61 late in the 3rd), plus 3 spans taken from the tracks around 54:05-54:46 and confirmed on video. At the empty-netter #89 Olyanich was on the ice (read in the fist-bump line at 63:04); a lost track had put #33 in his place from 62:45 until the change at 63:07, fixed after the first publish. Belousenko's 36:33 is real: he played the whole penalty kill and the last 3:24 of the game.",
+    "Belousenko's 2-1 (2nd period, 11:21): the game sheet has no assist; Prozhogin #61 is credited on the team's word (Oct 28)."
   ],
   "video_ends_early": false,
   "fun": {
@@ -95,7 +96,9 @@
       "team": "for",
       "t": 1596,
       "scorer": 13,
-      "assists": [],
+      "assists": [
+        61
+      ],
       "clip": "clips/goal-3.mp4",
       "poster": "clips/goal-3.jpg",
       "note": "2nd period, clock 11:21: Belousenko out of a scramble at their net, 2-1"
@@ -116,7 +119,7 @@
       "assists": [],
       "clip": "clips/goal-4.mp4",
       "poster": "clips/goal-4.jpg",
-      "note": "3rd period, clock 0:49: Belov's long shot into the empty net with their goalie pulled for a sixth skater, 3-1"
+      "note": "3rd period, clock 0:49: Belov wins a battle on the far boards at their blue line and pokes it along the boards into the empty net (their goalie pulled for a sixth skater), 3-1"
     }
   ],
   "lada_game_id": 33016,
