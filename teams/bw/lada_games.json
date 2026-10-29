@@ -26,6 +26,30 @@
     "opponentName": "Gnomies",
     "playHome": false,
     "rinkName": "Snoqualmie A",
-    "rinkId": 2080
+    "rinkId": 2080,
+    "teamGoals": 6,
+    "opponentGoals": 2,
+    "boxscoreLink": "https://app.sportninja.com/public/game/96p96tuo4EwhMMU8"
+  },
+  "33029": {
+    "date": "2026-11-07T22:40:00",
+    "opponentName": "Disco Bandoleros",
+    "playHome": true,
+    "rinkId": 33,
+    "rinkName": "Renton"
+  },
+  "33030": {
+    "date": "2026-11-14T21:15:00",
+    "opponentName": "Night Owls",
+    "playHome": false,
+    "rinkId": 33,
+    "rinkName": "Renton"
+  },
+  "33031": {
+    "date": "2026-11-22T18:25:00",
+    "opponentName": "Gnomies",
+    "playHome": true,
+    "rinkId": 33,
+    "rinkName": "Renton"
   }
 }

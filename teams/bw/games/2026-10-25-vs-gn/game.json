@@ -1,0 +1,302 @@
+{
+  "id": "2026-10-25-vs-gn",
+  "date": "2026-10-25",
+  "title": "LADA Blue Wings vs Gnomies, Oct 25",
+  "eyebrow": "Sun Oct 25, 2026 · 7:00 PM · Snoqualmie A",
+  "opponent": "GN",
+  "video": "",
+  "periods": [
+    {
+      "label": "P1",
+      "start": 14,
+      "end": 1096
+    },
+    {
+      "label": "P2",
+      "start": 1191,
+      "end": 2268
+    },
+    {
+      "label": "P3",
+      "start": 2390,
+      "end": 3817
+    }
+  ],
+  "nets": {
+    "P1": 3260,
+    "P2": 630,
+    "P3": 3260
+  },
+  "penalty_kills": [
+    {
+      "period": "P3",
+      "start": 3144,
+      "end": 3324,
+      "player": 88
+    }
+  ],
+  "notes": [
+    "The video is LiveBarn's recording of Snoqualmie Rink A (3438x1374, with sound), downloaded by hand. There is no YouTube upload yet, so the page has no link to the full video.",
+    "The recording goes black for 20 s at 58:18-58:38 of the video (3rd period, just after Babkin's 3:52 goal), so the line change after that goal can't be seen. It is split at 58:25: the scoring unit (26, 36, 43, 88) is on until then and 2, 3, 54 and 55 after, with Gareev #53 on throughout. All of it but about 5 s was a stoppage.",
+    "Periods come from the board's clock, and each ran to 0.0. Goal times come from the video, each to the second the puck went in. The game sheet's clock times put them 0-6 s later.",
+    "Penalty: Shipachev #88, tripping at 52:16 of the video (3rd period, clock 8:07). A Gnomies puck carrier went down entering our zone with him right behind. The whistle was at 52:24, the panel lit 2:00 at 52:50, and he was in the box from 52:34 to 55:24. Babkin was on for 177 of the 180 s kill.",
+    "Played: 11 skaters (10 of the team and sub Sourov #31), with sub goalie Paplinski #0. Skitsko #16 is marked playing on the game sheet, but nothing on the video shows him. OCR read his number 11 times all game (the others 300-2,500), and he has no row on any period's roster card, so he isn't counted. Didn't play: Belousenko #11, Potepalov #15, Trunov #35, Dukhno #50, Horokh #77, Antonov #95 and the other subs.",
+    "Lineups were checked by eye. 21 on/off spans fix line changes the tracker missed, and 21 more cover the 3rd period's last goals: the solver had had 6 of ours on at Semenov's 5-1, Charnysh off the ice for his assist on Babkin's 6-1, and Zhuk off at the 6-2. Every goal's lineup now matches the frame check.",
+    "Start time 7:00 PM as the team gave it; LADA's schedule says 7:20 PM."
+  ],
+  "video_ends_early": false,
+  "fun": {
+    "name_reads": {
+      "43": 5579,
+      "3": 2570,
+      "88": 1436,
+      "31": 1087,
+      "44": 665,
+      "26": 455,
+      "36": 393,
+      "54": 382,
+      "53": 374,
+      "55": 345,
+      "2": 337
+    }
+  },
+  "pipeline": {
+    "detections": 816299,
+    "crops": 257630,
+    "reads": 25781,
+    "reviewed": 502
+  },
+  "lada_game_id": 33014,
+  "stoppages": [
+    [
+      14,
+      78
+    ],
+    [
+      95,
+      123
+    ],
+    [
+      147,
+      176
+    ],
+    [
+      233,
+      264
+    ],
+    [
+      303,
+      346
+    ],
+    [
+      454,
+      499
+    ],
+    [
+      499,
+      549
+    ],
+    [
+      598,
+      642
+    ],
+    [
+      706,
+      736
+    ],
+    [
+      891,
+      918
+    ],
+    [
+      926,
+      996
+    ],
+    [
+      1027,
+      1048
+    ],
+    [
+      1191,
+      1193
+    ],
+    [
+      1216,
+      1270
+    ],
+    [
+      1474,
+      1514
+    ],
+    [
+      1535,
+      1613
+    ],
+    [
+      1733,
+      1764
+    ],
+    [
+      1969,
+      2005
+    ],
+    [
+      2020,
+      2050
+    ],
+    [
+      2208,
+      2234
+    ],
+    [
+      2390,
+      2394
+    ],
+    [
+      2464,
+      2506
+    ],
+    [
+      2733,
+      2776
+    ],
+    [
+      2895,
+      2926
+    ],
+    [
+      3139,
+      3177
+    ],
+    [
+      3375,
+      3412
+    ],
+    [
+      3483,
+      3519
+    ],
+    [
+      3591,
+      3642
+    ]
+  ],
+  "highlights": [
+    {
+      "type": "goal",
+      "team": "for",
+      "t": 50,
+      "scorer": 44,
+      "assists": [
+        2
+      ],
+      "clip": "clips/goal-1.mp4",
+      "poster": "clips/goal-1.jpg",
+      "note": "1st period, clock 17:21: Tverskoy jams it in at the far post out of a crease scramble, 1-0"
+    },
+    {
+      "type": "goal",
+      "team": "for",
+      "t": 236,
+      "scorer": 26,
+      "assists": [],
+      "clip": "clips/goal-2.mp4",
+      "poster": "clips/goal-2.jpg",
+      "note": "1st period, clock 14:19: Babkin drives in from the right on his own and jams it past the goalie's pads, 2-0"
+    },
+    {
+      "type": "goal",
+      "team": "against",
+      "t": 1537,
+      "scorer": 17,
+      "assists": [],
+      "clip": "clips/goal-3.mp4",
+      "poster": "clips/goal-3.jpg",
+      "note": "2nd period, clock 12:14: a jam at the near post with our goalie down in a pile, 2-1"
+    },
+    {
+      "type": "goal",
+      "team": "for",
+      "t": 1580,
+      "scorer": 88,
+      "assists": [],
+      "clip": "clips/goal-4.mp4",
+      "poster": "clips/goal-4.jpg",
+      "note": "2nd period, clock 11:27: Shipachev out of a goal-mouth scramble, 3-1"
+    },
+    {
+      "type": "goal",
+      "team": "for",
+      "t": 2738,
+      "scorer": 54,
+      "assists": [],
+      "clip": "clips/goal-5.mp4",
+      "poster": "clips/goal-5.jpg",
+      "note": "3rd period, clock 13:01: Semenov cuts across the crease from the right with the goalie sprawled, 4-1"
+    },
+    {
+      "type": "goal",
+      "team": "for",
+      "t": 3378,
+      "scorer": 54,
+      "assists": [
+        44
+      ],
+      "clip": "clips/goal-6.mp4",
+      "poster": "clips/goal-6.jpg",
+      "note": "3rd period, clock 5:08: Semenov in close after a drive to the net, 5-1"
+    },
+    {
+      "type": "penalty",
+      "player": 88,
+      "t": 3136,
+      "clip": "clips/penalty-88.mp4",
+      "poster": "clips/penalty-88.jpg",
+      "note": "3rd period, clock 8:07: tripping, a Gnomies puck carrier goes down entering our zone with Shipachev right behind him; 2:00 served, no goal"
+    },
+    {
+      "type": "goal",
+      "team": "for",
+      "t": 3485,
+      "scorer": 26,
+      "assists": [
+        36
+      ],
+      "clip": "clips/goal-7.mp4",
+      "poster": "clips/goal-7.jpg",
+      "note": "3rd period, clock 3:52: Babkin drives to the crease from the right past a sprawling goalie, 6-1"
+    },
+    {
+      "type": "goal",
+      "team": "against",
+      "t": 3611,
+      "scorer": 78,
+      "assists": [
+        91,
+        23
+      ],
+      "clip": "clips/goal-8.mp4",
+      "poster": "clips/goal-8.jpg",
+      "note": "3rd period, clock 2:13: back door at the far post with our goalie down, 6-2"
+    }
+  ],
+  "shots": {
+    "P1": [
+      5,
+      17
+    ],
+    "P2": [
+      14,
+      6
+    ],
+    "P3": [
+      11,
+      15
+    ]
+  },
+  "shots_source": "sheet",
+  "zones": {
+    "offence": 0.2424,
+    "defence": 0.4958
+  }
+}
