@@ -117,11 +117,21 @@ full-rink frames 1 s apart. An opponent going down near him is the usual sign.
 ## Clips
 
 ```sh
-$PY pipeline/run_game.py clip $W <game-id> goal-1 <t-12> <t+10> <t> [focus]
+$PY pipeline/run_game.py clip $W <game-id> goal-1 <t-12> <t+10> <t> "#44,#2" --net for     # ours: scorer, then assists
+$PY pipeline/run_game.py clip $W <game-id> goal-3 <t-12> <t+10> <t> --net against          # theirs aren't tracked
+$PY pipeline/run_game.py clip $W <game-id> penalty-88 <t-12> <t+10> <t> "#88"
 ```
 
 About 22 s per event, ending a few seconds after the goal or call, with a poster frame at the last time given.
-The default framing follows the main group of players. A focus x (about 500 = left corner, 3300 = right; a net x
+Every goal clip gets `--net` and, for ours, the scorer and assists from `sheet.json`. The camera then keeps the
+credited players in the frame on the build-up, closes in on the net the goal went into (and the slot) from 6 s
+before `t` to 2 s after, keeping the scorer and any passer that fits that tight frame, and ends with an 11 s
+half-speed replay zoomed in on the net (`t` −4 s to +1.5 s, about 580 px of the 3840). So `t` must be the goal
+to the second. Following the main group alone had missed the scorers: on TK's Oct 25 game Belousenko shot from
+the slot just outside the frame, and at Snoqualmie A's far nets a scramble is a few dozen pixels tall at any crop
+the live camera holds (the replay is what shows the puck going in). The labels are the solver's, so cut clips
+after the last solve; a mislabeled track only moves the build-up, not the replay.
+The default framing (no `--net`) follows the main group of players. A focus x (about 500 = left corner, 3300 = right; a net x
 from `rink.py`) keeps the virtual camera on one end. For a penalty pass `#<number>` to follow the player who took
 it, starting a few seconds before the infraction. A focus x can lock onto someone right by the camera (at
 Kirkland a referee in the near corner filled the frame), so start with the default and check a few frames of each

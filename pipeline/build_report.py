@@ -88,6 +88,8 @@ def build(gamedir, out):
                 shifts=[dict(player=int(r.player), period=r.period, t0=float(r.t0), t1=float(r.t1)) for r in A.itertuples()],
                 video=game["video"], fun=fun_stats(A, game), shots=game.get("shots"))
     html = open(os.path.join(os.path.dirname(os.path.abspath(__file__)), "report_template.html")).read()
+    if not game["video"]:   # no public video yet: the header names it without a link
+        html = html.replace('<a href="__VIDEO__" target="_blank" rel="noopener">wide-cut game video</a>', "wide-cut game video")
     for k, v in {"__TITLE__": game["title"], "__EYEBROW__": game["eyebrow"], "__TEAM__": TEAM,
                  "__OPP__": opponent_name(game), "__VIDEO__": game["video"]}.items():
         html = html.replace(k, v)

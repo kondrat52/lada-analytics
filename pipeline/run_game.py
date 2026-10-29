@@ -557,14 +557,28 @@ def cmd_clip(a):
     cmd = [PY, f"{HERE}/clip.py", f"{W}/full", f"{W}/video.webm", f"{W}/audio.m4a", out, a.t0, a.t1, a.poster]
     focus = a.focus
     if focus and focus.startswith("#"):
-        # follow a player: his labeled tracks in this window, in time order (first covering track wins)
-        num, t0, t1 = int(focus[1:]), float(a.t0), float(a.t1)
-        P = next(P for P in periods(W) if P["start"] <= t0 <= P["end"])
+        # follow a player (his labeled tracks in this window, in time order: the first covering track wins), or
+        # for a goal keep the scorer and assists in the frame ("#14,#13,#89", scorer first)
+        nums, t0, t1 = [int(n.strip().lstrip("#")) for n in focus.split(",")], float(a.t0), float(a.t1)
+        P = next(P for P in periods(W) if P["start"] - 30 <= float(a.poster) <= P["end"] + 30)
         pdir = f"{W}/{P['label'].lower()}"
         sg = pd.read_csv(f"{pdir}/segs_final.csv")
-        sg = sg[(sg.plabel == num) & (sg.t1 > t0) & (sg.t0 < t1)].sort_values("t0")
-        focus = f"track:{pdir}/tracks_v1.csv:" + ",".join(str(int(x)) for x in sg.tid) if len(sg) else None
-    sh(*cmd + ([focus] if focus else []))
+        sg = sg[(sg.t1 > t0) & (sg.t0 < t1)].sort_values("t0")
+        tids = [",".join(str(int(x)) for x in sg[sg.plabel == n].tid) for n in nums]
+        if len(nums) > 1 or a.net:
+            focus = f"group:{pdir}/tracks_v1.csv:" + ";".join(tids) if any(tids) else None
+        else:
+            focus = f"track:{pdir}/tracks_v1.csv:{tids[0]}" if tids[0] else None
+    net = []
+    if a.net:
+        # the net the goal went into: ours (`net` in periods.json) for one against, the other one for ours
+        R = rink(f"{W}/full")
+        tg = float(a.poster)
+        ours = next(P for P in periods(W) if P["start"] - 30 <= tg <= P["end"] + 30)["net"]
+        side = next(s for s, x in R.nets.items() if (x == ours) == (a.net == "against"))
+        v = R.views[f"{side}-net"]
+        net = [f"{R.nets[side]},{getattr(R, 'NET_Y', (v[2] + v[3]) / 2)}"]
+    sh(*cmd + ([focus or "-"] + net if net else [focus] if focus else []))
 
 
 def _lines_numbers(W):
@@ -1418,9 +1432,12 @@ def cmd_publish(a):
     lineup_check(W)
     date = a.date or a.game_id[:10]
     d = datetime.date.fromisoformat(date)
+    video = a.video or open(f"{W}/url.txt").read().strip()
+    if not video.startswith("http"):   # a local recording (BW's Oct 25 came from LiveBarn): no link until --video
+        video = ""
     game = dict(
         id=a.game_id, date=date, title=a.title or f"{TEAM} vs {OPPONENTS.get(a.opponent, a.opponent)}, {d:%b} {d.day}",
-        eyebrow=a.eyebrow, opponent=a.opponent, video=a.video or open(f"{W}/url.txt").read().strip(),
+        eyebrow=a.eyebrow, opponent=a.opponent, video=video,
         periods=[dict(label=P["label"], start=P["start"], end=P["end"]) for P in Ps],
         nets={P["label"]: P["net"] for P in Ps},
         penalty_kills=[dict(period=P["label"], **k) for P in Ps for k in P.get("pk", [])],
@@ -1529,6 +1546,7 @@ if __name__ == "__main__":
     fr.add_argument("rest", nargs="*", help="[X0 X1 Y0 Y1 TILE_W COLS] t1 t2 ...")
     c = sub.add_parser("clip"); c.add_argument("W"); c.add_argument("game_id"); c.add_argument("name")
     c.add_argument("t0"); c.add_argument("t1"); c.add_argument("poster"); c.add_argument("focus", nargs="?")
+    c.add_argument("--net", choices=("for", "against"), help="a goal clip: close in on the net it went into at POSTER")
     sub.add_parser("solve").add_argument("W")
     gp = sub.add_parser("gaps"); gp.add_argument("W")
     gp.add_argument("--apply", nargs="*", metavar="FIXES.json", help="merge checkers' fixes into periods.json (default: every scratch/gaps/*/fixes.json)")

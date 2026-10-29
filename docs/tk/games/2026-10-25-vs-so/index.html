@@ -154,6 +154,8 @@ const DATA = {"periods": [{"label": "P1", "start": 1, "end": 1100}, {"label": "P
 const VIDEO = DATA.video;
 // a link to [t] seconds into the video; keeps watch?v= links' own query
 const at = t => { const u = new URL(VIDEO); u.searchParams.set("t", Math.max(0, t)); return u.href; };
+// with no public video (a local recording) the times stay plain text
+const vlink = (t, inner) => VIDEO ? `<a href="${at(t)}" target="_blank" rel="noopener">${inner}</a>` : inner;
 const fmt = s => { s = Math.round(s); return `${Math.floor(s / 60)}:${String(s % 60).padStart(2, "0")}`; };
 const P = DATA.periods;
 
@@ -194,7 +196,7 @@ document.getElementById("facts").innerHTML = [
     const on = h.on_ice && h.on_ice.length ? `<div class="on">On the ice: ${h.on_ice.map(n => `<b>#${n}</b> ${name(n)}`).join(", ")}</div>` : "";
     return `<div class="hl"><video controls playsinline preload="none" poster="${h.poster}"><source src="${h.clip}" type="video/mp4"></video>
       <div class="cap"><div class="kind ${cls}">${kind}</div>
-      <div class="meta">${periodName(h.period)} · <a href="${at(h.t - 10)}" target="_blank" rel="noopener">${fmt(h.t)} in the full video</a>${h.note ? ` · ${h.note}` : ""}</div>${on}</div></div>`;
+      <div class="meta">${periodName(h.period)} · ${vlink(h.t - 10, `${fmt(h.t)} in the full video`)}${h.note ? ` · ${h.note}` : ""}</div>${on}</div></div>`;
   }).join("");
 })();
 
@@ -326,7 +328,7 @@ DATA.shifts.forEach(s => {
   const r = order.findIndex(p => p.num === s.player), pi = P.findIndex(p => p.label === s.period);
   if (r < 0 || pi < 0) return;
   const per = P[pi], x = x0s[pi] + (s.t0 - per.start) * scale, w = Math.max(2, (s.t1 - s.t0) * scale);
-  g += `<a href="${at(Math.round(s.t0) - 3)}" target="_blank" rel="noopener"><rect class="bar" tabindex="0" data-n="${s.player}" data-tip="#${s.player} ${s.period} ${fmt(s.t0 - per.start)}–${fmt(s.t1 - per.start)} (${fmt(s.t1 - s.t0)})" x="${x.toFixed(1)}" y="${TOP + r * LANE + 3}" width="${w.toFixed(1)}" height="${LANE - 7}" rx="2"/></a>`;
+  g += vlink(Math.round(s.t0) - 3, `<rect class="bar" tabindex="0" data-n="${s.player}" data-tip="#${s.player} ${s.period} ${fmt(s.t0 - per.start)}–${fmt(s.t1 - per.start)} (${fmt(s.t1 - s.t0)})" x="${x.toFixed(1)}" y="${TOP + r * LANE + 3}" width="${w.toFixed(1)}" height="${LANE - 7}" rx="2"/>`);
 });
 svg.innerHTML = g;
 function highlight() {
