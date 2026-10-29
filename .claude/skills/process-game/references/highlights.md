@@ -70,8 +70,13 @@ one general-purpose subagent:
 > A goal shows a shot or scramble at a net, the referee pointing at it, and one team celebrating before everyone
 > drifts to center. Our net this period is on the <left|right>. Write `<your scratch>/goals.json`: one object per
 > candidate with `t` (the candidate), `goal` (true/false), `at` (seconds of video of the goal itself), `net`
-> (left/right), `team` (for/against), and a one-line `note` of what you saw. Candidates: <list>. Reply with one
-> line per candidate.
+> (left/right), `team` (for/against), a one-line `note` of what you saw, and for each goal `shot`: [t, x, y], the
+> moment the puck left the stick that sent it in (to 0.5 s; follow the puck back from the net on half-second
+> sheets, then quarter-second, with a crop tight enough to see it) and the shooter's skates then in source pixels.
+> A crop's tile maps linearly onto the X0..X1, Y0..Y1 you gave `frames` (`$PY pipeline/run_game.py frames $W OUT.jpg
+> X0 X1 Y0 Y1 TILE_W COLS t ...`); the tracked boxes near it give the exact spot:
+> `$PY -c "import pandas as pd; tr=pd.read_csv(r'$W/pN/tracks_v1.csv'); print(tr[(tr.t-<ts>).abs()<0.07][['tid','fx','fy','h']])"`
+> (fx, fy = skates). Candidates: <list>. Reply with one line per candidate.
 
 Give it the scoresheet's times when you have them and tell it which net is ours. The lineup windows have their own
 generated briefs (`run_game.py gaps`, step 6 of the skill); this one is for goals and penalties.
@@ -117,8 +122,8 @@ full-rink frames 1 s apart. An opponent going down near him is the usual sign.
 ## Clips
 
 ```sh
-$PY pipeline/run_game.py clip $W <game-id> goal-1 <t-12> <t+10> <t> "#44,#2" --net for     # ours: scorer, then assists
-$PY pipeline/run_game.py clip $W <game-id> goal-3 <t-12> <t+10> <t> --net against          # theirs aren't tracked
+$PY pipeline/run_game.py clip $W <game-id> goal-1 <t-12> <t+10> <t> "#44,#2" --net for --shot <ts>,<x>,<y>  # ours: scorer, then assists
+$PY pipeline/run_game.py clip $W <game-id> goal-3 <t-12> <t+10> <t> --net against --shot <ts>,<x>,<y>     # theirs aren't tracked
 $PY pipeline/run_game.py clip $W <game-id> penalty-88 <t-12> <t+10> <t> "#88"
 ```
 
@@ -130,14 +135,27 @@ half-speed replay zoomed in on the net (`t` −4 s to +1.5 s, about 580 px of th
 to the second. Following the main group alone had missed the scorers: on TK's Oct 25 game Belousenko shot from
 the slot just outside the frame, and at Snoqualmie A's far nets a scramble is a few dozen pixels tall at any crop
 the live camera holds (the replay is what shows the puck going in). The labels are the solver's, so cut clips
-after the last solve; a mislabeled track only moves the build-up, not the replay.
+after the last solve; a mislabeled track only moves the build-up, not the replay. Where two tracks carry the
+same number at once, the camera takes the one the number was read on. Only credited players are framed: TK's
+Oct 25 sheet had no assist on Belousenko's goal, the team named Prozhogin #61, and the first cut left him out.
+An assist the team names goes into `assists` (and the notes say the sheet lacks it), then cut the clip again.
+`--shot` is the goal check's `shot` (when the puck left the stick that sent it in, and where the shooter's skates
+were). With it the shooter's track is the one at that spot, whatever its label; the live camera keeps the
+scorer and the net together up to the widest crop (2800 px) instead of dropping the scorer from the tight one;
+from the shot to `t` it follows the puck on a straight line to the net; and the replay starts 1.5 s before the
+shot, close on the scorer until it, then pans with the puck onto the net. A scorer's track that would jump farther
+than a skater gets from the shot's spot is left out. Without `--shot` the replay starts 4 s before `t` and the
+tight frame drops a scorer more than about 1000 px from the net. TK's Oct 25 empty-netter shows why: Belov won a
+battle on the far boards at their blue line and poked the puck about 1000 px along the boards into the empty net,
+and the clip was 6 s of an empty net with him dropped from the frame, then swung to our bench after the goal,
+where a seated figure carried his number. Belousenko's goal in that game came out of a scramble 7 s after his
+shot, and the 4 s replay missed it (`--replay-from 8`, from before `--shot`).
 The default framing (no `--net`) follows the main group of players. A focus x (about 500 = left corner, 3300 = right; a net x
 from `rink.py`) keeps the virtual camera on one end. For a penalty pass `#<number>` to follow the player who took
 it, starting a few seconds before the infraction. A focus x can lock onto someone right by the camera (at
 Kirkland a referee in the near corner filled the frame), so start with the default and check a few frames of each
 clip (cv2 can read the mp4). A focus x only weights where the players are, so it can't bring an empty net into
-the frame: TK's Oct 25 empty-netter from center ice stayed out of view with 2700 and 3250 alike, and the clip
-shows the shot, not the puck going in. Clips land in the team site's `games/<id>/clips/`, about 5 MB each, served by GitHub
+the frame: TK's Oct 25 empty-netter stayed out of view with 2700 and 3250 alike (`--net` with `--shot` covers it). Clips land in the team site's `games/<id>/clips/`, about 5 MB each, served by GitHub
 Pages. Most recordings' audio is silent, so their clips have no sound; where it isn't (Renton's new camera, LADA R's
 Oct 5 LiveBarn recording at Snoqualmie A), `clip` keeps it.
 

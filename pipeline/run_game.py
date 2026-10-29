@@ -564,7 +564,25 @@ def cmd_clip(a):
         pdir = f"{W}/{P['label'].lower()}"
         sg = pd.read_csv(f"{pdir}/segs_final.csv")
         sg = sg[(sg.t1 > t0) & (sg.t0 < t1)].sort_values("t0")
-        tids = [",".join(str(int(x)) for x in sg[sg.plabel == n].tid) for n in nums]
+        # a player's tracks in priority order: those his number was read on first. On TK's Oct 25 game a still
+        # figure on the far boards was also labeled 61 beside the real #61, and the camera jumped between them
+        def ranked(n):
+            s = sg[sg.plabel == n]
+            return s.assign(unread=s.num != n, less=-s.nreads).sort_values(["unread", "less", "t0"]).tid
+        tids = [[int(x) for x in ranked(n)] for n in nums]
+        if a.shot:
+            # the goal check's shot names the scorer's track at it, whatever its label: on TK's Oct 25 empty-netter
+            # the tracks labeled 64 were other players, and the camera framed one of them with the empty net
+            ts, sx, sy = (float(v) for v in a.shot.split(","))
+            tr = pd.read_csv(f"{pdir}/tracks_v1.csv")
+            near = tr[(tr.t - ts).abs() <= 0.25]
+            dist = np.hypot(near.fx - sx, near.fy - sy)
+            if len(near) and dist.min() < 200:
+                tid = int(near.tid.iat[int(dist.values.argmin())])
+                tids[0] = [tid] + [x for x in tids[0] if x != tid]
+            else:
+                print(f"clip: no track within 200 px of the shot at {a.shot}; the scorer's labeled tracks stand")
+        tids = [",".join(str(x) for x in g) for g in tids]
         if len(nums) > 1 or a.net:
             focus = f"group:{pdir}/tracks_v1.csv:" + ";".join(tids) if any(tids) else None
         else:
@@ -578,6 +596,8 @@ def cmd_clip(a):
         side = next(s for s, x in R.nets.items() if (x == ours) == (a.net == "against"))
         v = R.views[f"{side}-net"]
         net = [f"{R.nets[side]},{getattr(R, 'NET_Y', (v[2] + v[3]) / 2)}"]
+        if a.replay_from or a.shot:
+            net += [a.replay_from or "-"] + ([a.shot] if a.shot else [])
     sh(*cmd + ([focus or "-"] + net if net else [focus] if focus else []))
 
 
@@ -1547,6 +1567,8 @@ if __name__ == "__main__":
     c = sub.add_parser("clip"); c.add_argument("W"); c.add_argument("game_id"); c.add_argument("name")
     c.add_argument("t0"); c.add_argument("t1"); c.add_argument("poster"); c.add_argument("focus", nargs="?")
     c.add_argument("--net", choices=("for", "against"), help="a goal clip: close in on the net it went into at POSTER")
+    c.add_argument("--replay-from", help="a goal clip's replay starts this many seconds before POSTER (4, or 1.5 s before --shot)")
+    c.add_argument("--shot", metavar="T,X,Y", help="a goal clip: when the puck left the scorer's stick and where his skates were (source px), from the goal check")
     sub.add_parser("solve").add_argument("W")
     gp = sub.add_parser("gaps"); gp.add_argument("W")
     gp.add_argument("--apply", nargs="*", metavar="FIXES.json", help="merge checkers' fixes into periods.json (default: every scratch/gaps/*/fixes.json)")

@@ -258,12 +258,15 @@ the clock stops. Confirm each by eye, or hand the list to one subagent with the 
 ```sh
 $PY pipeline/run_game.py frames $W $W/g.jpg --view rink --range <t-60> <t> 3        # the minute before the faceoff
 $PY pipeline/run_game.py frames $W $W/gz.jpg --view left-net <t1> <t2> ...          # zoom on a net, 1 s apart
-$PY pipeline/run_game.py clip $W <game-id> goal-1 <t-12> <t+10> <t> "#<scorer>,#<assist>" --net for|against
+$PY pipeline/run_game.py clip $W <game-id> goal-1 <t-12> <t+10> <t> "#<scorer>,#<assist>" --net for|against --shot <ts>,<x>,<y>
 $PY pipeline/run_game.py clip $W <game-id> penalty-4 <t-12> <t+10> <t> [focus-x | #<number>]
 ```
 
 A goal clip with `--net` keeps the credited players in the frame, closes in on the net at the goal and ends with a
-zoomed half-speed replay, so `t` must be the goal to the second and the clips come after the last solve.
+zoomed half-speed replay, so `t` must be the goal to the second and the clips come after the last solve. `--shot`
+(the goal check's `shot`: when the puck left the scorer's stick and where his skates were) makes the camera follow
+the scorer to the shot and the puck to the net, and starts the replay 1.5 s before the shot; without it a long shot
+shows an empty net.
 
 Write `$W/highlights.json` (format in the reference; include `"scorer"` and `"assists"` from `sheet.json` so the
 lineup check can verify them). Tell the user the score you found and ask them to confirm it; that and the push are
