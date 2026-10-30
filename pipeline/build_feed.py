@@ -1,7 +1,7 @@
 """JSON feed for apps (e.g. the LADA app), published with each team's site under docs/<slug>/api/.
 
   api/index.json          team, games list, links to everything else
-  api/games/<id>.json     one game: periods, per-player stats, every shift, highlights, stoppages
+  api/games/<id>.json     one game: periods, per-player stats, every shift, highlights, stoppages, ice maps
   api/season.json         season totals per player
   api/roster.json         numbers, surnames, LADA player ids
   api/trends.json         per game: the team's measures and each skater's, behind the trends page (build_trends.py)
@@ -14,6 +14,7 @@ import os, json
 import numpy as np, pandas as pd
 from roster import MEMBERS, SUBS, GOALIE_NAMES, LADA_IDS, ALIASES, TEAM_NAME, TEAM_SHORT, LADA_TEAM_ID, SITE_URL, OPPONENTS
 from roster import guest_key, number_of, name_of, is_sub
+from ice import GRID_CHARS
 
 SCHEMA = 1
 
@@ -67,6 +68,18 @@ def _shots(game):
     return {"for": sum(x["for"] for x in per), "against": sum(x["against"] for x in per), "periods": per}
 
 
+def _ice(game):
+    """game.json's "ice" (ice.py) for apps: the team's map and each player's, with named zone shares."""
+    I = game.get("ice")
+    if not I:
+        return None
+    one = lambda m: {"tracked": _num(m["sec"]), "zones": dict(zip(("offence", "neutral", "defence"), m["zones"])),
+                     "grid": m["grid"]}
+    return {"cell_ft": I["cell"], "cols": I["cols"], "rows": I["rows"], "alphabet": GRID_CHARS, "team": one(I["team"]),
+            "players": [{**_player(int(n), game), **one(m)}
+                        for n, m in sorted(I["players"].items(), key=lambda nm: -nm[1]["sec"])]}
+
+
 def game_doc(game, A, players, highlights):
     """players/highlights: as computed for the game page (build_report.player_rows / highlights)."""
     base = SITE_URL.rstrip("/") + f"/games/{game['id']}/"
@@ -115,6 +128,7 @@ def game_doc(game, A, players, highlights):
                         "on_ice": [_player(n, game) for n in h.get("on_ice", [])]}
                        for h in highlights],
         "stoppages": game.get("stoppages", []),
+        "ice": _ice(game),
     }
 
 

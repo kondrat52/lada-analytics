@@ -15,6 +15,7 @@ Details that only matter sometimes live next to it, read them when their step sa
 | `references/review.md` | the visual review: how reviewers work, relaunching, re-checks, lessons |
 | `references/highlights.md` | finding goals and penalties by eye, clips, `highlights.json` |
 | `references/lada.md` | LADA's API, SportNinja game sheets, player ids, `roster.json` fields |
+| `references/ice.md` | the ice maps: what publish adds, checking them, calibrating a rink that has none |
 | `RUNBOOK.md` | the same pipeline step by step, for running pieces by hand |
 | `pipeline/regress.py` | before changing anything the solve depends on: it re-solves every archived game and diffs the published sheets |
 
@@ -279,7 +280,8 @@ $PY pipeline/run_game.py publish $W <YYYY-MM-DD>-vs-<opp> --opponent <OPP> --eye
 ```
 
 This writes `teams/<slug>/games/<id>/game.json` and `shifts.csv` (with play time, stoppages, highlights, the game
-sheet's shots, or the board's once `shots.json` is checked, and time in offence and defence from the detections),
+sheet's shots, or the board's once `shots.json` is checked, time in offence and defence from the detections, and
+the ice maps when the rink's camera is calibrated in `pipeline/cams/`: Snoqualmie A and B so far, `references/ice.md`),
 finds the game's LADA id in `lada_games.json` (fetch keeps it current; `references/lada.md` if it can't), and rebuilds every team's site: game pages, the trends page
 and the JSON feed in `api/` (`API.md`). A new opponent's code
 and full name go in `opponents.json` (the user's spelling wins; LADA's exact spelling finds the logo in the app).

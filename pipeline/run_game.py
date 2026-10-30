@@ -1471,7 +1471,7 @@ def cmd_publish(a):
     if os.path.exists(gj):  # keep hand-written fields (notes, title tweaks) from an earlier publish
         old = json.load(open(gj))
         for k in ("notes", "title", "eyebrow", "highlights", "video_ends_early", "lada_game_id", "opponent_name", "zones",
-                  "shots", "shots_source", "guests"):
+                  "shots", "shots_source", "guests", "ice"):
             if old.get(k):
                 game[k] = old[k]
         if game["pipeline"]["crops"] is None and (old.get("pipeline") or {}).get("crops"):
@@ -1493,6 +1493,8 @@ def cmd_publish(a):
             game["shots_source"] = "sheet"
     from zones import zone_shares   # time in offence / defence for the trends page (needs the detections)
     game["zones"] = zone_shares(f"{W}/full", game) or game.get("zones")
+    from ice import ice_maps   # where each skater was, for the game page's ice maps (rinks with a calibration)
+    game["ice"] = ice_maps(W) or game.get("ice")
     json.dump(game, open(gj, "w"), indent=2, ensure_ascii=False)
     # every team, not just $TEAM: the root page counts each team's games, and each team's menu lists the teams with games
     sh(PY, f"{HERE}/build_site.py", env={k: v for k, v in os.environ.items() if k not in ("TEAM", "ROSTER_ABSENT")})

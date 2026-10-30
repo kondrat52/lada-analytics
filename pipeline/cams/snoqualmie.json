@@ -1,0 +1,20 @@
+{
+ "model": "pano",
+ "board_y": 536.8,
+ "fitted": "BW Oct 25, 2026 (LiveBarn file, 3840x1536): 180 landmarks off a median of 41 frames; markings within 2 px (median), 0.3 ft on the ice",
+ "params": {
+  "cx": 0.916295,
+  "cy": -47.483502,
+  "cz": 8.745955,
+  "yaw": 0.021637,
+  "pitch": 0.059829,
+  "roll": 0.029794,
+  "fx": 1217.633925,
+  "fy": 1498.544072,
+  "u0": 1964.424719,
+  "v0": 487.749407,
+  "k": 0.759093,
+  "a3": 0.008296,
+  "e3": 0.025093
+ }
+}

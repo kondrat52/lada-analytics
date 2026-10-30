@@ -25,7 +25,7 @@ once those versions are gone; don't use the old URLs.
 | File | What's in it |
 |---|---|
 | `index.json` | Team, list of games (newest first) with links to each game's JSON and page |
-| `games/<id>.json` | One game: periods, per-player stats, every shift, highlights (clip URLs), stoppages |
+| `games/<id>.json` | One game: periods, per-player stats, every shift, highlights (clip URLs), stoppages, ice maps |
 | `season.json` | Season totals per player |
 | `roster.json` | Jersey numbers, surnames and LADA player ids |
 | `trends.json` | Per game, newest first: the team's measures and each skater's, as on the trends page |
@@ -84,9 +84,33 @@ them (`for` = us), or `null` for a game whose board wasn't read.
 | `shifts[]` | Every shift: `{number, period, start, end, duration, play, start_in_period}` |
 | `highlights[]` | `{type: "goal" \| "penalty" \| "moment", team: "for" \| "against" (goals), title (moments), player (penalties), t, period, t_in_period, clip_url, poster_url, note, on_ice[]}`. Clips are 1280×720 H.264 MP4 without audio, about 5 MB. `on_ice` lists our skaters on the ice for a goal or a moment (a play worth a clip that isn't a goal or a penalty) |
 | `stoppages[]` | `[start, end]` pairs: estimated stoppages (whistle to puck drop) |
+| `ice` | Where our skaters were on the ice during their shifts: the team's map and each player's (below), or `null` for a game without maps |
 | `video_url`, `page_url` | The full game on YouTube; the shift sheet page |
 
 `shortest_shift` leaves out shifts cut off by the recording ending mid-play.
+
+### Ice maps (`ice`)
+
+The rink seen from above with our net at the bottom, so the team attacks up: a grid of `cols` x `rows` cells of
+`cell_ft` feet (42 x 100 cells of 2 ft: 84 ft across, 200 ft from our end boards to theirs). Only games at a rink
+whose camera has been calibrated have maps (Snoqualmie A and B so far); the others have `ice: null`.
+
+```json
+"ice": {
+  "cell_ft": 2, "cols": 42, "rows": 100, "alphabet": "0123456789abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ",
+  "team": {"tracked": 12767.5, "zones": {"offence": 0.364, "neutral": 0.331, "defence": 0.305}, "grid": "000...0"},
+  "players": [{"number": 13, "name": "Belousenko", "lada_player_id": 20412, "tracked": 1731.6,
+               "zones": {"offence": 0.328, "neutral": 0.329, "defence": 0.343}, "grid": "..."}]
+}
+```
+
+| Field | Meaning |
+|---|---|
+| `tracked` | Seconds of the player's shifts the map is made of (for the team, summed over the skaters): the time his tracked position carried his number. Most but not all of `toi` |
+| `zones` | Share of `tracked` (0–1) in the offensive zone (past their blue line), the neutral zone and the defensive zone |
+| `grid` | One character per cell, `rows` x `cols` of them: row 0 is at our end boards, each row runs from the left boards to the right (left as the team attacks up). A cell's value is `alphabet.indexOf(char) / (alphabet.length - 1)`: time there, smoothed over a few feet, as a share of the map's busiest cell (0 = none, 1 = the busiest). Each map has its own scale, so compare shapes, not shades, between players |
+
+`players[]` is sorted by `tracked` and leaves out a skater with under 30 s tracked.
 
 ## `season.json`
 
