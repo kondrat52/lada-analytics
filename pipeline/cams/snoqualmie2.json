@@ -1,6 +1,12 @@
 {
  "model": "fisheye",
- "board_y": 867.0,
+ "boards_poly": [
+  1.1878868776560039e-11,
+  -9.215768553685019e-08,
+  0.0003342352427927886,
+  -0.6030974532413927,
+  1283.7131221863629
+ ],
  "fitted": "TK Oct 25, 2026 (YouTube, 3824x2160): 183 landmarks off a median of 41 frames, fitted on the ice (feet) with a degree-2 warp; markings within 0.4 ft (median), 1.4 ft (90%)",
  "params": {
   "cx": -0.175083,

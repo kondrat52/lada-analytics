@@ -28,10 +28,16 @@ looked like, means a bad label or a calibration that no longer fits (a camera mo
 |---|---|---|---|
 | `snoqualmie` (A) | pano | BW Oct 25, the LiveBarn file | markings 0.3 ft median; their goalie at X +-83-84 |
 | `snoqualmie2` (B) | fisheye + warp | TK Oct 25, YouTube 3824x2160 | markings 0.4 ft median, 1.4 ft 90%; their goalie at X +-83-88 |
+| `renton2` (new camera; `renton2band`, `renton2thin` are it framed lower) | fisheye + warp | TK Oct 17, YouTube 3840x1920 | markings 0.2 ft median, 0.7 ft 90%, from the boards, center line, faint blue lines and nets; the end zones are seen edge-on, so near the end boards a few px is a few feet |
+| `renton` (old camera, to Oct 4) | fisheye + warp | BW Oct 3, YouTube 3600x1596 scaled | markings 0.16 ft median from the boards, center line, kickplate marks and nets (no other paint left); a faint ring held out lands 2.3 ft from its neutral dot |
+| `kirkland` | fisheye + warp | Y Oct 5, YouTube 3840x1536 | markings 0.2 ft median, 0.85 ft 90%; their goalie at X +-82-83 |
 
-Snoqualmie A's videos come framed two ways, 52 px apart (the YouTube cuts higher than the LiveBarn files and two
-games from Oct 12 and 18); each game's own boards curve (`boards_poly.npy`) says which, and `rinkcam.camera` shifts
-the calibration by the difference. Renton (both cameras) and Kirkland have no calibration yet.
+A camera's videos aren't all framed alike: Snoqualmie A's YouTube cuts sit 52 px above its LiveBarn files, Renton's
+new camera's LiveBarn cuts 266 and 62 px below its YouTube one (`cams/renton2band.json` and `renton2thin.json` just
+say `same_as: renton2`), and Renton's old camera was turned 0.2 degrees on Sep 13-14. `rinkcam.align` turns and shifts
+each game's pixels so its own far-boards curve (`boards_poly.npy`) falls on the calibration video's (kept in the
+camera file); a straight shift alone left the Sep 13-14 games' far end 7 ft out. Every rink LADA plays at so far
+is calibrated (Oct 29, 2026); a new camera or rink needs one before its games get maps.
 
 ## Calibrating a rink
 
@@ -66,7 +72,12 @@ frame's size and where things are from `$D/half.jpg`):
 > from the camera. Reply with one line per key: the key and its number of points.
 
 The near side decides the fit: on rink A the first fit had nothing nearer than the neutral dots and put them 75 px
-off; the near end circles, the referee's crease and the center circle's near half fixed it.
+off; the near end circles, the referee's crease and the center circle's near half fixed it. Where the paint is worn
+(Renton's new rink: no circles or dots, faint blue lines), the boards carry it: ask also for "boards_corner_*"
+(points around each rounded corner's base), "center_far_boards" / "blue_left_far_boards" / "blue_right_far_boards"
+(where the lines' marks on the kickplate meet the ice), and, for a low camera that can't see the near boards' base,
+"boards_near_top" (the near boards' top edge, matched 3.5 ft up). Check the referee's crease is a 10 ft semicircle
+against the near boards before using it: Renton's arc is a smaller D well out on the ice (key it "ref_crease_unused").
 
 ```sh
 $PY pipeline/rinkcal.py fit $D $W pano         # or fisheye; writes pipeline/cams/<rink>.json and $D/check.jpg

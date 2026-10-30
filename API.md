@@ -92,8 +92,9 @@ them (`for` = us), or `null` for a game whose board wasn't read.
 ### Ice maps (`ice`)
 
 The rink seen from above with our net at the bottom, so the team attacks up: a grid of `cols` x `rows` cells of
-`cell_ft` feet (42 x 100 cells of 2 ft: 84 ft across, 200 ft from our end boards to theirs). Only games at a rink
-whose camera has been calibrated have maps (Snoqualmie A and B so far); the others have `ice: null`.
+`cell_ft` feet (42 x 100 cells of 2 ft: 84 ft across, 200 ft from our end boards to theirs). Games at a rink whose
+camera has been calibrated have maps (every rink LADA plays at, as of Oct 29, 2026); a game without them has
+`ice: null` (a few early games whose tracking data wasn't kept).
 
 ```json
 "ice": {

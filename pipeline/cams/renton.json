@@ -1,0 +1,67 @@
+{
+ "model": "fisheye",
+ "boards_poly": [
+  9.834106146295166e-12,
+  -7.480794124757779e-08,
+  0.0002274629283146763,
+  -0.31888690321507196,
+  957.2462633942664
+ ],
+ "fitted": "BW Oct 3, 2026 (YouTube 3600x1596, scaled to 3840x1702): the paint is gone but the center line, so the boards (far, ends, corners, the near boards' top edge), the kickplate marks and the nets carry it; markings within 0.16 ft (median); a faint ring held out of the fit lands 2.3 ft from the near-right neutral dot",
+ "params": {
+  "cx": 0.492687,
+  "cy": -42.438938,
+  "cz": 6.0,
+  "yaw": -0.019052,
+  "pitch": 0.084498,
+  "roll": 0.001373,
+  "f": 1321.623215,
+  "asp": 1.075954,
+  "u0": 1869.10428,
+  "v0": 814.831061,
+  "k1": -0.200397,
+  "k2": 0.062694
+ },
+ "warp": {
+  "terms": [
+   [
+    0,
+    0
+   ],
+   [
+    0,
+    1
+   ],
+   [
+    0,
+    2
+   ],
+   [
+    1,
+    0
+   ],
+   [
+    1,
+    1
+   ],
+   [
+    2,
+    0
+   ]
+  ],
+  "c": [
+   -0.067757,
+   0.288354,
+   0.097288,
+   -2.473069,
+   0.303516,
+   -0.032064,
+   4.559529,
+   -0.626281,
+   -5.3511,
+   0.477891,
+   1.672436,
+   6.48383
+  ]
+ }
+}

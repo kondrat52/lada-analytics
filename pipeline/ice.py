@@ -25,8 +25,7 @@ def positions(W):
     """DataFrame player, t, V, H of our skaters on the ice, or None when the rink has no calibration."""
     full = f"{W}/full"
     R = rink(full)
-    board_y = float(np.polyval(np.load(f"{full}/boards_poly.npy"), R.center_x))
-    unproject = rinkcam.camera(rink_name(full), board_y)
+    unproject = rinkcam.camera(rink_name(full), np.load(f"{full}/boards_poly.npy"))
     if unproject is None:
         return None
     A = pd.read_csv(f"{W}/shifts_all.csv")

@@ -1,0 +1,67 @@
+{
+ "model": "fisheye",
+ "boards_poly": [
+  1.7809957766671946e-11,
+  -1.3860048214894986e-07,
+  0.0005696881051971929,
+  -1.1755410745988213,
+  1231.3130106373656
+ ],
+ "fitted": "TK Oct 17, 2026 (YouTube, 3840x1920): 120 landmarks; the blue lines and circles are worn, so the boards (far, ends, corners, the near boards' top edge), the center line, faint blue lines and the nets carry it. Markings within 0.2 ft (median), 0.7 ft (90%); the end zones are seen edge-on, so near the end boards a few px of foot point is a few feet",
+ "params": {
+  "cx": 0.137466,
+  "cy": -42.001022,
+  "cz": 6.166055,
+  "yaw": 0.009191,
+  "pitch": 0.416803,
+  "roll": 0.001705,
+  "f": 1306.471592,
+  "asp": 1.506526,
+  "u0": 1969.385506,
+  "v0": 994.635102,
+  "k1": -0.123042,
+  "k2": 0.046271
+ },
+ "warp": {
+  "terms": [
+   [
+    0,
+    0
+   ],
+   [
+    0,
+    1
+   ],
+   [
+    0,
+    2
+   ],
+   [
+    1,
+    0
+   ],
+   [
+    1,
+    1
+   ],
+   [
+    2,
+    0
+   ]
+  ],
+  "c": [
+   0.048996,
+   0.095845,
+   0.309931,
+   -4.555202,
+   -0.766015,
+   0.431414,
+   1.261893,
+   7.305697,
+   -0.967502,
+   0.029495,
+   -0.608713,
+   -0.430379
+  ]
+ }
+}

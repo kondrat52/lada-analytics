@@ -27,14 +27,22 @@ LINES = {"center": ("X", 0.0, B), "blue_left": ("X", -25.0, B), "blue_right": ("
          "goal_left": ("X", -89.0, 36.75), "goal_right": ("X", 89.0, 36.75), "boards_far": ("Y", B, 72.0),
          "boards_near": ("Y", -B, 72.0), "boards_end_left": ("X", -L, 14.5), "boards_end_right": ("X", L, 14.5)}
 CIRCLES = {"circle_center": (0, 0, 15), "circle_end_near_left": (-69, -22, 15), "circle_end_near_right": (69, -22, 15),
-           "circle_end_far_left": (-69, 22, 15), "circle_end_far_right": (69, 22, 15), "ref_crease": (0, -B, 10)}
+           "circle_end_far_left": (-69, 22, 15), "circle_end_far_right": (69, 22, 15), "ref_crease": (0, -B, 10),
+           # the boards' rounded corners, for a rink whose faceoff circles have worn off (Renton's)
+           "boards_corner_far_left": (-72, 14.5, 28), "boards_corner_far_right": (72, 14.5, 28),
+           "boards_corner_near_left": (-72, -14.5, 28), "boards_corner_near_right": (72, -14.5, 28)}
 POINTS = {"net_left": (-89, 0), "net_right": (89, 0), "dot_center": (0, 0),
           "dot_neutral_far_left": (-20, 22), "dot_neutral_far_right": (20, 22),
           "dot_neutral_near_left": (-20, -22), "dot_neutral_near_right": (20, -22),
           "dot_end_far_left": (-69, 22), "dot_end_near_left": (-69, -22),
           "dot_end_far_right": (69, 22), "dot_end_near_right": (69, -22),
-          "center_far_crossing": (0, 15), "center_near_crossing": (0, -15)}
+          "center_far_crossing": (0, 15), "center_near_crossing": (0, -15),
+          # where the lines meet the boards (painted on the boards' kickplate where the ice paint is faint)
+          "center_far_boards": (0, B), "blue_left_far_boards": (-25, B), "blue_right_far_boards": (25, B),
+          "center_near_boards": (0, -B), "blue_left_near_boards": (-25, -B), "blue_right_near_boards": (25, -B)}
 WARP_TERMS = [(i, j) for i in range(3) for j in range(3 - i)]
+BOARD_TOP = 3.5     # ft: "boards_near_top" is the near boards' top edge, for a camera that can't see their base
+                    # (Renton's new one): fisheye fits only, matched where the line of sight over it meets the ice
 
 
 def _grid(img, x0, y0, step, label, zoom=1.0):
@@ -59,7 +67,7 @@ def cmd_frame(W, D):
     os.makedirs(f"{D}/lm", exist_ok=True)
     ff = imageio_ffmpeg.get_ffmpeg_exe()
     wd, h = rink(f"{W}/full").size
-    dur = json.load(open(f"{W}/video_info.json"))["duration"]
+    dur = next(imageio_ffmpeg.read_frames(f"{W}/video.webm"))["duration"]   # older folders have no video_info.json
     frames = []
     for t in np.linspace(60, dur - 60, 41):
         r = subprocess.run([ff, "-nostdin", "-loglevel", "error", "-ss", str(t), "-i", f"{W}/video.webm",
@@ -92,15 +100,18 @@ def cmd_crop(D, x0, x1, y0, y1, zoom=2.0, plain=False):
 
 def _landmarks(lm):
     return [(k, np.array(v, float).reshape(-1, 2)) for k, v in lm.items()
-            if isinstance(v, list) and v and (k in LINES or k in CIRCLES or k in POINTS)]
+            if isinstance(v, list) and v and (k in LINES or k in CIRCLES or k in POINTS or k == "boards_near_top")]
 
 
-def _ice_residuals(items, X, Y, detail=False):
-    """Feet off each landmark's marking, for landmarks mapped onto the ice at (X, Y) (concatenated in items' order)."""
+def _ice_residuals(items, X, Y, detail=False, cam=None):
+    """Feet off each landmark's marking, for landmarks mapped onto the ice at (X, Y) (concatenated in items' order).
+    cam: the fisheye params, for boards_near_top (where the line of sight over the boards' top meets the ice)."""
     out, per, i = [], {}, 0
     for k, q in items:
         x, y = X[i:i + len(q)], Y[i:i + len(q)]; i += len(q)
-        if k in LINES:
+        if k == "boards_near_top":
+            r = y - (cam["cy"] + cam["cz"] / (cam["cz"] - BOARD_TOP) * (-B - cam["cy"]))
+        elif k in LINES:
             ax, c, _ = LINES[k]; r = (x if ax == "X" else y) - c
         elif k in CIRCLES:
             cx, cy, rr = CIRCLES[k]; r = np.hypot(x - cx, y - cy) - rr
@@ -155,9 +166,10 @@ def fit_fisheye(items, size):
     cu, cv_ = size[0] / 2, size[1] / 2
 
     def res(x):
-        X, Y = rc.lens("fisheye", dict(zip(names, x[:12])), U, V)
+        p = dict(zip(names, x[:12]))
+        X, Y = rc.lens("fisheye", p, U, V)
         X, Y = rc.warp({"terms": WARP_TERMS, "c": x[12:]}, X, Y)
-        return np.concatenate([np.nan_to_num(_ice_residuals(items, X, Y), nan=100.0), 0.3 * x[12:]])
+        return np.concatenate([np.nan_to_num(_ice_residuals(items, X, Y, cam=p), nan=100.0), 0.3 * x[12:]])
     lo = [-15, -75, 6, -0.3, -0.2, -0.2, 600, 0.6, cu - 200, cv_ - 280, -0.5, -0.5] + [-20] * 2 * nt
     hi = [15, -42, 40, 0.3, 1.2, 0.2, 2500, 1.7, cu + 200, cv_ + 320, 0.5, 0.5] + [20] * 2 * nt
     best, rng = None, np.random.default_rng(2)
@@ -199,12 +211,12 @@ def draw_check(unproject, img, out):
     cv2.imwrite(out, cv2.resize(o, (w // 2, h // 2), interpolation=cv2.INTER_AREA), [cv2.IMWRITE_JPEG_QUALITY, 88])
 
 
-def checks(W, unproject, items):
+def checks(W, unproject, items, cam=None):
     """Print each marking's error in feet, where their goalie lands per period, and our detections off the ice."""
     import pandas as pd
     from track import load
     U = np.concatenate([q[:, 0] for _, q in items]); V = np.concatenate([q[:, 1] for _, q in items])
-    r, per = _ice_residuals(items, *unproject(U, V), detail=True)
+    r, per = _ice_residuals(items, *unproject(U, V), detail=True, cam=cam)
     for k, d in per.items():
         print(f"  {k:24s} n={len(d):2d}  median {np.median(d):5.2f} ft  max {d.max():5.2f} ft")
     print(f"markings: median {np.nanmedian(np.abs(r)):.2f} ft, 90% {np.nanquantile(np.abs(r), .9):.2f} ft")
@@ -213,8 +225,10 @@ def checks(W, unproject, items):
         theirs = next(x for x in R.nets.values() if x != P["net"])
         x = d[(d.t >= P["start"]) & (d.t <= P["end"]) & ~d.ours & d.onice & (np.abs(d.fx - theirs) < 120)]
         X, Y = unproject(x.fx.values, x.fy.values)
-        ok = np.isfinite(X) & (np.abs(X) > 70) & (np.abs(Y) < 20)     # at their end: mostly him, standing in his crease
-        print(f"{P['label']}: their goalie at X {np.median(X[ok]):.1f}, Y {np.median(Y[ok]):.1f} (expect X +-82..88, Y near 0)")
+        ok = np.isfinite(X) & (np.abs(X) > 70) & (np.abs(Y) < 20)     # at their end: mostly him, in his crease
+        # a rough check (+-3 ft): it also counts players behind the net, and a camera that sees the end zones edge-on
+        # (Renton's new one) puts a few px of foot point at a few feet
+        print(f"{P['label']}: their goalie at X {np.median(X[ok]):.1f}, Y {np.median(Y[ok]):.1f} (expect X +-82..90, Y near 0)")
     n = out = 0
     for P in json.load(open(f"{W}/periods.json")):
         tr = pd.read_csv(f"{W}/{P['label'].lower()}/tracks_v1.csv", usecols=["fx", "fy", "onice"]); tr = tr[tr.onice]
@@ -228,7 +242,7 @@ def cmd_fit(D, W, model, out=None):
     items = _landmarks(json.load(open(f"{D}/landmarks.json")))
     R = rink(full)
     cam = fit_pano(items) if model == "pano" else fit_fisheye(items, R.size)
-    cam = {"model": cam["model"], "board_y": round(float(np.polyval(np.load(f"{full}/boards_poly.npy"), R.center_x)), 1),
+    cam = {"model": cam["model"], "boards_poly": [float(x) for x in np.load(f"{full}/boards_poly.npy")],
            "fitted": f"{os.path.basename(W)}: {sum(len(q) for _, q in items)} landmarks (rinkcal.py)", **cam}
     out = out or os.path.join(rc.CAMS, f"{rink_name(full)}.json")
     json.dump(cam, open(out, "w"), indent=1)
@@ -236,7 +250,7 @@ def cmd_fit(D, W, model, out=None):
     unproject = rc.from_params(cam)
     draw_check(unproject, cv2.imread(f"{D}/median.png"), f"{D}/check.jpg")
     print(f"{D}/check.jpg: the markings drawn back on the frame")
-    checks(W, unproject, items)
+    checks(W, unproject, items, cam["params"])
 
 
 if __name__ == "__main__":
