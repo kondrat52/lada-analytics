@@ -186,6 +186,22 @@ absent #13 and #16 had to be on the absent list. LADA's schedule calls it "Snoqu
 videos only at 2548x1440 on Sep 19 and Oct 10 (fetch takes the best webm and scales it up, and the geometry fits);
 TK's Oct 25 video came at the full 3824x2160 (format 313), so nothing was scaled. Against red and black jerseys
 (SEA Otters, Oct 25) the white test held: 199 review sheets and no opponent numbers in `unknown`.
+Doofers' Oct 25 upload (2548x1440, video uploaded Oct 31) was the same view sitting 70 px low and 4 px right in
+the scaled frame, under a black band, with a player's progress bar near the bottom: the scoreboard crop then holds
+only the board's top edge and every board-based step fails silently. `boards.py`'s print gives it away: the far
+boards at ~938 at center instead of ~868 (compare `np.polyval` of `full/boards_poly.npy` with an earlier game's).
+Measure the offset by correlating `rink.py`'s scoreboard box against an archived game's `scoreboard_jpg.npz` crop,
+check it by running `boards.py` on a shifted `frame600.png` (within 4 px of TK's Oct 25 curve), then stop fetch,
+move `full/` aside except `rink.json`, re-encode from `video_<w>x<h>.webm` with
+`-vf scale=3824:2160:flags=bicubic,crop=3820:2090:4:70,pad=3824:2160:0:0:black` (h264_nvenc as `fit_size`) into
+`video.webm`, and fetch again: the geometry and the ice-map camera then fit unchanged.
+That game was also the first in light blue here, and the plain light-blue test (blue = hue 90-125 at saturation
+70+) passed 0.8 of our players a frame on the ice: the far side's light blue washes out to grey. The first solve
+showed it as whole players with no time (#31, #37), a period built from six players, #29 on for all 1104 s of the
+2nd, and only 46 review sheets. Snoqualmie B counts blue from saturation 25 (`blue_s`) with its own light-blue
+test (ours 5%+, crop 3%+), which passes ~5.5 a frame with Sentinels' white and the referees at 0-2%. Check a
+new jersey at a rink before prepare: our on-ice detections per frame (`track.load(...)`: `ours & onice` per
+frame) should be near 5, not 1.
 
 Seen here: the proposal merged the 1st and 2nd (Sep 19) or found all three 11–40 s off (Oct 10, nets right); after
 the 2nd on Sep 19 the board counted a 2:00 intermission; on Oct 10 the board sat at 18:00 until the opening faceoff
@@ -240,7 +256,8 @@ and review). Light blue is the default; `white` is a white torso with little dar
 Otters' red with white stripes is 30–50% red); `light blue vs sky blue` adds the hue test; `white vs light blue` is
 the white test with under 30% blue, for a game against LADA's other light-blue team (`references/lada.md`, "A game
 between two LADA teams"). A rink can override a test for its own lighting (`jerseys` on the class, as Snoqualmie B
-does). Whenever the picture looks different from before, run YOLO on a few frames and check the test before
+does, and `blue_s`, the saturation floor of "blue", which Snoqualmie B lowers to 25; a change there means detecting
+again). Whenever the picture looks different from before, run YOLO on a few frames and check the test before
 detection: a wrong test loses our far-side players silently. Detection only saves crops of players in our jersey,
 so a jersey set wrong after the fact means `run_game.py jersey $W <name>` (no detection rerun; ~5 min for a few
 crops, 22 min of decoding for 100k on a 66-minute video). An opponent's jersey can pass our test on its trim alone

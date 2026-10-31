@@ -63,7 +63,7 @@ def color_stats(img, b):
     hsv = cv2.cvtColor(t, cv2.COLOR_BGR2HSV).reshape(-1, 3).astype(np.int16)
     Hh, Ss, Vv = hsv[:, 0], hsv[:, 1], hsv[:, 2]
     n = len(hsv)
-    blue = ((Hh >= 90) & (Hh <= 125) & (Ss >= 70) & (Vv >= 70)).sum() / n
+    blue = ((Hh >= 90) & (Hh <= 125) & (Ss >= R.blue_s) & (Vv >= 70)).sum() / n
     lblue = ((Hh >= 90) & (Hh <= 118) & (Ss >= 50) & (Ss < 200) & (Vv >= 130)).sum() / n
     white = ((Ss < 45) & (Vv >= R.white_v)).sum() / n
     purple = ((Hh >= 125) & (Hh <= 165) & (Ss >= 60) & (Vv >= 50)).sum() / n

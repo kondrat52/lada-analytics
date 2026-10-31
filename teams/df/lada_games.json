@@ -69,6 +69,30 @@
     "opponentName": "Sentinels",
     "playHome": false,
     "rinkId": 1065,
+    "rinkName": "Snoqualmie B",
+    "teamGoals": 3,
+    "opponentGoals": 1,
+    "boxscoreLink": "https://app.sportninja.com/public/game/o2pYsMTt3I29ko2e"
+  },
+  "33035": {
+    "date": "2026-11-08T21:50:00",
+    "opponentName": "Rainucks",
+    "playHome": true,
+    "rinkId": 1065,
+    "rinkName": "Snoqualmie B"
+  },
+  "33036": {
+    "date": "2026-11-14T18:25:00",
+    "opponentName": "Jurassic Puck",
+    "playHome": false,
+    "rinkId": 1062,
+    "rinkName": "Renton"
+  },
+  "33037": {
+    "date": "2026-11-22T19:00:00",
+    "opponentName": "Ugly Pucklings",
+    "playHome": false,
+    "rinkId": 1065,
     "rinkName": "Snoqualmie B"
   }
 }

@@ -30,6 +30,7 @@ class Renton:
     shots_boxes = {"home": (47, 39, 59, 50), "guest": (65, 40, 78, 51)}   # shots-on-goal digits, in that crop (shots.py)
     clock_box, clock_tilt = (50, 3, 84, 19), 0   # period clock digits in that crop, levelled by the tilt (clock.py)
     white_v, dark_v = 160, 60     # process.py's torso colours: "white" = unsaturated and at least this bright, "dark" below
+    blue_s = 70                   # ... and "blue" = a blue hue at least this saturated
     jerseys = {}                  # this rink's own colour tests for a jersey, in place of JERSEYS'
     # crops of the 4K frame for checking goals and penalties by eye (run_game.py frames --view): x0, x1, y0, y1
     views = {"rink": (0, 3840, 700, 1500), "left-net": (150, 1450, 720, 1070), "right-net": (2500, 3800, 720, 1070)}
@@ -181,8 +182,13 @@ class Snoqualmie2(Snoqualmie):
     # "white" counts the ice behind a player too, and what tells our white jerseys from TTT's navy is how little
     # dark there is (referees' stripes pass as ours; reviewers drop them)
     white_v, dark_v = 115, 45
+    # our light blue washes out to grey on a far-side player (Doofers' Oct 25 video, 1440p scaled up): at the usual
+    # saturation floor 1 in 6 of ours passed. From 25 the torsos split cleanly: Sentinels' white, the referees and
+    # their goalie at 0-2% blue, ours mostly 5% and up (5.5 a frame on the ice, the dullest at 3-5%)
+    blue_s = 25
     jerseys = {"white": dict(ours=lambda c: (c["white"] >= 0.15) & (c["dark"] < 0.4) & (c["red"] < 0.1),
-                             crop=lambda c: (c["white"] >= 0.1) & (c["dark"] < 0.5) & (c["red"] < 0.1))}
+                             crop=lambda c: (c["white"] >= 0.1) & (c["dark"] < 0.5) & (c["red"] < 0.1)),
+               "light blue": dict(ours=lambda c: c["blue"] >= 0.05, crop=lambda c: c["blue"] >= 0.03)}
     scoreboard = (1810, 640, 270, 110)
     shots_boxes = {"home": (124, 68, 156, 91), "guest": (168, 68, 200, 91)}
     clock_box = (110, 7, 169, 32)

@@ -93,7 +93,9 @@ bot" for every client (every `player_client` alike): on Oct 19 it cleared by its
 that night after 50 for a video uploaded that evening. oEmbed answers during a block and gives the title, which says
 whose game it is (`curl "https://www.youtube.com/oembed?url=<url>&format=json"`). A background loop that runs
 `$PY -m yt_dlp -F <url>` every 5 minutes and starts fetch once format 313 is listed gets through without cookies;
-reading the user's browser cookies (`--cookies-from-browser`) needs their say-so.
+reading the user's browser cookies (`--cookies-from-browser`) needs their say-so. With it (Firefox, Oct 31): fetch
+skips a download that's there, so fetch `video.webm` (fetch's format string), `audio.m4a` (`-f 140`) and the title
+for `video_info.json` by hand with `--cookies-from-browser firefox`, then run fetch; its own yt-dlp calls take no cookies.
 
 Pick `--rink` by the frame size and view (`references/rinks.md`); for a rink that isn't in `rink.py`, stop before
 detection and follow the new-rink steps there. `--jersey` picks our colour test (default light blue); if you learn

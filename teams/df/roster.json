@@ -7,7 +7,8 @@
   "goalies": {
     "0": "Wheeler",
     "1": "Mayorov",
-    "20": "Starodubtsev"
+    "20": "Starodubtsev",
+    "58": "Fisenko"
   },
   "skaters": {
     "6": "Zaychikov",
@@ -62,7 +63,8 @@
     "75": 5880,
     "76": 5881,
     "97": 14185,
-    "98": 5898
+    "98": 5898,
+    "58": 17285
   },
   "lada_numbers": {
     "0": 29

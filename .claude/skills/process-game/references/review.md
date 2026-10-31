@@ -88,7 +88,12 @@ a crossing.
   filled 102% of the spots in every period. Solve's shift-seconds line is the cleanest test of a missing player.
 - **A non-player's number soaks up partial reads.** On Oct 3, #3 Ilinskaya didn't play, but "3" read off 43, 53
   and 35 labeled ~35 rows as #3, and a reviewer's "?" keeps the OCR label. That's what `run_game.py absent` is
-  for; set it before prepare.
+  for; set it before prepare. The game sheet can mark such a player playing: on Doofers' Oct 25 game #6 Zaychikov
+  had 670 reads of "6" (all partials of 26/46/61/76 on a sheet of them), no ZAYCHIKOV nameplate read at all, one
+  reviewer answer of 6 in 902 rows, and 3:10 after the first solve. Found after the review, `absent` can still be
+  set without preparing again: solve (`run2.py`) drops an absent player's labels and keeps segments and rows aligned.
+- **A sleeve number that reads as another.** On the same game Tislenok #98's sleeve read "91" (the 8 curves round
+  the arm); a reviewer reported a #91 not on the roster. The tracks with the 91 reads carried 128 reads of 98.
 - **Borrowed jerseys.** Dukhno #50 played in a jersey with the DERKACHEV nameplate; a `--note` tells reviewers.
 - **Two jerseys of ours at once.** On Beerteam's Oct 4 game four regulars (#10, #34, #41, #87) wore a white jersey with
   teal and black trim ("Lada Family XV") and the rest the usual royal-blue trim. Both passed the white test. A
