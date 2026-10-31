@@ -70,6 +70,38 @@
     "opponentName": "Cascadiens",
     "playHome": true,
     "rinkId": 2073,
-    "rinkName": "Snoqualmie A"
+    "rinkName": "Snoqualmie A",
+    "teamGoals": 6,
+    "opponentGoals": 5,
+    "boxscoreLink": "https://app.sportninja.com/public/game/yslPeqDaXXqo0f6s"
+  },
+  "33039": {
+    "date": "2026-11-01T16:30:00",
+    "opponentName": "Cluster Pucks",
+    "playHome": true,
+    "rinkId": 2073,
+    "rinkName": "Snoqualmie A",
+    "lines": "{\"offence\":[[\"297\",\"11101\",\"81\"],[\"5812\",\"3423\",\"120\"]],\"defence\":[[\"5796\",\"254\"],[\"80\",\"20430\"]],\"goalie\":[[\"20324\"]],\"beer\":[]}"
+  },
+  "33040": {
+    "date": "2026-11-07T20:45:00",
+    "opponentName": "Puck Buddies OG",
+    "playHome": true,
+    "rinkId": 1066,
+    "rinkName": "Snoqualmie B"
+  },
+  "33041": {
+    "date": "2026-11-15T22:40:00",
+    "opponentName": "Cluster Pucks",
+    "playHome": false,
+    "rinkId": 23,
+    "rinkName": "Renton"
+  },
+  "33042": {
+    "date": "2026-11-22T20:25:00",
+    "opponentName": "Cascadiens",
+    "playHome": false,
+    "rinkId": 1066,
+    "rinkName": "Snoqualmie B"
   }
 }

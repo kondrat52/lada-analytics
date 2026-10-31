@@ -144,7 +144,14 @@ were). With it the shooter's track is the one at that spot, whatever its label; 
 scorer and the net together up to the widest crop (2800 px) instead of dropping the scorer from the tight one;
 from the shot to `t` it follows the puck on a straight line to the net; and the replay starts 1.5 s before the
 shot, close on the scorer until it, then pans with the puck onto the net. A scorer's track that would jump farther
-than a skater gets from the shot's spot is left out. Without `--shot` the replay starts 4 s before `t` and the
+than a skater gets from the shot's spot is left out. A `--shot` with no tracked skater near its spot goes wrong:
+on Beerteam's Oct 18 game the scorer jamming at the post was untracked (the nearest track at that second was 400 px
+away), and both the close-in and the replay wandered to the other end of the rink. Before passing `--shot`, check
+that `pN/tracks_v1.csv` has a box within ~150 px of it at that second; if not, cut without it (the replay then zooms
+on the net, which a goal at the post needs anyway). The same game's 3rd goal shows the other way it goes wrong: the
+check gave the last poke (#87's) as the shot, while the credited scorer Kleiman #69 had jammed at the pads 1.5 s
+earlier, untracked. The replay opened close on #87 still well out from the net and only reached the scorer when it
+panned in; the user caught it. In a scramble, cut without `--shot`. Without `--shot` the replay starts 4 s before `t` and the
 tight frame drops a scorer more than about 1000 px from the net. TK's Oct 25 empty-netter shows why: Belov won a
 battle on the far boards at their blue line and poked the puck about 1000 px along the boards into the empty net,
 and the clip was 6 s of an empty net with him dropped from the frame, then swung to our bench after the goal,

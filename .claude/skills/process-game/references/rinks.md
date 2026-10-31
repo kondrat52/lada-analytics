@@ -222,7 +222,8 @@ from the game itself.
 Camera low at center ice on the near side through a fisheye lens: the far boards bow up to y ~430 at center and
 dip to ~700 at the edges, where the end boards run down the sides. Both benches are behind the far boards, home
 right of center, away left; the doors are at the blue posts (x 1612 and 2265). The penalty boxes are the near
-corners at the bottom of the frame, ours bottom-right and theirs bottom-left (as home), and a player drops out of
+corners at the bottom of the frame, each on its bench's side (the right bench's team bottom-right; Beerteam on the
+left bench on Oct 18 used the bottom-left, their opponents the bottom-right), and a player drops out of
 the bottom of the frame as he sits: read his number or name on the way in. Nets at 605 and 3255.
 
 - The HOCKEY sign at the right has yellow letters that pull the boards fit up; `board_lowest = True` keeps only the
@@ -244,6 +245,14 @@ the bottom of the frame as he sits: read his number or name on the way in. Nets 
   first minute of video (`frames --view rink 0 4 8 ... 40`) for play under a frozen 18:00. Once the review had
   started, P1 was moved to 5 in `periods.json` without preparing again: `on` spans for the five seen from the opening
   faceoff (and the changes after the goal) filled the seconds before the first segment, and solve came to 100%.
+- Late uploads can sit low. Beerteam's Oct 18 video (LiveBarn's 3438x1374 with its score panel top-left, uploaded Oct
+  31) was the usual view 53 px low and 0 px sideways once scaled to 3840x1536, under a black band: `boards.py`
+  printed ~488 at center instead of ~432. Measured as Snoqualmie B's (below): the scoreboard box correlated against
+  Doofers' Sep 27 `scoreboard_jpg.npz` (0, +53), `boards.py` on frame600 shifted up 53 within 3 px of Sep 27's
+  curve, then a re-encode from `video_3438x1374.webm` with
+  `scale=3840:1536:flags=bicubic,crop=3840:1483:0:53,pad=3840:1536:0:0:black` and fetch again.
+- The home team doesn't always take the right bench: Beerteam (home, white) sat at the left one on Oct 18, as
+  Doofers (away) sat right on Sep 27. Go by `frame600.png`.
 - The first gap check gets the bench right only half the time at Kirkland's staggered changes: a second pass over
   the gaps it left (and over any shift over ~5 minutes) found #52 sitting a whole timeout and the next shift.
 
