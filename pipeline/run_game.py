@@ -1,5 +1,8 @@
 """Driver for processing one game. Run with the hockey env's python (see setup_env.sh).
 
+  run_game.py download URL W [--cookies BROWSER]   the video, its audio and title, before fetch (which then skips
+                                             them); --cookies firefox: with that browser's YouTube cookies, for a
+                                             video YouTube serves only to a signed-in browser (the user runs it)
   run_game.py fetch   URL W [--team SLUG] [--rink NAME] [--jersey NAME] [--bench SIDE] [--limit SEC]   download,
                                              calibrate, detect (auto-restart), OCR, read the board's clock, propose
                                              periods; --team: whose game, a folder in teams/ (tk); --rink: camera
@@ -21,9 +24,10 @@
                                              sheets (W/rev_pN/prompt_cNN.md) and the plan of what is still to do
   run_game.py check   W                      which review rows are still missing or unreadable, per sheet
   run_game.py solve   W                      per period: apply reviews + solve; gantt charts; stats table; checks
-  run_game.py gaps    W [--apply [F ...]]    write the by-eye check briefs for the lineup check's windows
-                                             (W/scratch/gaps/prompt_pN.md, one subagent each); --apply merges the
-                                             checkers' fixes.json into periods.json as on/off spans
+  run_game.py gaps    W [--apply [F ...]]    write the by-eye check briefs for the lineup check's windows, the
+                                             goals it flags and any shift of 5+ minutes (W/scratch/gaps/prompt_pN.md,
+                                             one subagent each); --apply merges the checkers' fixes.json into
+                                             periods.json as on/off spans
   run_game.py goals   W                      candidate goals: center-ice faceoffs + long stoppages (verify by eye)
   run_game.py frames  W OUT.jpg --view rink|left-net|right-net|bench t1 t2 ...   4K frames (cropped) as a sheet, for
                                              verifying; --range T0 T1 STEP instead of times; or the crop by hand:
@@ -47,6 +51,7 @@ HERE = os.path.dirname(os.path.abspath(__file__))
 ROOT = os.path.dirname(HERE)
 PY = sys.executable
 FPS = 8
+COOKIES = []   # yt-dlp's --cookies-from-browser BROWSER, set by `download --cookies`
 sys.path.insert(0, HERE)
 from rink import rink
 
@@ -68,7 +73,7 @@ def video_info(url, W):
     if os.path.exists(p):
         return json.load(open(p))
     try:
-        out = subprocess.run([PY, "-m", "yt_dlp", "-q", "--no-warnings", "--skip-download", "--print", "%(title)s",
+        out = subprocess.run([PY, "-m", "yt_dlp", *COOKIES, "-q", "--no-warnings", "--skip-download", "--print", "%(title)s",
                               "--print", "%(upload_date)s", "--print", "%(duration)s", url],
                              capture_output=True, text=True, timeout=120, check=True).stdout.splitlines()
         dur = int(float(out[2])) if len(out) > 2 and out[2] not in ("", "NA") else None
@@ -86,27 +91,34 @@ def download(url, W):
     if os.path.exists(vid):
         return vid
     # 4K where there is one; Doofers' Sep 19 video topped out at 1440p (fit_size scales it up)
-    sh(PY, "-m", "yt_dlp", "-q", "--no-progress", "-f", "313/bestvideo[height=2160]/bestvideo[ext=webm]/bestvideo",
+    sh(PY, "-m", "yt_dlp", *COOKIES, "-q", "--no-progress", "-f", "313/bestvideo[height=2160]/bestvideo[ext=webm]/bestvideo",
        "-o", vid, url)
     return vid
 
 
-def fit_size(vid, W):
+def fit_size(vid, W, dy=0):
     """rink.py's geometry is in pixels of the rink's usual frame (`size`). A video of the same view at a lower
     resolution (Kirkland once came as 3600x1440, not 3840x1536) is scaled up once and the original kept beside it.
     As H.264 (in Matroska, under the same name): ffmpeg decodes it ~5x faster than AV1, which it has no fast
-    decoder for here."""
+    decoder for here. dy (framing_shift): the picture also moves up by that many px (down if negative) in the same
+    encode, for an upload that sits low under a black band."""
     import imageio_ffmpeg
     size = getattr(rink(f"{W}/full"), "size", None)
     have = tuple(next(imageio_ffmpeg.read_frames(vid))["size"])
-    if not size or have == tuple(size):
+    if not size or (have == tuple(size) and not dy):
         return
     if abs(have[0] / size[0] - have[1] / size[1]) > 0.01:
         sys.exit(f"video is {have[0]}x{have[1]}, not a scaled {size[0]}x{size[1]}: new framing, see rink.py")
-    log(f"video is {have[0]}x{have[1]}; scaling it to {size[0]}x{size[1]}")
+    w, h = size
+    vf = [f"scale={w}:{h}:flags=bicubic"] if have != tuple(size) else []
+    if dy:
+        vf.append(f"crop={w}:{h - dy}:0:{dy},pad={w}:{h}:0:0:black" if dy > 0 else
+                  f"crop={w}:{h + dy}:0:0,pad={w}:{h}:0:{-dy}:black")
+    log((f"video is {have[0]}x{have[1]}; scaling it to {w}x{h}" if vf[0].startswith("scale") else "re-encoding the video")
+        + (f", shifted {'up' if dy > 0 else 'down'} {abs(dy)} px" if dy else ""))
     enc = ["h264_nvenc", "-preset", "p5", "-cq", "21"] if sys.platform == "win32" else ["libx264", "-crf", "20"]
-    sh(imageio_ffmpeg.get_ffmpeg_exe(), "-loglevel", "error", "-y", "-i", vid, "-vf",
-       f"scale={size[0]}:{size[1]}:flags=bicubic", "-c:v", *enc, "-an", "-f", "matroska", f"{W}/video_up.webm")
+    sh(imageio_ffmpeg.get_ffmpeg_exe(), "-loglevel", "error", "-y", "-i", vid, "-vf", ",".join(vf),
+       "-c:v", *enc, "-an", "-f", "matroska", f"{W}/video_up.webm")
     os.replace(vid, f"{W}/video_{have[0]}x{have[1]}.webm")
     os.replace(f"{W}/video_up.webm", vid)
 
@@ -118,19 +130,62 @@ def download_audio(url, W):
         if os.path.exists(f"{W}/audio.m4a"):
             return
         try:
-            sh(PY, "-m", "yt_dlp", "-q", "--no-progress", "-f", "140/bestaudio[ext=m4a]", "-o", f"{W}/audio.m4a", url)
+            sh(PY, "-m", "yt_dlp", *COOKIES, "-q", "--no-progress", "-f", "140/bestaudio[ext=m4a]", "-o", f"{W}/audio.m4a", url)
         except subprocess.CalledProcessError:
             pass
     log("no audio: clips will be silent (re-run fetch to try again)")
 
 
-def calibrate(vid, W):
-    if os.path.exists(f"{W}/full/boards_poly.npy"):
+def calibrate(vid, W, force=False):
+    """The far-boards curve (boards.py) from a frame at the rink's usual size: a smaller video's frame is scaled
+    up for it, so the curve can be measured before fit_size encodes anything."""
+    if os.path.exists(f"{W}/full/boards_poly.npy") and not force:
         return
     import imageio_ffmpeg
     frame = f"{W}/frame600.png"
-    sh(imageio_ffmpeg.get_ffmpeg_exe(), "-loglevel", "error", "-y", "-ss", "600", "-i", vid, "-frames:v", "1", frame)
+    size = getattr(rink(f"{W}/full"), "size", None)
+    have = tuple(next(imageio_ffmpeg.read_frames(vid))["size"])
+    vf = ["-vf", f"scale={size[0]}:{size[1]}:flags=bicubic"] if size and have != tuple(size) else []
+    sh(imageio_ffmpeg.get_ffmpeg_exe(), "-loglevel", "error", "-y", "-ss", "600", "-i", vid, *vf, "-frames:v", "1", frame)
     sh(PY, f"{HERE}/boards.py", frame, f"{W}/full")
+
+
+def framing_offset(W):
+    """(dy, ys): how many px the video's far-boards curve sits below the rink's usual framing (rink.ref_boards at
+    rink.REF_XS), and the curve's y there; None where the rink has no reference or no curve yet."""
+    from rink import REF_XS
+    R = rink(f"{W}/full")
+    if R.P is None or not getattr(R, "ref_boards", None):
+        return None
+    ys = np.polyval(R.P, REF_XS)
+    return float(np.median(ys - np.array(R.ref_boards))), [int(round(y)) for y in ys]
+
+
+def framing_shift(W):
+    """How far fit_size should move the picture up (px) so the far boards fall where the rink's geometry expects
+    them: late uploads (LiveBarn's files) have sat 53 px low at Kirkland and 70 px low at Snoqualmie B under a black
+    band, and every board-based step then failed silently (the scoreboard crop held the board's top edge). Only
+    rinks with `reframe` get shifted; elsewhere (Snoqualmie A's 52 px lower framing, Renton's band classes) the
+    offset is logged."""
+    from rink import REF_XS
+    off = framing_offset(W)
+    if off is None:
+        return 0
+    dy, ys = off
+    R = rink(f"{W}/full")
+    where = f"far boards at x {list(REF_XS)}: {ys}, usually {list(R.ref_boards)}"
+    if abs(dy) <= 20:
+        return 0
+    if not getattr(R, "reframe", False):
+        hint = (" (266 px is renton2band's framing, 62 renton2thin's: set that rink in full/rink.json)"
+                if type(R).__name__ == "Renton2" else "")
+        log(f"framing: the picture sits {dy:+.0f} px from the rink's usual ({where}){hint}")
+        return 0
+    if os.path.exists(f"{W}/full/dets.csv"):
+        sys.exit(f"the picture sits {dy:+.0f} px from the rink's usual framing ({where}), but detection has run on "
+                 f"it: move {W}/full aside (keep rink.json) and fetch again")
+    log(f"framing: the picture sits {dy:+.0f} px from the rink's usual ({where}); shifting it into place")
+    return int(round(dy))
 
 
 def _last_frame(dets):
@@ -171,7 +226,9 @@ def detect(vid, W, limit=None):
             cmd += [str(max(1.0, limit - start))]
         log(f"detect from t={start:.1f}s")
         lf = open(logp, "a"); lf.write(f"--- start {start:.3f}\n"); lf.flush()
-        proc = subprocess.Popen(cmd, stdout=lf, stderr=subprocess.STDOUT, cwd=W)
+        # the repo's copy of the model: with W as the working directory process.py used to download 40 MB into W
+        env = dict(os.environ, YOLO_MODEL=f"{ROOT}/yolo11m.pt") if os.path.exists(f"{ROOT}/yolo11m.pt") else None
+        proc = subprocess.Popen(cmd, stdout=lf, stderr=subprocess.STDOUT, cwd=W, env=env)
         t_start, hist, slow_since = time.time(), [], None
         while proc.poll() is None:
             time.sleep(30)
@@ -338,9 +395,16 @@ def cmd_fetch(a):
     video_info(a.url, W)
     update_lada_games()
     vid = download(a.url, W)
-    fit_size(vid, W)
-    download_audio(a.url, W)
     calibrate(vid, W)
+    dy = framing_shift(W)
+    fit_size(vid, W, dy)
+    if dy:
+        calibrate(vid, W, force=True)
+        dy2 = framing_offset(W)[0]
+        log(f"re-encoded; the far boards now sit {dy2:+.0f} px from the usual framing")
+        if abs(dy2) > 10:
+            sys.exit(f"still {dy2:+.0f} px off after the shift: look at {W}/frame600.png and boards.py's curve")
+    download_audio(a.url, W)
     board = None if a.limit else scoreboard_alongside(W)
     detect(vid, W, a.limit)
     if board:
@@ -353,6 +417,21 @@ def cmd_fetch(a):
     sb = (f"{W}/clock_check.jpg (each period's edges on the board), {W}/sb.jpg (the board every 60 s), "
           if os.path.exists(f"{W}/sb.jpg") else "")
     log(f"fetch done. Check {W}/periods.json against {sb}break_*.jpg and video_end.jpg")
+
+
+def cmd_download(a):
+    """The video, its audio and its title, before fetch (which skips what is there). YouTube answers "Sign in to
+    confirm you're not a bot" for days at a time (3 of the 4 games fetched on Oct 31), and only a signed-in browser's
+    cookies get through: `--cookies firefox`. Reading the browser's cookies is the user's own to run (with `!` in
+    Claude Code), and this is the one line to give them."""
+    global COOKIES
+    W = os.path.abspath(a.W); os.makedirs(f"{W}/full", exist_ok=True)
+    open(f"{W}/url.txt", "w").write(a.url)
+    COOKIES = ["--cookies-from-browser", a.cookies] if a.cookies else []
+    video_info(a.url, W)
+    download(a.url, W)
+    download_audio(a.url, W)
+    log(f"downloads done in {W}; now fetch as usual (it skips them)")
 
 
 def cmd_jersey(a):
@@ -907,12 +986,18 @@ def _target(Ps, T):
     return tgt
 
 
+LONG_SHIFT = 300   # s: a shift this long gets a look (one in 190 shifts; a seated stretch has hidden in one)
+
+
 def lineup_windows(W, min_len=15):
     """Stretches of min_len+ seconds where the published shifts (shifts_all.csv) don't put the expected number of us
     on the ice, and goals in highlights.json with the wrong count or a credited player off the ice. Returns
-    (windows, goal_notes): each window a dict with period, t0, t1, n_on, expected, mid, on_mid (who the shifts have
-    on at the midpoint) and live (seconds of the window outside the estimated stoppages, None without
-    stoppages.json); goal_notes are strings."""
+    (windows, goal_notes, extra): each window a dict with period, t0, t1, n_on, expected, mid, on_mid (who the shifts
+    have on at the midpoint) and live (seconds of the window outside the estimated stoppages, None without
+    stoppages.json); goal_notes are strings; extra are windows for the gap briefs only, with a `why`: the 20 s
+    around each flagged goal, and every shift of LONG_SHIFT+ s (with `player`), which the briefs used to leave out
+    (on Y's Oct 19 game both goal lines were added to a brief by hand; at Kirkland a second pass over the long
+    shifts found a player sitting through a timeout)."""
     A = pd.read_csv(f"{W}/shifts_all.csv")
     Ps = periods(W)
     T = int(max(P["end"] for P in Ps)) + 2
@@ -943,21 +1028,38 @@ def lineup_windows(W, min_len=15):
                 run = None
             if d and not run:
                 run = (t, d)
-    notes = []
+    notes, extra = [], []
     hp = f"{W}/highlights.json"
     for h in (json.load(open(hp)) if os.path.exists(hp) else []):
         if h["type"] != "goal":
             continue
         t = int(h["t"])
+        why = []
         if len(on(t)) != tgt[t]:
             notes.append(f"  goal at {t}: on the ice {on(t)}, expected {int(tgt[t])} skaters")
+            why.append(f"the solver has {len(on(t))} on, expected {int(tgt[t])}")
         # the game sheet's scorer and assists (optional "scorer": 54, "assists": [36]) must be on the ice
         credited = [int(h["scorer"])] if h.get("scorer") else []
         credited += [int(x) for x in h.get("assists", [])]
         for p in credited:
             if h.get("team", "for") == "for" and p not in on(t):
                 notes.append(f"  goal at {t}: #{p} is credited on the game sheet but not on the ice ({on(t)})")
-    return windows, notes
+                why.append(f"#{p} is credited on the game sheet but not on the ice")
+        P = next((P for P in Ps if P["start"] <= t <= P["end"]), None)
+        if why and P:
+            extra.append(dict(period=P["label"], t0=t - 10, t1=t + 10, n_on=len(on(t)), expected=int(tgt[t]), mid=t,
+                              on_mid=on(t), live=None,
+                              why=f"{'our' if h.get('team', 'for') == 'for' else 'their'} goal at {t}: " + "; ".join(why)
+                                  + ". Who of ours was on the ice at the goal (the stepping-on and off around it to the second)?"))
+    for r in A.itertuples():
+        if r.dur >= LONG_SHIFT:
+            mid = int((r.t0 + r.t1) // 2)
+            extra.append(dict(period=r.period, t0=int(r.t0), t1=int(r.t1), n_on=None, expected=None, mid=mid,
+                              on_mid=on(mid), live=None, player=int(r.player),
+                              why=f"#{int(r.player)}'s shift runs {int(r.dur)} s, far longer than a rec-hockey shift. "
+                                  f"Frames 30 s apart suffice: was he on the ice all through it, or seated at the bench "
+                                  f"for part of it (then an off span over the seated stretch)?"))
+    return windows, notes, extra
 
 
 def _window_line(w):
@@ -971,8 +1073,9 @@ def _window_line(w):
 def lineup_check(W, min_len=15):
     """Print the lineup check (see lineup_windows). Each window is a missed player, an unlisted penalty, a bad label
     or a slow line change during a stoppage; `run_game.py gaps` writes the briefs for checking them by eye."""
-    windows, notes = lineup_windows(W, min_len)
+    windows, notes, extra = lineup_windows(W, min_len)
     bad = [_window_line(w) for w in windows] + notes
+    bad += [f"  {w['period']} {w['t0']}-{w['t1']}: #{w['player']} on for {w['t1'] - w['t0']} s in one shift" for w in extra if "player" in w]
     log("lineup check: " + ("OK" if not bad else f"{len(bad)} to look at"))
     for b in bad:
         print(b)
@@ -1012,7 +1115,7 @@ def cmd_gaps(a):
         sys.exit("no shifts_all.csv: solve first")
     R = rink(f"{W}/full")
     Ps = periods(W)
-    windows, notes = lineup_windows(W, a.min_len)
+    windows, notes, extra = lineup_windows(W, a.min_len)
     pending = sorted(glob.glob(f"{gdir}/*/fixes.json"))
     if pending:
         print("fixes not yet applied (`gaps --apply` merges them into periods.json):", ", ".join(pending))
@@ -1049,7 +1152,7 @@ def cmd_gaps(a):
     plan = []
     for P in Ps:
         lab = P["label"]; p = lab.lower()
-        ws = [w for w in windows if w["period"] == lab]
+        ws = [w for w in windows + extra if w["period"] == lab]
         sitters = _bench_sitters(W, P, R) if os.path.exists(f"{W}/{p}/tracks_v1.csv") else []
         if not ws and not sitters:
             continue
@@ -1071,10 +1174,15 @@ def cmd_gaps(a):
         wl = []
         for k, w in enumerate(ws, 1):
             live = "" if w["live"] is None else (" all of it in a stoppage;" if w["live"] == 0 else f" {w['live']} s of it live;")
-            line = (f"{k}. {lab} {w['t0']}-{w['t1']} ({w['t1'] - w['t0']} s;{live} the solver has {w['n_on']} on, "
-                    f"expected {w['expected']}): {w['on_mid']}.")
+            if w.get("why"):
+                line = f"{k}. {lab} {w['t0']}-{w['t1']} ({w['t1'] - w['t0']} s): {w['why']} The solver's lineup at {w['mid']}: {w['on_mid']}."
+            else:
+                line = (f"{k}. {lab} {w['t0']}-{w['t1']} ({w['t1'] - w['t0']} s;{live} the solver has {w['n_on']} on, "
+                        f"expected {w['expected']}): {w['on_mid']}.")
             if S is not None:
                 ov = S[(S.t1 > w["t0"] - 3) & (S.t0 < w["t1"] + 3) & ((S.plabel >= 0) | (S.t1 - S.t0 >= 5))]
+                if "player" in w:   # a long shift: only his own pieces matter
+                    ov = ov[ov.plabel == w["player"]]
                 pieces = []
                 for s_ in ov.sort_values("t0").itertuples():
                     who = f"#{int(s_.plabel)}" if s_.plabel >= 0 else "unlabeled"
@@ -1535,6 +1643,8 @@ def cmd_archive(a):
 if __name__ == "__main__":
     ap = argparse.ArgumentParser(description=__doc__, formatter_class=argparse.RawDescriptionHelpFormatter)
     sub = ap.add_subparsers(dest="cmd", required=True)
+    dl = sub.add_parser("download"); dl.add_argument("url"); dl.add_argument("W")
+    dl.add_argument("--cookies", metavar="BROWSER", help="yt-dlp's --cookies-from-browser, e.g. firefox (the user runs this)")
     f = sub.add_parser("fetch"); f.add_argument("url"); f.add_argument("W"); f.add_argument("--limit", type=float)
     f.add_argument("--team", help="whose game: a folder in teams/ (tk, bw, bt, df, y, r); default the work folder's, else tk")
     f.add_argument("--rink", help="camera geometry (see rink.py); default renton")
@@ -1584,7 +1694,7 @@ if __name__ == "__main__":
     if sys.platform == "win32":   # keep Windows awake while this runs (caffeinate does it on the Mac)
         import ctypes
         ctypes.windll.kernel32.SetThreadExecutionState(0x80000000 | 0x00000001)   # ES_CONTINUOUS | ES_SYSTEM_REQUIRED
-    if a.cmd in ("fetch", "sheet") and a.W:   # sheet usually runs before fetch has made the folder
+    if a.cmd in ("fetch", "sheet", "download") and a.W:   # sheet usually runs before fetch has made the folder
         os.makedirs(a.W, exist_ok=True)
     if a.cmd == "fetch":
         open(f"{a.W}/url.txt", "w").write(a.url)
@@ -1600,4 +1710,4 @@ if __name__ == "__main__":
     {"fetch": cmd_fetch, "skaters": cmd_skaters, "prepare": cmd_prepare, "solve": cmd_solve, "goals": cmd_goals,
      "frames": cmd_frames, "clip": cmd_clip, "publish": cmd_publish, "unknown": cmd_unknown,
      "archive": cmd_archive, "jersey": cmd_jersey, "absent": cmd_absent, "review": cmd_review, "check": cmd_check,
-     "schedule": cmd_schedule, "sheet": cmd_sheet, "gaps": cmd_gaps}[a.cmd](a)
+     "schedule": cmd_schedule, "sheet": cmd_sheet, "gaps": cmd_gaps, "download": cmd_download}[a.cmd](a)

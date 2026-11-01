@@ -70,6 +70,13 @@ one is Renton. Pick the rink by the frame size and view of `frame600.png`, not b
 - **Frame sizes.** Every rink's class has a usual `size`; fetch scales a smaller video of the same view up to it
   and keeps the original as `video_<W>x<H>.webm`. Seen: Renton 3600x1596 and 3246x1440 (the late games),
   Snoqualmie A 3440x1376 and 3438x1374, Snoqualmie B only 2548x1440 on YouTube, Kirkland 3600x1440 and 3438x1374.
+- **Framing.** Each class has `ref_boards`, the far-boards curve's y at x 200, 1000, 1920, 2800 and 3640 in the
+  rink's usual framing (every archived game's curve was within 4 px of it, except as noted below). Fetch measures
+  a new video's curve against it on a frame scaled to the rink's size, before any encode: at Kirkland and
+  Snoqualmie B (`reframe`) an offset over 20 px gets the picture shifted into place in the same encode that scales
+  the video (Beerteam's Oct 18 upload sat 53 px low, Doofers' Oct 25 70 px, both under a black band, and every
+  board-based step had failed silently); elsewhere the offset is logged. A fetch that already ran detection on a
+  misframed video stops with a message to move `full/` aside first.
 
 ## Renton (`renton`, 3840x1702)
 

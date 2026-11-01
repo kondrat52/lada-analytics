@@ -27,6 +27,19 @@ def blue_hue(Hh, Ss, Vv):
     return float(np.median(Hh[b])) if b.sum() >= 20 else 0.0
 
 
+def deep_in_bench(R, boxes, y0=0):
+    """Which boxes (x1, y1, x2, y2; y0 = the detection band's top in the frame) stand deeper in our bench than
+    rink.ocr_skip_depth. Their crops are never read (run_game.ocr_skip) or reviewed (review_sheets keeps to tracks
+    on the ice side), so process.py doesn't save them: at Snoqualmie, where the benches sit by the camera, they were
+    a quarter to a half of all crops (122,000 of 258,000 on Blue Wings' Oct 25 game), JPEG-encoded in the detection
+    loop for nothing."""
+    if R.ocr_skip_depth is None or R.P is None or not len(boxes):
+        return np.zeros(len(boxes), bool)
+    b = np.asarray(boxes, float)
+    fx = (b[:, 0] + b[:, 2]) / 2; rel = b[:, 3] + y0 - np.polyval(R.P, fx)
+    return np.asarray(R.bench_depth(fx, rel)) > R.ocr_skip_depth
+
+
 def wants_crop(test, cs, h, n):
     """test: the jersey's crop test (rink.JERSEYS); cs: color_stats list; small (far) players every third frame."""
     return bool(test(dict(zip(COLORS, cs)))) and (h >= 100 or n % 3 == 0)
@@ -51,7 +64,7 @@ def recrop(vid, out, fps):
     d["fn"] = [f"f{f:06d}_{i:02d}.jpg" for f, i in zip(d.frame, d.i)]
     keep = [wants_crop(test, cs, y2 - y1, f) and fn not in have
             for cs, y1, y2, f, fn in zip(d[COLORS].values, d.y1, d.y2, d.frame, d.fn)]
-    d = d[keep]
+    d = d[np.asarray(keep) & ~deep_in_bench(rink(out), d[["x1", "y1", "x2", "y2"]].values)]
     print(f"{len(d)} crops to cut", flush=True)
     if d.empty:
         return

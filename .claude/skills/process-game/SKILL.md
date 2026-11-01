@@ -33,11 +33,12 @@ W=~/hockey-work/<slug>-<YYYY-MM-DD>-vs-<opp>      # outside the repo, ~5 GB; Tur
 ```
 
 Detection needs the local GPU, so none of this runs in the cloud. On the Windows PC (RTX 5090, set up with
-`pipeline\setup_env.ps1`, see `WINDOWS.md`) fetch takes 30 to 40 minutes (download 3 to 15, detection 11 to 17
-with the scoreboard scan running beside it, OCR 5 to 11, reading the board's clock about 1.5), prepare 6 to 11, the review 15 to 25, and
-the lineup checks after the first solve anywhere from 15 minutes to two hours (the 29 games so far needed 0 to 76
-on/off spans each, most of them found by eye), so a game is one and a half to three hours of session time;
-`run_game.py` keeps Windows awake.
+`pipeline\setup_env.ps1`, see `WINDOWS.md`) fetch takes 25 to 45 minutes once YouTube serves the video (download 1
+to 15, detection 12 to 17 with the scoreboard scan running beside it, OCR 8 to 14, reading the board's clock about
+1), prepare 3 to 5, the review 10 to 25, the lineup checks after the first solve 20 to 70 (the seven games since Oct
+22 needed 19 to 56 on/off spans each, two rounds of checkers), and goals, clips and publish 10 to 30, so a game is
+two to four hours of session time; `run_game.py` keeps Windows awake. YouTube's bot block has added anything from
+nothing to three hours on top (step 1).
 On the Mac fetch takes about 2 hours and needs `nohup caffeinate -dims -t 28800 >/dev/null 2>&1 &` first: a sleeping Mac stalls detection and kills reviewers
 mid-sheet. Keep the user posted with one line per stage.
 
@@ -93,15 +94,24 @@ bot" for every client (every `player_client` alike): on Oct 19 it cleared by its
 that night after 50 for a video uploaded that evening. oEmbed answers during a block and gives the title, which says
 whose game it is (`curl "https://www.youtube.com/oembed?url=<url>&format=json"`). A background loop that runs
 `$PY -m yt_dlp -F <url>` every 5 minutes and starts fetch once format 313 is listed gets through without cookies;
-reading the user's browser cookies (`--cookies-from-browser`) needs their say-so. With it (Firefox, Oct 31): fetch
-skips a download that's there, so fetch `video.webm` (fetch's format string), `audio.m4a` (`-f 140`) and the title
-for `video_info.json` by hand with `--cookies-from-browser firefox`, then run fetch; its own yt-dlp calls take no cookies.
-In auto mode the session can't run a `--cookies-from-browser` command itself, even with the user's go-ahead (Beerteam's Oct 25
-video, blocked from 15:50 to 18:40 on Oct 31 and never cleared on its own): give the user the two yt-dlp lines to
-run with `!`, written with forward slashes and `~`, because `!` runs bash and drops a Windows path's backslashes.
+reading the user's browser cookies (`--cookies-from-browser`) needs their say-so, and in auto mode the session
+can't run such a command itself, even with the user's go-ahead (Beerteam's Oct 25 video, blocked from 15:50 to
+18:40 on Oct 31 and never cleared on its own; three of the four games fetched that day needed cookies). Give the
+user this one line to run with `!`, written with forward slashes and `~`, because `!` runs bash and drops a
+Windows path's backslashes:
+
+```sh
+~/.venvs/hockey/Scripts/python.exe pipeline/run_game.py download "<url>" ~/hockey-work/<folder> --cookies firefox
+```
+
+It fetches the video, the audio and the title with the browser's cookies, and fetch then skips the downloads; its
+own yt-dlp calls take no cookies. Nothing else about the run changes.
 
 Pick `--rink` by the frame size and view (`references/rinks.md`); for a rink that isn't in `rink.py`, stop before
-detection and follow the new-rink steps there. `--jersey` picks our colour test (default light blue); if you learn
+detection and follow the new-rink steps there. Fetch measures the far-boards curve against the rink's usual framing
+before it encodes anything: a late upload under a black band gets shifted into place at Kirkland and Snoqualmie B
+(the log says by how much), and at the other rinks the offset is logged (Snoqualmie A's 52 px lower framing is
+tolerated); a "new framing" exit means the aspect doesn't match any scaling of the rink's frame. `--jersey` picks our colour test (default light blue); if you learn
 after detection that we wore the other jersey (prepare makes a handful of review rows and a nearly empty roster
 card), `run_game.py jersey $W white` cuts the missing crops and OCRs them without detecting again. `--bench` says
 which side of the frame our bench is on; check it on `frame600.png` (our jerseys sit at our bench) and fix it by
@@ -232,8 +242,9 @@ $PY pipeline/run_game.py gaps $W --apply            # merge the checkers' fixes.
 
 Each brief has the team's look, the rink, the bench and box, our net, the roster, the known events (kills, goals,
 a pulled goalie), every window with the tracked pieces behind it (`segs_final.csv` rows with their review row ids),
-and any long piece that sits in our bench zone (a seated player the tracker counted as on; common at Snoqualmie,
-where the bench is by the camera). Launch one general-purpose subagent per brief, all at once, with the prompt
+the 20 s around each goal the check flags (wrong count, or a credited player off the ice), any shift of 5+ minutes
+(was he seated for part of it?), and any long piece that sits in our bench zone (a seated player the tracker
+counted as on; common at Snoqualmie, where the bench is by the camera). Launch one general-purpose subagent per brief, all at once, with the prompt
 "Read <file> and do exactly what it says. Reply with one line per window." Each writes `fixes.json`: `on` spans for
 a player seen on the ice whose track was lost, `off` spans for one the solver kept on after he left (a track that
 ends mid-ice stays on until the next bench activity, and the solver drops someone else to keep 5 on). `--apply`
@@ -309,10 +320,13 @@ Offer it once the user is happy. Never `rm -rf` a work folder: the kept data (wi
 re-solves with a later pipeline, and `$PY pipeline/regress.py` does that for every archived game and diffs each
 against its published `shifts.csv`, game by game and player by player. Run it after any change to `shifts.py`,
 `apply_review.py`, `solver.py`, `run2.py`, `final_stats.py` or `stoppages.py`, before rebuilding a site, and say in
-the commit what moved. On Oct 22, 2026 the baseline was identical for 23 of 25 archived games (Blue Wings' Sep 20
+the commit what moved. `--strip-spans --keep` solves every game without its hand-made on/off spans, which is how
+a solver change meant to replace some of the by-eye work is weighed: against the spans themselves (does it put
+the player off where the checkers did?), not only against the published sheets. On Oct 22, 2026 the baseline was identical for 23 of 25 archived games (Blue Wings' Sep 20
 and Sep 27 games predate the Oct 15 solver fixes and differ by up to a minute for one player), and the noise-label
 fix made that day moved five more by up to 45 s of one player's time; those five were re-solved from their archives
 and republished the same day, with a note in each `game.json` saying what moved. Larger changes measured as worth
-making but not made yet are listed under TODO in `README.md`.
+making but not made yet, and one measured as not worth making (the solver and seated players, Nov 1), are listed
+under TODO in `README.md`.
 Anything this game taught about a rink, a jersey, the scoreboard or the reviewers
 goes into the matching `references/*.md` now, not into memory: memory stays on one machine, the skill travels.

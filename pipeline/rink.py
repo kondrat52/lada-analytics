@@ -12,6 +12,8 @@ import json, os
 import numpy as np
 from matplotlib.path import Path
 
+REF_XS = (200, 1000, 1920, 2800, 3640)   # where `ref_boards` gives each rink's usual far-boards curve (boards.py)
+
 
 class Renton:
     """Camera high on the near side; both benches behind the far boards, one left of center and its mirror image
@@ -27,6 +29,10 @@ class Renton:
     min_break = 25                # seconds of empty open ice that make an intermission
     bench_side = "left"           # our usual bench; rink.json "bench" can pick the other one
     scoreboard = (3290, 690, 130, 80)  # x, y, w, h of the arena scoreboard (scoreboard.py)
+    # the far-boards curve's y at REF_XS in the rink's usual framing, from the games so far; fetch measures a new
+    # video against it. A late upload can sit tens of px low under a black band (LiveBarn's files): where the
+    # geometry can't take that (`reframe`), fetch shifts the picture into place while it scales the video
+    ref_boards, reframe = (903, 801, 788, 810, 928), False   # Sep 13-14 sat 10 px higher (the camera turned)
     shots_boxes = {"home": (47, 39, 59, 50), "guest": (65, 40, 78, 51)}   # shots-on-goal digits, in that crop (shots.py)
     clock_box, clock_tilt = (50, 3, 84, 19), 0   # period clock digits in that crop, levelled by the tilt (clock.py)
     white_v, dark_v = 160, 60     # process.py's torso colours: "white" = unsaturated and at least this bright, "dark" below
@@ -110,6 +116,7 @@ class Snoqualmie(Renton):
     min_break = 10
     bench_side = "right"
     scoreboard = (1790, 262, 280, 116)
+    ref_boards, reframe = (517, 452, 486, 508, 596), False   # 52 px lower on Oct 12, 18 and 25: tolerated (ice maps align)
     shots_boxes = {"home": (136, 76, 157, 95), "guest": (171, 76, 197, 95)}
     clock_box = (115, 18, 166, 43)        # the usual framing; ~50 px lower on Oct 12 and 18 (clock.py finds it)
     views = {"rink": (0, 3840, 380, 1536), "left-net": (200, 1400, 380, 760), "right-net": (2600, 3800, 380, 760)}
@@ -190,6 +197,7 @@ class Snoqualmie2(Snoqualmie):
                              crop=lambda c: (c["white"] >= 0.1) & (c["dark"] < 0.5) & (c["red"] < 0.1)),
                "light blue": dict(ours=lambda c: c["blue"] >= 0.05, crop=lambda c: c["blue"] >= 0.03)}
     scoreboard = (1810, 640, 270, 110)
+    ref_boards, reframe = (1177, 936, 868, 923, 1157), True   # Doofers' Oct 25 upload sat 70 px low: shifted
     shots_boxes = {"home": (124, 68, 156, 91), "guest": (168, 68, 200, 91)}
     clock_box = (110, 7, 169, 32)
     # the whole fisheye frame: ice from the far boards (y ~870 at center) to the near boards (~2100). The nets sit at
@@ -224,6 +232,7 @@ class Kirkland(Renton):
     bench_side = "right"
     BENCHES = {"left": (1340, 1720), "right": (2160, 2560)}   # x at the boards, with Renton's ~30 px margins
     scoreboard = (358, 396, 136, 82)
+    ref_boards, reframe = (626, 455, 433, 489, 668), True   # Beerteam's Oct 18 upload sat 53 px low: shifted
     shots_boxes = {"home": (55, 54, 71, 68), "guest": (73, 52, 90, 65)}
     clock_box = (50, 18, 87, 35)
     views = {"rink": (0, 3840, 320, 1536), "left-net": (150, 1350, 400, 800), "right-net": (2600, 3800, 400, 800)}
@@ -292,6 +301,7 @@ class Renton2(Kirkland):
                             "scorekeeper's window is at center)"}
     box_where = {"left": "between the benches, x 1735-1865", "right": "between the benches, x 2020-2150"}
     scoreboard = (3456, 576, 150, 126)    # even sides: ffmpeg rounds an odd crop of yuv420 video down, misaligning frames
+    ref_boards, reframe = (1018, 505, 335, 458, 943), False   # +266 is renton2band's framing, +62 renton2thin's
     shots_boxes = {"home": (36, 57, 48, 69), "guest": (50, 66, 64, 79)}
     clock_box, clock_tilt = (51, 31, 87, 45), 31   # the board hangs at an angle
     views = {"rink": (0, 3840, 220, 1920), "left-net": (100, 1300, 480, 1080), "right-net": (2600, 3800, 470, 1070)}
@@ -317,6 +327,7 @@ class Renton2Band(Renton2):
     board_band = (0.29, 0.70)
     NET_Y = Renton2.NET_Y + DY
     scoreboard = (3434, 838, 150, 126)    # measured on the Oct 12 frame (the board at x 3445-3573, y 845-957)
+    ref_boards = (1284, 771, 601, 724, 1209)   # Renton2's plus DY (a class body can't see DY in a comprehension)
     clock_box = (70, 30, 110, 44)
     views = {"rink": (0, 3840, 486, 1920), "left-net": (100, 1300, 746, 1346), "right-net": (2600, 3800, 736, 1336)}
     ICE = Path(Renton2.ICE.vertices + (0, DY))
@@ -330,6 +341,7 @@ class Renton2Thin(Renton2):
     board_band = (0.18, 0.59)
     NET_Y = Renton2.NET_Y + DY
     scoreboard = (3456, 638, 150, 126)
+    ref_boards = (1080, 567, 397, 520, 1005)   # Renton2's plus DY
     views = {"rink": (0, 3840, 282, 1920), "left-net": (100, 1300, 542, 1142), "right-net": (2600, 3800, 532, 1132)}
     ICE = Path(Renton2.ICE.vertices + (0, DY))
 

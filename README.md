@@ -39,9 +39,11 @@ give it one, asks for the opponent and any new players, finds periods, goals, pe
 scoreboard and the video, then runs `pipeline/run_game.py` (fetch → absent → prepare → review → solve → publish)
 and asks before pushing. Only the score confirmation and the push wait for you.
 
-It takes one and a half to three hours on the Windows PC (30–40 minutes of fetch, 15–25 of visual review, then
-the by-eye checks of the lineup, goals and penalties), or a few hours more on an M-series Mac, where detection alone
-is about two hours.
+It takes two to four hours of session time on the Windows PC (fetch 25–45 minutes when YouTube serves the video,
+prepare and review 15–25, the by-eye lineup checks 20–70, then goals, clips and publish 10–30), or a few hours more
+on an M-series Mac, where detection alone is about two hours. YouTube's bot block adds anything from nothing to
+hours: three of the four games fetched on Oct 31 needed the user's browser cookies (`run_game.py download
+--cookies firefox`, which the user runs), and one waited nearly three hours for the block to lift.
 
 On a Windows PC with an NVIDIA GPU, detection runs on CUDA and should be much faster. To set one up, run this in
 PowerShell; `WINDOWS.md` has the details and the steps by hand:
@@ -93,18 +95,40 @@ recordings' audio is silent, so nothing relies on sound.
 
 ## TODO
 
-What's left of a pipeline change measured as worth making in the Oct 22, 2026 review of the first 29 processed
-games (the other one, periods and a game clock read off the board, is `pipeline/clock.py` since Oct 24):
+What's left from the reviews of the processed games (Oct 22, 2026: the first 29; Nov 1: the 39 so far, 7 of them
+since Oct 22, with every stage log and session timed and every hand-made lineup fix counted). Fetch is 25–45
+minutes of a game's 2–4 hours; the by-eye lineup checks, 20–70 minutes and 19–56 on/off spans per game at
+Snoqualmie's two cameras (6 per game at Renton), are the biggest cost left, and no measured change has beaten
+the checkers at it yet. What they contribute, measured by solving every archived game without its hand-made
+spans (`regress.py --strip-spans`): the solver alone leaves a median of 7 lineup windows and 6 minutes of
+ice time per game moved against the published sheet, and inside the checkers' `off` spans it still has the
+player on for 56% of the seconds.
 
-1. **One decode of the video for detection and the scoreboard.** Since Oct 26 `fetch` runs `scoreboard.py`'s scan
-   (every frame, cropped to the board, keeping the brightest of each second) in a thread while `process.py`
-   detects, its ffmpeg at below-normal priority, and joins it before OCR. On TK's Oct 25 game (64 minutes of
-   native 4K VP9, Snoqualmie B) the scan alone took 6.3–6.7 minutes. Alongside detection, with all decoder threads,
-   it took 7.8 minutes and slowed detection from 34 to 25 fps meanwhile, which cost about 2 minutes, and its
-   `scoreboard.npy` matched the old scan's frame by frame: about 4.5 minutes saved per fetch. On a 4-minute slice
-   of that video 4 decoder threads cost detection half as much (16% slower instead of 31%), so the scan now uses 4;
-   the next fetch log ("scanned in N min alongside detection", and the `rate=` lines in `full/log.txt`) will show
-   the full-game effect. The rest would go with one decode: `process.py` already decodes every frame (its
-   `fps=8` filter drops the rest), so a full-rate board crop `split` off its ffmpeg graph would make the scan
-   nearly free. That needs a second output stream from one ffmpeg (a named pipe on Windows) and per-second picks
-   that survive `detect()`'s restarts, which isn't worth it for the minute or two left.
+1. **OCR alongside detection.** OCR runs after detection, 8–14 minutes on the recent games (120,000–230,000 crops)
+   while the GPU idles, and `ocr_worker.py` already polls the crops folder and waits for detection's DONE. Since
+   Nov 1 `process.py` no longer saves the crops of players seated deep in the bench (a quarter to a half of all
+   crops at Snoqualmie), so the workers could start with detection. What has to be measured on a 4-minute slice
+   first: detection's fps with four OCR workers beside it (on the Mac they starved the decoder; the PC has 16
+   cores) against the OCR minutes saved.
+2. **Detection's post-processing in a worker thread.** Detection runs at 35–38 fps on 3840x1536 video while the
+   decoder alone does ~75 and YOLO ~84: the colour statistics, crop JPEGs and CSV lines run in the main loop
+   between batches. Moving them to a thread (cv2 releases the GIL) should bring 12–17 minutes of detection to
+   under 10. Needs a video to measure; YouTube's block refused every download on Nov 1.
+3. **GPU decode for the scaling re-encode.** Most uploads are now LiveBarn's 3438x1374 or 2548x1440 files, and
+   `fit_size`'s re-encode to the rink's frame takes about 10 of fetch's minutes. The bundled ffmpeg has the `cuda`
+   hwaccel (no `vp9_cuvid` decoder listed; the hwaccel path for VP9 needs trying). If it decodes, the same flags
+   speed up `process.py`, the board scan, `frames` and `clip`.
+4. **One decode of the video for detection and the scoreboard.** Measured over six fetches since Oct 26: the board
+   scan alongside detection takes 6.7–11.4 minutes and detection 12.5–17.5 with it (11–16 before), so about 2–3
+   minutes per fetch are saved and a minute or two is left to gain from a `split` off `process.py`'s ffmpeg graph
+   (a named pipe on Windows, per-second picks that survive `detect()`'s restarts). Not worth it.
+5. **The solver and seated players: measured Nov 1, not made.** 173 of the 328 hand-made `off` spans on the 33
+   archived games cover seconds where the player's own track stood at the bench (`rink.at_bench`, or off the ice),
+   which the solver scores as "on" because a labeled piece counts from its first second to its last. Counting
+   those seconds as "off" evidence, in runs of 8 s and more, moved every archived game by 1–6 minutes of ice time
+   and left more lineup windows on 15 of 28 games (8 of the 14 that had been checked to OK): of all such runs at
+   Snoqualmie only
+   12–27% lie inside a hand-confirmed off span (0–11% at Renton and Kirkland), so a player standing at the bench
+   door or along the boards reads the same as a seated one. Position and duration don't tell them apart (nor
+   does the box height); the checkers' eyes do, and `gaps` now lists the long bench pieces, the flagged goals and
+   shifts of 5+ minutes for them. `regress.py --strip-spans` measures the next attempt the same way.

@@ -76,11 +76,12 @@ by hand (28 of them in 23 sessions); the generated one carries what those learne
 labels; watch the bench door; a piece that starts at the bench counts from its first frame; two pieces can swap at
 a crossing.
 
-The briefs only make windows of the 15+ s stretches. The goal lines of the check ("goal at 493: on the ice [14, 70,
-82], expected 5 skaters", "#29 is credited but not on the ice") appear in a brief only as known events, so the
-checker never looks at them. On Y's Oct 19 game both were added by hand as extra numbered windows in the period's
-brief, before "For each window:", with the pieces from `pN/segs_final.csv` over the goal ±10 s. One found #78 in the
-crease pile on a track that had jumped from the bench; the other found the sheet's scorer on the bench (highlights.md).
+Since Nov 1 the briefs also make a window of the 20 s around each goal the check flags ("goal at 493: on the ice
+[14, 70, 82], expected 5 skaters", "#29 is credited but not on the ice") and of every shift of 5+ minutes, with
+only that player's pieces listed. Before that the goal lines appeared only as known events: on Y's Oct 19 game both
+were added by hand as extra windows, and one found #78 in the crease pile on a track that had jumped from the bench,
+the other the sheet's scorer on the bench (highlights.md). A long shift has hidden a player seated through a
+timeout at Kirkland.
 
 ## What went wrong before
 
@@ -210,7 +211,11 @@ crease pile on a track that had jumped from the bench; the other found the sheet
   5 on, such tracks rarely show as a window, so a second pass over P2's segments that start at our bench and stay
   there found nine more. 25 on/off entries took the periods from 104/104/102% to 102/103/102%. `gaps` now lists
   every long piece that spends most of its frames in the bench zone in the brief, so that scan is part of the first
-  pass at every rink.
+  pass at every rink. Seated players are the by-eye work at Snoqualmie: 27 on/off spans per game at rink A and 48
+  at rink B against 6 at Renton (the 33 archived games, Nov 1), and 173 of the 328 off spans in all cover seconds
+  where the player's own track stood at the bench. Letting the solver count such seconds as off was measured on
+  Nov 1 and dropped (README's TODO has the numbers): a player standing at the door reads the same as a seated one,
+  and only the checkers tell them apart.
 - **A quick rest gets joined into one shift.** `final_stats.py` joins a player's shifts across gaps under 15 s
   (`MERGE_GAP`, meant for tracking loss), so a real 8 s rest at a goal shows him on for it. On Oct 10, #29 went off
   about 185 and came back at 193, and the goal at 191 listed six. An `off` span of 15 s (178–193) kept the shifts

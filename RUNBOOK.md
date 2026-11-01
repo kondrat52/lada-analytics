@@ -32,11 +32,17 @@ Developer Mode if not). There `PY=~/.venvs/hockey/Scripts/python.exe`; no `caffe
 ```sh
 mkdir -p $W/full
 $PY -m yt_dlp -f 313 -o "$W/video.webm" "https://youtu.be/VIDEO_ID"   # 313 = 2160p VP9; the pipeline expects 3840 px wide
+$PY pipeline/run_game.py download "https://youtu.be/VIDEO_ID" $W --cookies firefox   # the same, plus the audio and
+#   title, with the browser's YouTube cookies when YouTube answers "Sign in to confirm you're not a bot" (the user
+#   runs this line; fetch then skips the downloads)
 ```
 
 Every rink in `rink.py` has its usual frame `size` (Renton 3840x1702, Kirkland 3840x1536), and `fetch` scales a
 smaller video of the same view up to it (`run_game.fit_size`; Y's Sep 14 game came as 3600x1440, BW's Oct 3 at
-Renton as 3600x1596). The original stays as `video_<W>x<H>.webm`.
+Renton as 3600x1596). The original stays as `video_<W>x<H>.webm`. Before that encode, fetch calibrates the far
+boards on a frame scaled to the rink's size and compares the curve with the rink's usual one (`ref_boards` in
+`rink.py`): a late upload under a black band has sat 53 px low at Kirkland and 70 px at Snoqualmie B. At those two
+rinks the scaling encode shifts the picture into place (`reframe`); elsewhere the offset is just logged.
 
 ## 2. Calibrate the far boards (1 min)
 

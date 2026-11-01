@@ -11,7 +11,7 @@ import os, sys, time, threading, queue, subprocess
 import numpy as np, cv2
 from ultralytics import YOLO
 from rink import rink, jersey
-from crops import wants_crop, save_crop, torso, blue_hue
+from crops import wants_crop, save_crop, torso, blue_hue, deep_in_bench
 
 import imageio_ffmpeg
 FF = imageio_ffmpeg.get_ffmpeg_exe()
@@ -91,12 +91,13 @@ while not done:
         if abs(t - sec) < 0.5 / FPS and sec % 10 == 0:
             cv2.imwrite(f"{OUT}/ov/ov_{sec:05d}.jpg", cv2.resize(img, (1280, 381)), [cv2.IMWRITE_JPEG_QUALITY, 80])
         boxes = r.boxes.xyxy.cpu().numpy(); confs = r.boxes.conf.cpu().numpy()
+        deep = deep_in_bench(R, boxes, Y0)   # seated deep in our bench: no crop (never read or reviewed)
         for i, (b, c) in enumerate(zip(boxes, confs)):
             bi = b.astype(int)
             cs = color_stats(img, bi)
             fcsv.write(f"{n},{t:.3f},{bi[0]},{bi[1]+Y0},{bi[2]},{bi[3]+Y0},{c:.3f}," +
                        ",".join(f"{v:.3f}" for v in cs) + "\n")
-            if wants_crop(crop_test, cs, bi[3] - bi[1], n):
+            if not deep[i] and wants_crop(crop_test, cs, bi[3] - bi[1], n):
                 save_crop(img, bi, f"{OUT}/crops/f{n:06d}_{i:02d}.jpg")
     if batch[0][0] % (BATCH * 50) == 0:
         el = time.time() - t0

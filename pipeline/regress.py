@@ -30,7 +30,7 @@ def game_of(name, team):
     return team or m.group(1) or "tk", m.group(2)
 
 
-def stage(W, T):
+def stage(W, T, strip=False):
     """Copy what a solve reads into T (dets.csv as a link: 70 MB per game)."""
     if os.path.exists(T):
         shutil.rmtree(T)
@@ -38,6 +38,11 @@ def stage(W, T):
     for f in ("periods.json", "highlights.json", "sheet.json"):
         if os.path.exists(f"{W}/{f}"):
             shutil.copy(f"{W}/{f}", T)
+    if strip:   # the hand-made on/off spans out: what the solver makes of the game on its own
+        Ps = json.load(open(f"{T}/periods.json"))
+        for P in Ps:
+            P.pop("on", None); P.pop("off", None)
+        json.dump(Ps, open(f"{T}/periods.json", "w"), indent=1)
     for f in ("rink.json", "boards_poly.npy"):
         shutil.copy(f"{W}/full/{f}", f"{T}/full/{f}")
     src = os.path.realpath(f"{W}/full/dets.csv")
@@ -74,7 +79,7 @@ def compare(new, pub):
     d = (ta.reindex(ta.index.union(tb.index), fill_value=0) - tb.reindex(ta.index.union(tb.index), fill_value=0))
     d = d[d != 0].sort_values(key=abs, ascending=False)
     new_players = sorted(set(ta.index) - set(tb.index))
-    parts = [f"{added} shift(s) new, {gone} gone"]
+    parts = [f"{added} shift(s) new, {gone} gone; TOI moved {int(d.abs().sum())} s in all"]
     if len(d):
         parts.append("TOI " + ", ".join(f"#{int(p)} {v:+.0f}s" for p, v in d.head(6).items()) + (" ..." if len(d) > 6 else ""))
     if new_players:
@@ -86,7 +91,7 @@ def compare(new, pub):
     return False, "; ".join(parts)
 
 
-def run_one(W, out_dir, keep):
+def run_one(W, out_dir, keep, strip=False):
     name = os.path.basename(W.rstrip("/\\"))
     cfg = json.load(open(f"{W}/full/rink.json")) if os.path.exists(f"{W}/full/rink.json") else {}
     slug, gid = game_of(name, cfg.get("team"))
@@ -100,7 +105,7 @@ def run_one(W, out_dir, keep):
     T = f"{out_dir}/{name}"
     t0 = time.time()
     try:
-        stage(W, T)
+        stage(W, T, strip)
         log = f"{out_dir}/{name}.solve.log"
         with open(log, "w", encoding="utf-8") as fh:
             r = subprocess.run([PY, f"{HERE}/run_game.py", "solve", T], stdout=fh, stderr=subprocess.STDOUT, text=True)
@@ -123,8 +128,11 @@ def main():
     ap.add_argument("--jobs", type=int, default=3, help="solves at once (3)")
     ap.add_argument("--keep", action="store_true", help="keep each scratch copy (_regress/<name>/) for a look")
     ap.add_argument("--only", nargs="*", help="folder names to run (default: all)")
+    ap.add_argument("--strip-spans", action="store_true", help="solve without the hand-made on/off spans in periods.json: "
+                    "how far the solver alone is from each published (hand-fixed) sheet, for weighing a solver change")
+    ap.add_argument("--out", help="where the scratch copies and logs go (DIR/_regress)")
     a = ap.parse_args()
-    out_dir = f"{a.work}/_regress"; os.makedirs(out_dir, exist_ok=True)
+    out_dir = a.out or f"{a.work}/_regress"; os.makedirs(out_dir, exist_ok=True)
     folders = sorted(d for d in glob.glob(f"{a.work}/*") if os.path.isdir(d) and os.path.exists(f"{d}/full/rink.json")
                      and not os.path.basename(d).startswith("_"))
     if a.only:
@@ -132,7 +140,7 @@ def main():
     print(f"{len(folders)} folder(s), {a.jobs} at a time; scratch in {out_dir}", flush=True)
     results = []
     with ThreadPoolExecutor(a.jobs) as ex:
-        for name, status, why in ex.map(lambda W: run_one(W, out_dir, a.keep), folders):
+        for name, status, why in ex.map(lambda W: run_one(W, out_dir, a.keep, a.strip_spans), folders):
             print(f"{status:8s} {name:28s} {why}", flush=True)
             results.append(status)
     n = len(results)
