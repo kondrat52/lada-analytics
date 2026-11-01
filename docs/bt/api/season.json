@@ -5,8 +5,9 @@
   "short_name": "LBT",
   "lada_team_id": 5
  },
- "updated": "2026-10-18",
+ "updated": "2026-10-25",
  "games": [
+  "2026-10-25-vs-ca",
   "2026-10-18-vs-pbi",
   "2026-10-04-vs-ja",
   "2026-09-27-vs-ca",
@@ -143,6 +144,48 @@
    ]
   },
   {
+   "number": 5,
+   "name": "Zhaksilikov",
+   "lada_player_id": 17267,
+   "games_played": 2,
+   "shifts": 31,
+   "toi": 3923,
+   "toi_per_game": 1961.5,
+   "play": 2728,
+   "avg_shift": 126.5,
+   "longest_shift": 202,
+   "shortest_shift": 41,
+   "plus_minus": -3,
+   "games": [
+    {
+     "id": "2026-10-25-vs-ca",
+     "date": "2026-10-25",
+     "opponent": {
+      "code": "CA",
+      "name": "Cascadiens"
+     },
+     "toi": 2009,
+     "shifts": 16,
+     "avg_shift": 125.6,
+     "play": 1293,
+     "plus_minus": -2
+    },
+    {
+     "id": "2026-10-04-vs-ja",
+     "date": "2026-10-04",
+     "opponent": {
+      "code": "JA",
+      "name": "Jackalopes"
+     },
+     "toi": 1914,
+     "shifts": 15,
+     "avg_shift": 127.6,
+     "play": 1435,
+     "plus_minus": -1
+    }
+   ]
+  },
+  {
    "number": 76,
    "name": "Panov",
    "lada_player_id": 253,
@@ -186,31 +229,57 @@
    ]
   },
   {
-   "number": 5,
-   "name": "Zhaksilikov",
-   "lada_player_id": 17267,
-   "games_played": 1,
-   "shifts": 15,
-   "toi": 1914,
-   "toi_per_game": 1914,
-   "play": 1435,
-   "avg_shift": 127.6,
-   "longest_shift": 198,
-   "shortest_shift": 55,
+   "number": 25,
+   "name": "Papusha",
+   "lada_player_id": 5795,
+   "games_played": 3,
+   "shifts": 46,
+   "toi": 5589,
+   "toi_per_game": 1863,
+   "play": 3981,
+   "avg_shift": 121.5,
+   "longest_shift": 225,
+   "shortest_shift": 50,
    "plus_minus": -1,
    "games": [
     {
-     "id": "2026-10-04-vs-ja",
-     "date": "2026-10-04",
+     "id": "2026-10-25-vs-ca",
+     "date": "2026-10-25",
      "opponent": {
-      "code": "JA",
-      "name": "Jackalopes"
+      "code": "CA",
+      "name": "Cascadiens"
      },
-     "toi": 1914,
+     "toi": 1785,
      "shifts": 15,
-     "avg_shift": 127.6,
-     "play": 1435,
-     "plus_minus": -1
+     "avg_shift": 119,
+     "play": 1315,
+     "plus_minus": 2
+    },
+    {
+     "id": "2026-10-18-vs-pbi",
+     "date": "2026-10-18",
+     "opponent": {
+      "code": "PBI",
+      "name": "Puck Buddies Ice"
+     },
+     "toi": 1811,
+     "shifts": 13,
+     "avg_shift": 139.3,
+     "play": 1349,
+     "plus_minus": 2
+    },
+    {
+     "id": "2026-09-20-vs-cp",
+     "date": "2026-09-20",
+     "opponent": {
+      "code": "CP",
+      "name": "Cluster Pucks"
+     },
+     "toi": 1993,
+     "shifts": 18,
+     "avg_shift": 110.7,
+     "play": 1317,
+     "plus_minus": -5
     }
    ]
   },
@@ -218,16 +287,29 @@
    "number": 70,
    "name": "Shikhanov",
    "lada_player_id": 5796,
-   "games_played": 3,
-   "shifts": 50,
-   "toi": 5731,
-   "toi_per_game": 1910.3,
-   "play": 4073,
-   "avg_shift": 114.6,
+   "games_played": 4,
+   "shifts": 69,
+   "toi": 7434,
+   "toi_per_game": 1858.5,
+   "play": 5229,
+   "avg_shift": 107.7,
    "longest_shift": 385,
-   "shortest_shift": 37,
+   "shortest_shift": 32,
    "plus_minus": 2,
    "games": [
+    {
+     "id": "2026-10-25-vs-ca",
+     "date": "2026-10-25",
+     "opponent": {
+      "code": "CA",
+      "name": "Cascadiens"
+     },
+     "toi": 1703,
+     "shifts": 19,
+     "avg_shift": 89.6,
+     "play": 1156,
+     "plus_minus": 0
+    },
     {
      "id": "2026-10-18-vs-pbi",
      "date": "2026-10-18",
@@ -270,61 +352,32 @@
    ]
   },
   {
-   "number": 25,
-   "name": "Papusha",
-   "lada_player_id": 5795,
-   "games_played": 2,
-   "shifts": 31,
-   "toi": 3804,
-   "toi_per_game": 1902,
-   "play": 2666,
-   "avg_shift": 122.7,
-   "longest_shift": 225,
-   "shortest_shift": 50,
-   "plus_minus": -3,
-   "games": [
-    {
-     "id": "2026-10-18-vs-pbi",
-     "date": "2026-10-18",
-     "opponent": {
-      "code": "PBI",
-      "name": "Puck Buddies Ice"
-     },
-     "toi": 1811,
-     "shifts": 13,
-     "avg_shift": 139.3,
-     "play": 1349,
-     "plus_minus": 2
-    },
-    {
-     "id": "2026-09-20-vs-cp",
-     "date": "2026-09-20",
-     "opponent": {
-      "code": "CP",
-      "name": "Cluster Pucks"
-     },
-     "toi": 1993,
-     "shifts": 18,
-     "avg_shift": 110.7,
-     "play": 1317,
-     "plus_minus": -5
-    }
-   ]
-  },
-  {
    "number": 69,
    "name": "Kleiman",
    "lada_player_id": 20355,
-   "games_played": 5,
-   "shifts": 72,
-   "toi": 9424,
-   "toi_per_game": 1884.8,
-   "play": 6750,
-   "avg_shift": 130.9,
+   "games_played": 6,
+   "shifts": 89,
+   "toi": 11144,
+   "toi_per_game": 1857.3,
+   "play": 7875,
+   "avg_shift": 125.2,
    "longest_shift": 325,
    "shortest_shift": 24,
-   "plus_minus": 2,
+   "plus_minus": 5,
    "games": [
+    {
+     "id": "2026-10-25-vs-ca",
+     "date": "2026-10-25",
+     "opponent": {
+      "code": "CA",
+      "name": "Cascadiens"
+     },
+     "toi": 1720,
+     "shifts": 17,
+     "avg_shift": 101.2,
+     "play": 1125,
+     "plus_minus": 3
+    },
     {
      "id": "2026-10-18-vs-pbi",
      "date": "2026-10-18",
@@ -396,16 +449,29 @@
    "number": 24,
    "name": "Papusha",
    "lada_player_id": 20384,
-   "games_played": 3,
-   "shifts": 45,
-   "toi": 5643,
-   "toi_per_game": 1881,
-   "play": 3914,
-   "avg_shift": 125.4,
+   "games_played": 4,
+   "shifts": 61,
+   "toi": 7380,
+   "toi_per_game": 1845,
+   "play": 5171,
+   "avg_shift": 121.0,
    "longest_shift": 240,
    "shortest_shift": 40,
-   "plus_minus": 1,
+   "plus_minus": 3,
    "games": [
+    {
+     "id": "2026-10-25-vs-ca",
+     "date": "2026-10-25",
+     "opponent": {
+      "code": "CA",
+      "name": "Cascadiens"
+     },
+     "toi": 1737,
+     "shifts": 16,
+     "avg_shift": 108.6,
+     "play": 1257,
+     "plus_minus": 2
+    },
     {
      "id": "2026-10-18-vs-pbi",
      "date": "2026-10-18",
@@ -481,16 +547,29 @@
    "number": 34,
    "name": "Zakharov",
    "lada_player_id": 248,
-   "games_played": 4,
-   "shifts": 62,
-   "toi": 6808,
-   "toi_per_game": 1702,
-   "play": 4775,
-   "avg_shift": 109.8,
+   "games_played": 5,
+   "shifts": 80,
+   "toi": 8579,
+   "toi_per_game": 1715.8,
+   "play": 5895,
+   "avg_shift": 107.2,
    "longest_shift": 192,
    "shortest_shift": 27,
-   "plus_minus": 3,
+   "plus_minus": 2,
    "games": [
+    {
+     "id": "2026-10-25-vs-ca",
+     "date": "2026-10-25",
+     "opponent": {
+      "code": "CA",
+      "name": "Cascadiens"
+     },
+     "toi": 1771,
+     "shifts": 18,
+     "avg_shift": 98.4,
+     "play": 1120,
+     "plus_minus": -1
+    },
     {
      "id": "2026-10-04-vs-ja",
      "date": "2026-10-04",
@@ -549,16 +628,29 @@
    "number": 23,
    "name": "Zhaksilikov",
    "lada_player_id": 3423,
-   "games_played": 5,
-   "shifts": 71,
-   "toi": 8263,
-   "toi_per_game": 1652.6,
-   "play": 5806,
-   "avg_shift": 116.4,
+   "games_played": 6,
+   "shifts": 83,
+   "toi": 9559,
+   "toi_per_game": 1593.2,
+   "play": 6648,
+   "avg_shift": 115.2,
    "longest_shift": 296,
    "shortest_shift": 49,
-   "plus_minus": -3,
+   "plus_minus": -4,
    "games": [
+    {
+     "id": "2026-10-25-vs-ca",
+     "date": "2026-10-25",
+     "opponent": {
+      "code": "CA",
+      "name": "Cascadiens"
+     },
+     "toi": 1296,
+     "shifts": 12,
+     "avg_shift": 108,
+     "play": 842,
+     "plus_minus": -1
+    },
     {
      "id": "2026-10-18-vs-pbi",
      "date": "2026-10-18",
@@ -659,16 +751,29 @@
    "number": 87,
    "name": "Solovyov",
    "lada_player_id": 297,
-   "games_played": 5,
-   "shifts": 61,
-   "toi": 7436,
-   "toi_per_game": 1487.2,
-   "play": 5119,
-   "avg_shift": 121.9,
+   "games_played": 6,
+   "shifts": 74,
+   "toi": 8839,
+   "toi_per_game": 1473.2,
+   "play": 6075,
+   "avg_shift": 119.4,
    "longest_shift": 226,
    "shortest_shift": 46,
-   "plus_minus": 3,
+   "plus_minus": 4,
    "games": [
+    {
+     "id": "2026-10-25-vs-ca",
+     "date": "2026-10-25",
+     "opponent": {
+      "code": "CA",
+      "name": "Cascadiens"
+     },
+     "toi": 1403,
+     "shifts": 13,
+     "avg_shift": 107.9,
+     "play": 956,
+     "plus_minus": 1
+    },
     {
      "id": "2026-10-18-vs-pbi",
      "date": "2026-10-18",
@@ -740,16 +845,29 @@
    "number": 68,
    "name": "Chernih",
    "lada_player_id": 120,
-   "games_played": 4,
-   "shifts": 50,
-   "toi": 5929,
-   "toi_per_game": 1482.2,
-   "play": 4399,
-   "avg_shift": 118.6,
+   "games_played": 5,
+   "shifts": 63,
+   "toi": 7278,
+   "toi_per_game": 1455.6,
+   "play": 5249,
+   "avg_shift": 115.5,
    "longest_shift": 219,
    "shortest_shift": 21,
-   "plus_minus": 0,
+   "plus_minus": -2,
    "games": [
+    {
+     "id": "2026-10-25-vs-ca",
+     "date": "2026-10-25",
+     "opponent": {
+      "code": "CA",
+      "name": "Cascadiens"
+     },
+     "toi": 1349,
+     "shifts": 13,
+     "avg_shift": 103.8,
+     "play": 850,
+     "plus_minus": -2
+    },
     {
      "id": "2026-10-18-vs-pbi",
      "date": "2026-10-18",
@@ -805,87 +923,32 @@
    ]
   },
   {
-   "number": 44,
-   "name": "Tverskoy",
-   "lada_player_id": 5812,
-   "games_played": 4,
-   "shifts": 50,
-   "toi": 5922,
-   "toi_per_game": 1480.5,
-   "play": 4133,
-   "avg_shift": 118.4,
-   "longest_shift": 184,
-   "shortest_shift": 74,
-   "plus_minus": 1,
+   "number": 10,
+   "name": "Bogdanov",
+   "lada_player_id": 81,
+   "games_played": 6,
+   "shifts": 85,
+   "toi": 8651,
+   "toi_per_game": 1441.8,
+   "play": 5956,
+   "avg_shift": 101.8,
+   "longest_shift": 220,
+   "shortest_shift": 25,
+   "plus_minus": 9,
    "games": [
     {
-     "id": "2026-10-18-vs-pbi",
-     "date": "2026-10-18",
-     "opponent": {
-      "code": "PBI",
-      "name": "Puck Buddies Ice"
-     },
-     "toi": 1971,
-     "shifts": 16,
-     "avg_shift": 123.2,
-     "play": 1336,
-     "plus_minus": 2
-    },
-    {
-     "id": "2026-10-04-vs-ja",
-     "date": "2026-10-04",
-     "opponent": {
-      "code": "JA",
-      "name": "Jackalopes"
-     },
-     "toi": 1364,
-     "shifts": 11,
-     "avg_shift": 124,
-     "play": 902,
-     "plus_minus": 0
-    },
-    {
-     "id": "2026-09-27-vs-ca",
-     "date": "2026-09-27",
+     "id": "2026-10-25-vs-ca",
+     "date": "2026-10-25",
      "opponent": {
       "code": "CA",
       "name": "Cascadiens"
      },
-     "toi": 1260,
-     "shifts": 11,
-     "avg_shift": 114.5,
-     "play": 1021,
-     "plus_minus": -1
+     "toi": 1339,
+     "shifts": 15,
+     "avg_shift": 89.3,
+     "play": 876,
+     "plus_minus": 3
     },
-    {
-     "id": "2026-09-20-vs-cp",
-     "date": "2026-09-20",
-     "opponent": {
-      "code": "CP",
-      "name": "Cluster Pucks"
-     },
-     "toi": 1327,
-     "shifts": 12,
-     "avg_shift": 110.6,
-     "play": 874,
-     "plus_minus": 0
-    }
-   ]
-  },
-  {
-   "number": 10,
-   "name": "Bogdanov",
-   "lada_player_id": 81,
-   "games_played": 5,
-   "shifts": 70,
-   "toi": 7312,
-   "toi_per_game": 1462.4,
-   "play": 5080,
-   "avg_shift": 104.5,
-   "longest_shift": 220,
-   "shortest_shift": 25,
-   "plus_minus": 6,
-   "games": [
     {
      "id": "2026-10-18-vs-pbi",
      "date": "2026-10-18",
@@ -950,6 +1013,87 @@
      "avg_shift": 113.3,
      "play": 1010,
      "plus_minus": 3
+    }
+   ]
+  },
+  {
+   "number": 44,
+   "name": "Tverskoy",
+   "lada_player_id": 5812,
+   "games_played": 5,
+   "shifts": 62,
+   "toi": 7187,
+   "toi_per_game": 1437.4,
+   "play": 4983,
+   "avg_shift": 115.9,
+   "longest_shift": 184,
+   "shortest_shift": 49,
+   "plus_minus": 2,
+   "games": [
+    {
+     "id": "2026-10-25-vs-ca",
+     "date": "2026-10-25",
+     "opponent": {
+      "code": "CA",
+      "name": "Cascadiens"
+     },
+     "toi": 1265,
+     "shifts": 12,
+     "avg_shift": 105.4,
+     "play": 850,
+     "plus_minus": 1
+    },
+    {
+     "id": "2026-10-18-vs-pbi",
+     "date": "2026-10-18",
+     "opponent": {
+      "code": "PBI",
+      "name": "Puck Buddies Ice"
+     },
+     "toi": 1971,
+     "shifts": 16,
+     "avg_shift": 123.2,
+     "play": 1336,
+     "plus_minus": 2
+    },
+    {
+     "id": "2026-10-04-vs-ja",
+     "date": "2026-10-04",
+     "opponent": {
+      "code": "JA",
+      "name": "Jackalopes"
+     },
+     "toi": 1364,
+     "shifts": 11,
+     "avg_shift": 124,
+     "play": 902,
+     "plus_minus": 0
+    },
+    {
+     "id": "2026-09-27-vs-ca",
+     "date": "2026-09-27",
+     "opponent": {
+      "code": "CA",
+      "name": "Cascadiens"
+     },
+     "toi": 1260,
+     "shifts": 11,
+     "avg_shift": 114.5,
+     "play": 1021,
+     "plus_minus": -1
+    },
+    {
+     "id": "2026-09-20-vs-cp",
+     "date": "2026-09-20",
+     "opponent": {
+      "code": "CP",
+      "name": "Cluster Pucks"
+     },
+     "toi": 1327,
+     "shifts": 12,
+     "avg_shift": 110.6,
+     "play": 874,
+     "plus_minus": 0
     }
    ]
   },
@@ -1025,16 +1169,29 @@
    "number": 41,
    "name": "Gilderman",
    "lada_player_id": 5575,
-   "games_played": 1,
-   "shifts": 14,
-   "toi": 1195,
-   "toi_per_game": 1195,
-   "play": 726,
-   "avg_shift": 85.4,
-   "longest_shift": 127,
-   "shortest_shift": 53,
+   "games_played": 2,
+   "shifts": 29,
+   "toi": 2494,
+   "toi_per_game": 1247,
+   "play": 1677,
+   "avg_shift": 86,
+   "longest_shift": 178,
+   "shortest_shift": 42,
    "plus_minus": 1,
    "games": [
+    {
+     "id": "2026-10-25-vs-ca",
+     "date": "2026-10-25",
+     "opponent": {
+      "code": "CA",
+      "name": "Cascadiens"
+     },
+     "toi": 1299,
+     "shifts": 15,
+     "avg_shift": 86.6,
+     "play": 951,
+     "plus_minus": 0
+    },
     {
      "id": "2026-10-04-vs-ja",
      "date": "2026-10-04",

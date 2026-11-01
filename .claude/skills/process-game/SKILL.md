@@ -96,6 +96,9 @@ whose game it is (`curl "https://www.youtube.com/oembed?url=<url>&format=json"`)
 reading the user's browser cookies (`--cookies-from-browser`) needs their say-so. With it (Firefox, Oct 31): fetch
 skips a download that's there, so fetch `video.webm` (fetch's format string), `audio.m4a` (`-f 140`) and the title
 for `video_info.json` by hand with `--cookies-from-browser firefox`, then run fetch; its own yt-dlp calls take no cookies.
+In auto mode the session can't run a `--cookies-from-browser` command itself, even with the user's go-ahead (Beerteam's Oct 25
+video, blocked from 15:50 to 18:40 on Oct 31 and never cleared on its own): give the user the two yt-dlp lines to
+run with `!`, written with forward slashes and `~`, because `!` runs bash and drops a Windows path's backslashes.
 
 Pick `--rink` by the frame size and view (`references/rinks.md`); for a rink that isn't in `rink.py`, stop before
 detection and follow the new-rink steps there. `--jersey` picks our colour test (default light blue); if you learn

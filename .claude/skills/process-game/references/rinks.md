@@ -168,6 +168,11 @@ and Oct 4, BW Oct 18, LADA R Oct 5 and Oct 12) ran each period to 0.0, with the 
 then ran the clock to 0.0 with no play: end the period at the goal. On Oct 4 both goalies wore white with white
 pads, so where our goal and the goals against went in settled the nets. Flounders' white with light-blue trim passed
 our light-blue test a little (their #12 BUSH read 47 times); Night Owls' white #11, #35 and #43 are in `review.md`.
+Beerteam's Oct 25 LiveBarn upload (3438x1374, uploaded Oct 31) was at the lower framing too, and needed no re-encode,
+unlike Kirkland's late upload: `boards.py` gave [569, 504, 538, 560, 648] at x 200/1000/1920/2800/3640, the same as BW
+Oct 25 (where the ice-map camera was fitted), DF Oct 18 and R Oct 12; the usual framing gives [517, 453, 486, 509, 595].
+To compare before fetch, run `boards.py` on a scaled frame into a scratch folder holding a `rink.json` with the rink:
+without one it uses Renton's band and returns a curve that looks like a wild misfit.
 
 Views: `rink` 0–3840 × 380–1536; `left-net` 200–1400 × 380–760; `right-net` 2600–3800 × 380–760; `bench` 0–900 ×
 700–1536 (left) or 2940–3840 × 700–1536 (right).

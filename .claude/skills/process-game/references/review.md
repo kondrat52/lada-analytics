@@ -78,6 +78,11 @@ a crossing.
 
 ## What went wrong before
 
+- **The other goalie as "G".** On Beerteam's Oct 25 game (we in white, Cascadiens in navy) reviewers marked
+  Cascadiens' blue-jersey goalie "G" in about 50 rows, some at low confidence ("team unsure"). It changes nothing:
+  `apply_review` drops "G" rows as it drops "N", and the switch part of a row still applies. A zfix for it isn't
+  needed; a `--note` with our goalie's jersey colour would spare the reviewers the doubt.
+
 - **A late arrival looks absent.** On BW's Sep 20 game #55 Lisenko arrived mid-second period; her P1 card row was
   empty and OCR had read her number 29 times (a ponytail hides it), so 30+ reviewers were told she hadn't played.
   One reviewer caught the LISENKO nameplate. Keep anyone LADA's lines list on the roster unless every period's
