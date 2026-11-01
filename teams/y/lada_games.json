@@ -85,7 +85,10 @@
     "opponentName": "Strange Brews",
     "playHome": true,
     "rinkId": 2069,
-    "rinkName": "Kirkland"
+    "rinkName": "Kirkland",
+    "teamGoals": 5,
+    "opponentGoals": 6,
+    "boxscoreLink": "https://app.sportninja.com/public/game/RveTcDl59WrB7qF1"
   },
   "32996": {
     "date": "2026-11-02T22:15:00",
@@ -105,6 +108,20 @@
     "date": "2026-11-16T20:45:00",
     "opponentName": "Warriors",
     "playHome": true,
+    "rinkId": 2070,
+    "rinkName": "Renton"
+  },
+  "32999": {
+    "date": "2026-11-23T20:45:00",
+    "opponentName": "Teamy McTeamface",
+    "playHome": false,
+    "rinkId": 2071,
+    "rinkName": "Snoqualmie A"
+  },
+  "33000": {
+    "date": "2026-11-30T20:45:00",
+    "opponentName": "LADA R",
+    "playHome": false,
     "rinkId": 2070,
     "rinkName": "Renton"
   }

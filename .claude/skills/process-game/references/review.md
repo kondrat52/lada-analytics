@@ -76,6 +76,12 @@ by hand (28 of them in 23 sessions); the generated one carries what those learne
 labels; watch the bench door; a piece that starts at the bench counts from its first frame; two pieces can swap at
 a crossing.
 
+The briefs only make windows of the 15+ s stretches. The goal lines of the check ("goal at 493: on the ice [14, 70,
+82], expected 5 skaters", "#29 is credited but not on the ice") appear in a brief only as known events, so the
+checker never looks at them. On Y's Oct 19 game both were added by hand as extra numbered windows in the period's
+brief, before "For each window:", with the pieces from `pN/segs_final.csv` over the goal ±10 s. One found #78 in the
+crease pile on a track that had jumped from the bench; the other found the sheet's scorer on the bench (highlights.md).
+
 ## What went wrong before
 
 - **The other goalie as "G".** On Beerteam's Oct 25 game (we in white, Cascadiens in navy) reviewers marked

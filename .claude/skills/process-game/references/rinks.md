@@ -165,7 +165,10 @@ about 25 s after 0:00 (so a period ends where `run_game.py skaters` drops from 6
 skate-out the proposal picks); every later game (Beerteam Sep 20
 and Oct 4, BW Oct 18, LADA R Oct 5 and Oct 12) ran each period to 0.0, with the 1:00 countdown after the 1st and 2nd
 (about 1:30 after the 2nd on Oct 5). On Oct 5 the 2nd ended on a goal against with about 2 s left and the operator
-then ran the clock to 0.0 with no play: end the period at the goal. On Oct 4 both goalies wore white with white
+then ran the clock to 0.0 with no play: end the period at the goal. On Y's Oct 19 game the 1st's clock stopped at 2.0
+and then held at 1.2 for 4 s (a faceoff with a second left) before running out; `clock.py` put the end at the start
+of the hold (1114), and a 1 s sheet over the last 25 s showed 0.0 at 1118. When `clock_check.jpg` shows the same
+non-zero digits on all three end tiles, sheet the board 1 s apart there. On Oct 4 both goalies wore white with white
 pads, so where our goal and the goals against went in settled the nets. Flounders' white with light-blue trim passed
 our light-blue test a little (their #12 BUSH read 47 times); Night Owls' white #11, #35 and #43 are in `review.md`.
 Beerteam's Oct 25 LiveBarn upload (3438x1374, uploaded Oct 31) was at the lower framing too, and needed no re-encode,

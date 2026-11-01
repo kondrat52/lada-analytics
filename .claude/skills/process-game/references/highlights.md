@@ -92,6 +92,14 @@ board's panel showed 37 and Akulov #37 went to the box. And a minor late in a pe
 Sourov's coincidental tripping with 1:06 left in the 2nd wasn't served then (5 on 4 to the end, our box empty); he
 went in during the intermission and sat the first 2:00 of the 3rd, so the `pk` is in the 3rd only.
 
+It can name the wrong scorer too. On LADA Y's Oct 19 game the sheet gave our only goal to Yafunyaev #29 (from #14
+and #18), and solve's lineup check said #29 wasn't on the ice. The goal check had guessed the puck carrier was #29
+misread as 89, but a zoom at 1262.5 showed "70 LISITSYN" carrying it along the far boards on the track that jammed it
+in, and #29 (purple pants) sat on the front of our bench from 1248 to 1281. When the check says a credited scorer is
+off the ice, read the carrier's number and look at the bench before adding an `on` for the scorer. Then put the
+scorer the video shows in `highlights.json` (it drives the lineup check and the clip's framing, not the page's
+stats) and say in its note and in `game.json`'s notes what the sheet credits.
+
 A minor the game sheet gives at the same clock as a power-play goal against may never be served: on BW's Oct 11
 game #54's high-sticking at 15:09 never lit the panel and we had 5 skaters again from the faceoff. Check
 `run_game.py skaters` across the span before adding its `pk`.

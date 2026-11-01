@@ -55,6 +55,12 @@ same LADA id, and the number he didn't wear goes on that game's absent list. `"a
 primary number: the game pages keep the number he wore, and the season table, trends page and feed totals list him
 once, under 67.
 
+LADA Y have worn white at every home game so far (Sep 21, Oct 5, Oct 19), so a Y home game needs `--jersey white` on
+fetch (the default test is light blue). Flounders own two jerseys: white with light-blue trim on Oct 4 (rinks.md) and
+black with light-blue and cream stripes against Y on Oct 19, where nothing of theirs passed the white test. On Oct 19
+fetch began with the default, `frame600.png` showed white, and detection was stopped 2 minutes in, its partial
+output moved aside, and fetch rerun with `--jersey white`: cheaper than `run_game.py jersey` after a full run.
+
 ## SportNinja game sheets
 
 LADA's game record has `boxscoreLink`; its last path segment is the SportNinja game id, and SportNinja's API is
