@@ -35,7 +35,8 @@ W=~/hockey-work/<slug>-<YYYY-MM-DD>-vs-<opp>      # outside the repo, ~5 GB; Tur
 Detection needs the local GPU, so none of this runs in the cloud. On the Windows PC (RTX 5090, set up with
 `pipeline\setup_env.ps1`, see `WINDOWS.md`) fetch takes 25 to 45 minutes once YouTube serves the video (download 1
 to 15, detection 12 to 17 with the scoreboard scan running beside it, OCR 8 to 14, reading the board's clock about
-1), prepare 3 to 5, the review 10 to 25, the lineup checks after the first solve 20 to 70 (the seven games since Oct
+1; since Nov 2 OCR runs beside detection and `process.py` has three processes, measured on a slice to save about 10
+of those minutes, unconfirmed on a full fetch), prepare 3 to 5, the review 10 to 25, the lineup checks after the first solve 20 to 70 (the seven games since Oct
 22 needed 19 to 56 on/off spans each, two rounds of checkers), and goals, clips and publish 10 to 30, so a game is
 two to four hours of session time; `run_game.py` keeps Windows awake. YouTube's bot block has added anything from
 nothing to three hours on top (step 1).

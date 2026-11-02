@@ -1,4 +1,4 @@
-"""Incrementally OCR torso region of light-blue crops. Writes OUT/ocr_{PART[0]}.csv: file,text,score (one row per text box)."""
+"""Incrementally OCR the torso region of the crops in our jersey, during detection (run_game.py ocr_alongside) or after it. Writes OUT/ocr_{PART[0]}.csv: file,text,score (one row per text box)."""
 import os, sys, time, glob, csv, cv2
 from rapidocr import RapidOCR
 OUT = sys.argv[1]
@@ -14,7 +14,11 @@ fo = open(f"{OUT}/ocr_{PART[0]}.csv", "a", newline=""); w = csv.writer(fo)
 fd = open(f"{OUT}/ocr_done_{PART[0]}.txt", "a")
 while True:
     finished = "DONE" in open(f"{OUT}/log.txt").read()
-    todo = sorted(f for f in set(os.listdir(f"{OUT}/crops")) - done if int(f[1:7]) <= FMAX and int(f[1:7]) % STEP == 0 and hash(f) % PART[1] == PART[0])
+    listing = set(os.listdir(f"{OUT}/crops"))
+    todo = sorted(f for f in listing - done if int(f[1:7]) <= FMAX and int(f[1:7]) % STEP == 0 and hash(f) % PART[1] == PART[0])
+    if todo and not finished:   # started alongside detection: leave the newest 2 s of crops, which may still be being written
+        newest = max(int(f[1:7]) for f in listing)
+        todo = [f for f in todo if int(f[1:7]) <= newest - 16]
     if (finished or FMAX < 10**9) and not todo: break
     if len(todo) < 50 and not finished:
         time.sleep(20); continue

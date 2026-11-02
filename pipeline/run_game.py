@@ -116,7 +116,9 @@ def fit_size(vid, W, dy=0):
                   f"crop={w}:{h + dy}:0:0,pad={w}:{h}:0:{-dy}:black")
     log((f"video is {have[0]}x{have[1]}; scaling it to {w}x{h}" if vf[0].startswith("scale") else "re-encoding the video")
         + (f", shifted {'up' if dy > 0 else 'down'} {abs(dy)} px" if dy else ""))
-    enc = ["h264_nvenc", "-preset", "p5", "-cq", "21"] if sys.platform == "win32" else ["libx264", "-crf", "20"]
+    # nvenc's p1 preset: 2.3x faster than p5 for the same quality (PSNR 50.4 vs 50.5 dB against the scaled source on
+    # a 4-minute slice, Nov 2, 2026) at a 15% larger file; the encode was the re-encode's bottleneck, not the decode
+    enc = ["h264_nvenc", "-preset", "p1", "-cq", "21"] if sys.platform == "win32" else ["libx264", "-crf", "20"]
     sh(imageio_ffmpeg.get_ffmpeg_exe(), "-loglevel", "error", "-y", "-i", vid, "-vf", ",".join(vf),
        "-c:v", *enc, "-an", "-f", "matroska", f"{W}/video_up.webm")
     os.replace(vid, f"{W}/video_{have[0]}x{have[1]}.webm")
@@ -289,6 +291,27 @@ def ocr(W):
         p.wait()
 
 
+def ocr_alongside(W):
+    """The OCR workers started with detection instead of after it: ocr_worker.py polls full/crops and keeps going
+    until detection's DONE is in log.txt, so they read each crop as it lands (skipping the newest 2 s, which may
+    still be being written) and finish seconds after detection instead of 8-14 minutes after it. Measured on a
+    4-minute slice of TK's Nov 1 game (PC, RTX 5090, 16 cores): detection 52.6 s then OCR 46 s, against 77 s for
+    both at once, detection itself a fifth slower with the four workers beside it. On the Mac the workers starved
+    the decoder, so there OCR stays after detection (ocr()), as it does with OCR_AFTER=1. Returns the worker
+    processes to wait on after detect(); ocr() then picks up anything they missed."""
+    full = f"{W}/full"; logp = f"{full}/log.txt"
+    if sys.platform != "win32" or os.environ.get("OCR_AFTER"):
+        return []
+    if os.path.exists(logp) and any(l.startswith("DONE") for l in open(logp)):
+        return []   # detection already done: ocr() after it does the work
+    os.makedirs(f"{full}/crops", exist_ok=True)
+    open(logp, "a").close()
+    log("OCR: 4 workers alongside detection")
+    env = dict(os.environ, PYTHONHASHSEED="0")
+    return [subprocess.Popen([PY, f"{HERE}/ocr_worker.py", full, "1000000000", "1", str(k), "4"], env=env,
+                             stdout=open(f"{full}/ocr_log_{k}.txt", "a"), stderr=subprocess.STDOUT) for k in range(4)]
+
+
 def propose_periods(W):
     """The periods the board's clock gives (clock.json), else breaks = min_break+ seconds (rink.py) with nobody out
     on the open ice. Our goalie's net side per period from detections in our jersey standing in each crease."""
@@ -406,9 +429,12 @@ def cmd_fetch(a):
             sys.exit(f"still {dy2:+.0f} px off after the shift: look at {W}/frame600.png and boards.py's curve")
     download_audio(a.url, W)
     board = None if a.limit else scoreboard_alongside(W)
+    workers = ocr_alongside(W)
     detect(vid, W, a.limit)
     if board:
         board.join()
+    for p in workers:
+        p.wait()
     ocr(W)
     if not a.limit:
         scoreboard_sheet(W)

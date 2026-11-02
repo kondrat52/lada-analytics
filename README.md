@@ -43,7 +43,9 @@ It takes two to four hours of session time on the Windows PC (fetch 25–45 minu
 prepare and review 15–25, the by-eye lineup checks 20–70, then goals, clips and publish 10–30), or a few hours more
 on an M-series Mac, where detection alone is about two hours. YouTube's bot block adds anything from nothing to
 hours: three of the four games fetched on Oct 31 needed the user's browser cookies (`run_game.py download
---cookies firefox`, which the user runs), and one waited nearly three hours for the block to lift.
+--cookies firefox`, which the user runs), and one waited nearly three hours for the block to lift. The Nov 2
+changes to detection and OCR (TODO 1–3) should take about 10 minutes off a fetch; they are measured on a slice so
+far, and the first full fetch will tell.
 
 On a Windows PC with an NVIDIA GPU, detection runs on CUDA and should be much faster. To set one up, run this in
 PowerShell; `WINDOWS.md` has the details and the steps by hand:
@@ -104,20 +106,25 @@ spans (`regress.py --strip-spans`): the solver alone leaves a median of 7 lineup
 ice time per game moved against the published sheet, and inside the checkers' `off` spans it still has the
 player on for 56% of the seconds.
 
-1. **OCR alongside detection.** OCR runs after detection, 8–14 minutes on the recent games (120,000–230,000 crops)
-   while the GPU idles, and `ocr_worker.py` already polls the crops folder and waits for detection's DONE. Since
-   Nov 1 `process.py` no longer saves the crops of players seated deep in the bench (a quarter to a half of all
-   crops at Snoqualmie), so the workers could start with detection. What has to be measured on a 4-minute slice
-   first: detection's fps with four OCR workers beside it (on the Mac they starved the decoder; the PC has 16
-   cores) against the OCR minutes saved.
-2. **Detection's post-processing in a worker thread.** Detection runs at 35–38 fps on 3840x1536 video while the
-   decoder alone does ~75 and YOLO ~84: the colour statistics, crop JPEGs and CSV lines run in the main loop
-   between batches. Moving them to a thread (cv2 releases the GIL) should bring 12–17 minutes of detection to
-   under 10. Needs a video to measure; YouTube's block refused every download on Nov 1.
-3. **GPU decode for the scaling re-encode.** Most uploads are now LiveBarn's 3438x1374 or 2548x1440 files, and
-   `fit_size`'s re-encode to the rink's frame takes about 10 of fetch's minutes. The bundled ffmpeg has the `cuda`
-   hwaccel (no `vp9_cuvid` decoder listed; the hwaccel path for VP9 needs trying). If it decodes, the same flags
-   speed up `process.py`, the board scan, `frames` and `clip`.
+1. **OCR alongside detection: made Nov 2.** `run_game.ocr_alongside` starts the four workers with detection; they
+   read each crop as it lands (`ocr_worker.py` leaves the newest 2 s of crops alone, which may still be being
+   written) and finish seconds after detection instead of 8–14 minutes after it. On a 4-minute slice of TK's Nov 1
+   game: detection 52.6 s then OCR 46 s, against 77 s for both at once (detection itself a fifth slower with the
+   workers beside it). On the Mac OCR stays after detection (the workers starved its decoder); `OCR_AFTER=1` does
+   the same on the PC. Not yet measured on a full fetch, where the scoreboard scan runs alongside too: the next
+   game's fetch log will say.
+2. **Detection in three processes: made Nov 2.** A thread for the post-processing gained nothing (52.3 s against
+   52.6 s on the slice): the pipe reader, the model's Python wrapper and the colour statistics all hold the GIL,
+   about 24 s of the 53 (ffmpeg alone 21 s, reader 29, reader and model 40). `process.py` now runs the pipe reader
+   and the post-processing in their own processes over a ring of 48 frames in shared memory: 34.3 s on the slice
+   with the same detections and crops, the model now the limit (36 s with nothing else running). Detection of a
+   game should drop from 13 minutes to about 9. A restart from a frame and a kill of the main process (the children
+   exit within 5 s) are tested on the slice.
+3. **GPU decode: measured Nov 2, not used; nvenc's p1 preset made.** `-hwaccel cuda` decodes the VP9 (14.0 s
+   against 18.2 s for the slice) but made detection slower (57.9 s against 52.3 s, the GPU being busy with the
+   model) and the scaling re-encode no faster (42.9 s against 43.2 s): that encode is NVENC-bound. Its p1 preset
+   instead of p5 does it in 18.6 s (PSNR 50.4 dB against 50.5 for p5 against the scaled source, a 15% larger
+   file), so `fit_size`'s 10 minutes should be 4 or 5.
 4. **One decode of the video for detection and the scoreboard.** Measured over six fetches since Oct 26: the board
    scan alongside detection takes 6.7–11.4 minutes and detection 12.5–17.5 with it (11–16 before), so about 2–3
    minutes per fetch are saved and a minute or two is left to gain from a `split` off `process.py`'s ffmpeg graph

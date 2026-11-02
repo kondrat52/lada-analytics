@@ -71,7 +71,7 @@ numbers). Against white jerseys with big sky-blue panels (Teamy McTeamface) half
 `run_game.py jersey $W white` fixes it afterwards: `crops.py` cuts the missing crops from the video using the
 detections already in `dets.csv`, then OCR reads them.
 
-## 3. Detect (~80 min on an M3)
+## 3. Detect (~80 min on an M3, about 9 on the PC)
 
 ```sh
 nohup $PY pipeline/process.py $W/video.webm $W/full 8 > $W/full/log.txt 2>&1 &
@@ -80,7 +80,10 @@ nohup $PY pipeline/process.py $W/video.webm $W/full 8 > $W/full/log.txt 2>&1 &
 - Progress lines go to `log.txt`; it ends with `DONE`.
 - If it slows down badly (memory grows, swap), kill it, delete rows of the last frame from `dets.csv`,
   and restart from that time: `process.py $W/video.webm $W/full 8 <last t>` (frame numbers stay global).
-- Don't run OCR at the same time: it starves the video decoder.
+- `process.py` is three processes since Nov 2 (the pipe reader, the model, the post-processing) over a ring of
+  frames in shared memory; a kill of the main one takes the other two with it within 5 s.
+- On the Mac don't run OCR at the same time: it starves the video decoder. On the PC `fetch` starts the four OCR
+  workers alongside detection (`run_game.ocr_alongside`), and they finish seconds after it.
 
 ## 4. Read numbers (10–15 min)
 
