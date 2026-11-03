@@ -66,7 +66,8 @@ one is Renton. Pick the rink by the frame size and view of `frame600.png`, not b
   `clock.py` moves `clock_box` to where the board changes most from second to second before reading.
 - **Sound.** The original wide cuts are silent. LiveBarn recordings (3438x1374, LiveBarn's score panel top-left and
   a timeline bar along the bottom, both outside the ice) and Renton's new camera have audio: the whistles (about
-  2.4 kHz) pin goals and calls to a fraction of a second and the clips keep the sound. Check each recording.
+  2.4 kHz) pin goals and calls to a fraction of a second and the clips keep the sound. TK's Nov 1 wide cut at
+  Snoqualmie A had sound too (the whistles pinned every penalty call), so check each recording.
 - **Frame sizes.** Every rink's class has a usual `size`; fetch scales a smaller video of the same view up to it
   and keeps the original as `video_<W>x<H>.webm`. Seen: Renton 3600x1596 and 3246x1440 (the late games),
   Snoqualmie A 3440x1376 and 3438x1374, Snoqualmie B only 2548x1440 on YouTube, Kirkland 3600x1440 and 3438x1374.
