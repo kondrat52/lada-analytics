@@ -59,6 +59,11 @@ confirm the cut. Such a goal stays out of `highlights.json` (the page counts goa
 clip), and the notes give the final score and the gap. In that game the clock ran through most goals and each goal
 came 1–6 s before the board's score changed, not 6–13 s before the sheet's time.
 
+On TK's Nov 1 game the goal check put the third goal at a stoppage 26 s too early and credited the player at the
+crease there; the board's score didn't change at that stoppage, and the real goal (a scramble, the clock stopped at
+4:05, the score up 7 s later, the penalized opponent let out of the box) came after it. Before taking a goal
+check's time, sheet the board 2 s apart around it: the score must change within about 10 s.
+
 ## Delegating the check
 
 The frames are mechanical and cost the main session a few thousand tokens each, so hand a batch of candidates to
@@ -159,7 +164,9 @@ that `pN/tracks_v1.csv` has a box within ~150 px of it at that second; if not, c
 on the net, which a goal at the post needs anyway). The same game's 3rd goal shows the other way it goes wrong: the
 check gave the last poke (#87's) as the shot, while the credited scorer Kleiman #69 had jammed at the pads 1.5 s
 earlier, untracked. The replay opened close on #87 still well out from the net and only reached the scorer when it
-panned in; the user caught it. In a scramble, cut without `--shot`. Without `--shot` the replay starts 4 s before `t` and the
+panned in; the user caught it. In a scramble, cut without `--shot`. Unless the scorer's track carries another number: on TK's Nov 1 game Belousenko's point
+shot led to a scramble, his track was labeled 89, and the clip without `--shot` never showed him (the user caught
+it); `--shot` at his track's spot when he shot put him in the build-up and the replay. Without `--shot` the replay starts 4 s before `t` and the
 tight frame drops a scorer more than about 1000 px from the net. TK's Oct 25 empty-netter shows why: Belov won a
 battle on the far boards at their blue line and poked the puck about 1000 px along the boards into the empty net,
 and the clip was 6 s of an empty net with him dropped from the frame, then swung to our bench after the goal,
