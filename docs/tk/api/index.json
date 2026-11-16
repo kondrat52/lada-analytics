@@ -6,11 +6,35 @@
   "lada_team_id": 24
  },
  "site_url": "https://kondrat52.github.io/lada-analytics/tk/",
- "updated": "2026-11-01",
+ "updated": "2026-11-08",
  "season_url": "https://kondrat52.github.io/lada-analytics/tk/api/season.json",
  "roster_url": "https://kondrat52.github.io/lada-analytics/tk/api/roster.json",
  "trends_url": "https://kondrat52.github.io/lada-analytics/tk/api/trends.json",
  "games": [
+  {
+   "id": "2026-11-08-vs-h",
+   "date": "2026-11-08",
+   "title": "LADA Turbo Kings vs Hosers, Nov 8",
+   "subtitle": "Sun Nov 8, 2026 · 6:25 PM · Renton",
+   "time": "6:25 PM",
+   "rink": "Renton",
+   "opponent": {
+    "code": "H",
+    "name": "Hosers"
+   },
+   "lada_game_id": 33032,
+   "goals_on_video": {
+    "for": 1,
+    "against": 2
+   },
+   "shots": {
+    "for": 23,
+    "against": 26
+   },
+   "highlights": 5,
+   "page_url": "https://kondrat52.github.io/lada-analytics/tk/games/2026-11-08-vs-h/",
+   "json_url": "https://kondrat52.github.io/lada-analytics/tk/api/games/2026-11-08-vs-h.json"
+  },
   {
    "id": "2026-11-01-vs-cv",
    "date": "2026-11-01",
