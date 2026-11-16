@@ -184,6 +184,15 @@ puck went in from the pile 5 s later. The replay opened after his drive, and the
 shot falls in a scramble, sheet the crease every 0.5 s over the 8 s before it, with a close crop (about 400 x 220
 px of source around the net): the drive or shot that started the pile is the `--shot`. A track's `plabel` at that
 second confirms whose it was.
+Before the shot, the camera keeps the net in with the scorer only while both fit `LEAD_W` (1300 px, the width used
+for following one player). LADA R's Nov 2 empty-netter needed that limit. Bekker carried the puck from our blue line
+down the far boards, and the old rule kept both while they fit 2800 px. The frame from center ice showed an empty
+net and two specks, and the user saw it as a cut to the net too early. That goal also came after the tracks ended:
+the 3rd had been cut short. To get tracks for the clip without touching the reviewed period, track the stretch into
+a scratch folder (`run_period.py $W/full $W/p3tail 3940 3986 <our net x>`). Then pass the scorer's track straight to
+`clip.py` as `group:$W/p3tail/tracks_v1.csv:<tid>`, with the net and the shot as `run_game.py clip` would.
+In that clip the defender chasing on the near side filled the frame, and Bekker was small at the far boards at the
+same x. Check which track is the scorer's on a crop before deciding the camera follows the wrong player.
 The default framing (no `--net`) follows the main group of players. A focus x (about 500 = left corner, 3300 = right; a net x
 from `rink.py`) keeps the virtual camera on one end. For a penalty pass `#<number>` to follow the player who took
 it, starting a few seconds before the infraction. A focus x can lock onto someone right by the camera (at

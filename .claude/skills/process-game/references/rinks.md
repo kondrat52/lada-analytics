@@ -212,6 +212,16 @@ Oct 25 (where the ice-map camera was fitted), DF Oct 18 and R Oct 12; the usual 
 To compare before fetch, run `boards.py` on a scaled frame into a scratch folder holding a `rink.json` with the rink:
 without one it uses Renton's band and returns a curve that looks like a wild misfit.
 
+On LADA R's Nov 2 game the clock reader ended the 3rd 2.5 minutes early. The board held "1:02" through a long
+stoppage, with the leading 1 too faint to show on `clock_check.jpg`, which looked like 0:02. Then it showed "1:00"
+(read as 0:00), and the clock reader ended the period there, at 3830. Play went on, and the 3rd's real end was 3974,
+2 s after Bekker's goal. The sign: the last minute shows tenths ("56.9", "40.8") after the supposed end. So when the
+end tiles show :0x with no tenths, sheet the board 2 s apart for the next three minutes. A period cut short is cut
+short in the tracks too: prepare had stopped P3's tracking at 3830. Re-preparing would have thrown away P3's
+reviewed rows, so a lineup checker gave the last 2:24 by eye, as on/off spans. The board never posted that goal
+until 8 s after the horn (guest 5 to 6 at 3982). The players gathered at our bench at 3780-3805 were in a timeout
+(a 30 s timer on the board), not celebrating.
+
 Views: `rink` 0–3840 × 380–1536; `left-net` 200–1400 × 380–760; `right-net` 2600–3800 × 380–760; `bench` 0–900 ×
 700–1536 (left) or 2940–3840 × 700–1536 (right).
 

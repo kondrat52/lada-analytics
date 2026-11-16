@@ -26,6 +26,10 @@ LOCK = (-6.0, 2.0)                   # seconds around the goal that the scoring 
 # live camera can hold
 REPLAY, REPLAY_ZOOM = (-4.0, 1.5), (0.15, 0.25)
 BEHIND = 0.04                        # ice kept behind the net (share of the frame's width), so it is never at the edge
+# before the shot the net joins the scorer only while both fit this crop width: LADA R's Nov 2 empty-netter, a rush
+# from our blue line, kept the empty net and Bekker together in a 2000+ px frame from center ice, both specks, and
+# looked like a cut to the net too early (TK's Oct 25 empty-netter, poked in from about 1000 px out, still fits)
+LEAD_W = 1300                        # the width used when following one player
 
 
 def camera_path(full, t0, t1, focus=None, max_w=MAX_W):
@@ -126,8 +130,8 @@ def goal_path(full, P, t0, t1, tg, net, players, frame_w, max_w, zoom=(NET_W, NE
             if not shot:
                 groups = [([fixed], np.inf), (scorer, hi), (passers, hi)]
             elif t < ts:
-                groups = [(scorer or ([((sx, sy, nh, 0),)] if t >= ts - 1.5 else []), np.inf), ([fixed], keep_w),
-                          (passers, hi)]
+                groups = [(scorer or ([((sx, sy, nh, 0),)] if t >= ts - 1.5 else []), np.inf),
+                          ([fixed], min(keep_w, LEAD_W)), (passers, hi)]
             elif t <= tg:
                 f = (t - ts) / max(tg - ts, 0.1)
                 puck = (sx + f * (nx - sx), sy + f * (ny - sy), nh, -1)
