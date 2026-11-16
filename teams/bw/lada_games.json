@@ -36,14 +36,19 @@
     "opponentName": "Disco Bandoleros",
     "playHome": true,
     "rinkId": 33,
-    "rinkName": "Renton"
+    "rinkName": "Renton",
+    "teamGoals": 5,
+    "opponentGoals": 5,
+    "boxscoreLink": "https://app.sportninja.com/public/game/mY3xmRfrStZcfcLv"
   },
   "33030": {
-    "date": "2026-11-14T21:15:00",
+    "date": "2026-11-15T21:15:00",
     "opponentName": "Night Owls",
     "playHome": false,
     "rinkId": 33,
-    "rinkName": "Renton"
+    "rinkName": "Renton",
+    "lines": "{\"offence\":[[\"5814\",\"20351\",\"11123\"],[\"20403\",\"20407\",\"20405\"]],\"defence\":[[\"3424\",\"20349\"],[\"1395\",\"20343\"]],\"goalie\":[],\"beer\":[]}",
+    "boxscoreLink": "https://app.sportninja.com/public/game/nLg9f0vGGP1eJkFe"
   },
   "33031": {
     "date": "2026-11-22T18:25:00",
