@@ -95,7 +95,14 @@
    "lada_player_id": 18293
   }
  ],
- "subs": [],
+ "subs": [
+  {
+   "number": 13,
+   "name": "Belousenko",
+   "lada_player_id": null,
+   "sub": true
+  }
+ ],
  "goalies": [
   {
    "number": 31,

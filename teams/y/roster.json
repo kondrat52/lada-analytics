@@ -27,7 +27,9 @@
     "89": "Olyanich",
     "97": "Barkov"
   },
-  "subs": {},
+  "subs": {
+    "13": "Belousenko"
+  },
   "lada_player_ids": {
     "4": 20414,
     "11": 5928,

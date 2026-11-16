@@ -102,14 +102,18 @@
     "opponentName": "T.B.D.",
     "playHome": false,
     "rinkId": 2071,
-    "rinkName": "Snoqualmie A"
+    "rinkName": "Snoqualmie A",
+    "teamGoals": 4,
+    "opponentGoals": 3,
+    "boxscoreLink": "https://app.sportninja.com/public/game/4q091KlveAFjLA96"
   },
   "32998": {
     "date": "2026-11-16T20:45:00",
     "opponentName": "Warriors",
     "playHome": true,
     "rinkId": 2070,
-    "rinkName": "Renton"
+    "rinkName": "Renton",
+    "lines": "{\"offence\":[[\"20421\",\"18293\",\"11110\"],[\"11166\",\"20414\",\"20416\"],[null,\"20415\",\"20420\"]],\"defence\":[[\"20419\",\"5942\"],[\"20417\",\"20418\"]],\"goalie\":[[\"9080\"]],\"beer\":[]}"
   },
   "32999": {
     "date": "2026-11-23T20:45:00",
@@ -124,5 +128,19 @@
     "playHome": false,
     "rinkId": 2070,
     "rinkName": "Renton"
+  },
+  "33001": {
+    "date": "2026-12-07T22:10:00",
+    "opponentName": "BladeRunners",
+    "playHome": true,
+    "rinkId": 2071,
+    "rinkName": "Snoqualmie A"
+  },
+  "33002": {
+    "date": "2026-12-14T20:45:00",
+    "opponentName": "Weekday Benders",
+    "playHome": false,
+    "rinkId": 2071,
+    "rinkName": "Snoqualmie A"
   }
 }
