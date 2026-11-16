@@ -315,6 +315,16 @@ so a jersey set wrong after the fact means `run_game.py jersey $W <name>` (no de
 crops, 22 min of decoding for 100k on a 66-minute video). An opponent's jersey can pass our test on its trim alone
 (Roadrunners' #4 ORR in grey-white with light-blue stripes made most of the 88 reads of "4"); `unknown` shows them.
 
+A dark opponent can pass the white test wholesale on a fisheye camera, where the ice behind a player fills the box.
+On LADA R's Oct 26 game (Renton, `renton2thin`) Weekday Benders' royal blue with red numbers passed it 75% of the
+time: `unknown` listed five of their numbers with 400-670 reads each, as many as our regulars. The test only applies
+at prepare (`track.py`), and the crop test decides what gets cut and read, so a new test needs no detection rerun.
+Measure it before prepare: join `dets.csv` (row order within a frame = the crop's `_NN`) with the OCR reads, then
+compare the colour fractions of crops read as our numbers against crops read as theirs. Theirs had blue ~0.31 against
+white ~0.36 and red plus purple ~0.14; ours blue ~0.12, white ~0.68, red plus purple under 0.02. `white vs royal blue`
+(blue under half of white, red plus purple under 0.08) kept 89-100% of our numbers and 1-6% of theirs. Leave out
+numbers both teams wear: the Benders had a #66 and a #39 too, and those reads were mixed.
+
 ## A rink that isn't in `rink.py`
 
 Stop before detection. You don't have to wait for the download to look at it:

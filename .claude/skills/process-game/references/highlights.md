@@ -178,6 +178,12 @@ battle on the far boards at their blue line and poked the puck about 1000 px alo
 and the clip was 6 s of an empty net with him dropped from the frame, then swung to our bench after the goal,
 where a seated figure carried his number. Belousenko's goal in that game came out of a scramble 7 s after his
 shot, and the 4 s replay missed it (`--replay-from 8`, from before `--shot`).
+LADA R's Oct 26 opener went the same way with `--shot`: the check took the scramble at 197 s as the shot, but
+Shachak #92 (his track reviewed, his 92 readable) had driven to the net and jammed at the goalie at 191.75, and the
+puck went in from the pile 5 s later. The replay opened after his drive, and the user caught it. When the check's
+shot falls in a scramble, sheet the crease every 0.5 s over the 8 s before it, with a close crop (about 400 x 220
+px of source around the net): the drive or shot that started the pile is the `--shot`. A track's `plabel` at that
+second confirms whose it was.
 The default framing (no `--net`) follows the main group of players. A focus x (about 500 = left corner, 3300 = right; a net x
 from `rink.py`) keeps the virtual camera on one end. For a penalty pass `#<number>` to follow the player who took
 it, starting a few seconds before the infraction. A focus x can lock onto someone right by the camera (at

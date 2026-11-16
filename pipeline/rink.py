@@ -400,6 +400,13 @@ JERSEYS = {
         ours=lambda c: JERSEYS["white"]["ours"](c) & ~(((c["bhue"] >= 100) & (c["bhue"] <= 111)) &
                                                        (c["blue"] + c["lblue"] > 0.15)),
         crop=lambda c: JERSEYS["white"]["crop"](c)),
+    # our white against Weekday Benders' royal blue with red numbers and white trim (LADA R, Oct 26): 75% of theirs
+    # pass the plain white test (white ~0.35 of the torso, the ice behind it). Theirs are about as much blue as white,
+    # with red and purple from the numbers; this kept 89-100% of the crops read as our numbers and 1-6% of theirs
+    "white vs royal blue": dict(
+        ours=lambda c: JERSEYS["white"]["ours"](c) & (c["blue"] < 0.5 * (c["white"] + 1e-3)) &
+                       (c["red"] + c["purple"] < 0.08),
+        crop=lambda c: JERSEYS["white"]["crop"](c)),
 }
 
 
