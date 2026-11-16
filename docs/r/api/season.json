@@ -5,8 +5,9 @@
   "short_name": "LR",
   "lada_team_id": 2
  },
- "updated": "2026-10-19",
+ "updated": "2026-10-26",
  "games": [
+  "2026-10-26-vs-wb",
   "2026-10-19-vs-tm",
   "2026-10-12-vs-fl",
   "2026-10-05-vs-bv",
@@ -71,87 +72,32 @@
    ]
   },
   {
-   "number": 70,
-   "name": "Shikhanov",
-   "lada_player_id": 5827,
-   "games_played": 4,
-   "shifts": 60,
-   "toi": 7518,
-   "toi_per_game": 1879.5,
-   "play": 5110,
-   "avg_shift": 125.3,
-   "longest_shift": 203,
-   "shortest_shift": 21,
-   "plus_minus": 6,
-   "games": [
-    {
-     "id": "2026-10-19-vs-tm",
-     "date": "2026-10-19",
-     "opponent": {
-      "code": "TM",
-      "name": "Teamy McTeamface"
-     },
-     "toi": 1995,
-     "shifts": 16,
-     "avg_shift": 124.7,
-     "play": 1177,
-     "plus_minus": 2
-    },
-    {
-     "id": "2026-10-12-vs-fl",
-     "date": "2026-10-12",
-     "opponent": {
-      "code": "FL",
-      "name": "Flounders"
-     },
-     "toi": 1923,
-     "shifts": 15,
-     "avg_shift": 128.2,
-     "play": 1282,
-     "plus_minus": 0
-    },
-    {
-     "id": "2026-10-05-vs-bv",
-     "date": "2026-10-05",
-     "opponent": {
-      "code": "BV",
-      "name": "Best Vibes"
-     },
-     "toi": 1851,
-     "shifts": 15,
-     "avg_shift": 123.4,
-     "play": 1356,
-     "plus_minus": 2
-    },
-    {
-     "id": "2026-09-28-vs-y",
-     "date": "2026-09-28",
-     "opponent": {
-      "code": "Y",
-      "name": "LADA Y"
-     },
-     "toi": 1749,
-     "shifts": 14,
-     "avg_shift": 124.9,
-     "play": 1295,
-     "plus_minus": 2
-    }
-   ]
-  },
-  {
    "number": 79,
    "name": "Rabotyagov",
    "lada_player_id": 5725,
-   "games_played": 6,
-   "shifts": 86,
-   "toi": 11063,
-   "toi_per_game": 1843.8,
-   "play": 7254,
-   "avg_shift": 128.6,
+   "games_played": 7,
+   "shifts": 102,
+   "toi": 12760,
+   "toi_per_game": 1822.9,
+   "play": 8404,
+   "avg_shift": 125.1,
    "longest_shift": 224,
-   "shortest_shift": 39,
-   "plus_minus": 3,
+   "shortest_shift": 21,
+   "plus_minus": 4,
    "games": [
+    {
+     "id": "2026-10-26-vs-wb",
+     "date": "2026-10-26",
+     "opponent": {
+      "code": "WB",
+      "name": "Weekday Benders"
+     },
+     "toi": 1697,
+     "shifts": 16,
+     "avg_shift": 106.1,
+     "play": 1150,
+     "plus_minus": 1
+    },
     {
      "id": "2026-10-19-vs-tm",
      "date": "2026-10-19",
@@ -233,19 +179,113 @@
    ]
   },
   {
+   "number": 70,
+   "name": "Shikhanov",
+   "lada_player_id": 5827,
+   "games_played": 5,
+   "shifts": 76,
+   "toi": 9113,
+   "toi_per_game": 1822.6,
+   "play": 6181,
+   "avg_shift": 119.9,
+   "longest_shift": 203,
+   "shortest_shift": 21,
+   "plus_minus": 6,
+   "games": [
+    {
+     "id": "2026-10-26-vs-wb",
+     "date": "2026-10-26",
+     "opponent": {
+      "code": "WB",
+      "name": "Weekday Benders"
+     },
+     "toi": 1595,
+     "shifts": 16,
+     "avg_shift": 99.7,
+     "play": 1071,
+     "plus_minus": 0
+    },
+    {
+     "id": "2026-10-19-vs-tm",
+     "date": "2026-10-19",
+     "opponent": {
+      "code": "TM",
+      "name": "Teamy McTeamface"
+     },
+     "toi": 1995,
+     "shifts": 16,
+     "avg_shift": 124.7,
+     "play": 1177,
+     "plus_minus": 2
+    },
+    {
+     "id": "2026-10-12-vs-fl",
+     "date": "2026-10-12",
+     "opponent": {
+      "code": "FL",
+      "name": "Flounders"
+     },
+     "toi": 1923,
+     "shifts": 15,
+     "avg_shift": 128.2,
+     "play": 1282,
+     "plus_minus": 0
+    },
+    {
+     "id": "2026-10-05-vs-bv",
+     "date": "2026-10-05",
+     "opponent": {
+      "code": "BV",
+      "name": "Best Vibes"
+     },
+     "toi": 1851,
+     "shifts": 15,
+     "avg_shift": 123.4,
+     "play": 1356,
+     "plus_minus": 2
+    },
+    {
+     "id": "2026-09-28-vs-y",
+     "date": "2026-09-28",
+     "opponent": {
+      "code": "Y",
+      "name": "LADA Y"
+     },
+     "toi": 1749,
+     "shifts": 14,
+     "avg_shift": 124.9,
+     "play": 1295,
+     "plus_minus": 2
+    }
+   ]
+  },
+  {
    "number": 66,
    "name": "Bekker",
    "lada_player_id": 20413,
-   "games_played": 6,
-   "shifts": 71,
-   "toi": 10505,
-   "toi_per_game": 1750.8,
-   "play": 6826,
-   "avg_shift": 148.0,
+   "games_played": 7,
+   "shifts": 80,
+   "toi": 11759,
+   "toi_per_game": 1679.9,
+   "play": 7605,
+   "avg_shift": 147.0,
    "longest_shift": 455,
    "shortest_shift": 20,
-   "plus_minus": -2,
+   "plus_minus": -1,
    "games": [
+    {
+     "id": "2026-10-26-vs-wb",
+     "date": "2026-10-26",
+     "opponent": {
+      "code": "WB",
+      "name": "Weekday Benders"
+     },
+     "toi": 1254,
+     "shifts": 9,
+     "avg_shift": 139.3,
+     "play": 779,
+     "plus_minus": 1
+    },
     {
      "id": "2026-10-19-vs-tm",
      "date": "2026-10-19",
@@ -323,48 +363,6 @@
      "avg_shift": 134.1,
      "play": 1272,
      "plus_minus": 0
-    }
-   ]
-  },
-  {
-   "number": 80,
-   "name": "Fateev",
-   "lada_player_id": 34,
-   "games_played": 2,
-   "shifts": 29,
-   "toi": 3399,
-   "toi_per_game": 1699.5,
-   "play": 2366,
-   "avg_shift": 117.2,
-   "longest_shift": 210,
-   "shortest_shift": 23,
-   "plus_minus": 0,
-   "games": [
-    {
-     "id": "2026-10-19-vs-tm",
-     "date": "2026-10-19",
-     "opponent": {
-      "code": "TM",
-      "name": "Teamy McTeamface"
-     },
-     "toi": 1857,
-     "shifts": 18,
-     "avg_shift": 103.2,
-     "play": 1293,
-     "plus_minus": 1
-    },
-    {
-     "id": "2026-09-14-vs-wa",
-     "date": "2026-09-14",
-     "opponent": {
-      "code": "WA",
-      "name": "Warriors"
-     },
-     "toi": 1542,
-     "shifts": 11,
-     "avg_shift": 140.2,
-     "play": 1073,
-     "plus_minus": -1
     }
    ]
   },
@@ -463,19 +461,100 @@
    ]
   },
   {
+   "number": 39,
+   "name": "Vorobyov",
+   "lada_player_id": 4436,
+   "games_played": 4,
+   "shifts": 50,
+   "toi": 6709,
+   "toi_per_game": 1677.2,
+   "play": 4695,
+   "avg_shift": 134.2,
+   "longest_shift": 263,
+   "shortest_shift": 24,
+   "plus_minus": 1,
+   "games": [
+    {
+     "id": "2026-10-26-vs-wb",
+     "date": "2026-10-26",
+     "opponent": {
+      "code": "WB",
+      "name": "Weekday Benders"
+     },
+     "toi": 2258,
+     "shifts": 16,
+     "avg_shift": 141.1,
+     "play": 1603,
+     "plus_minus": 2
+    },
+    {
+     "id": "2026-10-19-vs-tm",
+     "date": "2026-10-19",
+     "opponent": {
+      "code": "TM",
+      "name": "Teamy McTeamface"
+     },
+     "toi": 1279,
+     "shifts": 12,
+     "avg_shift": 106.6,
+     "play": 800,
+     "plus_minus": 0
+    },
+    {
+     "id": "2026-09-21-vs-tbd",
+     "date": "2026-09-21",
+     "opponent": {
+      "code": "TBD",
+      "name": "T.B.D."
+     },
+     "toi": 1418,
+     "shifts": 10,
+     "avg_shift": 141.8,
+     "play": 1001,
+     "plus_minus": 1
+    },
+    {
+     "id": "2026-09-14-vs-wa",
+     "date": "2026-09-14",
+     "opponent": {
+      "code": "WA",
+      "name": "Warriors"
+     },
+     "toi": 1754,
+     "shifts": 12,
+     "avg_shift": 146.2,
+     "play": 1291,
+     "plus_minus": -2
+    }
+   ]
+  },
+  {
    "number": 81,
    "name": "Dotsenko",
    "lada_player_id": 56,
-   "games_played": 6,
-   "shifts": 76,
-   "toi": 9399,
-   "toi_per_game": 1566.5,
-   "play": 6218,
-   "avg_shift": 123.7,
+   "games_played": 7,
+   "shifts": 92,
+   "toi": 11095,
+   "toi_per_game": 1585,
+   "play": 7304,
+   "avg_shift": 120.6,
    "longest_shift": 277,
    "shortest_shift": 22,
-   "plus_minus": -2,
+   "plus_minus": -1,
    "games": [
+    {
+     "id": "2026-10-26-vs-wb",
+     "date": "2026-10-26",
+     "opponent": {
+      "code": "WB",
+      "name": "Weekday Benders"
+     },
+     "toi": 1696,
+     "shifts": 16,
+     "avg_shift": 106,
+     "play": 1086,
+     "plus_minus": 1
+    },
     {
      "id": "2026-10-19-vs-tm",
      "date": "2026-10-19",
@@ -557,19 +636,207 @@
    ]
   },
   {
+   "number": 12,
+   "name": "Sergeev",
+   "lada_player_id": 5761,
+   "games_played": 5,
+   "shifts": 62,
+   "toi": 7744,
+   "toi_per_game": 1548.8,
+   "play": 4976,
+   "avg_shift": 124.9,
+   "longest_shift": 218,
+   "shortest_shift": 23,
+   "plus_minus": 3,
+   "games": [
+    {
+     "id": "2026-10-26-vs-wb",
+     "date": "2026-10-26",
+     "opponent": {
+      "code": "WB",
+      "name": "Weekday Benders"
+     },
+     "toi": 2067,
+     "shifts": 16,
+     "avg_shift": 129.2,
+     "play": 1341,
+     "plus_minus": 1
+    },
+    {
+     "id": "2026-10-19-vs-tm",
+     "date": "2026-10-19",
+     "opponent": {
+      "code": "TM",
+      "name": "Teamy McTeamface"
+     },
+     "toi": 1179,
+     "shifts": 10,
+     "avg_shift": 117.9,
+     "play": 797,
+     "plus_minus": 1
+    },
+    {
+     "id": "2026-10-12-vs-fl",
+     "date": "2026-10-12",
+     "opponent": {
+      "code": "FL",
+      "name": "Flounders"
+     },
+     "toi": 1997,
+     "shifts": 15,
+     "avg_shift": 133.1,
+     "play": 1227,
+     "plus_minus": 0
+    },
+    {
+     "id": "2026-10-05-vs-bv",
+     "date": "2026-10-05",
+     "opponent": {
+      "code": "BV",
+      "name": "Best Vibes"
+     },
+     "toi": 1319,
+     "shifts": 10,
+     "avg_shift": 131.9,
+     "play": 885,
+     "plus_minus": 0
+    },
+    {
+     "id": "2026-09-28-vs-y",
+     "date": "2026-09-28",
+     "opponent": {
+      "code": "Y",
+      "name": "LADA Y"
+     },
+     "toi": 1182,
+     "shifts": 11,
+     "avg_shift": 107.5,
+     "play": 726,
+     "plus_minus": 1
+    }
+   ]
+  },
+  {
+   "number": 57,
+   "name": "Moshchuk",
+   "lada_player_id": 196,
+   "games_played": 6,
+   "shifts": 73,
+   "toi": 8864,
+   "toi_per_game": 1477.3,
+   "play": 5655,
+   "avg_shift": 121.4,
+   "longest_shift": 340,
+   "shortest_shift": 33,
+   "plus_minus": -3,
+   "games": [
+    {
+     "id": "2026-10-26-vs-wb",
+     "date": "2026-10-26",
+     "opponent": {
+      "code": "WB",
+      "name": "Weekday Benders"
+     },
+     "toi": 1481,
+     "shifts": 10,
+     "avg_shift": 148.1,
+     "play": 976,
+     "plus_minus": 0
+    },
+    {
+     "id": "2026-10-19-vs-tm",
+     "date": "2026-10-19",
+     "opponent": {
+      "code": "TM",
+      "name": "Teamy McTeamface"
+     },
+     "toi": 1216,
+     "shifts": 11,
+     "avg_shift": 110.5,
+     "play": 866,
+     "plus_minus": 0
+    },
+    {
+     "id": "2026-10-12-vs-fl",
+     "date": "2026-10-12",
+     "opponent": {
+      "code": "FL",
+      "name": "Flounders"
+     },
+     "toi": 1732,
+     "shifts": 14,
+     "avg_shift": 123.7,
+     "play": 1148,
+     "plus_minus": -2
+    },
+    {
+     "id": "2026-10-05-vs-bv",
+     "date": "2026-10-05",
+     "opponent": {
+      "code": "BV",
+      "name": "Best Vibes"
+     },
+     "toi": 1297,
+     "shifts": 10,
+     "avg_shift": 129.7,
+     "play": 743,
+     "plus_minus": 0
+    },
+    {
+     "id": "2026-09-28-vs-y",
+     "date": "2026-09-28",
+     "opponent": {
+      "code": "Y",
+      "name": "LADA Y"
+     },
+     "toi": 1132,
+     "shifts": 12,
+     "avg_shift": 94.3,
+     "play": 649,
+     "plus_minus": 1
+    },
+    {
+     "id": "2026-09-21-vs-tbd",
+     "date": "2026-09-21",
+     "opponent": {
+      "code": "TBD",
+      "name": "T.B.D."
+     },
+     "toi": 2006,
+     "shifts": 16,
+     "avg_shift": 125.4,
+     "play": 1273,
+     "plus_minus": -2
+    }
+   ]
+  },
+  {
    "number": 92,
    "name": "Shachak",
    "lada_player_id": 5690,
-   "games_played": 6,
-   "shifts": 73,
-   "toi": 9046,
-   "toi_per_game": 1507.7,
-   "play": 6001,
-   "avg_shift": 123.9,
+   "games_played": 7,
+   "shifts": 83,
+   "toi": 10263,
+   "toi_per_game": 1466.1,
+   "play": 6936,
+   "avg_shift": 123.7,
    "longest_shift": 215,
    "shortest_shift": 28,
-   "plus_minus": 5,
+   "plus_minus": 6,
    "games": [
+    {
+     "id": "2026-10-26-vs-wb",
+     "date": "2026-10-26",
+     "opponent": {
+      "code": "WB",
+      "name": "Weekday Benders"
+     },
+     "toi": 1217,
+     "shifts": 10,
+     "avg_shift": 121.7,
+     "play": 935,
+     "plus_minus": 1
+    },
     {
      "id": "2026-10-19-vs-tm",
      "date": "2026-10-19",
@@ -651,19 +918,32 @@
    ]
   },
   {
-   "number": 39,
-   "name": "Vorobyov",
-   "lada_player_id": 4436,
+   "number": 80,
+   "name": "Fateev",
+   "lada_player_id": 34,
    "games_played": 3,
-   "shifts": 34,
-   "toi": 4451,
-   "toi_per_game": 1483.7,
-   "play": 3092,
-   "avg_shift": 130.9,
-   "longest_shift": 250,
-   "shortest_shift": 24,
-   "plus_minus": -1,
+   "shifts": 39,
+   "toi": 4396,
+   "toi_per_game": 1465.3,
+   "play": 3044,
+   "avg_shift": 112.7,
+   "longest_shift": 210,
+   "shortest_shift": 23,
+   "plus_minus": 1,
    "games": [
+    {
+     "id": "2026-10-26-vs-wb",
+     "date": "2026-10-26",
+     "opponent": {
+      "code": "WB",
+      "name": "Weekday Benders"
+     },
+     "toi": 997,
+     "shifts": 10,
+     "avg_shift": 99.7,
+     "play": 678,
+     "plus_minus": 1
+    },
     {
      "id": "2026-10-19-vs-tm",
      "date": "2026-10-19",
@@ -671,23 +951,10 @@
       "code": "TM",
       "name": "Teamy McTeamface"
      },
-     "toi": 1279,
-     "shifts": 12,
-     "avg_shift": 106.6,
-     "play": 800,
-     "plus_minus": 0
-    },
-    {
-     "id": "2026-09-21-vs-tbd",
-     "date": "2026-09-21",
-     "opponent": {
-      "code": "TBD",
-      "name": "T.B.D."
-     },
-     "toi": 1418,
-     "shifts": 10,
-     "avg_shift": 141.8,
-     "play": 1001,
+     "toi": 1857,
+     "shifts": 18,
+     "avg_shift": 103.2,
+     "play": 1293,
      "plus_minus": 1
     },
     {
@@ -697,160 +964,11 @@
       "code": "WA",
       "name": "Warriors"
      },
-     "toi": 1754,
-     "shifts": 12,
-     "avg_shift": 146.2,
-     "play": 1291,
-     "plus_minus": -2
-    }
-   ]
-  },
-  {
-   "number": 57,
-   "name": "Moshchuk",
-   "lada_player_id": 196,
-   "games_played": 5,
-   "shifts": 63,
-   "toi": 7383,
-   "toi_per_game": 1476.6,
-   "play": 4679,
-   "avg_shift": 117.2,
-   "longest_shift": 340,
-   "shortest_shift": 33,
-   "plus_minus": -3,
-   "games": [
-    {
-     "id": "2026-10-19-vs-tm",
-     "date": "2026-10-19",
-     "opponent": {
-      "code": "TM",
-      "name": "Teamy McTeamface"
-     },
-     "toi": 1216,
+     "toi": 1542,
      "shifts": 11,
-     "avg_shift": 110.5,
-     "play": 866,
-     "plus_minus": 0
-    },
-    {
-     "id": "2026-10-12-vs-fl",
-     "date": "2026-10-12",
-     "opponent": {
-      "code": "FL",
-      "name": "Flounders"
-     },
-     "toi": 1732,
-     "shifts": 14,
-     "avg_shift": 123.7,
-     "play": 1148,
-     "plus_minus": -2
-    },
-    {
-     "id": "2026-10-05-vs-bv",
-     "date": "2026-10-05",
-     "opponent": {
-      "code": "BV",
-      "name": "Best Vibes"
-     },
-     "toi": 1297,
-     "shifts": 10,
-     "avg_shift": 129.7,
-     "play": 743,
-     "plus_minus": 0
-    },
-    {
-     "id": "2026-09-28-vs-y",
-     "date": "2026-09-28",
-     "opponent": {
-      "code": "Y",
-      "name": "LADA Y"
-     },
-     "toi": 1132,
-     "shifts": 12,
-     "avg_shift": 94.3,
-     "play": 649,
-     "plus_minus": 1
-    },
-    {
-     "id": "2026-09-21-vs-tbd",
-     "date": "2026-09-21",
-     "opponent": {
-      "code": "TBD",
-      "name": "T.B.D."
-     },
-     "toi": 2006,
-     "shifts": 16,
-     "avg_shift": 125.4,
-     "play": 1273,
-     "plus_minus": -2
-    }
-   ]
-  },
-  {
-   "number": 12,
-   "name": "Sergeev",
-   "lada_player_id": 5761,
-   "games_played": 4,
-   "shifts": 46,
-   "toi": 5677,
-   "toi_per_game": 1419.2,
-   "play": 3635,
-   "avg_shift": 123.4,
-   "longest_shift": 218,
-   "shortest_shift": 23,
-   "plus_minus": 2,
-   "games": [
-    {
-     "id": "2026-10-19-vs-tm",
-     "date": "2026-10-19",
-     "opponent": {
-      "code": "TM",
-      "name": "Teamy McTeamface"
-     },
-     "toi": 1179,
-     "shifts": 10,
-     "avg_shift": 117.9,
-     "play": 797,
-     "plus_minus": 1
-    },
-    {
-     "id": "2026-10-12-vs-fl",
-     "date": "2026-10-12",
-     "opponent": {
-      "code": "FL",
-      "name": "Flounders"
-     },
-     "toi": 1997,
-     "shifts": 15,
-     "avg_shift": 133.1,
-     "play": 1227,
-     "plus_minus": 0
-    },
-    {
-     "id": "2026-10-05-vs-bv",
-     "date": "2026-10-05",
-     "opponent": {
-      "code": "BV",
-      "name": "Best Vibes"
-     },
-     "toi": 1319,
-     "shifts": 10,
-     "avg_shift": 131.9,
-     "play": 885,
-     "plus_minus": 0
-    },
-    {
-     "id": "2026-09-28-vs-y",
-     "date": "2026-09-28",
-     "opponent": {
-      "code": "Y",
-      "name": "LADA Y"
-     },
-     "toi": 1182,
-     "shifts": 11,
-     "avg_shift": 107.5,
-     "play": 726,
-     "plus_minus": 1
+     "avg_shift": 140.2,
+     "play": 1073,
+     "plus_minus": -1
     }
    ]
   },
@@ -858,16 +976,29 @@
    "number": 36,
    "name": "Makhalov",
    "lada_player_id": 5867,
-   "games_played": 6,
-   "shifts": 65,
-   "toi": 7773,
-   "toi_per_game": 1295.5,
-   "play": 5133,
-   "avg_shift": 119.6,
+   "games_played": 7,
+   "shifts": 79,
+   "toi": 9327,
+   "toi_per_game": 1332.4,
+   "play": 6211,
+   "avg_shift": 118.1,
    "longest_shift": 236,
    "shortest_shift": 27,
    "plus_minus": 1,
    "games": [
+    {
+     "id": "2026-10-26-vs-wb",
+     "date": "2026-10-26",
+     "opponent": {
+      "code": "WB",
+      "name": "Weekday Benders"
+     },
+     "toi": 1554,
+     "shifts": 14,
+     "avg_shift": 111,
+     "play": 1078,
+     "plus_minus": 0
+    },
     {
      "id": "2026-10-19-vs-tm",
      "date": "2026-10-19",
@@ -952,16 +1083,29 @@
    "number": 64,
    "name": "Shtin",
    "lada_player_id": 259,
-   "games_played": 6,
-   "shifts": 68,
-   "toi": 7724,
-   "toi_per_game": 1287.3,
-   "play": 5083,
-   "avg_shift": 113.6,
+   "games_played": 7,
+   "shifts": 82,
+   "toi": 9305,
+   "toi_per_game": 1329.3,
+   "play": 6170,
+   "avg_shift": 113.5,
    "longest_shift": 196,
    "shortest_shift": 23,
-   "plus_minus": 1,
+   "plus_minus": 3,
    "games": [
+    {
+     "id": "2026-10-26-vs-wb",
+     "date": "2026-10-26",
+     "opponent": {
+      "code": "WB",
+      "name": "Weekday Benders"
+     },
+     "toi": 1581,
+     "shifts": 14,
+     "avg_shift": 112.9,
+     "play": 1087,
+     "plus_minus": 2
+    },
     {
      "id": "2026-10-19-vs-tm",
      "date": "2026-10-19",
@@ -1127,16 +1271,29 @@
    "number": 10,
    "name": "Bogdanov",
    "lada_player_id": 2,
-   "games_played": 6,
-   "shifts": 63,
-   "toi": 7311,
-   "toi_per_game": 1218.5,
-   "play": 4971,
-   "avg_shift": 116.0,
+   "games_played": 7,
+   "shifts": 76,
+   "toi": 8483,
+   "toi_per_game": 1211.9,
+   "play": 5756,
+   "avg_shift": 111.6,
    "longest_shift": 219,
    "shortest_shift": 32,
    "plus_minus": -4,
    "games": [
+    {
+     "id": "2026-10-26-vs-wb",
+     "date": "2026-10-26",
+     "opponent": {
+      "code": "WB",
+      "name": "Weekday Benders"
+     },
+     "toi": 1172,
+     "shifts": 13,
+     "avg_shift": 90.2,
+     "play": 785,
+     "plus_minus": 0
+    },
     {
      "id": "2026-10-19-vs-tm",
      "date": "2026-10-19",
