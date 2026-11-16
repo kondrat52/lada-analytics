@@ -150,7 +150,7 @@ players on the ice, so the empty-ice proposal found one period; the clock gave 1
 
 Views: `rink` 0–3840 × 282–1920; `left-net` 100–1300 × 542–1142; `right-net` 2600–3800 × 532–1132.
 
-### Re-aimed (`renton2nov`, from Nov 8)
+### Re-aimed (`renton2nov`, from Nov 7)
 
 Turbo Kings' Nov 8 game (6:25 PM, YouTube 3840x1920, no band) came from the same camera pointed differently: fetch
 under `renton2` logged "+39 px", but the far boards curve wasn't Oct 17's shifted. It sat 55 px higher at the left
@@ -167,6 +167,13 @@ calibrate the ice maps (`references/ice.md`). That night the board's LEDs went d
 stopped at 3970 with 20 s or more on the clock and play going on, so the 3rd period ends at the video's end
 (`--video-ends-early`). The clock reader assumed it ran to 0.0 at 3966. Faint digits in a contrast-stretched
 crop showed two figures before the point.
+
+Blue Wings' Nov 7 game (10:40 PM, home, white, bench on the right) was already framed this way: its boards curve
+matched `renton2nov` within a few px, so fetch printed no framing line. That night the board was dark at four of the
+six period edges (both ends of the 1st, the starts of the 2nd and 3rd). The clock reader's edges held within about
+2 s against `break_*.jpg` and the clock's later readings. The clock ran through stoppages in the 1st and 2nd and
+stopped at whistles in the 3rd. The operator posted one guest goal about 3.5 minutes late, and the board counted a
+home goal the game sheet left out (`references/highlights.md`).
 
 Views: `rink` 0–3840 × 220–1920; `left-net` 40–1240 × 480–1080; `right-net` 2540–3740 × 470–1070.
 

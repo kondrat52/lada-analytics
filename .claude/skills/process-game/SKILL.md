@@ -258,6 +258,12 @@ prints each span as it merges it into `periods.json`, skips duplicates and renam
 passes are normal, and a window the checker calls a slow change in a stoppage stays as it is (the check says how
 many of its seconds were live).
 
+The check can't see a player whose tracks carry no number for a whole stretch, because the solver keeps five on
+with the others. Read solve's per-period table for that: on Blue Wings' Nov 7 game Charnysh had 2:15 in the 2nd
+against 8-13 minutes in the others, and no shift for 11 minutes. That stretch went into the P2 brief as an extra
+numbered window, asking for his shifts (with his look and his usual linemate's shifts) and an "off" span for whoever
+the solver had on instead. The checker found three shifts, about 3 minutes of ice time.
+
 A wrong label rather than a lost track (a whole unit with one player missing usually means his tracks carry someone
 else's number or none; the window's pieces show it) is a zfix line instead: write it to `$W/rev_pN/review_zfix.txt`
 in the review CSV format with a note starting "checked by hand"; it sorts last and overrides the reviewers' answer,
