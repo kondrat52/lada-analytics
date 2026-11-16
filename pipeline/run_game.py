@@ -169,7 +169,7 @@ def framing_shift(W):
     band, and every board-based step then failed silently (the scoreboard crop held the board's top edge). Only
     rinks with `reframe` get shifted; elsewhere (Snoqualmie A's 52 px lower framing, Renton's band classes) the
     offset is logged."""
-    from rink import REF_XS
+    from rink import REF_XS, RINKS, Renton2
     off = framing_offset(W)
     if off is None:
         return 0
@@ -179,8 +179,15 @@ def framing_shift(W):
     if abs(dy) <= 20:
         return 0
     if not getattr(R, "reframe", False):
-        hint = (" (266 px is renton2band's framing, 62 renton2thin's: set that rink in full/rink.json)"
-                if type(R).__name__ == "Renton2" else "")
+        hint = ""
+        if isinstance(R, Renton2):   # Renton's new camera has come framed four ways: name the one that fits
+            fits = {n: float(np.max(np.abs(np.array(ys) - C.ref_boards))) for n, C in RINKS.items()
+                    if issubclass(C, Renton2) and C is not type(R)}
+            best = min(fits, key=fits.get)
+            hint = (f" (the curve fits {best}'s within {fits[best]:.0f} px: set that rink in full/rink.json)"
+                    if fits[best] <= 25 else
+                    " (no Renton framing fits: the camera moved; references/rinks.md, 'renton2nov', has how one "
+                    "was measured)")
         log(f"framing: the picture sits {dy:+.0f} px from the rink's usual ({where}){hint}")
         return 0
     if os.path.exists(f"{W}/full/dets.csv"):

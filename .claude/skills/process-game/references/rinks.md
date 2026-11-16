@@ -150,6 +150,26 @@ players on the ice, so the empty-ice proposal found one period; the clock gave 1
 
 Views: `rink` 0–3840 × 282–1920; `left-net` 100–1300 × 542–1142; `right-net` 2600–3800 × 532–1132.
 
+### Re-aimed (`renton2nov`, from Nov 8)
+
+Turbo Kings' Nov 8 game (6:25 PM, YouTube 3840x1920, no band) came from the same camera pointed differently: fetch
+under `renton2` logged "+39 px", but the far boards curve wasn't Oct 17's shifted. It sat 55 px higher at the left
+end and 108 px lower at the right ([963, 503, 374, 522, 1051] at REF_XS against [1018, 505, 335, 458, 943]). The
+center line stays upright, so the camera wasn't rolled, and everything sits about 65 px left: center line at x
+~1875, nets at (500, 760) and (3285, 760), away bench from the glass post at ~1310 to its box's red post at 1665,
+away box 1665–1795, home box 1950–2080, home bench to ~2430. The near boards leave the frame bottom at x ~950 and
+~2800, so more near ice is in the frame. The scoreboard is Oct 17's at the same scale and tilt moved by (−80, +32):
+`scoreboard = (3376, 608, 150, 126)`. Under `renton2` the board crop would have caught only its right edge, and the
+clock, the periods and `sb.jpg` with it. Since Nov 15 fetch's framing line names the Renton class whose curve
+fits within 25 px, or says none does. When none does, measure a class like this one off `frame600.png` before
+the scoreboard scan runs: the board, nets, box posts, near boards and center line, each with a ruler crop. Then
+calibrate the ice maps (`references/ice.md`). That night the board's LEDs went dark in the last 30 s and the video
+stopped at 3970 with 20 s or more on the clock and play going on, so the 3rd period ends at the video's end
+(`--video-ends-early`). The clock reader assumed it ran to 0.0 at 3966. Faint digits in a contrast-stretched
+crop showed two figures before the point.
+
+Views: `rink` 0–3840 × 220–1920; `left-net` 40–1240 × 480–1080; `right-net` 2540–3740 × 470–1070.
+
 ## Snoqualmie A (`snoqualmie`, a 3840x1536 strip)
 
 Blue Wings' home rink. Camera high on the near side at center, very wide. Both benches are on the near side at the

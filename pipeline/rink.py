@@ -346,8 +346,34 @@ class Renton2Thin(Renton2):
     ICE = Path(Renton2.ICE.vertices + (0, DY))
 
 
+class Renton2Nov(Renton2):
+    """Renton's new camera re-aimed, from Turbo Kings' Nov 8 game (YouTube 3840x1920, no band): everything sits
+    about 65 px left of Oct 17's (center line at x ~1875, the posts of both boxes and the nets 60-70 px left), the
+    far boards curve 55 px higher at the left end and 108 px lower at the right ([963, 503, 374, 522, 1051] at
+    REF_XS), and more of the near ice in the frame: the near boards leave the bottom edge at x ~950 and ~2800. Not a
+    roll (the center line stays upright), so not one shift or turn of Oct 17's geometry: measured on the Nov 8
+    frame. The scoreboard is Oct 17's at the same scale and tilt, moved by (-80, +32)."""
+    center_x = 1875
+    nets = {"left": 500, "right": 3285}
+    NET_Y = 760
+    # away bench from the glass post (~1310) to its box's red post (1665); the away box 1665-1795, the home box
+    # 1950-2080, the home bench to ~2430 (Oct 17's ~30 px margins kept)
+    BENCHES = {"left": (1310, 1730), "right": (2010, 2430)}
+    bench_where = {"left": "behind the far boards, from the glass post at x 1310 to the box's red post at 1665 (only "
+                           "heads show above the boards; the scorekeeper's window is at center)",
+                   "right": "behind the far boards, from about 2080 to 2430 (only heads show above the boards; the "
+                            "scorekeeper's window is at center)"}
+    box_where = {"left": "between the benches, x 1665-1795 (red posts)", "right": "between the benches, x 1950-2080"}
+    scoreboard = (3376, 608, 150, 126)
+    ref_boards = (963, 503, 374, 522, 1051)
+    views = {"rink": (0, 3840, 220, 1920), "left-net": (40, 1240, 480, 1080), "right-net": (2540, 3740, 470, 1070)}
+    ICE = Path([(0, 0), (3840, 0), (3840, 990), (3770, 1030), (3690, 1110), (3590, 1325), (3415, 1530),
+                (3210, 1710), (2985, 1860), (2830, 1920), (930, 1920), (740, 1810), (540, 1660), (340, 1485),
+                (165, 1285), (50, 1090), (0, 1030)])
+
+
 RINKS = {"renton": Renton, "snoqualmie": Snoqualmie, "snoqualmie2": Snoqualmie2, "kirkland": Kirkland,
-         "renton2": Renton2, "renton2band": Renton2Band, "renton2thin": Renton2Thin}
+         "renton2": Renton2, "renton2band": Renton2Band, "renton2thin": Renton2Thin, "renton2nov": Renton2Nov}
 
 # Our jersey that game, as tests on process.py's torso colour fractions (the dets.csv columns, or a dict of them):
 # `ours` picks our players for tracking, the looser `crop` which detections get a 4K crop for OCR and review.

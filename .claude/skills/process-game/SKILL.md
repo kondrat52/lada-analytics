@@ -35,8 +35,9 @@ W=~/hockey-work/<slug>-<YYYY-MM-DD>-vs-<opp>      # outside the repo, ~5 GB; Tur
 Detection needs the local GPU, so none of this runs in the cloud. On the Windows PC (RTX 5090, set up with
 `pipeline\setup_env.ps1`, see `WINDOWS.md`) fetch takes 25 to 45 minutes once YouTube serves the video (download 1
 to 15, detection 12 to 17 with the scoreboard scan running beside it, OCR 8 to 14, reading the board's clock about
-1; since Nov 2 OCR runs beside detection and `process.py` has three processes, measured on a slice to save about 10
-of those minutes, unconfirmed on a full fetch), prepare 3 to 5, the review 10 to 25, the lineup checks after the first solve 20 to 70 (the seven games since Oct
+1; since Nov 2 OCR runs beside detection and `process.py` has three processes: TK's Nov 8 fetch, the first in
+full, took 30 minutes with a 3-minute download, about 16.5 of detection for 66 minutes of video, OCR done 9 minutes
+after it and the clock 1), prepare 3 to 5, the review 10 to 25, the lineup checks after the first solve 20 to 70 (the seven games since Oct
 22 needed 19 to 56 on/off spans each, two rounds of checkers), and goals, clips and publish 10 to 30, so a game is
 two to four hours of session time; `run_game.py` keeps Windows awake. YouTube's bot block has added anything from
 nothing to three hours on top (step 1).
@@ -81,7 +82,7 @@ Home or away decides our jersey and bench: home has worn white (blue numbers and
 ## 1. Fetch (background)
 
 ```sh
-$PY pipeline/run_game.py fetch "<url>" $W --team <slug> --rink <renton|renton2|renton2band|renton2thin|snoqualmie|snoqualmie2|kirkland> [--jersey white] [--bench right]
+$PY pipeline/run_game.py fetch "<url>" $W --team <slug> --rink <renton|renton2|renton2band|renton2thin|renton2nov|snoqualmie|snoqualmie2|kirkland> [--jersey white] [--bench right]
 ```
 
 Run it in the background and watch `$W/full/log.txt` with a Monitor that also matches `Traceback|Error`. Fetch
@@ -136,7 +137,11 @@ reversed nets before. A finer sheet is one command: `$PY pipeline/scoreboard.py 
 
 `net` is where our goalie plays that period (`nets` in `rink.py`; Renton 540 = left, 3245 = right) and switches
 each period. Prepare drops our goalie's detections at that net, so check it on a zoom of both creases in each
-period (`frames --view left-net`).
+period (`frames --view left-net`). Tell the goalies apart by play, not by jersey: on TK's Nov 8 game our sub goalie
+wore red and theirs wore their white with yellow pads. The yellow-padded goalie looked like ours (white is our
+home jersey), so the nets were set backwards and only the goal check caught it, after the review. By then
+re-preparing would have meant reviewing every row again. So go by where our skaters crowd during one of our
+penalty kills, or by the net where the board's score for us went up.
 
 Shots come from the game sheet: publish copies `sheet.json`'s per-period counts into `game.json` (`shots_source:
 sheet`). The board's digits are a few pixels tall and `shots.py`'s OCR has been wrong at most games, so run it only

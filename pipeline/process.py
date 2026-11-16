@@ -25,7 +25,7 @@ def reader_proc(cmd, shm_name, W, H, slots, free_q, full_q):
     shm = shared_memory.SharedMemory(name=shm_name)
     size = W * H * 3
     proc = subprocess.Popen(cmd, stdout=subprocess.PIPE, bufsize=0)
-    n = 0
+    n, mv = 0, None
     parent = mp.parent_process()
     while True:
         while True:
@@ -33,7 +33,7 @@ def reader_proc(cmd, shm_name, W, H, slots, free_q, full_q):
                 slot = free_q.get(timeout=5); break
             except Exception:
                 if not parent.is_alive():
-                    proc.kill(); shm.close(); return
+                    proc.kill(); del mv; shm.close(); return
         mv = memoryview(shm.buf)[slot * size:(slot + 1) * size]; got = 0
         while got < size:
             k = proc.stdout.readinto(mv[got:])
@@ -43,6 +43,7 @@ def reader_proc(cmd, shm_name, W, H, slots, free_q, full_q):
         if got < size:
             full_q.put(None); break
         full_q.put((slot, n)); n += 1
+    del mv   # a live view of shm.buf makes close() raise BufferError
     proc.wait(); shm.close()
 
 

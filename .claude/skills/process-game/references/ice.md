@@ -29,6 +29,7 @@ looked like, means a bad label or a calibration that no longer fits (a camera mo
 | `snoqualmie` (A) | pano | BW Oct 25, the LiveBarn file | markings 0.3 ft median; their goalie at X +-83-84 |
 | `snoqualmie2` (B) | fisheye + warp | TK Oct 25, YouTube 3824x2160 | markings 0.4 ft median, 1.4 ft 90%; their goalie at X +-83-88 |
 | `renton2` (new camera; `renton2band`, `renton2thin` are it framed lower) | fisheye + warp | TK Oct 17, YouTube 3840x1920 | markings 0.2 ft median, 0.7 ft 90%, from the boards, center line, faint blue lines and nets; the end zones are seen edge-on, so near the end boards a few px is a few feet |
+| `renton2nov` (the new camera re-aimed, from Nov 8) | fisheye + warp | TK Nov 8, YouTube 3840x1920 | markings 0.2 ft median, 0.67 ft 90%, from the same marks as `renton2`; their goalie at X +-90-91 and the nets 1.7-2.2 ft off (the end zones edge-on again). Fitting the near boards' new yellow stripe as their base (`boards_near`) instead of `boards_near_top` changed nothing |
 | `renton` (old camera, to Oct 4) | fisheye + warp | BW Oct 3, YouTube 3600x1596 scaled | markings 0.16 ft median from the boards, center line, kickplate marks and nets (no other paint left); a faint ring held out lands 2.3 ft from its neutral dot |
 | `kirkland` | fisheye + warp | Y Oct 5, YouTube 3840x1536 | markings 0.2 ft median, 0.85 ft 90%; their goalie at X +-82-83 |
 
@@ -37,7 +38,9 @@ new camera's LiveBarn cuts 266 and 62 px below its YouTube one (`cams/renton2ban
 say `same_as: renton2`), and Renton's old camera was turned 0.2 degrees on Sep 13-14. `rinkcam.align` turns and shifts
 each game's pixels so its own far-boards curve (`boards_poly.npy`) falls on the calibration video's (kept in the
 camera file); a straight shift alone left the Sep 13-14 games' far end 7 ft out. Every rink LADA plays at so far
-is calibrated (Oct 29, 2026); a new camera or rink needs one before its games get maps.
+is calibrated (Oct 29, 2026); a new camera or rink needs one before its games get maps, and so does a camera
+re-aimed so that its far-boards curve changes shape, not just position. Renton's on Nov 8 was one
+(`renton2nov`): a turn and a shift can't make that curve fit.
 
 ## Calibrating a rink
 
