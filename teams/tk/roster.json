@@ -6,10 +6,12 @@
   "site_url": "https://kondrat52.github.io/lada-analytics/tk/",
   "jersey": "light blue",
   "goalies": {
+    "1": "Mayorov",
     "58": "Fisenko"
   },
   "skaters": {
     "4": "Sokolov",
+    "11": "Belousenko",
     "12": "Kondratenko",
     "13": "Belousenko",
     "14": "Radutskiy",
@@ -27,12 +29,19 @@
     "90": "Ivanov"
   },
   "subs": {
-    "69": "Kleiman",
+    "5": "Zubatov",
     "10": "Bogdanov",
-    "37": "Akulov"
+    "37": "Akulov",
+    "69": "Kleiman",
+    "86": "Kaplin",
+    "91": "Adigozalzada"
   },
   "lada_player_ids": {
+    "1": 19317,
     "4": 11133,
+    "5": 11134,
+    "10": 11152,
+    "11": 11131,
     "12": 14209,
     "13": 20412,
     "14": 11145,
@@ -40,14 +49,16 @@
     "26": 19314,
     "31": 14210,
     "33": 20394,
+    "49": 11136,
+    "58": 17285,
     "61": 11138,
     "64": 14208,
     "74": 20411,
     "78": 12161,
     "82": 19315,
+    "86": 11151,
     "89": 11140,
     "90": 11144,
-    "58": 17285,
-    "49": 11136
+    "91": 11132
   }
 }

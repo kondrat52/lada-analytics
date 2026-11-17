@@ -42,6 +42,11 @@ On the Windows PC the user's terminal is Windows PowerShell 5.1, which rejects `
 cd ~\lada-analytics; ~\.venvs\hockey\Scripts\python.exe pipeline\lada_ids.py --write <slug>
 ```
 
+Not through the session's `!` prefix: that runs bash with no stdin, so the email prompt dies with EOFError (and the
+PowerShell form above loses its backslashes there). Ask for it in the user's own PowerShell window. A sub from
+another LADA team comes back "no match" (Akulov #37, Nov 15) and keeps no id; `--write` also adds every LADA roster
+player missing from `roster.json`, so mark the new numbers absent in the next game unless they played.
+
 It matches every `roster.json` player to LADA's roster by number and surname and prints same / NEW / DIFFERS /
 WRONG / no match. With `--write` it adds the NEW ids and LADA's players whose numbers `roster.json` lacks (surname =
 the last word of LADA's name, goalies by position, spares by Sub status), never changing what's there: fix WRONG and

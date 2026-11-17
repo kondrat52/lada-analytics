@@ -12,6 +12,11 @@
    "lada_player_id": 11133
   },
   {
+   "number": 11,
+   "name": "Belousenko",
+   "lada_player_id": 11131
+  },
+  {
    "number": 12,
    "name": "Kondratenko",
    "lada_player_id": 14209
@@ -89,9 +94,15 @@
  ],
  "subs": [
   {
+   "number": 5,
+   "name": "Zubatov",
+   "lada_player_id": 11134,
+   "sub": true
+  },
+  {
    "number": 10,
    "name": "Bogdanov",
-   "lada_player_id": null,
+   "lada_player_id": 11152,
    "sub": true
   },
   {
@@ -105,9 +116,26 @@
    "name": "Kleiman",
    "lada_player_id": null,
    "sub": true
+  },
+  {
+   "number": 86,
+   "name": "Kaplin",
+   "lada_player_id": 11151,
+   "sub": true
+  },
+  {
+   "number": 91,
+   "name": "Adigozalzada",
+   "lada_player_id": 11132,
+   "sub": true
   }
  ],
  "goalies": [
+  {
+   "number": 1,
+   "name": "Mayorov",
+   "lada_player_id": 19317
+  },
   {
    "number": 58,
    "name": "Fisenko",

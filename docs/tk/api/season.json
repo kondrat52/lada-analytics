@@ -1752,7 +1752,7 @@
   {
    "number": 10,
    "name": "Bogdanov",
-   "lada_player_id": null,
+   "lada_player_id": 11152,
    "sub": true,
    "games_played": 1,
    "shifts": 10,
