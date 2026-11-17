@@ -211,6 +211,15 @@ shot along the detections of his team, walked back from the shot (`carrier_path`
 camera on Best Vibes' breakaway sat on our net from the pass on while #49 skated the length of the ice, and a
 straight line from pass to shot missed him by 300 px (he cut across close to the camera). So a goal against with a
 rush needs `--pass` too, at the pass or chip that sprang it.
+A solo rush has no pass to give, and the walk-back can lose a skater who chases a loose puck the length of the near
+boards. On Beerteam's Nov 7 1st goal, Lee #71 chased the puck from our left zone, picked it up at the right boards
+at 1706.25, and scored at 1708.5. Without `--pass` the camera closed in on the net 6 s early, and the user caught
+it. With `--pass` at the pickup it held him from 1705 on, but 1702-1704 showed empty center ice: he covers up to
+1800 px/s close to the camera. What worked was a subagent tracing his skates every 0.5 s from 1702 by eye. Those
+points went into a one-track CSV (each detection frame snapped to the nearest detection within 120 px;
+`$W/scratch/goal1_rush/lee_track.py`). `clip.py` then got it as `group:<csv>:<tid>` with the net and `--shot`, and
+no pass. Sample every detection frame: `player_path` drops a track that moves more than 200 + 700·dt px between
+two samples.
 The default framing (no `--net`) follows the main group of players. A focus x (about 500 = left corner, 3300 = right; a net x
 from `rink.py`) keeps the virtual camera on one end. For a penalty pass `#<number>` to follow the player who took
 it, starting a few seconds before the infraction. A focus x can lock onto someone right by the camera (at

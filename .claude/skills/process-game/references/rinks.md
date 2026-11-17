@@ -250,6 +250,12 @@ absent #13 and #16 had to be on the absent list. LADA's schedule calls it "Snoqu
 videos only at 2548x1440 on Sep 19 and Oct 10 (fetch takes the best webm and scales it up, and the geometry fits);
 TK's Oct 25 video came at the full 3824x2160 (format 313), so nothing was scaled. Against red and black jerseys
 (SEA Otters, Oct 25) the white test held: 199 review sheets and no opponent numbers in `unknown`.
+`Snoqualmie2.bench_side` is "right", so a home game here needs `--bench left` on fetch (or `"bench": "left"` in
+`full/rink.json`); every home game before Nov 7 had it set by hand. Beerteam's Nov 7 fetch left it out: the first
+solve ran with our bench on the right, and the gaps briefs told the checkers so. Look for "Our bench is on the near
+side at the LEFT edge" in a brief before launching it. Puck Buddies OG's red jerseys with white nameplates passed
+the white test often enough that their #64 and #7 LONGFELLOW were read hundreds of times (174 review sheets);
+`unknown` listed #64, and their #7 swelled our #7's reads, so look at the crops before trusting a number's count.
 Doofers' Oct 25 upload (2548x1440, video uploaded Oct 31) was the same view sitting 70 px low and 4 px right in
 the scaled frame, under a black band, with a player's progress bar near the bottom: the scoreboard crop then holds
 only the board's top edge and every board-based step fails silently. `boards.py`'s print gives it away: the far

@@ -91,11 +91,14 @@
     "rinkName": "Snoqualmie B"
   },
   "33041": {
-    "date": "2026-11-15T22:40:00",
+    "date": "2026-11-14T22:40:00",
     "opponentName": "Cluster Pucks",
     "playHome": false,
     "rinkId": 23,
-    "rinkName": "Renton"
+    "rinkName": "Renton",
+    "teamGoals": 5,
+    "opponentGoals": 1,
+    "boxscoreLink": "https://app.sportninja.com/public/game/0wQSLxFhWEDRsSgN"
   },
   "33042": {
     "date": "2026-11-22T20:25:00",
