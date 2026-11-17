@@ -287,7 +287,7 @@ the clock stops. Confirm each by eye, or hand the list to one subagent with the 
 ```sh
 $PY pipeline/run_game.py frames $W $W/g.jpg --view rink --range <t-60> <t> 3        # the minute before the faceoff
 $PY pipeline/run_game.py frames $W $W/gz.jpg --view left-net <t1> <t2> ...          # zoom on a net, 1 s apart
-$PY pipeline/run_game.py clip $W <game-id> goal-1 <t-12> <t+10> <t> "#<scorer>,#<assist>" --net for|against --shot <ts>,<x>,<y>
+$PY pipeline/run_game.py clip $W <game-id> goal-1 <t-12> <t+10> <t> "#<scorer>,#<assist>" --net for|against --shot <ts>,<x>,<y> --pass <tp>,<x>,<y>
 $PY pipeline/run_game.py clip $W <game-id> penalty-4 <t-12> <t+10> <t> [focus-x | #<number>]
 ```
 

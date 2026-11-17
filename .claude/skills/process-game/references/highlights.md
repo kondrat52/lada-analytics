@@ -81,7 +81,8 @@ one general-purpose subagent:
 > A goal shows a shot or scramble at a net, the referee pointing at it, and one team celebrating before everyone
 > drifts to center. Our net this period is on the <left|right>. Write `<your scratch>/goals.json`: one object per
 > candidate with `t` (the candidate), `goal` (true/false), `at` (seconds of video of the goal itself), `net`
-> (left/right), `team` (for/against), a one-line `note` of what you saw, and for each goal `shot`: [t, x, y], the
+> (left/right), `team` (for/against), a one-line `note` of what you saw, `pass`: [t, x, y] for the first assist's
+> pass (or his last touch) the same way, and for each goal `shot`: [t, x, y], the
 > moment the puck left the stick that sent it in (to 0.5 s; follow the puck back from the net on half-second
 > sheets, then quarter-second, with a crop tight enough to see it) and the shooter's skates then in source pixels.
 > A crop's tile maps linearly onto the X0..X1, Y0..Y1 you gave `frames` (`$PY pipeline/run_game.py frames $W OUT.jpg
@@ -141,7 +142,7 @@ full-rink frames 1 s apart. An opponent going down near him is the usual sign.
 ## Clips
 
 ```sh
-$PY pipeline/run_game.py clip $W <game-id> goal-1 <t-12> <t+10> <t> "#44,#2" --net for --shot <ts>,<x>,<y>  # ours: scorer, then assists
+$PY pipeline/run_game.py clip $W <game-id> goal-1 <t-12> <t+10> <t> "#44,#2" --net for --shot <ts>,<x>,<y> --pass <tp>,<x>,<y>  # ours: scorer, then assists
 $PY pipeline/run_game.py clip $W <game-id> goal-3 <t-12> <t+10> <t> --net against --shot <ts>,<x>,<y>     # theirs aren't tracked
 $PY pipeline/run_game.py clip $W <game-id> penalty-88 <t-12> <t+10> <t> "#88"
 ```
@@ -193,6 +194,23 @@ a scratch folder (`run_period.py $W/full $W/p3tail 3940 3986 <our net x>`). Then
 `clip.py` as `group:$W/p3tail/tracks_v1.csv:<tid>`, with the net and the shot as `run_game.py clip` would.
 In that clip the defender chasing on the near side filled the frame, and Bekker was small at the far boards at the
 same x. Check which track is the scorer's on a crop before deciding the camera follows the wrong player.
+`--pass T,X,Y` (when the puck left the first assist's stick, and his skates) keeps the passer in the frame up to
+the full width until 1 s after the pass, ahead of the net, and starts the replay 2 s before it, so the replay
+shows the pass, then closes in on the scorer and the net. Without it the tight crop at the net keeps a passer only
+within ~1150 px, and the replay (from 1.5 s before the shot) frames only the scorer: on LADA Y's Nov 2 game the user
+saw neither passer on the 1st, 2nd and last goals' replays, and lost Lisitsyn in the live part of the last. Give
+the goal-check subagent the passes too (pass [t, x, y], the passer's track at it). For an assist that was a
+rebound or a puck squirting out of a battle, the passer's last touch serves. The camera's path is smoothed over
+about 1 s either way, so it leaves the passer about a second before it's told to: holding him only 0.5 s past the
+pass left Lisitsyn's corner battle (the last goal) at the frame's bottom edge and gone 0.4 s after his touch. The
+hold starts 1 s before the replay for the same reason, and a held passer gets two body heights of room each side
+(the crop also keeping the net had squeezed the 3rd goal's battle into a corner). Where the passer has no track
+(always on a goal against: `tracks_v1.csv` holds only our players), he is walked back from the pass spot along the
+detections of either team (`walk_back` in `clip.py`; in a pile the jersey test fails). A scorer with no track is followed from the pass to the
+shot along the detections of his team, walked back from the shot (`carrier_path` in `clip.py`): without it the
+camera on Best Vibes' breakaway sat on our net from the pass on while #49 skated the length of the ice, and a
+straight line from pass to shot missed him by 300 px (he cut across close to the camera). So a goal against with a
+rush needs `--pass` too, at the pass or chip that sprang it.
 The default framing (no `--net`) follows the main group of players. A focus x (about 500 = left corner, 3300 = right; a net x
 from `rink.py`) keeps the virtual camera on one end. For a penalty pass `#<number>` to follow the player who took
 it, starting a few seconds before the infraction. A focus x can lock onto someone right by the camera (at

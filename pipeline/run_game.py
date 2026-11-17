@@ -668,6 +668,20 @@ def cmd_clip(a):
     os.makedirs(os.path.dirname(out), exist_ok=True)
     cmd = [PY, f"{HERE}/clip.py", f"{W}/full", f"{W}/video.webm", f"{W}/audio.m4a", out, a.t0, a.t1, a.poster]
     focus = a.focus
+
+    def at_spot(pdir, spot, what):
+        """The track at a goal check's spot ("T,X,Y": a shot or a pass), whatever its label, or None."""
+        ts, sx, sy = (float(v) for v in spot.split(","))
+        tr = pd.read_csv(f"{pdir}/tracks_v1.csv")
+        near = tr[(tr.t - ts).abs() <= 0.25]
+        dist = np.hypot(near.fx - sx, near.fy - sy)
+        if len(near) and dist.min() < 200:
+            return int(near.tid.iat[int(dist.values.argmin())])
+        print(f"clip: no track within 200 px of the {what} at {spot}")
+        return None
+
+    # a goal against has no players to name: tracks_v1 holds only ours, so a track at their shot or pass is one of
+    # our defenders; clip.py frames the pass spot itself for the 1.5 s before the pass
     if focus and focus.startswith("#"):
         # follow a player (his labeled tracks in this window, in time order: the first covering track wins), or
         # for a goal keep the scorer and assists in the frame ("#14,#13,#89", scorer first)
@@ -685,15 +699,14 @@ def cmd_clip(a):
         if a.shot:
             # the goal check's shot names the scorer's track at it, whatever its label: on TK's Oct 25 empty-netter
             # the tracks labeled 64 were other players, and the camera framed one of them with the empty net
-            ts, sx, sy = (float(v) for v in a.shot.split(","))
-            tr = pd.read_csv(f"{pdir}/tracks_v1.csv")
-            near = tr[(tr.t - ts).abs() <= 0.25]
-            dist = np.hypot(near.fx - sx, near.fy - sy)
-            if len(near) and dist.min() < 200:
-                tid = int(near.tid.iat[int(dist.values.argmin())])
+            tid = at_spot(pdir, a.shot, "shot (the scorer's labeled tracks stand)")
+            if tid is not None:
                 tids[0] = [tid] + [x for x in tids[0] if x != tid]
-            else:
-                print(f"clip: no track within 200 px of the shot at {a.shot}; the scorer's labeled tracks stand")
+        if a.pass_ and len(tids) > 1:
+            # the passer (the first assist) is the track at the pass, whatever its label
+            tid = at_spot(pdir, a.pass_, "pass")
+            if tid is not None:
+                tids[1] = [tid] + [x for x in tids[1] if x != tid]
         tids = [",".join(str(x) for x in g) for g in tids]
         if len(nums) > 1 or a.net:
             focus = f"group:{pdir}/tracks_v1.csv:" + ";".join(tids) if any(tids) else None
@@ -708,8 +721,8 @@ def cmd_clip(a):
         side = next(s for s, x in R.nets.items() if (x == ours) == (a.net == "against"))
         v = R.views[f"{side}-net"]
         net = [f"{R.nets[side]},{getattr(R, 'NET_Y', (v[2] + v[3]) / 2)}"]
-        if a.replay_from or a.shot:
-            net += [a.replay_from or "-"] + ([a.shot] if a.shot else [])
+        if a.replay_from or a.shot or a.pass_:
+            net += [a.replay_from or "-"] + ([a.shot or "-"] if a.shot or a.pass_ else []) + ([a.pass_] if a.pass_ else [])
     sh(*cmd + ([focus or "-"] + net if net else [focus] if focus else []))
 
 
@@ -1714,6 +1727,7 @@ if __name__ == "__main__":
     c.add_argument("--net", choices=("for", "against"), help="a goal clip: close in on the net it went into at POSTER")
     c.add_argument("--replay-from", help="a goal clip's replay starts this many seconds before POSTER (4, or 1.5 s before --shot)")
     c.add_argument("--shot", metavar="T,X,Y", help="a goal clip: when the puck left the scorer's stick and where his skates were (source px), from the goal check")
+    c.add_argument("--pass", dest="pass_", metavar="T,X,Y", help="a goal clip: when the puck left the passer's stick and where his skates were; the passer stays in the frame until then and the replay starts 2 s before it")
     sub.add_parser("solve").add_argument("W")
     gp = sub.add_parser("gaps"); gp.add_argument("W")
     gp.add_argument("--apply", nargs="*", metavar="FIXES.json", help="merge checkers' fixes into periods.json (default: every scratch/gaps/*/fixes.json)")

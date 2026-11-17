@@ -1,4 +1,4 @@
-"""clip.py FULLDIR VIDEO AUDIO OUT.mp4 T0 T1 [POSTER_T [FOCUS [NET [REPLAY_FROM [SHOT]]]]]
+"""clip.py FULLDIR VIDEO AUDIO OUT.mp4 T0 T1 [POSTER_T [FOCUS [NET [REPLAY_FROM [SHOT [PASS]]]]]]
 Cut a zoomed highlight clip: a virtual camera follows the main cluster of players (from FULLDIR/dets.csv),
 crops the 4K wide cut to 16:9 and encodes 1280x720 H.264 with the game audio. Writes OUT.jpg as a poster
 frame (at POSTER_T, default the middle of the clip). FOCUS keeps the camera on part of the rink when players are
@@ -8,8 +8,9 @@ spread out: a source x in px (rink.py nets, e.g. 540 = Renton's left net), or "t
 scoring net, Y a fallback for its height) makes it a goal clip: the camera closes in on that net around POSTER_T,
 the goal (`goal_path`), and the clip ends with a zoomed half-speed replay of the goal, from REPLAY_FROM seconds
 before it ("-" for the default: 4, or from 1.5 s before SHOT). SHOT "T,X,Y" is when the puck left the scorer's
-stick and where his skates were: the camera then follows the play through the shot (`goal_path`). The audio is
-left out when the recording's audio is silent."""
+stick and where his skates were: the camera then follows the play through the shot (`goal_path`); "-" for none.
+PASS "T,X,Y" is the same for the pass that set it up: the passer (FOCUS's second player) stays in the frame until
+it, and the replay starts PASS_LEAD (2 s) before it. The audio is left out when the recording's audio is silent."""
 import os, sys, subprocess
 import numpy as np, pandas as pd, cv2, imageio_ffmpeg
 sys.path.insert(0, os.path.dirname(os.path.abspath(__file__)))
@@ -30,6 +31,10 @@ BEHIND = 0.04                        # ice kept behind the net (share of the fra
 # from our blue line, kept the empty net and Bekker together in a 2000+ px frame from center ice, both specks, and
 # looked like a cut to the net too early (TK's Oct 25 empty-netter, poked in from about 1000 px out, still fits)
 LEAD_W = 1300                        # the width used when following one player
+# with a pass (`--pass`) the passer stays in the frame until PASS_HOLD s after it, and the replay starts PASS_LEAD s
+# before it: the camera path is smoothed over about 1 s either way, so at 0.5 and 1 s the replay of LADA Y's Nov 2
+# 6th goal had left Lisitsyn's corner battle 0.4 s after his last touch, with him at the frame's bottom edge until then
+PASS_HOLD, PASS_LEAD = 1.0, 2.0
 
 
 def camera_path(full, t0, t1, focus=None, max_w=MAX_W):
@@ -71,7 +76,7 @@ def camera_path(full, t0, t1, focus=None, max_w=MAX_W):
 
 
 def goal_path(full, P, t0, t1, tg, net, players, frame_w, max_w, zoom=(NET_W, NET_HI), lock=LOCK, shot=None,
-              keep_w=None):
+              keep_w=None, pas=None):
     """A goal clip's camera. It frames everyone credited with the goal (`players`: a track table per player,
     scorer first, empty where untracked) whenever one of them is tracked, and from 6 s before the goal (tg) to 2 s
     after, the scoring net (`net`, x and y) and the slot in front of it too; where neither applies, the main group
@@ -89,7 +94,11 @@ def goal_path(full, P, t0, t1, tg, net, players, frame_w, max_w, zoom=(NET_W, NE
     they fit `keep_w` (default max_w: both in one wide frame; the replay passes its tight width, so it stays close
     on the scorer and pans with the puck onto the net) and passers while they fit the tight crop. Without it TK's
     Oct 25 empty-netter, poked in from their blue line on the far boards, was 6 s of an empty net with the scorer
-    dropped from the tight frame."""
+    dropped from the tight frame.
+    `pas` (time, x, y: the passer's skates as the puck left his stick) keeps the passers in up to max_w until
+    PASS_HOLD (1 s) after the pass, ahead of the net (at the pass spot itself for the PASS_LEAD s before it where his track is
+    lost). The tight crop dropped LADA Y's passers on Nov 2 vs Best Vibes: Akulov at the point and Lisitsyn
+    feeding from the half-wall were out of the frame when they passed, and out of the replay altogether."""
     if net:
         nx, ny = net
         d = load(f"{full}/dets.csv")
@@ -101,6 +110,15 @@ def goal_path(full, P, t0, t1, tg, net, players, frame_w, max_w, zoom=(NET_W, NE
     if shot:
         ts, sx, sy = shot
         lock = (min(lock[0], ts - tg - 1), lock[1])
+    if pas:
+        # the passer's size at the pass from whoever stands there (where his track is lost): the goalie's height
+        # put Lisitsyn, nearer the camera on the 3rd goal of LADA Y's Nov 2 game, half out of the frame's bottom
+        dp = load(f"{full}/dets.csv")
+        dp = dp[((dp.t - pas[0]).abs() <= 0.5) & (dp.conf >= 0.3) & ((dp.fx - pas[1]).abs() < 150)
+                & ((dp.fy - pas[2]).abs() < 150)]
+        ph = float(dp.h.median()) if len(dp) else (nh if net else 80.0)
+        carrier = carrier_path(full, pas, shot, nh if net else 80.0) if shot else None
+        passer = walk_back(full, pas[0] - PASS_LEAD - 1.0, pas, ph, False)
     keep_w = keep_w or max_w
 
     def box(S):
@@ -117,21 +135,39 @@ def goal_path(full, P, t0, t1, tg, net, players, frame_w, max_w, zoom=(NET_W, NE
             j = np.abs(p.index.values - t).argmin()
             if abs(p.index[j] - t) <= 0.5:
                 pts.append((p.fx.iat[j], p.fy.iat[j], p.h.iat[j], i))
+        passing = pas is not None and t <= pas[0] + PASS_HOLD
+        # from a second before the replay starts, so the smoothing doesn't open it on the frame without him
+        if passing and pas[0] - PASS_LEAD - 1.0 <= t and not any(q[3] == 1 for q in pts):
+            # an untracked passer: walked back from the pass along the detections, then the pass spot
+            pts.append(tuple(float(np.interp(t, passer.index.values, passer[c].values)) for c in ("fx", "fy", "h"))
+                       + (1,) if t <= pas[0] and len(passer) > 1 else (pas[1], pas[2], ph, 1))
+        if pas and shot and pas[0] < t < shot[0] and not any(q[3] == 0 for q in pts):
+            # an untracked scorer (theirs, always: tracks_v1 holds only ours) is the puck carrier between the pass
+            # and the shot (`carrier_path`); with nobody to follow, the camera of Best Vibes' breakaway on LADA Y's
+            # Nov 2 game sat on our empty-looking net while their #49 skated the length of the ice
+            pts.append(tuple(float(np.interp(t, carrier.index.values, carrier[c].values)) for c in ("fx", "fy", "h"))
+                       + (0,))
         at_net = net is not None and tg + lock[0] <= t <= tg + lock[1]
         if not pts and not at_net:
             rows.append((t, np.nan, np.nan, np.nan))
             continue
         # what the frame keeps, most important first: groups of units (a player, or the net with the ice behind it
         # and the slot, which come and go together), each group with the widest crop it may cost
-        scorer, passers = [(q,) for q in pts if q[3] == 0], [(q,) for q in pts if q[3] > 0]
+        scorer = [(q,) for q in pts if q[3] == 0]
+        # a passer being held gets room around him: two heights of ice to each side and 0.6 below his skates (points
+        # that only move the crop's edges). With the usual one height and 0.3 the crop that also held the net had
+        # Lisitsyn's corner battles (LADA Y's Nov 2 game, the 3rd and 6th goals) on its bottom and right edges
+        passers = [(q, (q[0] - 2 * q[2], q[1] + 0.6 * q[2], 1.0, q[3]), (q[0] + 2 * q[2], q[1] + 0.6 * q[2], 1.0, q[3]))
+                   if passing else (q,) for q in pts if q[3] > 0]
         if at_net:
             fixed = ((behind, ny, nh, -1), (nx, ny, nh, -1), (slot, ny, nh, -1))
             ax, ay, lo, hi = nx, ny, zoom[0] * frame_w, min(zoom[1] * frame_w, max_w)
             if not shot:
-                groups = [([fixed], np.inf), (scorer, hi), (passers, hi)]
+                groups = [([fixed], np.inf), (scorer, max_w if passing else hi), (passers, max_w if passing else hi)]
             elif t < ts:
-                groups = [(scorer or ([((sx, sy, nh, 0),)] if t >= ts - 1.5 else []), np.inf),
-                          ([fixed], min(keep_w, LEAD_W)), (passers, hi)]
+                lead = scorer or ([((sx, sy, nh, 0),)] if t >= ts - 1.5 else [])
+                groups = ([(lead, np.inf), (passers, max_w), ([fixed], min(keep_w, LEAD_W))] if passing else
+                          [(lead, np.inf), ([fixed], min(keep_w, LEAD_W)), (passers, hi)])
             elif t <= tg:
                 f = (t - ts) / max(tg - ts, 0.1)
                 puck = (sx + f * (nx - sx), sy + f * (ny - sy), nh, -1)
@@ -165,6 +201,47 @@ def goal_path(full, P, t0, t1, tg, net, players, frame_w, max_w, zoom=(NET_W, NE
     Q = G.fillna(P)
     # two short moving averages: an eased move of about 2 s onto the net and back off it
     return Q.rolling(9, center=True, min_periods=1).mean().rolling(9, center=True, min_periods=1).mean()
+
+
+def walk_back(full, t_from, end, sh, same_team):
+    """Someone's skates from t_from to `end` (T, X, Y) along the detections, walked back from `end`: each frame to
+    the nearest detection a skater of that size can reach, stopping where the walk breaks off. `same_team` keeps to
+    the team (`ours`) of the detection at `end`; in a pile the jersey test isn't worth that (Lisitsyn's corner battle
+    before the 3rd goal of LADA Y's Nov 2 game read as theirs)."""
+    d = load(f"{full}/dets.csv")
+    d = d[(d.t >= t_from - 0.2) & (d.t <= end[0] + 0.2) & (d.conf >= 0.3) & d.onice]
+    at = d[(d.t - end[0]).abs() <= 0.15]
+    dist = np.hypot(at.fx - end[1], at.fy - end[2])
+    if len(at) and dist.min() < 150:
+        k = dist.values.argmin()
+        x, y, h = at.fx.iat[k], at.fy.iat[k], at.h.iat[k]
+        if same_team:
+            d = d[d.ours.astype(bool) == bool(at.ours.iat[k])]
+    else:
+        x, y, h, d = end[1], end[2], sh, d.iloc[:0]
+    rows, miss = [(end[0], x, y, h)], 0
+    for t in sorted(d.t.unique(), reverse=True):
+        if not t_from < t < end[0]:
+            continue
+        g = d[d.t == t]
+        dist = np.hypot(g.fx - x, g.fy - y).values
+        # about 2.5 body heights a second (8 frames), more across a gap
+        if len(g) and dist.min() < max(80.0, 0.8 * h) * (1 + miss):
+            k = dist.argmin()
+            x, y, h, miss = g.fx.iat[k], g.fy.iat[k], g.h.iat[k], 0
+            rows.append((t, x, y, h))
+        elif (miss := miss + 1) > 4:
+            break
+    return pd.DataFrame(rows, columns=["t", "fx", "fy", "h"]).set_index("t").sort_index()
+
+
+def carrier_path(full, pas, shot, sh):
+    """The puck carrier's skates from the pass to the shot (each T, X, Y) for a scorer with no track: walked back
+    from the shot along the detections of the shooter's team, with a straight line to the pass where the walk breaks
+    off. A straight line alone missed Best Vibes' #49 on LADA Y's Nov 2 game by 300 px: he cut across close to the
+    camera (250 to 400 px tall) and was at our crease 1.5 s before he shot."""
+    w = walk_back(full, pas[0], shot, sh, True)
+    return pd.concat([pd.DataFrame([(pas[1], pas[2], w.h.iat[0])], columns=["fx", "fy", "h"], index=[pas[0]]), w])
 
 
 def player_path(tr, tids, anchor=None):
@@ -215,8 +292,11 @@ def main():
             tr = pd.read_csv(path)
             tr = tr[(tr.t >= t0 - 3) & (tr.t <= t1 + 3)]
             # each player's tracks in priority order: where two cover the same moment, the first one counts
-            shot_t = float(sys.argv[11].split(",")[0]) if len(sys.argv) > 11 else None
-            players = [player_path(tr, [int(x) for x in g.split(",") if x], shot_t if i == 0 else None)
+            # the walk along each player's tracks starts where the goal check saw him: the scorer at the shot,
+            # the passer at the pass
+            anchors = [float(sys.argv[k].split(",")[0]) if len(sys.argv) > k and sys.argv[k] != "-" else None
+                       for k in (11, 12)]
+            players = [player_path(tr, [int(x) for x in g.split(",") if x], anchors[i] if i < 2 else None)
                        for i, g in enumerate(tids.split(";"))]
         elif sys.argv[8].startswith("track:"):
             path, tids = sys.argv[8][len("track:"):].rsplit(":", 1)   # the path may hold a drive colon (C:\...)
@@ -236,12 +316,15 @@ def main():
     max_w = min(MAX_W, H * OUT_W / OUT_H)            # a 16:9 crop must fit the frame
     P0 = camera_path(full, t0, t1, focus, max_w)
     net = tuple(float(v) for v in sys.argv[9].split(",")) if len(sys.argv) > 9 else None
-    shot = tuple(float(v) for v in sys.argv[11].split(",")) if len(sys.argv) > 11 else None
+    shot = tuple(float(v) for v in sys.argv[11].split(",")) if len(sys.argv) > 11 and sys.argv[11] != "-" else None
+    pas = tuple(float(v) for v in sys.argv[12].split(",")) if len(sys.argv) > 12 else None
     if len(sys.argv) > 10 and sys.argv[10] != "-":
         replay = (-float(sys.argv[10]), REPLAY[1])
     else:
         replay = (min(REPLAY[0], shot[0] - tp - 1.5), REPLAY[1]) if shot else REPLAY
-    P = goal_path(full, P0, t0, t1, tp, net, players, W, max_w, shot=shot) if net or players else P0
+        if pas:
+            replay = (min(replay[0], pas[0] - tp - PASS_LEAD), replay[1])
+    P = goal_path(full, P0, t0, t1, tp, net, players, W, max_w, shot=shot, pas=pas) if net or players else P0
     enc_cmd = [FF, "-loglevel", "error", "-y", "-f", "rawvideo", "-pix_fmt", "bgr24", "-s", f"{OUT_W}x{OUT_H}",
                "-r", str(fps), "-i", "-"]
     if audio and os.path.exists(audio) and not _silent(audio, t0, t1):
@@ -281,9 +364,11 @@ def main():
 
     poster = render(P, t0, t1)
     if net:
-        # the net and the scorer, the net in the frame for the whole replay
-        R = goal_path(full, P0, t0, t1, tp, net, players[:1], W, max_w, REPLAY_ZOOM, (min(replay[0], LOCK[0]), LOCK[1]),
-                      shot, REPLAY_ZOOM[1] * W)
+        # the net and the scorer, the net in the frame for the whole replay; with a pass, the passer until it (after
+        # it he only widened the close-up at the net)
+        rp = players[:1] + ([players[1][players[1].index <= pas[0] + PASS_HOLD]] if pas and len(players) > 1 else [])
+        R = goal_path(full, P0, t0, t1, tp, net, rp, W, max_w, REPLAY_ZOOM,
+                      (min(replay[0], LOCK[0]), LOCK[1]), shot, REPLAY_ZOOM[1] * W, pas)
         render(R, tp + replay[0], tp + replay[1], repeat=2, label="REPLAY")
     enc.stdin.close(); enc.wait()
     if poster is not None:
