@@ -56,7 +56,10 @@
     "opponentName": "SEA Otters",
     "playHome": true,
     "rinkId": 2083,
-    "rinkName": "Renton"
+    "rinkName": "Renton",
+    "boxscoreLink": "https://app.sportninja.com/public/game/Yp8lM41zJOYmMpE9",
+    "teamGoals": 1,
+    "opponentGoals": 4
   },
   "33034": {
     "date": "2026-11-22T17:00:00",

@@ -89,6 +89,18 @@
  ],
  "subs": [
   {
+   "number": 10,
+   "name": "Bogdanov",
+   "lada_player_id": null,
+   "sub": true
+  },
+  {
+   "number": 37,
+   "name": "Akulov",
+   "lada_player_id": null,
+   "sub": true
+  },
+  {
    "number": 69,
    "name": "Kleiman",
    "lada_player_id": null,

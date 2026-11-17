@@ -175,6 +175,17 @@ six period edges (both ends of the 1st, the starts of the 2nd and 3rd). The cloc
 stopped at whistles in the 3rd. The operator posted one guest goal about 3.5 minutes late, and the board counted a
 home goal the game sheet left out (`references/highlights.md`).
 
+Turbo Kings' Nov 15 game (10:40 PM, home, white, bench on the right) printed "no Renton framing fits: the camera
+moved": the far boards sat at [935, 471, 352, 517, 1074] against [963, 503, 374, 522, 1051], -28 px at the left end
+to +23 at the right. That was a roll, not a re-aim: `rinkcam.align` against `cams/renton2nov.json` fit a turn of
+-0.96 degrees and a 19 px drop with residuals of 3 px across the middle and 8-19 px at the frame ends, and the center
+line leans about 30 px over the frame's height. Nets (about 490 and 3270) and the center line (~1860) stayed within
+15 px of `renton2nov`'s, the scoreboard crop still framed the board, and the bench and box zones held, so the game ran
+as `renton2nov` with no new class. Before measuring a new class off a "no framing fits" line, fit `align` against the
+nearest class (`rinkcam.align(json.load(open('pipeline/cams/<class>.json')), np.load('$W/full/boards_poly.npy'))`)
+and look at the residuals: a few px means a roll the ice maps already correct. The board clock read all six
+edges; the 3rd's clock stopped at whistles and ran to 0.0 with a penalty still on, at the video's end.
+
 Views: `rink` 0–3840 × 220–1920; `left-net` 40–1240 × 480–1080; `right-net` 2540–3740 × 470–1070.
 
 ## Snoqualmie A (`snoqualmie`, a 3840x1536 strip)
