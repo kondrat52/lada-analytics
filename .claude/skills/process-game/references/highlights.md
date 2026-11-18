@@ -70,6 +70,18 @@ crease there; the board's score didn't change at that stoppage, and the real goa
 4:05, the score up 7 s later, the penalized opponent let out of the box) came after it. Before taking a goal
 check's time, sheet the board 2 s apart around it: the score must change within about 10 s.
 
+In a scramble the goal check tends to take the first jam as the goal. On LADA R's Nov 9 game (Renton, clock running
+through stoppages in the 1st and 2nd) it put two 2nd-period goals 3 s before the clock-implied time. The puck went in
+from a second jam once the goalie was down: Soubochev at the near post at 1239.5, and a pile at our post at 1841. The
+replays (t −4 s to +1.5 s) ended before the puck went in, and the user caught it. Where the clock runs through
+stoppages its implied second is close to exact. When a goal check's `at` is 2+ s before it, sheet a tight crop of
+the crease every 0.25 s up to the implied time plus 2 s. Take the last jam before the first raised arm, and give the
+clip `--replay-from` back to the first shot.
+
+A video can start after the game has begun. LADA R's Nov 9 video opened with the board at 17:23 of the 1st and the
+home side already up 1-0. The goal at 17:50 stays out of `highlights.json`, the notes say so, and the page heading
+takes its score from `lada_games.json`. A fallback to goals on video would have shown 4-4 for a 4-5 game.
+
 ## Delegating the check
 
 The frames are mechanical and cost the main session a few thousand tokens each, so hand a batch of candidates to
