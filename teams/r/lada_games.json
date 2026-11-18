@@ -140,7 +140,10 @@
     "playHome": true,
     "rinkId": 2088,
     "rinkName": "Snoqualmie A",
-    "lines": "{\"offence\":[[\"5761\",\"196\",\"259\"],[\"3425\",\"5690\",\"5683\"],[null,null,\"2\"]],\"defence\":[[\"5867\",\"20413\"],[\"5827\",null]],\"goalie\":[],\"beer\":[\"5827\"]}"
+    "lines": "{\"offence\":[[\"5761\",\"196\",\"259\"],[\"3425\",\"5690\",\"5683\"],[null,null,\"2\"]],\"defence\":[[\"5867\",\"20413\"],[\"5827\",null]],\"goalie\":[],\"beer\":[\"5827\"]}",
+    "teamGoals": 4,
+    "opponentGoals": 4,
+    "boxscoreLink": "https://app.sportninja.com/public/game/y0ng6YG0gUDcZjQn"
   },
   "33021": {
     "date": "2026-11-23T22:10:00",
