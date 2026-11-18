@@ -247,6 +247,13 @@ reviewed rows, so a lineup checker gave the last 2:24 by eye, as on/off spans. T
 until 8 s after the horn (guest 5 to 6 at 3982). The players gathered at our bench at 3780-3805 were in a timeout
 (a 30 s timer on the board), not celebrating.
 
+On Y's Nov 9 game (away, our bench right, the 68-minute video uploaded Nov 17) the clock gave all six edges within 1 s,
+and the nets followed the away rule (ours right in the 1st and 3rd). The board ran #97's 2nd-period tripping as 3:00
+(the sheet says a 2-minute minor; the `pk` follows the board). Our 4-on-4 goal at 2892 (clock 12:39 in the 3rd) went
+up on the board only at 2997, in live play 100 s later, so a score change can't be taken as the goal's time here. A
+30 s timeout at 3921-3952 sat inside a 100 s stoppage that `stoppages.py` counted as live; the lineup check called its
+line-up at our bench gaps until the checker saw it.
+
 Views: `rink` 0–3840 × 380–1536; `left-net` 200–1400 × 380–760; `right-net` 2600–3800 × 380–760; `bench` 0–900 ×
 700–1536 (left) or 2940–3840 × 700–1536 (right).
 

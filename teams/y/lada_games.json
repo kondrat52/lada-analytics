@@ -1,4 +1,13 @@
 {
+  "32939": {
+    "teamGoals": 3,
+    "opponentGoals": 5,
+    "boxscoreLink": "https://app.sportninja.com/public/game/VXOnyQPjVV6ZnOaj",
+    "playHome": false,
+    "rinkId": 2069,
+    "lines": "{\"offence\":[[\"11166\",\"11129\",\"20326\"],[\"11110\",\"18293\",\"20420\"],[\"20421\",\"20414\",\"5945\"]],\"defence\":[[\"20415\",\"20419\"],[\"20381\",\"5942\"],[\"20416\",\"20418\"]],\"goalie\":[[\"9080\"]],\"beer\":[]}",
+    "rinkName": "Kirkland"
+  },
   "32910": {
     "date": "2026-08-03T20:30:00",
     "playHome": true,
@@ -116,7 +125,10 @@
     "playHome": true,
     "rinkId": 2070,
     "rinkName": "Renton",
-    "lines": "{\"offence\":[[\"20421\",\"18293\",\"11110\"],[\"11166\",\"20415\",\"20416\"],[null,null,\"20420\"]],\"defence\":[[\"20419\",\"5942\"],[\"20417\",\"20418\"]],\"goalie\":[[\"9080\"]],\"beer\":[]}"
+    "lines": "{\"offence\":[[\"20421\",\"18293\",\"11110\"],[\"11166\",\"20415\",\"20416\"],[null,null,\"20420\"]],\"defence\":[[\"20419\",\"5942\"],[\"20417\",\"20418\"]],\"goalie\":[[\"9080\"]],\"beer\":[]}",
+    "teamGoals": 1,
+    "opponentGoals": 6,
+    "boxscoreLink": "https://app.sportninja.com/public/game/9Oxpp35v2X98umdM"
   },
   "32999": {
     "date": "2026-11-23T20:45:00",
@@ -145,10 +157,5 @@
     "playHome": false,
     "rinkId": 2071,
     "rinkName": "Snoqualmie A"
-  },
-  "32939": {
-    "teamGoals": 3,
-    "opponentGoals": 5,
-    "boxscoreLink": "https://app.sportninja.com/public/game/VXOnyQPjVV6ZnOaj"
   }
 }

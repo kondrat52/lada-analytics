@@ -136,7 +136,10 @@ timeout at Kirkland.
 - **A two-digit number OCR keeps reading as one.** On Y's Sep 21 game #14 Ber had no card row in any period
   (OCR took his 14 for Sokolov's 4), though 112 confident "14" reads were all him on the ice. A `--note` that he
   played all game, and to read 14 against 4 carefully, got him labeled. Before review, sheet a few crops of any
-  regular whose card row is empty everywhere but whose number is read often.
+  regular whose card row is empty everywhere but whose number is read often. The other way round: on Y's Nov 9
+  game `unknown` listed #27 with 285 reads, every crop AKULOV 37 (his 3 reads as a 2), and `absent --suggest` said
+  Sokolov #4 played on 215 reads of "4", all of them Ber #14 and Bronnikov #74 with no SOKOLOV plate. A `--note`
+  for each kept the reviewers off both numbers.
 - **An opponent with one of our numbers can fill a card row.** On Doofers' Nov 8 game, Rainucks' navy #38 and #46
   passed the white test. The P3 card's #38 row was all their #38, so the solver gave most of Tislenok #38's P3 shifts
   to others: 4:38 against 9-10 minutes in P1 and P2. Two reviewers flagged the navy row. A frame checker given a

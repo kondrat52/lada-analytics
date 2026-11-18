@@ -101,6 +101,18 @@
    "name": "Belousenko",
    "lada_player_id": null,
    "sub": true
+  },
+  {
+   "number": 58,
+   "name": "Fisenko",
+   "lada_player_id": 17285,
+   "sub": true
+  },
+  {
+   "number": 74,
+   "name": "Bronnikov",
+   "lada_player_id": 20411,
+   "sub": true
   }
  ],
  "goalies": [

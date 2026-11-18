@@ -136,8 +136,13 @@ A minor the game sheet gives at the same clock as a power-play goal against may 
 game #54's high-sticking at 15:09 never lit the panel and we had 5 skaters again from the faceoff. Check
 `run_game.py skaters` across the span before adding its `pk`.
 On LADA R's Sep 21 game two penalties on the sheet were never served at all (our #39's slashing and their #0's
-tripping): no panel, an empty box, and the player kept playing. A coincidental pair (one each) leaves 4-on-4 with
-a `pk` for ours. A major or misconduct can have another player serve the minor: Sep 21's #81 got boarding plus a
+tripping): no panel, an empty box, and the player kept playing. A coincidental pair (one each) can leave 4-on-4,
+with a `pk` for ours, but it isn't always so: on LADA Y's Nov 9 game (Snoqualmie A) #29's and their #17's roughing at
+9:09 of the 3rd lit no panel, each sat the 2:00 in his box, and both teams played 5 on 5 with substitutes (5 of ours
+and 5 of theirs at the 3255 faceoff). The goal check read 4-on-4 off `run_game.py skaters`, whose count missed a
+player, and the `pk` had the solver short one skater for 4 minutes of video until a lineup checker counted. Count
+both teams on a faceoff frame (a wide crop, `frames ... 0 3840 380 1000 1990 1 t`) before adding a `pk` for a
+coincident minor; at 5 on 5 the boxed player gets an `off` span instead. A major or misconduct can have another player serve the minor: Sep 21's #81 got boarding plus a
 10-minute misconduct, #10 sat the minor (the `pk`'s `player`), and #81 never came back (an `off` to the end).
 Doofers' Oct 18 game had the same: #61's boarding plus misconduct, #61 in the box for half a minute, then Panova #75
 climbed in from the bench and sat the 2:00 (the panel still said 61).

@@ -84,6 +84,9 @@ while #4 is also skater Sokolov's number on our roster. Mark both #4 (Sokolov di
 sub goalie out of `roster.json`, and tell the reviewers with `--note` that the #4 in goalie pads is our goalie. An
 opponent's number can also pass our jersey test: Roadrunners' #4 ORR wears grey-white with light-blue stripes, and
 his crops were most of the 88 reads of "4".
+A goalie can come as a skater: on Y's Nov 9 game TK's goalie Fisenko #58 (DF's spare goalie too) played forward for
+Y and scored three of our four goals; he went under `subs` with his LADA id from TK's `roster.json`. Bronnikov #74,
+the same night, has two LADA ids in our rosters (BW's `subs` 20353, TK's `skaters` 20411); Y took TK's.
 `sheet` run before `periods.json` exists leaves `video_t` empty, and `goals` then prints every goal at its
 period's start: run `sheet` again once the periods are right.
 
