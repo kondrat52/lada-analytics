@@ -9,10 +9,8 @@ RESULT = {"W": "Win", "L": "Loss", "T": "Tie"}
 
 
 def scoreline(sc):
-    """The game page's score under its heading; a score from the video alone says so."""
-    src = "" if sc["official"] else '<span class="src">Goals on video</span>'
-    return (f'<p class="final"><span class="res {sc["result"]}">{RESULT[sc["result"]]}</span>'
-            f'<b>{sc["gf"]}–{sc["ga"]}</b>{src}</p>')
+    """The score at the end of the game page's heading, coloured by the result (named for screen readers)."""
+    return f' <span class="final {sc["result"]}"><span class="vh">{RESULT[sc["result"]]}, </span>{sc["gf"]}–{sc["ga"]}</span>'
 
 
 
@@ -101,6 +99,7 @@ def build(gamedir, out):
         html = html.replace('<a href="__VIDEO__" target="_blank" rel="noopener">wide-cut game video</a>', "wide-cut game video")
     sc = final_score(game)
     for k, v in {"__TITLE__": f"{game['title']} ({sc['gf']}–{sc['ga']})", "__FINAL__": scoreline(sc),
+                 "__SCORENOTE__": "" if sc["official"] else " The score is the goals on video: LADA hasn't posted the final yet.",
                  "__EYEBROW__": game["eyebrow"], "__TEAM__": TEAM,
                  "__OPP__": opponent_name(game), "__VIDEO__": game["video"]}.items():
         html = html.replace(k, v)

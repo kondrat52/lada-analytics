@@ -43,7 +43,7 @@ ul {{ list-style:none; margin:0; padding:0; display:grid; gap:8px; }}
 ul a {{ display:flex; flex-wrap:wrap; justify-content:space-between; align-items:baseline; gap:4px 16px; padding:12px 14px; background:var(--board); border:1px solid var(--rule); border-radius:4px; color:var(--ink); text-decoration:none; }}
 ul a:hover, ul a:focus-visible {{ border-color:var(--team); outline:none; }}
 .t {{ font:700 22px/1.1 var(--display); }} .d {{ font:500 15px/1.3 var(--data); letter-spacing:.04em; color:var(--muted); }}
-p.note {{ color:var(--muted); margin:0; max-width:70ch; }}
+p.note {{ color:var(--muted); margin:0; max-width:70ch; }} header p.note {{ max-width:none; text-wrap:balance; }}
 </style></head><body><div class="wrap">
 <header><div class="eyebrow">LADA Seattle · Rec hockey</div><h1>Analytics</h1>
 <p class="note">Scores, ice time and shifts for every skater, measured from each week's wide-cut game video.</p></header>
@@ -168,7 +168,7 @@ th[aria-sort="descending"]::after {{ content:" ▼"; }} th[aria-sort="ascending"
 th:focus-visible {{ outline:2px solid var(--team); outline-offset:2px; }}
 td {{ font:500 16px/1.2 var(--data); }} .l {{ text-align:left; }} td.num {{ font:800 20px/1 var(--display); color:var(--team); width:3.2em; }} td.name {{ font:500 16px/1.2 var(--body); }}
 .sub {{ font:600 11px/1 var(--data); letter-spacing:.1em; text-transform:uppercase; color:var(--muted); margin-left:6px; }}
-p.note {{ color:var(--muted); margin:0; max-width:70ch; }}
+p.note {{ color:var(--muted); margin:0; max-width:70ch; }} header p.note {{ max-width:none; text-wrap:balance; }}
 .eyebrow a {{ color:var(--blueline); }}
 .teams {{ display:inline-flex; flex-wrap:wrap; justify-self:start; max-width:100%; margin-bottom:10px; border:1px solid var(--rule); border-radius:4px; overflow:hidden; background:var(--board); }}
 .teams a {{ font:600 13px/1 var(--data); letter-spacing:.08em; text-transform:uppercase; padding:9px 14px; color:var(--muted); text-decoration:none; }}
