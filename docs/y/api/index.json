@@ -27,6 +27,12 @@
     "for": 4,
     "against": 2
    },
+   "score": {
+    "for": 4,
+    "against": 2,
+    "result": "W",
+    "official": true
+   },
    "shots": {
     "for": 38,
     "against": 27
@@ -50,6 +56,12 @@
    "goals_on_video": {
     "for": 5,
     "against": 6
+   },
+   "score": {
+    "for": 5,
+    "against": 6,
+    "result": "L",
+    "official": true
    },
    "shots": {
     "for": 53,
@@ -75,6 +87,12 @@
     "for": 1,
     "against": 2
    },
+   "score": {
+    "for": 1,
+    "against": 2,
+    "result": "L",
+    "official": true
+   },
    "shots": {
     "for": 23,
     "against": 27
@@ -98,6 +116,12 @@
    "goals_on_video": {
     "for": 0,
     "against": 6
+   },
+   "score": {
+    "for": 0,
+    "against": 6,
+    "result": "L",
+    "official": true
    },
    "shots": {
     "for": 24,
@@ -123,6 +147,12 @@
     "for": 5,
     "against": 9
    },
+   "score": {
+    "for": 5,
+    "against": 9,
+    "result": "L",
+    "official": true
+   },
    "shots": {
     "for": 25,
     "against": 39
@@ -146,6 +176,12 @@
    "goals_on_video": {
     "for": 2,
     "against": 2
+   },
+   "score": {
+    "for": 2,
+    "against": 2,
+    "result": "T",
+    "official": true
    },
    "shots": {
     "for": 31,
@@ -171,6 +207,12 @@
     "for": 4,
     "against": 4
    },
+   "score": {
+    "for": 4,
+    "against": 4,
+    "result": "T",
+    "official": true
+   },
    "shots": {
     "for": 23,
     "against": 35
@@ -194,6 +236,12 @@
    "goals_on_video": {
     "for": 3,
     "against": 5
+   },
+   "score": {
+    "for": 3,
+    "against": 5,
+    "result": "L",
+    "official": true
    },
    "shots": {
     "for": 22,

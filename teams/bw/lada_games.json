@@ -56,5 +56,25 @@
     "playHome": true,
     "rinkId": 33,
     "rinkName": "Renton"
+  },
+  "32945": {
+    "teamGoals": 1,
+    "opponentGoals": 2,
+    "boxscoreLink": "https://app.sportninja.com/public/game/RsNSatcMVUiVgyzf"
+  },
+  "32946": {
+    "teamGoals": 2,
+    "opponentGoals": 2,
+    "boxscoreLink": "https://app.sportninja.com/public/game/HT2ddVwWdJws8EHC"
+  },
+  "32975": {
+    "teamGoals": 4,
+    "opponentGoals": 2,
+    "boxscoreLink": "https://app.sportninja.com/public/game/D1XPuTqtPRPtSYh9"
+  },
+  "32976": {
+    "teamGoals": 2,
+    "opponentGoals": 0,
+    "boxscoreLink": "https://app.sportninja.com/public/game/wz2zVBRDYWs0xGW5"
   }
 }

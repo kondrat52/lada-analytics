@@ -27,6 +27,12 @@
     "for": 1,
     "against": 4
    },
+   "score": {
+    "for": 1,
+    "against": 4,
+    "result": "L",
+    "official": true
+   },
    "shots": {
     "for": 30,
     "against": 35
@@ -50,6 +56,12 @@
    "goals_on_video": {
     "for": 1,
     "against": 2
+   },
+   "score": {
+    "for": 1,
+    "against": 2,
+    "result": "L",
+    "official": true
    },
    "shots": {
     "for": 23,
@@ -75,6 +87,12 @@
     "for": 3,
     "against": 0
    },
+   "score": {
+    "for": 3,
+    "against": 0,
+    "result": "W",
+    "official": true
+   },
    "shots": {
     "for": 28,
     "against": 23
@@ -98,6 +116,12 @@
    "goals_on_video": {
     "for": 3,
     "against": 1
+   },
+   "score": {
+    "for": 3,
+    "against": 1,
+    "result": "W",
+    "official": true
    },
    "shots": {
     "for": 37,
@@ -123,6 +147,12 @@
     "for": 4,
     "against": 2
    },
+   "score": {
+    "for": 4,
+    "against": 2,
+    "result": "W",
+    "official": true
+   },
    "shots": {
     "for": 38,
     "against": 16
@@ -146,6 +176,12 @@
    "goals_on_video": {
     "for": 5,
     "against": 2
+   },
+   "score": {
+    "for": 5,
+    "against": 2,
+    "result": "W",
+    "official": true
    },
    "shots": {
     "for": 49,
@@ -171,6 +207,12 @@
     "for": 2,
     "against": 1
    },
+   "score": {
+    "for": 2,
+    "against": 1,
+    "result": "W",
+    "official": true
+   },
    "shots": {
     "for": 24,
     "against": 28
@@ -194,6 +236,12 @@
    "goals_on_video": {
     "for": 1,
     "against": 2
+   },
+   "score": {
+    "for": 1,
+    "against": 2,
+    "result": "L",
+    "official": true
    },
    "shots": {
     "for": 40,
@@ -219,6 +267,12 @@
     "for": 3,
     "against": 1
    },
+   "score": {
+    "for": 3,
+    "against": 1,
+    "result": "W",
+    "official": true
+   },
    "shots": {
     "for": 38,
     "against": 26
@@ -242,6 +296,12 @@
    "goals_on_video": {
     "for": 3,
     "against": 0
+   },
+   "score": {
+    "for": 3,
+    "against": 0,
+    "result": "W",
+    "official": true
    },
    "shots": {
     "for": 37,

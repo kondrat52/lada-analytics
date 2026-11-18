@@ -95,7 +95,10 @@
     "opponentName": "Best Vibes",
     "playHome": false,
     "rinkId": 2070,
-    "rinkName": "Renton"
+    "rinkName": "Renton",
+    "teamGoals": 4,
+    "opponentGoals": 2,
+    "boxscoreLink": "https://app.sportninja.com/public/game/2eQQNoJfnBZ9oPpI"
   },
   "32997": {
     "date": "2026-11-09T22:10:00",
@@ -142,5 +145,10 @@
     "playHome": false,
     "rinkId": 2071,
     "rinkName": "Snoqualmie A"
+  },
+  "32939": {
+    "teamGoals": 3,
+    "opponentGoals": 5,
+    "boxscoreLink": "https://app.sportninja.com/public/game/VXOnyQPjVV6ZnOaj"
   }
 }

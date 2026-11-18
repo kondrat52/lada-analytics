@@ -79,7 +79,10 @@
     "opponentName": "Rainucks",
     "playHome": true,
     "rinkId": 1065,
-    "rinkName": "Snoqualmie B"
+    "rinkName": "Snoqualmie B",
+    "teamGoals": 3,
+    "opponentGoals": 3,
+    "boxscoreLink": "https://app.sportninja.com/public/game/GCn8pRdPGDH0VZfL"
   },
   "33036": {
     "date": "2026-11-15T18:25:00",
