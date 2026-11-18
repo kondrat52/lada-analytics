@@ -208,5 +208,10 @@
   "zones": {
     "offence": 0.3458,
     "defence": 0.3999
-  }
+  },
+  "sheet_score": {
+    "for": 1,
+    "against": 2
+  },
+  "sportninja_id": "RsNSatcMVUiVgyzf"
 }

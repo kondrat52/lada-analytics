@@ -19,6 +19,8 @@
   run_game.py schedule W                     the team's games from LADA's public API (ids, home/away, rink, lines)
   run_game.py sheet   W [--sn ID | --lada ID]  the game sheet from SportNinja's public API: score, shots, goals with
                                              scorers, penalties, who played -> W/sheet.json (goals/solve use it)
+  run_game.py scores [--team T]              every published game's final score from its game sheet into game.json
+                                             (sheets get corrected after the game); then build_site.py
   run_game.py prepare W                      per period: tracking, review sheets, roster card
   run_game.py review  W [--opp DESC] [--note TEXT] [--chunk N]   write one filled reviewer prompt per chunk of
                                              sheets (W/rev_pN/prompt_cNN.md) and the plan of what is still to do
@@ -1468,6 +1470,52 @@ def sportninja_id(date, lada_id=None):
     return None
 
 
+def cmd_scores(a):
+    """Each published game's final score from its SportNinja game sheet (game.json's sportninja_id, else the end of
+    LADA's boxscoreLink) into game.json's sheet_score, the score the site shows. Scorekeepers correct sheets after
+    the game (Blue Wings' Nov 7 went from 5-5 to 6-5), so run it before rebuilding. Every team, or --team."""
+    import urllib.request
+    from lada_ids import fold
+    slugs = [a.team] if a.team else sorted(t for t in os.listdir(f"{ROOT}/teams")
+                                           if os.path.exists(f"{ROOT}/teams/{t}/roster.json"))
+    changed = 0
+    for t in slugs:
+        r = json.load(open(f"{ROOT}/teams/{t}/roster.json", encoding="utf-8"))
+        name = r.get("team_name", r["team"])
+        lp = f"{ROOT}/teams/{t}/lada_games.json"
+        lada = json.load(open(lp, encoding="utf-8")) if os.path.exists(lp) else {}
+        for gj in sorted(glob.glob(f"{ROOT}/teams/{t}/games/*/game.json")):
+            game = json.load(open(gj, encoding="utf-8"))
+            link = lada.get(str(game.get("lada_game_id")), {}).get("boxscoreLink") or ""
+            sn = game.get("sportninja_id") or link.rstrip("/").rsplit("/", 1)[-1] or None
+            if not sn:
+                print(f"  {t} {game['id']}: no game sheet (no sportninja_id, no LADA boxscoreLink)")
+                continue
+            try:
+                with urllib.request.urlopen(f"{SN_API}/games/{sn}", timeout=30) as resp:
+                    g = json.load(resp)["data"]
+            except Exception as e:
+                print(f"  {t} {game['id']}: game sheet {sn} unavailable ({e})")
+                continue
+            home, vis = g["homeTeam"], g["visitingTeam"]
+            mine = [x for x in (home, vis) if fold(name) in fold(x["name"]) or fold(x["name"]) in fold(name)]
+            if len(mine) != 1 or g.get("home_team_score") is None or g.get("visiting_team_score") is None:
+                print(f"  {t} {game['id']}: game sheet {sn} has no score for {name} ({home['name']} vs {vis['name']})")
+                continue
+            ours, theirs = ((g["home_team_score"], g["visiting_team_score"]) if mine[0]["id"] == home["id"]
+                            else (g["visiting_team_score"], g["home_team_score"]))
+            new = {"for": ours, "against": theirs}
+            if game.get("sheet_score") == new and game.get("sportninja_id") == sn:
+                continue
+            old = game.get("sheet_score")
+            was = f"{old['for']}-{old['against']}" if old else "none"
+            print(f"  {t} {game['id']}: {was} -> {ours}-{theirs}")
+            game["sheet_score"], game["sportninja_id"] = new, sn
+            json.dump(game, open(gj, "w", encoding="utf-8"), indent=2, ensure_ascii=False)
+            changed += 1
+    print(f"{changed} game(s) updated" + ("; rebuild the site: build_site.py" if changed else ""))
+
+
 def cmd_sheet(a):
     """SportNinja's game sheet, public at metal-api.sportninja.net: which side we were, the score, shots per period,
     every goal with its period clock, scorer and assists, every penalty with the player, type and minutes, and who
@@ -1625,7 +1673,7 @@ def cmd_publish(a):
     if os.path.exists(gj):  # keep hand-written fields (notes, title tweaks) from an earlier publish
         old = json.load(open(gj))
         for k in ("notes", "title", "eyebrow", "highlights", "video_ends_early", "lada_game_id", "opponent_name", "zones",
-                  "shots", "shots_source", "guests", "ice"):
+                  "shots", "shots_source", "guests", "ice", "sheet_score", "sportninja_id"):
             if old.get(k):
                 game[k] = old[k]
         if game["pipeline"]["crops"] is None and (old.get("pipeline") or {}).get("crops"):
@@ -1645,6 +1693,11 @@ def cmd_publish(a):
         if all(P["label"] in sh_shots for P in Ps):
             game["shots"] = {P["label"]: sh_shots[P["label"]] for P in Ps}
             game["shots_source"] = "sheet"
+    if os.path.exists(f"{W}/sheet.json"):   # the game sheet's final score is the site's (`scores` refreshes it)
+        sheet_ = json.load(open(f"{W}/sheet.json", encoding="utf-8"))
+        if sheet_.get("score"):
+            game["sheet_score"] = {"for": sheet_["score"][0], "against": sheet_["score"][1]}
+            game["sportninja_id"] = sheet_.get("sportninja_id")
     from zones import zone_shares   # time in offence / defence for the trends page (needs the detections)
     game["zones"] = zone_shares(f"{W}/full", game) or game.get("zones")
     from ice import ice_maps   # where each skater was, for the game page's ice maps (rinks with a calibration)
@@ -1704,6 +1757,7 @@ if __name__ == "__main__":
     sub.add_parser("archive").add_argument("W")
     sc = sub.add_parser("schedule"); sc.add_argument("W", nargs="?", help="a work folder (its team), or --team")
     sc.add_argument("--team", help="the team's slug when there is no work folder yet")
+    sub.add_parser("scores").add_argument("--team", help="one team's games (default: every team)")
     sh_ = sub.add_parser("sheet"); sh_.add_argument("W", nargs="?", help="work folder (named <...>YYYY-MM-DD<...>)")
     sh_.add_argument("--team"); sh_.add_argument("--date", help="YYYY-MM-DD when the folder name lacks it")
     sh_.add_argument("--sn", help="SportNinja game id (the end of LADA's boxscoreLink)")
@@ -1757,4 +1811,4 @@ if __name__ == "__main__":
     {"fetch": cmd_fetch, "skaters": cmd_skaters, "prepare": cmd_prepare, "solve": cmd_solve, "goals": cmd_goals,
      "frames": cmd_frames, "clip": cmd_clip, "publish": cmd_publish, "unknown": cmd_unknown,
      "archive": cmd_archive, "jersey": cmd_jersey, "absent": cmd_absent, "review": cmd_review, "check": cmd_check,
-     "schedule": cmd_schedule, "sheet": cmd_sheet, "gaps": cmd_gaps, "download": cmd_download}[a.cmd](a)
+     "schedule": cmd_schedule, "sheet": cmd_sheet, "scores": cmd_scores, "gaps": cmd_gaps, "download": cmd_download}[a.cmd](a)

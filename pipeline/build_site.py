@@ -94,7 +94,7 @@ rows = "\n".join(
 
 
 def score_tag(g):
-    """W/L/T and the score on a game card; a score from the video alone (LADA has no result for it) gets a *."""
+    """W/L/T and the score on a game card; a score from the video alone (no game sheet or LADA score) gets a *."""
     sc = final_score(g)
     return (f"<span class='sc'><span class='res {sc['result']}'>{sc['result']}</span>"
             f"{sc['gf']}–{sc['ga']}{'' if sc['official'] else '*'}</span>")
@@ -104,7 +104,7 @@ cards = "\n".join(
     f"<li><a href='games/{g['id']}/'><span class='d'>{html.escape(g['eyebrow'])}</span>"
     f"<span class='t'>vs {html.escape(opponent_name(g))}{score_tag(g)}</span></a></li>"
     for g in sorted(games, key=lambda g: g["date"], reverse=True))
-unofficial = ("<p class='note'>* Goals on video: LADA hasn't posted a final score for this game.</p>"
+unofficial = ("<p class='note'>* Goals on video: the game sheet has no final score yet.</p>"
               if any(not final_score(g)["official"] for g in games) else "")
 
 SORT_JS = """<script>

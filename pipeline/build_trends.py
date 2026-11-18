@@ -39,7 +39,7 @@ def game_rows(gd):
         live[int(a):int(b)] = False
     goals = [h for h in game.get("highlights", []) if h["type"] == "goal"]
     vgf = sum(h["team"] == "for" for h in goals); vga = sum(h["team"] == "against" for h in goals)   # on video
-    sc = final_score(game)   # LADA's final score, else the goals on video
+    sc = final_score(game)   # the game sheet's final score, else LADA's, else the goals on video
     pks = game.get("penalty_kills", [])
     in_pk = lambda t: any(k["start"] <= t < k["end"] for k in pks)
     zones = game.get("zones") or {}
@@ -48,7 +48,7 @@ def game_rows(gd):
     team = dict(
         id=game["id"], date=game["date"], opp=opponent_name(game), opp_code=game["opponent"],
         rink=(game.get("eyebrow") or "").split("·")[-1].strip(), gf=sc["gf"], ga=sc["ga"], vgf=vgf, vga=vga,
-        result=sc["result"], official=sc["official"], video_ends_early=bool(game.get("video_ends_early")),
+        result=sc["result"], official=sc["official"], score_source=sc["source"], video_ends_early=bool(game.get("video_ends_early")),
         skaters=int(A.player.nunique()), avg_shift=float(A.dur.mean()), live_pct=float(live.sum() / length),
         penalties=len(penalties(game)), pk_ga=sum(h["team"] == "against" and in_pk(h["t"]) for h in goals),
         pk_min=float(sum(k["end"] - k["start"] for k in pks) / 60),

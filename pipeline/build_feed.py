@@ -81,9 +81,10 @@ def _ice(game):
 
 
 def _score(game):
-    """The game's score: LADA's final when it has one ("official": true), else the goals on video."""
+    """The game's final score: the game sheet's, else LADA's ("official": true), else the goals on video."""
     sc = final_score(game)
-    return {"for": sc["gf"], "against": sc["ga"], "result": sc["result"], "official": sc["official"]}
+    return {"for": sc["gf"], "against": sc["ga"], "result": sc["result"], "official": sc["official"],
+            "source": sc["source"]}
 
 
 def game_doc(game, A, players, highlights):

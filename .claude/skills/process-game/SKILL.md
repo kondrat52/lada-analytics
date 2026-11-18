@@ -143,8 +143,10 @@ home jersey), so the nets were set backwards and only the goal check caught it, 
 re-preparing would have meant reviewing every row again. So go by where our skaters crowd during one of our
 penalty kills, or by the net where the board's score for us went up.
 
-Shots come from the game sheet: publish copies `sheet.json`'s per-period counts into `game.json` (`shots_source:
-sheet`). The board's digits are a few pixels tall and `shots.py`'s OCR has been wrong at most games, so run it only
+The score and shots come from the game sheet: publish copies `sheet.json`'s final score into `game.json`
+(`sheet_score`, the score the site shows) and its per-period counts (`shots_source: sheet`). Scorekeepers correct
+sheets after the game, so `$PY pipeline/run_game.py scores` refreshes every published game's `sheet_score` from
+SportNinja; run it, then `build_site.py`, when a score looks stale. The board's digits are a few pixels tall and `shots.py`'s OCR has been wrong at most games, so run it only
 when the sheet has no shots or looks wrong, once `periods.json` is right:
 
 ```sh

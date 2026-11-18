@@ -54,8 +54,9 @@ crease zoom 1 s apart found our goalie out from 3851 to 4026 (an `extra` span, a
 The sheet can also miss a goal the board counts. On Blue Wings' Nov 7 game the sheet and LADA had 5-5, and the board
 ended 6-5. The extra goal was ours, at 60:48 with about 1:45 left: a scramble at their net, a home goal and a home
 shot on the board, and a restart at center. Nobody could read the scorer. The page went out at the sheet's 5-5, with
-the goal described in the notes, and the user was asked to confirm it with the team. Adding it later means one
-`highlights.json` entry, one clip and a republish.
+the goal described in the notes, and the user was asked to confirm it with the team. The scorekeeper later
+corrected the sheet to 6-5, which `run_game.py scores` brought to the site's score; the goal is still missing from the
+highlights. Adding it means one `highlights.json` entry, one clip and a republish.
 
 The recording itself can skip. LADA R's Sep 14 video loses about two minutes of the 3rd at 44:37: from one second to
 the next the board's clock jumps from 13:59 to 11:58, the home score and shots go up during live play, and every

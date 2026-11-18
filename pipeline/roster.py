@@ -75,18 +75,24 @@ def opponent_name(game):
 
 
 def final_score(game, slug=None):
-    """A game's score: LADA's official result (teamGoals/opponentGoals in teams/<slug>/lada_games.json, by the game's
-    lada_game_id) when the cache has it, else the goals on video. Returns dict(gf, ga, result "W"/"L"/"T", official)."""
+    """A game's score, from the first source that has it: the SportNinja game sheet (game.json's sheet_score, set by
+    publish and refreshed by `run_game.py scores`, since scorekeepers correct sheets after the game), LADA's result
+    (teamGoals/opponentGoals in teams/<slug>/lada_games.json, by the game's lada_game_id), else the goals on video.
+    Returns dict(gf, ga, result "W"/"L"/"T", source "sheet"/"lada"/"video", official: not from the video)."""
     p = f"{REPO}/teams/{slug or SLUG}/lada_games.json"
     if p not in _LADA_GAMES:
         _LADA_GAMES[p] = json.load(open(p, encoding="utf-8")) if os.path.exists(p) else {}
     lada = _LADA_GAMES[p].get(str(game.get("lada_game_id")), {})
-    if lada.get("teamGoals") is not None and lada.get("opponentGoals") is not None:
-        gf, ga, official = int(lada["teamGoals"]), int(lada["opponentGoals"]), True
+    sheet = game.get("sheet_score") or {}
+    if sheet.get("for") is not None and sheet.get("against") is not None:
+        gf, ga, source = int(sheet["for"]), int(sheet["against"]), "sheet"
+    elif lada.get("teamGoals") is not None and lada.get("opponentGoals") is not None:
+        gf, ga, source = int(lada["teamGoals"]), int(lada["opponentGoals"]), "lada"
     else:
         goals = [h for h in game.get("highlights", []) if h["type"] == "goal"]
-        gf, ga, official = sum(h["team"] == "for" for h in goals), sum(h["team"] == "against" for h in goals), False
-    return dict(gf=gf, ga=ga, result="W" if gf > ga else "L" if gf < ga else "T", official=official)
+        gf, ga, source = sum(h["team"] == "for" for h in goals), sum(h["team"] == "against" for h in goals), "video"
+    return dict(gf=gf, ga=ga, result="W" if gf > ga else "L" if gf < ga else "T", source=source,
+                official=source != "video")
 
 
 _LADA_GAMES = {}   # lada_games.json path -> its contents

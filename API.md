@@ -63,7 +63,7 @@ once those versions are gone; don't use the old URLs.
   "games": [{
     "id": "2026-09-27-vs-rr", "date": "2026-09-27", "title": "...", "subtitle": "Sun Sep 27, 2026 · 7:50 PM · Renton",
     "opponent": {"code": "RR", "name": null}, "lada_game_id": 32969,
-    "goals_on_video": {"for": 1, "against": 2}, "score": {"for": 1, "against": 2, "result": "L", "official": true},
+    "goals_on_video": {"for": 1, "against": 2}, "score": {"for": 1, "against": 2, "result": "L", "official": true, "source": "sheet"},
     "shots": {"for": 40, "against": 16}, "highlights": 4,
     "page_url": ".../games/2026-09-27-vs-rr/", "json_url": ".../api/games/2026-09-27-vs-rr.json"
   }]
@@ -71,9 +71,9 @@ once those versions are gone; don't use the old URLs.
 ```
 
 `time` and `rink` (e.g. `"7:50 PM"`, `"Renton"`) are also on each game file. `goals_on_video` counts the goals found in the recording. It isn't the official score: the recording can end
-before the final horn (`video_ends_early` in the game file). `score` is the final score as LADA posted it
-(`official: true`), or the goals on video until LADA has one (`official: false`); `result` is `"W"`, `"L"` or
-`"T"` from it. Each game file and each `trends.json` game has the same `score`. `shots` is shots on goal as the arena scoreboard counted
+before the final horn (`video_ends_early` in the game file). `score` is the final score: from the SportNinja game sheet
+(`source: "sheet"`), else as LADA posted it (`"lada"`), both `official: true`; or the goals on video until either
+has one (`source: "video"`, `official: false`). `result` is `"W"`, `"L"` or `"T"` from it. Each game file and each `trends.json` game has the same `score`. `shots` is shots on goal as the arena scoreboard counted
 them (`for` = us), or `null` for a game whose board wasn't read.
 
 ## `games/<id>.json`
@@ -141,7 +141,7 @@ earlier" comparisons are left to the reader.
 |---|---|
 | `id`, `date`, `rink`, `opponent`, `lada_game_id`, `video_ends_early` | As in `index.json` and the game file |
 | `goals_on_video`, `result` | Goals found in the recording, and `"W"`, `"L"` or `"T"` from them |
-| `score` | As in `index.json`: the final score (LADA's, else the goals on video) and its `result` |
+| `score` | As in `index.json`: the final score (the game sheet's, else LADA's, else the goals on video), its `result` and `source` |
 | `shots` | As in the game file: `{for, against, periods[]}`, or `null` when the board wasn't read |
 | `zones` | `{offence, defence}`: share of live play (0–1) spent near their net and near ours; the rest is the middle of the ice. `null` when not measured |
 | `skaters` | Skaters who dressed for us |
