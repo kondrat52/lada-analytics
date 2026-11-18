@@ -1,4 +1,40 @@
 {
+  "32945": {
+    "teamGoals": 1,
+    "opponentGoals": 2,
+    "boxscoreLink": "https://app.sportninja.com/public/game/RsNSatcMVUiVgyzf",
+    "playHome": true,
+    "rinkId": 2080,
+    "lines": "{\"offence\":[[\"20351\",\"20354\",\"11123\"],[\"20403\",\"20407\",\"20405\"],[\"20343\",\"20404\",\"20348\"]],\"defence\":[[\"3424\",\"20406\"],[\"1395\",\"20344\"]],\"goalie\":[[\"20409\"]],\"beer\":[\"20406\"]}",
+    "rinkName": "Snoqualmie A"
+  },
+  "32946": {
+    "teamGoals": 2,
+    "opponentGoals": 2,
+    "boxscoreLink": "https://app.sportninja.com/public/game/HT2ddVwWdJws8EHC",
+    "playHome": true,
+    "rinkId": 2080,
+    "lines": "{\"offence\":[[\"20351\",\"20354\",\"11123\"],[\"20403\",\"5814\",\"20408\"],[\"20405\",\"20407\",\"20348\"]],\"defence\":[[\"3424\",\"20406\"],[\"20404\",\"1395\"],[null,\"20344\"]],\"goalie\":[[\"20409\"]],\"beer\":[\"20407\"]}",
+    "rinkName": "Snoqualmie A"
+  },
+  "32975": {
+    "teamGoals": 4,
+    "opponentGoals": 2,
+    "boxscoreLink": "https://app.sportninja.com/public/game/D1XPuTqtPRPtSYh9",
+    "playHome": false,
+    "rinkId": 33,
+    "lines": "{\"offence\":[[\"5814\",\"1395\",\"20405\"],[\"11123\",\"20407\",\"20403\"]],\"defence\":[[\"3424\",\"20406\"],[\"20404\",\"20353\"]],\"goalie\":[[\"20409\"]]}",
+    "rinkName": "Renton"
+  },
+  "32976": {
+    "teamGoals": 2,
+    "opponentGoals": 0,
+    "boxscoreLink": "https://app.sportninja.com/public/game/wz2zVBRDYWs0xGW5",
+    "playHome": false,
+    "rinkId": 33,
+    "lines": "{\"offence\":[[\"5814\",\"20407\",\"20405\"],[\"20343\",\"1395\",\"11123\"],[\"20351\",null,\"20348\"]],\"defence\":[[\"3424\",\"20406\"],[\"20349\",\"20424\"]],\"goalie\":[[\"20409\"]],\"beer\":[\"20348\"]}",
+    "rinkName": "Renton"
+  },
   "32977": {
     "date": "2026-10-11T19:20:00",
     "opponentName": "Gnomies",
@@ -48,7 +84,9 @@
     "rinkId": 33,
     "rinkName": "Renton",
     "lines": "{\"offence\":[[\"5814\",\"20351\",\"11123\"],[\"20403\",\"20407\",\"20405\"]],\"defence\":[[\"3424\",\"20349\"],[\"1395\",\"20343\"]],\"goalie\":[],\"beer\":[]}",
-    "boxscoreLink": "https://app.sportninja.com/public/game/nLg9f0vGGP1eJkFe"
+    "boxscoreLink": "https://app.sportninja.com/public/game/nLg9f0vGGP1eJkFe",
+    "teamGoals": 5,
+    "opponentGoals": 2
   },
   "33031": {
     "date": "2026-11-22T18:25:00",
@@ -56,25 +94,5 @@
     "playHome": true,
     "rinkId": 33,
     "rinkName": "Renton"
-  },
-  "32945": {
-    "teamGoals": 1,
-    "opponentGoals": 2,
-    "boxscoreLink": "https://app.sportninja.com/public/game/RsNSatcMVUiVgyzf"
-  },
-  "32946": {
-    "teamGoals": 2,
-    "opponentGoals": 2,
-    "boxscoreLink": "https://app.sportninja.com/public/game/HT2ddVwWdJws8EHC"
-  },
-  "32975": {
-    "teamGoals": 4,
-    "opponentGoals": 2,
-    "boxscoreLink": "https://app.sportninja.com/public/game/D1XPuTqtPRPtSYh9"
-  },
-  "32976": {
-    "teamGoals": 2,
-    "opponentGoals": 0,
-    "boxscoreLink": "https://app.sportninja.com/public/game/wz2zVBRDYWs0xGW5"
   }
 }

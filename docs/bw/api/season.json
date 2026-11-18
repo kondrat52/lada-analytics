@@ -5,8 +5,9 @@
   "short_name": "LBW",
   "lada_team_id": 10
  },
- "updated": "2026-11-07",
+ "updated": "2026-11-15",
  "games": [
+  "2026-11-15-vs-no",
   "2026-11-07-vs-db",
   "2026-10-25-vs-gn",
   "2026-10-18-vs-si",
@@ -44,100 +45,6 @@
      "avg_shift": 123.1,
      "play": 1361,
      "plus_minus": 1
-    }
-   ]
-  },
-  {
-   "number": 26,
-   "name": "Babkin",
-   "lada_player_id": 20354,
-   "games_played": 6,
-   "shifts": 87,
-   "toi": 11452,
-   "toi_per_game": 1908.7,
-   "play": 8513,
-   "avg_shift": 131.6,
-   "longest_shift": 268,
-   "shortest_shift": 23,
-   "plus_minus": 6,
-   "games": [
-    {
-     "id": "2026-11-07-vs-db",
-     "date": "2026-11-07",
-     "opponent": {
-      "code": "DB",
-      "name": "Disco Bandoleros"
-     },
-     "toi": 2032,
-     "shifts": 17,
-     "avg_shift": 119.5,
-     "play": 1574,
-     "plus_minus": 0
-    },
-    {
-     "id": "2026-10-25-vs-gn",
-     "date": "2026-10-25",
-     "opponent": {
-      "code": "GN",
-      "name": "Gnomies"
-     },
-     "toi": 2088,
-     "shifts": 17,
-     "avg_shift": 122.8,
-     "play": 1473,
-     "plus_minus": 3
-    },
-    {
-     "id": "2026-10-18-vs-si",
-     "date": "2026-10-18",
-     "opponent": {
-      "code": "SI",
-      "name": "Shaved Ice: Tiger's Blood"
-     },
-     "toi": 1985,
-     "shifts": 19,
-     "avg_shift": 104.5,
-     "play": 1542,
-     "plus_minus": 0
-    },
-    {
-     "id": "2026-10-11-vs-gn",
-     "date": "2026-10-11",
-     "opponent": {
-      "code": "GN",
-      "name": "Gnomies"
-     },
-     "toi": 2252,
-     "shifts": 14,
-     "avg_shift": 160.9,
-     "play": 1676,
-     "plus_minus": 3
-    },
-    {
-     "id": "2026-09-20-vs-up",
-     "date": "2026-09-20",
-     "opponent": {
-      "code": "UP",
-      "name": "Ugly Pucklings"
-     },
-     "toi": 1572,
-     "shifts": 11,
-     "avg_shift": 142.9,
-     "play": 1151,
-     "plus_minus": 0
-    },
-    {
-     "id": "2026-09-13-vs-db",
-     "date": "2026-09-13",
-     "opponent": {
-      "code": "DB",
-      "name": "Disco Bandoleros"
-     },
-     "toi": 1523,
-     "shifts": 9,
-     "avg_shift": 169.2,
-     "play": 1097,
-     "plus_minus": 0
     }
    ]
   },
@@ -258,6 +165,113 @@
      "avg_shift": 139.5,
      "play": 1494,
      "plus_minus": -1
+    }
+   ]
+  },
+  {
+   "number": 26,
+   "name": "Babkin",
+   "lada_player_id": 20354,
+   "games_played": 7,
+   "shifts": 102,
+   "toi": 13355,
+   "toi_per_game": 1907.9,
+   "play": 9771,
+   "avg_shift": 130.9,
+   "longest_shift": 270,
+   "shortest_shift": 23,
+   "plus_minus": 9,
+   "games": [
+    {
+     "id": "2026-11-15-vs-no",
+     "date": "2026-11-15",
+     "opponent": {
+      "code": "NO",
+      "name": "Night Owls"
+     },
+     "toi": 1903,
+     "shifts": 15,
+     "avg_shift": 126.9,
+     "play": 1258,
+     "plus_minus": 3
+    },
+    {
+     "id": "2026-11-07-vs-db",
+     "date": "2026-11-07",
+     "opponent": {
+      "code": "DB",
+      "name": "Disco Bandoleros"
+     },
+     "toi": 2032,
+     "shifts": 17,
+     "avg_shift": 119.5,
+     "play": 1574,
+     "plus_minus": 0
+    },
+    {
+     "id": "2026-10-25-vs-gn",
+     "date": "2026-10-25",
+     "opponent": {
+      "code": "GN",
+      "name": "Gnomies"
+     },
+     "toi": 2088,
+     "shifts": 17,
+     "avg_shift": 122.8,
+     "play": 1473,
+     "plus_minus": 3
+    },
+    {
+     "id": "2026-10-18-vs-si",
+     "date": "2026-10-18",
+     "opponent": {
+      "code": "SI",
+      "name": "Shaved Ice: Tiger's Blood"
+     },
+     "toi": 1985,
+     "shifts": 19,
+     "avg_shift": 104.5,
+     "play": 1542,
+     "plus_minus": 0
+    },
+    {
+     "id": "2026-10-11-vs-gn",
+     "date": "2026-10-11",
+     "opponent": {
+      "code": "GN",
+      "name": "Gnomies"
+     },
+     "toi": 2252,
+     "shifts": 14,
+     "avg_shift": 160.9,
+     "play": 1676,
+     "plus_minus": 3
+    },
+    {
+     "id": "2026-09-20-vs-up",
+     "date": "2026-09-20",
+     "opponent": {
+      "code": "UP",
+      "name": "Ugly Pucklings"
+     },
+     "toi": 1572,
+     "shifts": 11,
+     "avg_shift": 142.9,
+     "play": 1151,
+     "plus_minus": 0
+    },
+    {
+     "id": "2026-09-13-vs-db",
+     "date": "2026-09-13",
+     "opponent": {
+      "code": "DB",
+      "name": "Disco Bandoleros"
+     },
+     "toi": 1523,
+     "shifts": 9,
+     "avg_shift": 169.2,
+     "play": 1097,
+     "plus_minus": 0
     }
    ]
   },
@@ -401,16 +415,29 @@
    "number": 11,
    "name": "Belousenko",
    "lada_player_id": 1395,
-   "games_played": 6,
-   "shifts": 88,
-   "toi": 10631,
-   "toi_per_game": 1771.8,
-   "play": 7702,
-   "avg_shift": 120.8,
+   "games_played": 7,
+   "shifts": 105,
+   "toi": 12581,
+   "toi_per_game": 1797.3,
+   "play": 9064,
+   "avg_shift": 119.8,
    "longest_shift": 264,
    "shortest_shift": 29,
-   "plus_minus": -2,
+   "plus_minus": 2,
    "games": [
+    {
+     "id": "2026-11-15-vs-no",
+     "date": "2026-11-15",
+     "opponent": {
+      "code": "NO",
+      "name": "Night Owls"
+     },
+     "toi": 1950,
+     "shifts": 17,
+     "avg_shift": 114.7,
+     "play": 1362,
+     "plus_minus": 4
+    },
     {
      "id": "2026-10-18-vs-si",
      "date": "2026-10-18",
@@ -495,16 +522,29 @@
    "number": 2,
    "name": "Zhuk",
    "lada_player_id": 3424,
-   "games_played": 7,
-   "shifts": 101,
-   "toi": 12330,
-   "toi_per_game": 1761.4,
-   "play": 8369,
-   "avg_shift": 122.1,
+   "games_played": 8,
+   "shifts": 117,
+   "toi": 14143,
+   "toi_per_game": 1767.9,
+   "play": 9647,
+   "avg_shift": 120.9,
    "longest_shift": 290,
    "shortest_shift": 20,
-   "plus_minus": 3,
+   "plus_minus": 2,
    "games": [
+    {
+     "id": "2026-11-15-vs-no",
+     "date": "2026-11-15",
+     "opponent": {
+      "code": "NO",
+      "name": "Night Owls"
+     },
+     "toi": 1813,
+     "shifts": 16,
+     "avg_shift": 113.3,
+     "play": 1278,
+     "plus_minus": -1
+    },
     {
      "id": "2026-11-07-vs-db",
      "date": "2026-11-07",
@@ -599,19 +639,87 @@
    ]
   },
   {
+   "number": 16,
+   "name": "Skitsko",
+   "lada_player_id": 20349,
+   "games_played": 3,
+   "shifts": 45,
+   "toi": 5277,
+   "toi_per_game": 1759,
+   "play": 3749,
+   "avg_shift": 117.3,
+   "longest_shift": 188,
+   "shortest_shift": 22,
+   "plus_minus": 3,
+   "games": [
+    {
+     "id": "2026-11-15-vs-no",
+     "date": "2026-11-15",
+     "opponent": {
+      "code": "NO",
+      "name": "Night Owls"
+     },
+     "toi": 1941,
+     "shifts": 16,
+     "avg_shift": 121.3,
+     "play": 1244,
+     "plus_minus": 2
+    },
+    {
+     "id": "2026-10-18-vs-si",
+     "date": "2026-10-18",
+     "opponent": {
+      "code": "SI",
+      "name": "Shaved Ice: Tiger's Blood"
+     },
+     "toi": 1504,
+     "shifts": 14,
+     "avg_shift": 107.4,
+     "play": 1101,
+     "plus_minus": 1
+    },
+    {
+     "id": "2026-10-03-vs-no",
+     "date": "2026-10-03",
+     "opponent": {
+      "code": "NO",
+      "name": "Night Owls"
+     },
+     "toi": 1832,
+     "shifts": 15,
+     "avg_shift": 122.1,
+     "play": 1404,
+     "plus_minus": 0
+    }
+   ]
+  },
+  {
    "number": 77,
    "name": "Horokh",
    "lada_player_id": 20343,
-   "games_played": 3,
-   "shifts": 36,
-   "toi": 5078,
-   "toi_per_game": 1692.7,
-   "play": 3774,
-   "avg_shift": 141.1,
+   "games_played": 4,
+   "shifts": 51,
+   "toi": 7011,
+   "toi_per_game": 1752.8,
+   "play": 5191,
+   "avg_shift": 137.5,
    "longest_shift": 254,
    "shortest_shift": 36,
-   "plus_minus": 2,
+   "plus_minus": 3,
    "games": [
+    {
+     "id": "2026-11-15-vs-no",
+     "date": "2026-11-15",
+     "opponent": {
+      "code": "NO",
+      "name": "Night Owls"
+     },
+     "toi": 1933,
+     "shifts": 15,
+     "avg_shift": 128.9,
+     "play": 1417,
+     "plus_minus": 1
+    },
     {
      "id": "2026-10-18-vs-si",
      "date": "2026-10-18",
@@ -752,116 +860,32 @@
    ]
   },
   {
-   "number": 16,
-   "name": "Skitsko",
-   "lada_player_id": 20349,
-   "games_played": 2,
-   "shifts": 29,
-   "toi": 3336,
-   "toi_per_game": 1668,
-   "play": 2505,
-   "avg_shift": 115.0,
-   "longest_shift": 188,
-   "shortest_shift": 22,
-   "plus_minus": 1,
-   "games": [
-    {
-     "id": "2026-10-18-vs-si",
-     "date": "2026-10-18",
-     "opponent": {
-      "code": "SI",
-      "name": "Shaved Ice: Tiger's Blood"
-     },
-     "toi": 1504,
-     "shifts": 14,
-     "avg_shift": 107.4,
-     "play": 1101,
-     "plus_minus": 1
-    },
-    {
-     "id": "2026-10-03-vs-no",
-     "date": "2026-10-03",
-     "opponent": {
-      "code": "NO",
-      "name": "Night Owls"
-     },
-     "toi": 1832,
-     "shifts": 15,
-     "avg_shift": 122.1,
-     "play": 1404,
-     "plus_minus": 0
-    }
-   ]
-  },
-  {
-   "number": 15,
-   "name": "Potepalov",
-   "lada_player_id": 20404,
-   "games_played": 3,
-   "shifts": 35,
-   "toi": 4926,
-   "toi_per_game": 1642,
-   "play": 3544,
-   "avg_shift": 140.7,
-   "longest_shift": 260,
-   "shortest_shift": 20,
-   "plus_minus": 0,
-   "games": [
-    {
-     "id": "2026-09-27-vs-up",
-     "date": "2026-09-27",
-     "opponent": {
-      "code": "UP",
-      "name": "Ugly Pucklings"
-     },
-     "toi": 2033,
-     "shifts": 15,
-     "avg_shift": 135.5,
-     "play": 1423,
-     "plus_minus": 1
-    },
-    {
-     "id": "2026-09-20-vs-up",
-     "date": "2026-09-20",
-     "opponent": {
-      "code": "UP",
-      "name": "Ugly Pucklings"
-     },
-     "toi": 1794,
-     "shifts": 12,
-     "avg_shift": 149.5,
-     "play": 1294,
-     "plus_minus": -1
-    },
-    {
-     "id": "2026-09-13-vs-db",
-     "date": "2026-09-13",
-     "opponent": {
-      "code": "DB",
-      "name": "Disco Bandoleros"
-     },
-     "toi": 1099,
-     "shifts": 8,
-     "avg_shift": 137.4,
-     "play": 827,
-     "plus_minus": 0
-    }
-   ]
-  },
-  {
    "number": 3,
    "name": "Ilinskaya",
    "lada_player_id": 20403,
-   "games_played": 5,
-   "shifts": 67,
-   "toi": 8000,
-   "toi_per_game": 1600,
-   "play": 5719,
-   "avg_shift": 119.4,
+   "games_played": 6,
+   "shifts": 81,
+   "toi": 9936,
+   "toi_per_game": 1656,
+   "play": 7079,
+   "avg_shift": 122.7,
    "longest_shift": 233,
    "shortest_shift": 21,
    "plus_minus": -3,
    "games": [
+    {
+     "id": "2026-11-15-vs-no",
+     "date": "2026-11-15",
+     "opponent": {
+      "code": "NO",
+      "name": "Night Owls"
+     },
+     "toi": 1936,
+     "shifts": 14,
+     "avg_shift": 138.3,
+     "play": 1360,
+     "plus_minus": 0
+    },
     {
      "id": "2026-11-07-vs-db",
      "date": "2026-11-07",
@@ -930,19 +954,87 @@
    ]
   },
   {
+   "number": 15,
+   "name": "Potepalov",
+   "lada_player_id": 20404,
+   "games_played": 3,
+   "shifts": 35,
+   "toi": 4926,
+   "toi_per_game": 1642,
+   "play": 3544,
+   "avg_shift": 140.7,
+   "longest_shift": 260,
+   "shortest_shift": 20,
+   "plus_minus": 0,
+   "games": [
+    {
+     "id": "2026-09-27-vs-up",
+     "date": "2026-09-27",
+     "opponent": {
+      "code": "UP",
+      "name": "Ugly Pucklings"
+     },
+     "toi": 2033,
+     "shifts": 15,
+     "avg_shift": 135.5,
+     "play": 1423,
+     "plus_minus": 1
+    },
+    {
+     "id": "2026-09-20-vs-up",
+     "date": "2026-09-20",
+     "opponent": {
+      "code": "UP",
+      "name": "Ugly Pucklings"
+     },
+     "toi": 1794,
+     "shifts": 12,
+     "avg_shift": 149.5,
+     "play": 1294,
+     "plus_minus": -1
+    },
+    {
+     "id": "2026-09-13-vs-db",
+     "date": "2026-09-13",
+     "opponent": {
+      "code": "DB",
+      "name": "Disco Bandoleros"
+     },
+     "toi": 1099,
+     "shifts": 8,
+     "avg_shift": 137.4,
+     "play": 827,
+     "plus_minus": 0
+    }
+   ]
+  },
+  {
    "number": 54,
    "name": "Semenov",
    "lada_player_id": 20407,
-   "games_played": 7,
-   "shifts": 96,
-   "toi": 11095,
-   "toi_per_game": 1585,
-   "play": 7844,
-   "avg_shift": 115.6,
+   "games_played": 8,
+   "shifts": 114,
+   "toi": 12884,
+   "toi_per_game": 1610.5,
+   "play": 9122,
+   "avg_shift": 113.0,
    "longest_shift": 268,
-   "shortest_shift": 34,
-   "plus_minus": 0,
+   "shortest_shift": 23,
+   "plus_minus": 1,
    "games": [
+    {
+     "id": "2026-11-15-vs-no",
+     "date": "2026-11-15",
+     "opponent": {
+      "code": "NO",
+      "name": "Night Owls"
+     },
+     "toi": 1789,
+     "shifts": 18,
+     "avg_shift": 99.4,
+     "play": 1278,
+     "plus_minus": 1
+    },
     {
      "id": "2026-11-07-vs-db",
      "date": "2026-11-07",
@@ -1040,16 +1132,29 @@
    "number": 43,
    "name": "Miroshnichenko",
    "lada_player_id": 20405,
-   "games_played": 8,
-   "shifts": 111,
-   "toi": 12566,
-   "toi_per_game": 1570.8,
-   "play": 8968,
-   "avg_shift": 113.2,
+   "games_played": 9,
+   "shifts": 128,
+   "toi": 14419,
+   "toi_per_game": 1602.1,
+   "play": 10206,
+   "avg_shift": 112.6,
    "longest_shift": 281,
    "shortest_shift": 30,
-   "plus_minus": -2,
+   "plus_minus": 0,
    "games": [
+    {
+     "id": "2026-11-15-vs-no",
+     "date": "2026-11-15",
+     "opponent": {
+      "code": "NO",
+      "name": "Night Owls"
+     },
+     "toi": 1853,
+     "shifts": 17,
+     "avg_shift": 109,
+     "play": 1238,
+     "plus_minus": 2
+    },
     {
      "id": "2026-11-07-vs-db",
      "date": "2026-11-07",
@@ -1238,19 +1343,139 @@
    ]
   },
   {
+   "number": 55,
+   "name": "Lisenko",
+   "lada_player_id": 11123,
+   "games_played": 7,
+   "shifts": 85,
+   "toi": 10051,
+   "toi_per_game": 1435.9,
+   "play": 7299,
+   "avg_shift": 118.2,
+   "longest_shift": 284,
+   "shortest_shift": 35,
+   "plus_minus": 6,
+   "games": [
+    {
+     "id": "2026-11-15-vs-no",
+     "date": "2026-11-15",
+     "opponent": {
+      "code": "NO",
+      "name": "Night Owls"
+     },
+     "toi": 2027,
+     "shifts": 18,
+     "avg_shift": 112.6,
+     "play": 1417,
+     "plus_minus": 1
+    },
+    {
+     "id": "2026-10-25-vs-gn",
+     "date": "2026-10-25",
+     "opponent": {
+      "code": "GN",
+      "name": "Gnomies"
+     },
+     "toi": 1111,
+     "shifts": 12,
+     "avg_shift": 92.6,
+     "play": 685,
+     "plus_minus": 1
+    },
+    {
+     "id": "2026-10-18-vs-si",
+     "date": "2026-10-18",
+     "opponent": {
+      "code": "SI",
+      "name": "Shaved Ice: Tiger's Blood"
+     },
+     "toi": 1375,
+     "shifts": 12,
+     "avg_shift": 114.6,
+     "play": 1159,
+     "plus_minus": 0
+    },
+    {
+     "id": "2026-10-03-vs-no",
+     "date": "2026-10-03",
+     "opponent": {
+      "code": "NO",
+      "name": "Night Owls"
+     },
+     "toi": 1403,
+     "shifts": 11,
+     "avg_shift": 127.5,
+     "play": 1077,
+     "plus_minus": 2
+    },
+    {
+     "id": "2026-09-27-vs-up",
+     "date": "2026-09-27",
+     "opponent": {
+      "code": "UP",
+      "name": "Ugly Pucklings"
+     },
+     "toi": 2121,
+     "shifts": 14,
+     "avg_shift": 151.5,
+     "play": 1423,
+     "plus_minus": 2
+    },
+    {
+     "id": "2026-09-20-vs-up",
+     "date": "2026-09-20",
+     "opponent": {
+      "code": "UP",
+      "name": "Ugly Pucklings"
+     },
+     "toi": 573,
+     "shifts": 5,
+     "avg_shift": 114.6,
+     "play": 326,
+     "plus_minus": 0
+    },
+    {
+     "id": "2026-09-13-vs-db",
+     "date": "2026-09-13",
+     "opponent": {
+      "code": "DB",
+      "name": "Disco Bandoleros"
+     },
+     "toi": 1441,
+     "shifts": 13,
+     "avg_shift": 110.8,
+     "play": 1212,
+     "plus_minus": 0
+    }
+   ]
+  },
+  {
    "number": 36,
    "name": "Charnysh",
    "lada_player_id": 20351,
-   "games_played": 7,
-   "shifts": 89,
-   "toi": 9448,
-   "toi_per_game": 1349.7,
-   "play": 6914,
-   "avg_shift": 106.2,
+   "games_played": 8,
+   "shifts": 107,
+   "toi": 11483,
+   "toi_per_game": 1435.4,
+   "play": 8279,
+   "avg_shift": 107.3,
    "longest_shift": 199,
    "shortest_shift": 40,
-   "plus_minus": 5,
+   "plus_minus": 7,
    "games": [
+    {
+     "id": "2026-11-15-vs-no",
+     "date": "2026-11-15",
+     "opponent": {
+      "code": "NO",
+      "name": "Night Owls"
+     },
+     "toi": 2035,
+     "shifts": 18,
+     "avg_shift": 113.1,
+     "play": 1365,
+     "plus_minus": 2
+    },
     {
      "id": "2026-11-07-vs-db",
      "date": "2026-11-07",
@@ -1341,100 +1566,6 @@
      "avg_shift": 119.3,
      "play": 751,
      "plus_minus": 1
-    }
-   ]
-  },
-  {
-   "number": 55,
-   "name": "Lisenko",
-   "lada_player_id": 11123,
-   "games_played": 6,
-   "shifts": 67,
-   "toi": 8024,
-   "toi_per_game": 1337.3,
-   "play": 5882,
-   "avg_shift": 119.8,
-   "longest_shift": 284,
-   "shortest_shift": 37,
-   "plus_minus": 5,
-   "games": [
-    {
-     "id": "2026-10-25-vs-gn",
-     "date": "2026-10-25",
-     "opponent": {
-      "code": "GN",
-      "name": "Gnomies"
-     },
-     "toi": 1111,
-     "shifts": 12,
-     "avg_shift": 92.6,
-     "play": 685,
-     "plus_minus": 1
-    },
-    {
-     "id": "2026-10-18-vs-si",
-     "date": "2026-10-18",
-     "opponent": {
-      "code": "SI",
-      "name": "Shaved Ice: Tiger's Blood"
-     },
-     "toi": 1375,
-     "shifts": 12,
-     "avg_shift": 114.6,
-     "play": 1159,
-     "plus_minus": 0
-    },
-    {
-     "id": "2026-10-03-vs-no",
-     "date": "2026-10-03",
-     "opponent": {
-      "code": "NO",
-      "name": "Night Owls"
-     },
-     "toi": 1403,
-     "shifts": 11,
-     "avg_shift": 127.5,
-     "play": 1077,
-     "plus_minus": 2
-    },
-    {
-     "id": "2026-09-27-vs-up",
-     "date": "2026-09-27",
-     "opponent": {
-      "code": "UP",
-      "name": "Ugly Pucklings"
-     },
-     "toi": 2121,
-     "shifts": 14,
-     "avg_shift": 151.5,
-     "play": 1423,
-     "plus_minus": 2
-    },
-    {
-     "id": "2026-09-20-vs-up",
-     "date": "2026-09-20",
-     "opponent": {
-      "code": "UP",
-      "name": "Ugly Pucklings"
-     },
-     "toi": 573,
-     "shifts": 5,
-     "avg_shift": 114.6,
-     "play": 326,
-     "plus_minus": 0
-    },
-    {
-     "id": "2026-09-13-vs-db",
-     "date": "2026-09-13",
-     "opponent": {
-      "code": "DB",
-      "name": "Disco Bandoleros"
-     },
-     "toi": 1441,
-     "shifts": 13,
-     "avg_shift": 110.8,
-     "play": 1212,
-     "plus_minus": 0
     }
    ]
   },

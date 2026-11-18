@@ -239,3 +239,8 @@ timeout at Kirkland.
   and the stoppage estimate saw everyone standing still for 21 minutes until `stoppages.py` learned to skip repeated
   frames. Check with ffmpeg's `mpdecimate` over 10 s in a suspect stretch (about 230 frames kept is normal at 24 fps).
   Tell the gap checkers about it: frames at least 0.5 s apart.
+- **A checker with windows can skip the bench pieces.** On BW's Nov 15 game the P1 brief had 2 windows and 5 bench
+  pieces; the checker answered the windows only, and `gaps --apply` printed no `noted` line for P1 (P3's checker
+  noted every piece). Rerun with the next round's brief, which lists the bench pieces again; there it found 4 fixes in
+  two line changes (a player climbing over at 532-536 counted from 531, one counted on from inside the bench). After
+  `--apply`, each bench piece a brief listed should show up as a fix or a `noted` line.

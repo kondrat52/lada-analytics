@@ -186,6 +186,12 @@ nearest class (`rinkcam.align(json.load(open('pipeline/cams/<class>.json')), np.
 and look at the residuals: a few px means a roll the ice maps already correct. The board clock read all six
 edges; the 3rd's clock stopped at whistles and ran to 0.0 with a penalty still on, at the video's end.
 
+Blue Wings' game earlier that night (9:15 PM, away, light blue, bench on the left) printed the same framing line with
+the same curve to the pixel, so the roll was already in place; it ran as `renton2nov` too, and the bench, box and
+crease zones held through the lineup checks. The clock reader read all six edges; the 3rd's start was a second late
+(the board left 18:00 at 2375, not 2374). The board was dark for long stretches of the 3rd (2378 on, 2780-2794,
+3112-3132), across one goal each way.
+
 Views: `rink` 0–3840 × 220–1920; `left-net` 40–1240 × 480–1080; `right-net` 2540–3740 × 470–1070.
 
 ## Snoqualmie A (`snoqualmie`, a 3840x1536 strip)

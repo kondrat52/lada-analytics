@@ -79,6 +79,13 @@ stoppages its implied second is close to exact. When a goal check's `at` is 2+ s
 the crease every 0.25 s up to the implied time plus 2 s. Take the last jam before the first raised arm, and give the
 clip `--replay-from` back to the first shot.
 
+The sheet's clock can also be later than the goal because the operator ran the clock during the stoppage. On BW's
+Nov 15 game (3rd period, clock stopping at whistles) the goal check put Ilinskaya's goal at 3109, a pile-up at the
+crease, and the sheet's 8:42 implied 3140. The board read 8:48 at 3110, went dark, and was back at 8:42 with a shot
+more at 3136, which looked like a zone faceoff and a second goal 6 s later. The frames showed no faceoff in the zone
+between: the players hung around the net, then skated straight to center for the 3150 faceoff, which only follows a
+goal. So the stoppage that ends at a center faceoff is the goal; a clock that moved meanwhile was the operator's.
+
 A video can start after the game has begun. LADA R's Nov 9 video opened with the board at 17:23 of the 1st and the
 home side already up 1-0. The goal at 17:50 stays out of `highlights.json`, the notes say so, and the page heading
 takes its score from `lada_games.json`. A fallback to goals on video would have shown 4-4 for a 4-5 game.
