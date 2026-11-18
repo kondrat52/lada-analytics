@@ -121,7 +121,11 @@ aliases                          a player's second number -> his primary one, wh
 ```
 
 A surname two players share (a father and son) counts as a name read for neither; only their numbers tell them
-apart. New players go in before prepare (then prepare again); which part they go in changes only the site. Players
+apart. Fragments of a shared surname can match someone else's: on Doofers' Nov 15 game `absent --suggest` said
+"reads say he played" for Belousenko #11 on 38 name reads, every one a piece of TISLENOK (SLENOK, OLENOK, ISLEND)
+from #38 and #98, and for Zaychikov #6 on 299 digit reads, every crop #46, #26, #97 or #98. Neither played. Sheet the
+crops behind such a suggestion (the files `ocr_*.csv` lists for those reads, through `pipeline/sheet.py` as
+`unknown` does) before keeping a player the sheet leaves out. New players go in before prepare (then prepare again); which part they go in changes only the site. Players
 who didn't play a game are marked with `run_game.py absent`, never by editing this file.
 
 A sub can wear a roster player's number: on Doofers' Oct 18 game Vasyliev (Turbo Kings) wore #31, Sourov's, with

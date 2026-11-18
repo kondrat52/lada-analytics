@@ -5,8 +5,9 @@
   "short_name": "LDF",
   "lada_team_id": 17
  },
- "updated": "2026-11-08",
+ "updated": "2026-11-15",
  "games": [
+  "2026-11-15-vs-jp",
   "2026-11-08-vs-rn",
   "2026-10-25-vs-se",
   "2026-10-18-vs-rn",
@@ -51,16 +52,29 @@
    "number": 52,
    "name": "Polyanskiy",
    "lada_player_id": 5901,
-   "games_played": 4,
-   "shifts": 59,
-   "toi": 8775,
-   "toi_per_game": 2193.8,
-   "play": 6434,
-   "avg_shift": 148.7,
+   "games_played": 5,
+   "shifts": 76,
+   "toi": 10729,
+   "toi_per_game": 2145.8,
+   "play": 7809,
+   "avg_shift": 141.2,
    "longest_shift": 560,
    "shortest_shift": 35,
-   "plus_minus": 4,
+   "plus_minus": 0,
    "games": [
+    {
+     "id": "2026-11-15-vs-jp",
+     "date": "2026-11-15",
+     "opponent": {
+      "code": "JP",
+      "name": "Jurassic Puck"
+     },
+     "toi": 1954,
+     "shifts": 17,
+     "avg_shift": 114.9,
+     "play": 1375,
+     "plus_minus": -4
+    },
     {
      "id": "2026-11-08-vs-rn",
      "date": "2026-11-08",
@@ -231,16 +245,29 @@
    "number": 46,
    "name": "Polyanskiy",
    "lada_player_id": 5876,
-   "games_played": 7,
-   "shifts": 103,
-   "toi": 13927,
+   "games_played": 8,
+   "shifts": 120,
+   "toi": 15917,
    "toi_per_game": 1989.6,
-   "play": 9234,
-   "avg_shift": 135.2,
+   "play": 10689,
+   "avg_shift": 132.6,
    "longest_shift": 454,
    "shortest_shift": 20,
-   "plus_minus": 7,
+   "plus_minus": 3,
    "games": [
+    {
+     "id": "2026-11-15-vs-jp",
+     "date": "2026-11-15",
+     "opponent": {
+      "code": "JP",
+      "name": "Jurassic Puck"
+     },
+     "toi": 1990,
+     "shifts": 17,
+     "avg_shift": 117.1,
+     "play": 1455,
+     "plus_minus": -4
+    },
     {
      "id": "2026-11-08-vs-rn",
      "date": "2026-11-08",
@@ -497,19 +524,126 @@
    ]
   },
   {
+   "number": 37,
+   "name": "Akulov",
+   "lada_player_id": 14218,
+   "games_played": 6,
+   "shifts": 94,
+   "toi": 11395,
+   "toi_per_game": 1899.2,
+   "play": 7606,
+   "avg_shift": 121.2,
+   "longest_shift": 240,
+   "shortest_shift": 20,
+   "plus_minus": 0,
+   "games": [
+    {
+     "id": "2026-11-15-vs-jp",
+     "date": "2026-11-15",
+     "opponent": {
+      "code": "JP",
+      "name": "Jurassic Puck"
+     },
+     "toi": 2030,
+     "shifts": 16,
+     "avg_shift": 126.9,
+     "play": 1399,
+     "plus_minus": -2
+    },
+    {
+     "id": "2026-11-08-vs-rn",
+     "date": "2026-11-08",
+     "opponent": {
+      "code": "RN",
+      "name": "Rainucks"
+     },
+     "toi": 1132,
+     "shifts": 14,
+     "avg_shift": 80.9,
+     "play": 766,
+     "plus_minus": -1
+    },
+    {
+     "id": "2026-10-25-vs-se",
+     "date": "2026-10-25",
+     "opponent": {
+      "code": "SE",
+      "name": "Sentinels"
+     },
+     "toi": 1927,
+     "shifts": 16,
+     "avg_shift": 120.4,
+     "play": 1373,
+     "plus_minus": 0
+    },
+    {
+     "id": "2026-09-27-vs-rn",
+     "date": "2026-09-27",
+     "opponent": {
+      "code": "RN",
+      "name": "Rainucks"
+     },
+     "toi": 1902,
+     "shifts": 15,
+     "avg_shift": 126.8,
+     "play": 1189,
+     "plus_minus": 1
+    },
+    {
+     "id": "2026-09-19-vs-se",
+     "date": "2026-09-19",
+     "opponent": {
+      "code": "SE",
+      "name": "Sentinels"
+     },
+     "toi": 2092,
+     "shifts": 15,
+     "avg_shift": 139.5,
+     "play": 1270,
+     "plus_minus": 6
+    },
+    {
+     "id": "2026-09-13-vs-jp",
+     "date": "2026-09-13",
+     "opponent": {
+      "code": "JP",
+      "name": "Jurassic Puck"
+     },
+     "toi": 2312,
+     "shifts": 18,
+     "avg_shift": 128.4,
+     "play": 1609,
+     "plus_minus": -4
+    }
+   ]
+  },
+  {
    "number": 71,
    "name": "Fedotov",
    "lada_player_id": 11114,
-   "games_played": 7,
-   "shifts": 100,
-   "toi": 13330,
-   "toi_per_game": 1904.3,
-   "play": 9260,
-   "avg_shift": 133.3,
+   "games_played": 8,
+   "shifts": 113,
+   "toi": 14968,
+   "toi_per_game": 1871,
+   "play": 10455,
+   "avg_shift": 132.5,
    "longest_shift": 365,
    "shortest_shift": 21,
-   "plus_minus": -9,
+   "plus_minus": -8,
    "games": [
+    {
+     "id": "2026-11-15-vs-jp",
+     "date": "2026-11-15",
+     "opponent": {
+      "code": "JP",
+      "name": "Jurassic Puck"
+     },
+     "toi": 1638,
+     "shifts": 13,
+     "avg_shift": 126,
+     "play": 1195,
+     "plus_minus": 1
+    },
     {
      "id": "2026-11-08-vs-rn",
      "date": "2026-11-08",
@@ -604,20 +738,101 @@
    ]
   },
   {
+   "number": 38,
+   "name": "Tislenok",
+   "lada_player_id": 5890,
+   "games_played": 4,
+   "shifts": 67,
+   "toi": 7371,
+   "toi_per_game": 1842.8,
+   "play": 5179,
+   "avg_shift": 110.0,
+   "longest_shift": 256,
+   "shortest_shift": 30,
+   "plus_minus": 0,
+   "games": [
+    {
+     "id": "2026-11-15-vs-jp",
+     "date": "2026-11-15",
+     "opponent": {
+      "code": "JP",
+      "name": "Jurassic Puck"
+     },
+     "toi": 2043,
+     "shifts": 18,
+     "avg_shift": 113.5,
+     "play": 1476,
+     "plus_minus": 2
+    },
+    {
+     "id": "2026-11-08-vs-rn",
+     "date": "2026-11-08",
+     "opponent": {
+      "code": "RN",
+      "name": "Rainucks"
+     },
+     "toi": 1692,
+     "shifts": 16,
+     "avg_shift": 105.8,
+     "play": 1296,
+     "plus_minus": -1
+    },
+    {
+     "id": "2026-10-10-vs-fg",
+     "date": "2026-10-10",
+     "opponent": {
+      "code": "FG",
+      "name": "Frost Giants"
+     },
+     "toi": 1802,
+     "shifts": 16,
+     "avg_shift": 112.6,
+     "play": 1225,
+     "plus_minus": 1
+    },
+    {
+     "id": "2026-09-13-vs-jp",
+     "date": "2026-09-13",
+     "opponent": {
+      "code": "JP",
+      "name": "Jurassic Puck"
+     },
+     "toi": 1834,
+     "shifts": 17,
+     "avg_shift": 107.9,
+     "play": 1182,
+     "plus_minus": -2
+    }
+   ]
+  },
+  {
    "number": 26,
    "name": "Babkin",
    "lada_player_id": 11153,
    "sub": true,
-   "games_played": 4,
-   "shifts": 58,
-   "toi": 7523,
-   "toi_per_game": 1880.8,
-   "play": 4919,
-   "avg_shift": 129.7,
+   "games_played": 5,
+   "shifts": 69,
+   "toi": 8966,
+   "toi_per_game": 1793.2,
+   "play": 5950,
+   "avg_shift": 129.9,
    "longest_shift": 282,
    "shortest_shift": 23,
-   "plus_minus": 5,
+   "plus_minus": 4,
    "games": [
+    {
+     "id": "2026-11-15-vs-jp",
+     "date": "2026-11-15",
+     "opponent": {
+      "code": "JP",
+      "name": "Jurassic Puck"
+     },
+     "toi": 1443,
+     "shifts": 11,
+     "avg_shift": 131.2,
+     "play": 1031,
+     "plus_minus": -1
+    },
     {
      "id": "2026-10-25-vs-se",
      "date": "2026-10-25",
@@ -673,240 +888,32 @@
    ]
   },
   {
-   "number": 37,
-   "name": "Akulov",
-   "lada_player_id": 14218,
-   "games_played": 5,
-   "shifts": 78,
-   "toi": 9365,
-   "toi_per_game": 1873,
-   "play": 6207,
-   "avg_shift": 120.1,
-   "longest_shift": 230,
-   "shortest_shift": 20,
-   "plus_minus": 2,
-   "games": [
-    {
-     "id": "2026-11-08-vs-rn",
-     "date": "2026-11-08",
-     "opponent": {
-      "code": "RN",
-      "name": "Rainucks"
-     },
-     "toi": 1132,
-     "shifts": 14,
-     "avg_shift": 80.9,
-     "play": 766,
-     "plus_minus": -1
-    },
-    {
-     "id": "2026-10-25-vs-se",
-     "date": "2026-10-25",
-     "opponent": {
-      "code": "SE",
-      "name": "Sentinels"
-     },
-     "toi": 1927,
-     "shifts": 16,
-     "avg_shift": 120.4,
-     "play": 1373,
-     "plus_minus": 0
-    },
-    {
-     "id": "2026-09-27-vs-rn",
-     "date": "2026-09-27",
-     "opponent": {
-      "code": "RN",
-      "name": "Rainucks"
-     },
-     "toi": 1902,
-     "shifts": 15,
-     "avg_shift": 126.8,
-     "play": 1189,
-     "plus_minus": 1
-    },
-    {
-     "id": "2026-09-19-vs-se",
-     "date": "2026-09-19",
-     "opponent": {
-      "code": "SE",
-      "name": "Sentinels"
-     },
-     "toi": 2092,
-     "shifts": 15,
-     "avg_shift": 139.5,
-     "play": 1270,
-     "plus_minus": 6
-    },
-    {
-     "id": "2026-09-13-vs-jp",
-     "date": "2026-09-13",
-     "opponent": {
-      "code": "JP",
-      "name": "Jurassic Puck"
-     },
-     "toi": 2312,
-     "shifts": 18,
-     "avg_shift": 128.4,
-     "play": 1609,
-     "plus_minus": -4
-    }
-   ]
-  },
-  {
-   "number": 13,
-   "name": "Komashinsky",
-   "lada_player_id": 14216,
-   "games_played": 3,
-   "shifts": 36,
-   "toi": 5427,
-   "toi_per_game": 1809,
-   "play": 3850,
-   "avg_shift": 150.8,
-   "longest_shift": 606,
-   "shortest_shift": 23,
-   "plus_minus": 3,
-   "games": [
-    {
-     "id": "2026-11-08-vs-rn",
-     "date": "2026-11-08",
-     "opponent": {
-      "code": "RN",
-      "name": "Rainucks"
-     },
-     "toi": 1878,
-     "shifts": 15,
-     "avg_shift": 125.2,
-     "play": 1360,
-     "plus_minus": 3
-    },
-    {
-     "id": "2026-10-04-vs-fg",
-     "date": "2026-10-04",
-     "opponent": {
-      "code": "FG",
-      "name": "Frost Giants"
-     },
-     "toi": 1628,
-     "shifts": 8,
-     "avg_shift": 203.5,
-     "play": 1298,
-     "plus_minus": -2
-    },
-    {
-     "id": "2026-09-27-vs-rn",
-     "date": "2026-09-27",
-     "opponent": {
-      "code": "RN",
-      "name": "Rainucks"
-     },
-     "toi": 1921,
-     "shifts": 13,
-     "avg_shift": 147.8,
-     "play": 1192,
-     "plus_minus": 2
-    }
-   ]
-  },
-  {
-   "number": 38,
-   "name": "Tislenok",
-   "lada_player_id": 5890,
-   "games_played": 3,
-   "shifts": 49,
-   "toi": 5328,
-   "toi_per_game": 1776,
-   "play": 3703,
-   "avg_shift": 108.7,
-   "longest_shift": 256,
-   "shortest_shift": 30,
-   "plus_minus": -2,
-   "games": [
-    {
-     "id": "2026-11-08-vs-rn",
-     "date": "2026-11-08",
-     "opponent": {
-      "code": "RN",
-      "name": "Rainucks"
-     },
-     "toi": 1692,
-     "shifts": 16,
-     "avg_shift": 105.8,
-     "play": 1296,
-     "plus_minus": -1
-    },
-    {
-     "id": "2026-10-10-vs-fg",
-     "date": "2026-10-10",
-     "opponent": {
-      "code": "FG",
-      "name": "Frost Giants"
-     },
-     "toi": 1802,
-     "shifts": 16,
-     "avg_shift": 112.6,
-     "play": 1225,
-     "plus_minus": 1
-    },
-    {
-     "id": "2026-09-13-vs-jp",
-     "date": "2026-09-13",
-     "opponent": {
-      "code": "JP",
-      "name": "Jurassic Puck"
-     },
-     "toi": 1834,
-     "shifts": 17,
-     "avg_shift": 107.9,
-     "play": 1182,
-     "plus_minus": -2
-    }
-   ]
-  },
-  {
-   "number": 16,
-   "name": "Skitsko",
-   "lada_player_id": 20388,
-   "sub": true,
-   "games_played": 1,
-   "shifts": 14,
-   "toi": 1740,
-   "toi_per_game": 1740,
-   "play": 1099,
-   "avg_shift": 124.3,
-   "longest_shift": 190,
-   "shortest_shift": 44,
-   "plus_minus": 3,
-   "games": [
-    {
-     "id": "2026-09-19-vs-se",
-     "date": "2026-09-19",
-     "opponent": {
-      "code": "SE",
-      "name": "Sentinels"
-     },
-     "toi": 1740,
-     "shifts": 14,
-     "avg_shift": 124.3,
-     "play": 1099,
-     "plus_minus": 3
-    }
-   ]
-  },
-  {
    "number": 97,
    "name": "Zakharankau",
    "lada_player_id": 14185,
-   "games_played": 4,
-   "shifts": 53,
-   "toi": 6816,
-   "toi_per_game": 1704,
-   "play": 4413,
-   "avg_shift": 128.6,
-   "longest_shift": 258,
+   "games_played": 5,
+   "shifts": 66,
+   "toi": 8867,
+   "toi_per_game": 1773.4,
+   "play": 5937,
+   "avg_shift": 134.3,
+   "longest_shift": 281,
    "shortest_shift": 22,
    "plus_minus": 2,
    "games": [
+    {
+     "id": "2026-11-15-vs-jp",
+     "date": "2026-11-15",
+     "opponent": {
+      "code": "JP",
+      "name": "Jurassic Puck"
+     },
+     "toi": 2051,
+     "shifts": 13,
+     "avg_shift": 157.8,
+     "play": 1524,
+     "plus_minus": 0
+    },
     {
      "id": "2026-10-18-vs-rn",
      "date": "2026-10-18",
@@ -962,32 +969,100 @@
    ]
   },
   {
-   "number": 31,
-   "name": "Vasyliev",
-   "lada_player_id": null,
+   "number": 16,
+   "name": "Skitsko",
+   "lada_player_id": 20388,
    "sub": true,
    "games_played": 1,
-   "shifts": 13,
-   "toi": 1676,
-   "toi_per_game": 1676,
-   "play": 1114,
-   "avg_shift": 128.9,
-   "longest_shift": 221,
-   "shortest_shift": 50,
-   "plus_minus": 0,
+   "shifts": 14,
+   "toi": 1740,
+   "toi_per_game": 1740,
+   "play": 1099,
+   "avg_shift": 124.3,
+   "longest_shift": 190,
+   "shortest_shift": 44,
+   "plus_minus": 3,
    "games": [
     {
-     "id": "2026-10-18-vs-rn",
-     "date": "2026-10-18",
+     "id": "2026-09-19-vs-se",
+     "date": "2026-09-19",
+     "opponent": {
+      "code": "SE",
+      "name": "Sentinels"
+     },
+     "toi": 1740,
+     "shifts": 14,
+     "avg_shift": 124.3,
+     "play": 1099,
+     "plus_minus": 3
+    }
+   ]
+  },
+  {
+   "number": 13,
+   "name": "Komashinsky",
+   "lada_player_id": 14216,
+   "games_played": 4,
+   "shifts": 48,
+   "toi": 6817,
+   "toi_per_game": 1704.2,
+   "play": 4789,
+   "avg_shift": 142.0,
+   "longest_shift": 606,
+   "shortest_shift": 23,
+   "plus_minus": 2,
+   "games": [
+    {
+     "id": "2026-11-15-vs-jp",
+     "date": "2026-11-15",
+     "opponent": {
+      "code": "JP",
+      "name": "Jurassic Puck"
+     },
+     "toi": 1390,
+     "shifts": 12,
+     "avg_shift": 115.8,
+     "play": 939,
+     "plus_minus": -1
+    },
+    {
+     "id": "2026-11-08-vs-rn",
+     "date": "2026-11-08",
      "opponent": {
       "code": "RN",
       "name": "Rainucks"
      },
-     "toi": 1676,
+     "toi": 1878,
+     "shifts": 15,
+     "avg_shift": 125.2,
+     "play": 1360,
+     "plus_minus": 3
+    },
+    {
+     "id": "2026-10-04-vs-fg",
+     "date": "2026-10-04",
+     "opponent": {
+      "code": "FG",
+      "name": "Frost Giants"
+     },
+     "toi": 1628,
+     "shifts": 8,
+     "avg_shift": 203.5,
+     "play": 1298,
+     "plus_minus": -2
+    },
+    {
+     "id": "2026-09-27-vs-rn",
+     "date": "2026-09-27",
+     "opponent": {
+      "code": "RN",
+      "name": "Rainucks"
+     },
+     "toi": 1921,
      "shifts": 13,
-     "avg_shift": 128.9,
-     "play": 1114,
-     "plus_minus": 0
+     "avg_shift": 147.8,
+     "play": 1192,
+     "plus_minus": 2
     }
    ]
   },
@@ -995,16 +1070,29 @@
    "number": 29,
    "name": "Albantov",
    "lada_player_id": 20327,
-   "games_played": 8,
-   "shifts": 105,
-   "toi": 13378,
-   "toi_per_game": 1672.2,
-   "play": 9056,
-   "avg_shift": 127.4,
+   "games_played": 9,
+   "shifts": 120,
+   "toi": 15305,
+   "toi_per_game": 1700.6,
+   "play": 10408,
+   "avg_shift": 127.5,
    "longest_shift": 322,
    "shortest_shift": 35,
-   "plus_minus": -1,
+   "plus_minus": -2,
    "games": [
+    {
+     "id": "2026-11-15-vs-jp",
+     "date": "2026-11-15",
+     "opponent": {
+      "code": "JP",
+      "name": "Jurassic Puck"
+     },
+     "toi": 1927,
+     "shifts": 15,
+     "avg_shift": 128.5,
+     "play": 1352,
+     "plus_minus": -1
+    },
     {
      "id": "2026-11-08-vs-rn",
      "date": "2026-11-08",
@@ -1108,6 +1196,36 @@
      "avg_shift": 107.6,
      "play": 1243,
      "plus_minus": -1
+    }
+   ]
+  },
+  {
+   "number": 31,
+   "name": "Vasyliev",
+   "lada_player_id": null,
+   "sub": true,
+   "games_played": 1,
+   "shifts": 13,
+   "toi": 1676,
+   "toi_per_game": 1676,
+   "play": 1114,
+   "avg_shift": 128.9,
+   "longest_shift": 221,
+   "shortest_shift": 50,
+   "plus_minus": 0,
+   "games": [
+    {
+     "id": "2026-10-18-vs-rn",
+     "date": "2026-10-18",
+     "opponent": {
+      "code": "RN",
+      "name": "Rainucks"
+     },
+     "toi": 1676,
+     "shifts": 13,
+     "avg_shift": 128.9,
+     "play": 1114,
+     "plus_minus": 0
     }
    ]
   },
@@ -1282,16 +1400,29 @@
    "number": 98,
    "name": "Tislenok",
    "lada_player_id": 5898,
-   "games_played": 5,
-   "shifts": 70,
-   "toi": 7581,
-   "toi_per_game": 1516.2,
-   "play": 4844,
-   "avg_shift": 108.3,
+   "games_played": 6,
+   "shifts": 82,
+   "toi": 9160,
+   "toi_per_game": 1526.7,
+   "play": 6109,
+   "avg_shift": 111.7,
    "longest_shift": 266,
    "shortest_shift": 42,
-   "plus_minus": 0,
+   "plus_minus": -1,
    "games": [
+    {
+     "id": "2026-11-15-vs-jp",
+     "date": "2026-11-15",
+     "opponent": {
+      "code": "JP",
+      "name": "Jurassic Puck"
+     },
+     "toi": 1579,
+     "shifts": 12,
+     "avg_shift": 131.6,
+     "play": 1265,
+     "plus_minus": -1
+    },
     {
      "id": "2026-11-08-vs-rn",
      "date": "2026-11-08",
@@ -1363,16 +1494,29 @@
    "number": 31,
    "name": "Sourov",
    "lada_player_id": 15242,
-   "games_played": 5,
-   "shifts": 74,
-   "toi": 7174,
-   "toi_per_game": 1434.8,
-   "play": 4738,
-   "avg_shift": 96.9,
+   "games_played": 6,
+   "shifts": 91,
+   "toi": 8681,
+   "toi_per_game": 1446.8,
+   "play": 5936,
+   "avg_shift": 95.4,
    "longest_shift": 185,
    "shortest_shift": 22,
    "plus_minus": 0,
    "games": [
+    {
+     "id": "2026-11-15-vs-jp",
+     "date": "2026-11-15",
+     "opponent": {
+      "code": "JP",
+      "name": "Jurassic Puck"
+     },
+     "toi": 1507,
+     "shifts": 17,
+     "avg_shift": 88.6,
+     "play": 1198,
+     "plus_minus": 0
+    },
     {
      "id": "2026-11-08-vs-rn",
      "date": "2026-11-08",

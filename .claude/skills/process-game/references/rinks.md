@@ -192,6 +192,14 @@ crease zones held through the lineup checks. The clock reader read all six edges
 (the board left 18:00 at 2375, not 2374). The board was dark for long stretches of the 3rd (2378 on, 2780-2794,
 3112-3132), across one goal each way.
 
+Doofers' game that evening (6:25 PM, away, light blue, bench on the left) had the same curve within a pixel and ran
+as `renton2nov`. The video opened on the opening faceoff, and the board was dark at both ends of the 1st, so the
+clock reader placed those edges from its readings either side (17:50 at 11 s, 59.8 at 1022 s); a frame of the drop
+and the intermission countdown confirmed both. In the 3rd the digits were blank from 2788 to 2809, across a penalty
+call: the reader put the clock stopped at 13:25 and running down to 13:16 at about 2813, while the board's own
+13:16 stop came at 2792.5. The sheet-implied time for that penalty (2814) was 20 s late, so take a call's time
+from the frames there.
+
 Views: `rink` 0–3840 × 220–1920; `left-net` 40–1240 × 480–1080; `right-net` 2540–3740 × 470–1070.
 
 ## Snoqualmie A (`snoqualmie`, a 3840x1536 strip)
