@@ -13,7 +13,7 @@ goes away; adding fields doesn't need a bump.
 import os, json
 import numpy as np, pandas as pd
 from roster import MEMBERS, SUBS, GOALIE_NAMES, LADA_IDS, ALIASES, TEAM_NAME, TEAM_SHORT, LADA_TEAM_ID, SITE_URL, OPPONENTS
-from roster import guest_key, number_of, name_of, is_sub
+from roster import guest_key, number_of, name_of, is_sub, final_score
 from ice import GRID_CHARS
 
 SCHEMA = 1
@@ -80,6 +80,12 @@ def _ice(game):
                         for n, m in sorted(I["players"].items(), key=lambda nm: -nm[1]["sec"])]}
 
 
+def _score(game):
+    """The game's score: LADA's final when it has one ("official": true), else the goals on video."""
+    sc = final_score(game)
+    return {"for": sc["gf"], "against": sc["ga"], "result": sc["result"], "official": sc["official"]}
+
+
 def game_doc(game, A, players, highlights):
     """players/highlights: as computed for the game page (build_report.player_rows / highlights)."""
     base = SITE_URL.rstrip("/") + f"/games/{game['id']}/"
@@ -101,6 +107,7 @@ def game_doc(game, A, players, highlights):
         "video_ends_early": bool(game.get("video_ends_early")),
         "goals_on_video": {"for": sum(1 for h in hl if h.get("team") == "for"),
                            "against": sum(1 for h in hl if h.get("team") == "against")},
+        "score": _score(game),
         "shots": _shots(game),
         "periods": [{"label": p["label"], "start": p["start"], "end": p["end"], "length": p["end"] - p["start"]}
                     for p in game["periods"]],
@@ -142,7 +149,8 @@ def trends_doc(rows):
             "opponent": {"code": game["opponent"], "name": game.get("opponent_name") or OPPONENTS.get(game["opponent"])},
             "lada_game_id": game.get("lada_game_id"),
             "video_ends_early": t["video_ends_early"],
-            "goals_on_video": {"for": t["gf"], "against": t["ga"]}, "result": t["result"],
+            "goals_on_video": {"for": t["vgf"], "against": t["vga"]}, "score": _score(game),
+            "result": "W" if t["vgf"] > t["vga"] else "L" if t["vgf"] < t["vga"] else "T",   # from the goals on video
             "shots": _shots(game),
             "zones": {"offence": t["offence"], "defence": t["defence"]} if t["offence"] is not None else None,
             "skaters": t["skaters"], "avg_shift": _num(t["avg_shift"]), "play_share": _num(t["live_pct"], 4),
@@ -188,7 +196,7 @@ def write_feed(site_dir, games, docs_by_game, season):
                    "time": _when_where(g)[0], "rink": _when_where(g)[1],
                    "opponent": {"code": g["opponent"], "name": g.get("opponent_name") or OPPONENTS.get(g["opponent"])},
                    "lada_game_id": g.get("lada_game_id"),
-                   "goals_on_video": docs_by_game[g["id"]]["goals_on_video"],
+                   "goals_on_video": docs_by_game[g["id"]]["goals_on_video"], "score": docs_by_game[g["id"]]["score"],
                    "shots": ({k: docs_by_game[g["id"]]["shots"][k] for k in ("for", "against")}
                              if docs_by_game[g["id"]]["shots"] else None),
                    "highlights": len(docs_by_game[g["id"]]["highlights"]),

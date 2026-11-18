@@ -7,6 +7,7 @@ from html import escape
 import numpy as np, pandas as pd
 sys.path.insert(0, os.path.dirname(os.path.abspath(__file__)))
 from roster import ALIASES, TEAM, SLUG, REPO, GAMES_DIR, SITE_DIR, teams, site_of, opponent_name, guest_key, number_of, name_of, is_sub
+from roster import final_score
 from build_feed import trends_doc
 
 HERE = os.path.dirname(os.path.abspath(__file__))
@@ -37,7 +38,8 @@ def game_rows(gd):
     for a, b in game.get("stoppages", []):
         live[int(a):int(b)] = False
     goals = [h for h in game.get("highlights", []) if h["type"] == "goal"]
-    gf = sum(h["team"] == "for" for h in goals); ga = sum(h["team"] == "against" for h in goals)
+    vgf = sum(h["team"] == "for" for h in goals); vga = sum(h["team"] == "against" for h in goals)   # on video
+    sc = final_score(game)   # LADA's final score, else the goals on video
     pks = game.get("penalty_kills", [])
     in_pk = lambda t: any(k["start"] <= t < k["end"] for k in pks)
     zones = game.get("zones") or {}
@@ -45,8 +47,8 @@ def game_rows(gd):
     sp = [shots[p["label"]] for p in periods if p["label"] in shots] or None
     team = dict(
         id=game["id"], date=game["date"], opp=opponent_name(game), opp_code=game["opponent"],
-        rink=(game.get("eyebrow") or "").split("·")[-1].strip(), gf=gf, ga=ga,
-        result="W" if gf > ga else ("L" if gf < ga else "T"), video_ends_early=bool(game.get("video_ends_early")),
+        rink=(game.get("eyebrow") or "").split("·")[-1].strip(), gf=sc["gf"], ga=sc["ga"], vgf=vgf, vga=vga,
+        result=sc["result"], official=sc["official"], video_ends_early=bool(game.get("video_ends_early")),
         skaters=int(A.player.nunique()), avg_shift=float(A.dur.mean()), live_pct=float(live.sum() / length),
         penalties=len(penalties(game)), pk_ga=sum(h["team"] == "against" and in_pk(h["t"]) for h in goals),
         pk_min=float(sum(k["end"] - k["start"] for k in pks) / 60),

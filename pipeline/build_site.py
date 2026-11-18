@@ -1,7 +1,7 @@
 """build_site.py : render docs/ (GitHub Pages) from each team's teams/<slug>/games/*/game.json + shifts.csv, into
 the team's site folder docs/<slug>/.
 <site>/index.html            season totals (sortable) + list of games
-<site>/games/<id>/index.html one shift sheet per game
+<site>/games/<id>/index.html one analytics page per game
 <site>/api/*.json            JSON feed for apps (see build_feed.py / API.md)
 docs/index.html              the teams, linking to their sites (only when building every team)
 Builds every team, or only $TEAM when it is set. A team without games yet gets a page saying so and an empty feed,
@@ -10,18 +10,24 @@ import os, sys, json, glob, html, subprocess
 
 if not os.environ.get("TEAM"):   # each team in its own process: roster.py holds one team's names
     sys.path.insert(0, os.path.dirname(os.path.abspath(__file__)))
-    from roster import REPO, teams, site_of
+    from roster import REPO, teams, site_of, final_score
     for slug in teams():
         subprocess.run([sys.executable, os.path.abspath(__file__)], env=dict(os.environ, TEAM=slug), check=True)
     open(f"{REPO}/docs/.nojekyll", "w").write("")
-    played = sorted(((t, len(glob.glob(f"{REPO}/teams/{t}/games/*/game.json"))) for t in teams()),
+    def record(t):
+        """A team's number of games and its W–L(–T) record."""
+        r = [final_score(json.load(open(f, encoding="utf-8")), t)["result"]
+             for f in glob.glob(f"{REPO}/teams/{t}/games/*/game.json")]
+        return len(r), f"{r.count('W')}–{r.count('L')}" + (f"–{r.count('T')}" if r.count("T") else "")
+    played = sorted(((t, *record(t)) for t in teams()),
                     key=lambda tn: (not tn[1], tn[0] != "tk", site_of(tn[0])[0]))   # Turbo Kings first, no games last
     links = "\n".join(f"<li><a href='{t}/'><span class='t'>{html.escape(site_of(t)[0])}</span>"
-                      f"<span class='d'>{f'{n} game' + ('' if n == 1 else 's') if n else 'No games yet'}</span></a></li>"
-                      for t, n in played)
+                      f"<span class='d'>{f'{n} game' + ('' if n == 1 else 's') + f' · {rec}' if n else 'No games yet'}"
+                      f"</span></a></li>"
+                      for t, n, rec in played)
     open(f"{REPO}/docs/index.html", "w").write(f"""<!doctype html>
 <html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
-<title>LADA Shift Sheets</title>
+<title>LADA Analytics</title>
 <link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Big+Shoulders+Display:wght@700;800&family=Barlow:wght@400;500;600&family=Barlow+Condensed:wght@500;600&display=swap">
 <style>
@@ -39,8 +45,8 @@ ul a:hover, ul a:focus-visible {{ border-color:var(--team); outline:none; }}
 .t {{ font:700 22px/1.1 var(--display); }} .d {{ font:500 15px/1.3 var(--data); letter-spacing:.04em; color:var(--muted); }}
 p.note {{ color:var(--muted); margin:0; max-width:70ch; }}
 </style></head><body><div class="wrap">
-<header><div class="eyebrow">LADA Seattle · Rec hockey</div><h1>Shift sheets</h1>
-<p class="note">Ice time and shifts for every skater, measured from each week's wide-cut game video.</p></header>
+<header><div class="eyebrow">LADA Seattle · Rec hockey</div><h1>Analytics</h1>
+<p class="note">Scores, ice time and shifts for every skater, measured from each week's wide-cut game video.</p></header>
 <ul>{links}</ul>
 </div></body></html>""")
     sys.exit()
@@ -50,7 +56,8 @@ sys.path.insert(0, os.path.dirname(os.path.abspath(__file__)))
 from build_report import build
 from build_feed import season_table, game_doc, write_feed
 import build_trends
-from roster import ALIASES, TEAM, SLUG, GAMES_DIR, SITE_DIR, opponent_name, guest_key, number_of, name_of, is_sub
+from roster import (ALIASES, TEAM, SLUG, GAMES_DIR, SITE_DIR, opponent_name, guest_key, number_of, name_of, is_sub,
+                    final_score)
 
 fmt = lambda s: f"{int(round(s)) // 60}:{int(round(s)) % 60:02d}"
 
@@ -84,10 +91,21 @@ rows = "\n".join(
     f"{cell(int(r.plus_minus), signed(r.plus_minus))}{cell(r.avg, fmt(r.avg))}{cell(r.longest, fmt(r.longest))}"
     f"{cell(r.shortest if r.shortest == r.shortest else None, fmt(r.shortest) if r.shortest == r.shortest else '–')}</tr>"
     for p, r in season.iterrows())
+
+
+def score_tag(g):
+    """W/L/T and the score on a game card; a score from the video alone (LADA has no result for it) gets a *."""
+    sc = final_score(g)
+    return (f"<span class='sc'><span class='res {sc['result']}'>{sc['result']}</span>"
+            f"{sc['gf']}–{sc['ga']}{'' if sc['official'] else '*'}</span>")
+
+
 cards = "\n".join(
     f"<li><a href='games/{g['id']}/'><span class='d'>{html.escape(g['eyebrow'])}</span>"
-    f"<span class='t'>vs {html.escape(opponent_name(g))}</span></a></li>"
+    f"<span class='t'>vs {html.escape(opponent_name(g))}{score_tag(g)}</span></a></li>"
     for g in sorted(games, key=lambda g: g["date"], reverse=True))
+unofficial = ("<p class='note'>* Goals on video: LADA hasn't posted a final score for this game.</p>"
+              if any(not final_score(g)["official"] for g in games) else "")
 
 SORT_JS = """<script>
 // sort the season table by any column; numbers compare by their data-v key, missing values always last
@@ -113,15 +131,15 @@ SORT_JS = """<script>
 </script>
 """
 
-main = (f"""<section><h2>Games</h2><ul class="games">{cards}</ul></section>
+main = (f"""<section><h2>Games</h2><ul class="games">{cards}</ul>{unofficial}</section>
 <section><h2>Season</h2><div class="tablebox"><table id="season"><thead><tr><th class="l" tabindex="0">#</th><th class="l" tabindex="0" data-text="1">Player</th><th tabindex="0">GP</th><th tabindex="0">Shifts</th><th tabindex="0">Ice time</th><th tabindex="0" aria-sort="descending">Per game</th><th tabindex="0">Live play</th><th tabindex="0" title="Goals for minus goals against while on the ice (goals on video)">+/−</th><th tabindex="0">Avg shift</th><th tabindex="0">Longest</th><th tabindex="0">Shortest</th></tr></thead>
 <tbody>{rows}</tbody></table></div></section>""" if games else
-        "<section><h2>Games</h2><p class='note'>No games yet. Shift sheets show up here once a game video is "
+        "<section><h2>Games</h2><p class='note'>No games yet. Games show up here once their video is "
         "processed.</p></section>")
 
 page = f"""<!doctype html>
 <html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
-<title>{html.escape(TEAM)} Shift Sheets</title>
+<title>{html.escape(TEAM)} Analytics</title>
 <link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Big+Shoulders+Display:wght@700;800&family=Barlow:wght@400;500;600&family=Barlow+Condensed:wght@500;600&display=swap">
 <style>
@@ -139,6 +157,9 @@ ul.games {{ list-style:none; margin:0; padding:0; display:grid; gap:8px; }}
 ul.games a {{ display:flex; flex-wrap:wrap; justify-content:space-between; gap:4px 16px; padding:12px 14px; background:var(--board); border:1px solid var(--rule); border-radius:4px; color:var(--ink); text-decoration:none; }}
 ul.games a:hover, ul.games a:focus-visible {{ border-color:var(--team); outline:none; }}
 .d {{ font:500 15px/1.3 var(--data); letter-spacing:.04em; color:var(--muted); }} .t {{ font:700 20px/1.1 var(--display); }}
+.sc {{ margin-left:14px; font-variant-numeric:tabular-nums; white-space:nowrap; }}
+.res {{ font:600 12px/1 var(--data); letter-spacing:.1em; padding:3px 5px; margin-right:6px; border:1px solid currentColor; border-radius:3px; vertical-align:3px; }}
+.res.W {{ color:var(--team); }} .res.L {{ color:var(--redline); }} .res.T {{ color:var(--muted); }}
 .tablebox {{ overflow-x:auto; background:var(--board); border:1px solid var(--rule); border-radius:4px; }}
 table {{ border-collapse:collapse; width:100%; min-width:620px; font-variant-numeric:tabular-nums; }}
 th, td {{ padding:8px 10px; text-align:right; white-space:nowrap; border-bottom:1px solid var(--rule); }}
@@ -155,8 +176,8 @@ p.note {{ color:var(--muted); margin:0; max-width:70ch; }}
 .teams a[aria-current="page"] {{ background:var(--team); color:var(--board); }}
 .teams a:focus-visible {{ outline:2px solid var(--blueline); outline-offset:-2px; }}
 </style></head><body><div class="wrap">
-<header>{build_trends.team_nav("index.html")}<div class="eyebrow">LADA Seattle · Rec hockey{' · <a href="trends.html">Trends</a>' if games else ''}</div><h1><span>{html.escape(TEAM)}</span> shift sheets</h1>
-<p class="note">Ice time and shifts for every skater, measured from each week's wide-cut game video.</p></header>
+<header>{build_trends.team_nav("index.html")}<div class="eyebrow">LADA Seattle · Rec hockey{' · <a href="trends.html">Trends</a>' if games else ''}</div><h1><span>{html.escape(TEAM)}</span> analytics</h1>
+<p class="note">Scores, ice time and shifts for every skater, measured from each week's wide-cut game video.</p></header>
 {main}
 </div>
 {SORT_JS if games else ''}</body></html>"""

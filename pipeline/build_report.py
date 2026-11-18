@@ -3,7 +3,16 @@ import sys, os, json
 from itertools import combinations
 import numpy as np, pandas as pd
 sys.path.insert(0, os.path.dirname(os.path.abspath(__file__)))
-from roster import TEAM, opponent_name, guest_key, name_of, is_sub
+from roster import TEAM, opponent_name, guest_key, name_of, is_sub, final_score
+
+RESULT = {"W": "Win", "L": "Loss", "T": "Tie"}
+
+
+def scoreline(sc):
+    """The game page's score under its heading; a score from the video alone says so."""
+    src = "" if sc["official"] else '<span class="src">Goals on video</span>'
+    return (f'<p class="final"><span class="res {sc["result"]}">{RESULT[sc["result"]]}</span>'
+            f'<b>{sc["gf"]}–{sc["ga"]}</b>{src}</p>')
 
 
 
@@ -90,7 +99,9 @@ def build(gamedir, out):
     html = open(os.path.join(os.path.dirname(os.path.abspath(__file__)), "report_template.html")).read()
     if not game["video"]:   # no public video yet: the header names it without a link
         html = html.replace('<a href="__VIDEO__" target="_blank" rel="noopener">wide-cut game video</a>', "wide-cut game video")
-    for k, v in {"__TITLE__": game["title"], "__EYEBROW__": game["eyebrow"], "__TEAM__": TEAM,
+    sc = final_score(game)
+    for k, v in {"__TITLE__": f"{game['title']} ({sc['gf']}–{sc['ga']})", "__FINAL__": scoreline(sc),
+                 "__EYEBROW__": game["eyebrow"], "__TEAM__": TEAM,
                  "__OPP__": opponent_name(game), "__VIDEO__": game["video"]}.items():
         html = html.replace(k, v)
     html = html.replace("__DATA__", json.dumps(data))

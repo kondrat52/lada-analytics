@@ -1,6 +1,6 @@
 # LADA Analytics
 
-Shift sheets for LADA's rec hockey teams: shifts, ice time and average shift length for every skater, measured from the wide-cut game video on YouTube.
+Game analytics for LADA's rec hockey teams: scores, shifts, ice time and average shift length for every skater, measured from the wide-cut game video on YouTube.
 
 | Team | Folder | Site |
 |---|---|---|
@@ -78,7 +78,7 @@ python pipeline/build_site.py
    game) right away.
 4. Process a game with `--team <slug>`. Check the jerseys and benches on a frame first: `rink.py` knows our two
    jerseys (light blue, white with blue trim) and each rink's benches.
-5. The LADA app shows a team's shift sheets once its feed URL (`<site_url>api`) is in `shiftSheetFeeds` in the
+5. The LADA app shows a team's game analytics once its feed URL (`<site_url>api`) is in `shiftSheetFeeds` in the
    app's `lib/src/shared/api_constants.dart`, keyed by LADA team id, and that app version is released.
 
 ## How the numbers are made

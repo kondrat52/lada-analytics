@@ -15,7 +15,7 @@
 Because "last" shows one game, a game published a week late would have no way to find its id. So fetch and publish
 keep `teams/<slug>/lada_games.json`, every game the API has shown for the team, and publish takes `lada_game_id`
 from it by date. `run_game.py schedule --team <slug>` prints that view: date, home/away, rink, id, whether a
-shift sheet exists, and the planned lines translated to jersey numbers, with any LADA id that `roster.json`
+game page exists, and the planned lines translated to jersey numbers, with any LADA id that `roster.json`
 doesn't know (a player worth asking about; the lines are a plan, not attendance, and never say whose an id is).
 When neither has the game (a game older than the team's last one, before the cache existed), publish probes
 `game/<id>` around the ids of the other teams' games near that date: LADA hands ids out in schedule order, so
@@ -23,7 +23,7 @@ Beerteam's Sep 13 game (32949) sat four ids past Blue Wings' Sep 13 game (32945)
 `opponentGames` of any game against that opponent and put the id in `game.json` as `"lada_game_id"`, then
 `$PY pipeline/build_site.py`.
 
-`lada_game_id` is what the LADA app uses to link a game to its shift sheet; `opponent_name` in `game.json` (or the
+`lada_game_id` is what the LADA app uses to link a game to its analytics page; `opponent_name` in `game.json` (or the
 team's `opponents.json`) is the name shown. LADA's exact spelling of an opponent is what finds its logo in the
 app; a different spelling shows initials. The user's spelling wins for the code and name on the site.
 
@@ -168,4 +168,4 @@ Shikhanov #70 and Shachak #92 not playing, while their nameplates were read all 
 3. `build_site.py` gives it a site and an empty feed; publish rebuilds every team so the root page and the team
    menus list it.
 4. Before its first game, check its jersey colour on a frame against `rink.JERSEYS`.
-5. The LADA app shows the team's sheets once its feed URL (`<site_url>api`) is in the app's `shiftSheetFeeds`.
+5. The LADA app shows the team's games once its feed URL (`<site_url>api`) is in the app's `shiftSheetFeeds`.

@@ -1,5 +1,5 @@
 """regress.py [--work DIR] [--jobs N] [--keep] [--only NAME ...] : re-solve every archived work folder and compare
-the result with the shift sheet that was published for it.
+the result with the game page that was published for it.
 
 `run_game.py archive` keeps each game's detections, tracks, segments, reviews and periods.json (~100 MB), so a
 later pipeline can solve the game again. This runs that solve for every such folder in DIR (~/hockey-work) in a

@@ -72,3 +72,21 @@ OPPONENTS = json.load(open(_opp)) if os.path.exists(_opp) else {}   # code -> fu
 def opponent_name(game):
     """Full opponent name for a game: game.json's opponent_name, else opponents.json, else the code."""
     return game.get("opponent_name") or OPPONENTS.get(game["opponent"]) or game["opponent"]
+
+
+def final_score(game, slug=None):
+    """A game's score: LADA's official result (teamGoals/opponentGoals in teams/<slug>/lada_games.json, by the game's
+    lada_game_id) when the cache has it, else the goals on video. Returns dict(gf, ga, result "W"/"L"/"T", official)."""
+    p = f"{REPO}/teams/{slug or SLUG}/lada_games.json"
+    if p not in _LADA_GAMES:
+        _LADA_GAMES[p] = json.load(open(p, encoding="utf-8")) if os.path.exists(p) else {}
+    lada = _LADA_GAMES[p].get(str(game.get("lada_game_id")), {})
+    if lada.get("teamGoals") is not None and lada.get("opponentGoals") is not None:
+        gf, ga, official = int(lada["teamGoals"]), int(lada["opponentGoals"]), True
+    else:
+        goals = [h for h in game.get("highlights", []) if h["type"] == "goal"]
+        gf, ga, official = sum(h["team"] == "for" for h in goals), sum(h["team"] == "against" for h in goals), False
+    return dict(gf=gf, ga=ga, result="W" if gf > ga else "L" if gf < ga else "T", official=official)
+
+
+_LADA_GAMES = {}   # lada_games.json path -> its contents

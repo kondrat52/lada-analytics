@@ -279,7 +279,7 @@ const Xc = i => M.l + band * (i + .5);
     el("text", { x, y: Y(g.gf) - 6, "text-anchor": "middle", style: "fill:var(--ink);font-weight:600" }, svg).textContent = g.gf;
     el("text", { x, y: Y(-g.ga) + 16, "text-anchor": "middle", style: "fill:var(--ink);font-weight:600" }, svg).textContent = g.ga;
     const hit = el("rect", { x: x - band / 2, y: M.t, width: band, height: CH - M.t - M.b, class: "hit" }, svg);
-    hover(hit, () => [[{ v: `${g.gf}–${g.ga}`, k: `${g.result} vs ${g.opp}` }, ...(g.video_ends_early ? [{ v: "", k: "Video ends early; score from LADA" }] : [])], fdateY(g.date)]);
+    hover(hit, () => [[{ v: `${g.gf}–${g.ga}`, k: `${g.result} vs ${g.opp}` }, ...(!g.official ? [{ v: "", k: "Goals on video; no LADA final score yet" }] : g.video_ends_early ? [{ v: "", k: "Video ends early; score from LADA" }] : [])], fdateY(g.date)]);
   });
   xAxis(svg, Xc);
 })();

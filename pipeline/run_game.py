@@ -1566,12 +1566,12 @@ def cmd_sheet(a):
 
 def cmd_schedule(a):
     """The team's games LADA knows (the cache plus a fresh look): date, opponent, home or away, rink, LADA id,
-    whether a shift sheet exists, and the planned lines' players who have no LADA id in roster.json yet."""
+    whether its game page exists, and the planned lines' players who have no LADA id in roster.json yet."""
     from roster import GAMES_DIR, LADA_IDS, TEAM
     games = update_lada_games()
     have = {os.path.basename(d)[:10] for d in glob.glob(f"{GAMES_DIR}/*")}
     known = {v: k for k, v in LADA_IDS.items()}
-    print(f"{TEAM}: {len(games)} games in LADA's view (* = shift sheet published)")
+    print(f"{TEAM}: {len(games)} games in LADA's view (* = published on the site)")
     for i, g in games.items():
         d = str(g.get("date", ""))[:16].replace("T", " ")
         side = "HOME" if g.get("playHome") else "away" if g.get("playHome") is False else "?"

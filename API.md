@@ -1,4 +1,4 @@
-# Shift sheet JSON feed
+# LADA Analytics JSON feed
 
 Read-only JSON, published with the site on GitHub Pages and rebuilt on every push. No login and no keys. Pages sends
 `Access-Control-Allow-Origin: *` and caches for up to 10 minutes.
@@ -63,14 +63,17 @@ once those versions are gone; don't use the old URLs.
   "games": [{
     "id": "2026-09-27-vs-rr", "date": "2026-09-27", "title": "...", "subtitle": "Sun Sep 27, 2026 · 7:50 PM · Renton",
     "opponent": {"code": "RR", "name": null}, "lada_game_id": 32969,
-    "goals_on_video": {"for": 1, "against": 2}, "shots": {"for": 40, "against": 16}, "highlights": 4,
+    "goals_on_video": {"for": 1, "against": 2}, "score": {"for": 1, "against": 2, "result": "L", "official": true},
+    "shots": {"for": 40, "against": 16}, "highlights": 4,
     "page_url": ".../games/2026-09-27-vs-rr/", "json_url": ".../api/games/2026-09-27-vs-rr.json"
   }]
 }
 ```
 
 `time` and `rink` (e.g. `"7:50 PM"`, `"Renton"`) are also on each game file. `goals_on_video` counts the goals found in the recording. It isn't the official score: the recording can end
-before the final horn (`video_ends_early` in the game file). `shots` is shots on goal as the arena scoreboard counted
+before the final horn (`video_ends_early` in the game file). `score` is the final score as LADA posted it
+(`official: true`), or the goals on video until LADA has one (`official: false`); `result` is `"W"`, `"L"` or
+`"T"` from it. Each game file and each `trends.json` game has the same `score`. `shots` is shots on goal as the arena scoreboard counted
 them (`for` = us), or `null` for a game whose board wasn't read.
 
 ## `games/<id>.json`
@@ -85,7 +88,7 @@ them (`for` = us), or `null` for a game whose board wasn't read.
 | `highlights[]` | `{type: "goal" \| "penalty" \| "moment", team: "for" \| "against" (goals), title (moments), player (penalties), t, period, t_in_period, clip_url, poster_url, note, on_ice[]}`. Clips are 1280×720 H.264 MP4 without audio, about 5 MB. `on_ice` lists our skaters on the ice for a goal or a moment (a play worth a clip that isn't a goal or a penalty) |
 | `stoppages[]` | `[start, end]` pairs: estimated stoppages (whistle to puck drop) |
 | `ice` | Where our skaters were on the ice during their shifts: the team's map and each player's (below), or `null` for a game without maps |
-| `video_url`, `page_url` | The full game on YouTube; the shift sheet page |
+| `video_url`, `page_url` | The full game on YouTube; the game's analytics page |
 
 `shortest_shift` leaves out shifts cut off by the recording ending mid-play.
 
@@ -138,6 +141,7 @@ earlier" comparisons are left to the reader.
 |---|---|
 | `id`, `date`, `rink`, `opponent`, `lada_game_id`, `video_ends_early` | As in `index.json` and the game file |
 | `goals_on_video`, `result` | Goals found in the recording, and `"W"`, `"L"` or `"T"` from them |
+| `score` | As in `index.json`: the final score (LADA's, else the goals on video) and its `result` |
 | `shots` | As in the game file: `{for, against, periods[]}`, or `null` when the board wasn't read |
 | `zones` | `{offence, defence}`: share of live play (0–1) spent near their net and near ours; the rest is the middle of the ice. `null` when not measured |
 | `skaters` | Skaters who dressed for us |

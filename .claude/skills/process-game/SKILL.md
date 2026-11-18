@@ -1,6 +1,6 @@
 ---
 name: process-game
-description: Turn a LADA team's game video (Turbo Kings, Blue Wings, Beerteam, Doofers, Y or R; the YouTube wide cut) into a shift sheet with goals, penalties and shots, and publish it on that team's site. Use it whenever the user wants a game processed, analyzed, added or published, gives a YouTube link to a game, mentions a shift sheet or a scoresheet for a game, or asks to re-solve or archive a game's work folder, e.g. "/process-game https://youtu.be/... vs RR", "/process-game https://youtu.be/... bw vs DB", "process Saturday's game", "here's the game sheet PDF".
+description: Turn a LADA team's game video (Turbo Kings, Blue Wings, Beerteam, Doofers, Y or R; the YouTube wide cut) into a game analytics page (score, shifts, goals, penalties and shots), and publish it on that team's site. Use it whenever the user wants a game processed, analyzed, added or published, gives a YouTube link to a game, mentions a shift sheet or a scoresheet for a game, or asks to re-solve or archive a game's work folder, e.g. "/process-game https://youtu.be/... vs RR", "/process-game https://youtu.be/... bw vs DB", "process Saturday's game", "here's the game sheet PDF".
 ---
 
 # Process a LADA team's game
