@@ -15,11 +15,14 @@ h1 { font:800 clamp(34px,6vw,56px)/.95 var(--display); margin:0; } h1 span { col
 h2 { font:700 26px/1.1 var(--display); letter-spacing:.02em; text-transform:uppercase; margin:0; }
 section { display:grid; gap:12px; min-width:0; }
 ul.games { list-style:none; margin:0; padding:0; display:grid; gap:8px; }
-ul.games a { display:flex; flex-wrap:wrap; justify-content:space-between; gap:4px 16px; padding:12px 14px; background:var(--board); border:1px solid var(--rule); border-radius:4px; color:var(--ink); text-decoration:none; }
+ul.games a { display:grid; grid-template-columns:1fr auto auto; grid-template-areas:"d t sc"; align-items:baseline; gap:4px 16px; padding:12px 14px; background:var(--board); border:1px solid var(--rule); border-radius:4px; color:var(--ink); text-decoration:none; }
 ul.games a:hover, ul.games a:focus-visible { border-color:var(--team); outline:none; }
-.d { font:500 15px/1.3 var(--data); letter-spacing:.04em; color:var(--muted); } .t { font:700 20px/1.1 var(--display); }
-.sc { margin-left:14px; font-variant-numeric:tabular-nums; white-space:nowrap; }
-.res { font:600 12px/1 var(--data); letter-spacing:.1em; padding:3px 5px; margin-right:6px; border:1px solid currentColor; border-radius:3px; vertical-align:3px; }
+ul.games .d { grid-area:d; font:500 15px/1.3 var(--data); letter-spacing:.04em; color:var(--muted); }
+ul.games .t { grid-area:t; text-align:right; } ul.games .t, ul.games .sc { font:700 20px/1.1 var(--display); }
+ul.games .sc { grid-area:sc; font-variant-numeric:tabular-nums; white-space:nowrap; }
+@media (max-width:720px) { ul.games a { grid-template-columns:1fr auto; grid-template-areas:"d d" "t sc"; gap:2px 12px; } ul.games .t { text-align:left; } }
+.res { display:inline-block; width:2em; text-align:center; text-indent:.1em; font:600 12px/1 var(--data); letter-spacing:.1em; padding:3px 0; margin-right:6px; border:1px solid currentColor; border-radius:3px; vertical-align:3px; }
+.sc .n { display:inline-block; min-width:1.45em; text-align:right; }
 .res.W { color:var(--team); } .res.L { color:var(--redline); } .res.T { color:var(--muted); }
 .tablebox { overflow-x:auto; background:var(--board); border:1px solid var(--rule); border-radius:4px; }
 table { border-collapse:collapse; width:100%; min-width:620px; font-variant-numeric:tabular-nums; }
@@ -39,15 +42,15 @@ p.note { color:var(--muted); margin:0; max-width:70ch; } header p.note { max-wid
 </style></head><body><div class="wrap">
 <header><nav class="teams" aria-label="Team"><a href="../tk/">Turbo Kings</a><a href="../bt/">Beerteam</a><a href="../bw/">Blue Wings</a><a href="../df/">Doofers</a><a href="./" aria-current="page">R</a><a href="../y/">Y</a></nav><div class="eyebrow">LADA Seattle · Rec hockey · <a href="trends.html">Trends</a></div><h1><span>LADA R</span> analytics</h1>
 <p class="note">Scores, ice time and shifts for every skater, measured from each week's wide-cut game video.</p></header>
-<section><h2>Games</h2><ul class="games"><li><a href='games/2026-11-09-vs-br/'><span class='d'>Mon Nov 9, 2026 · 8:45 PM · Renton</span><span class='t'>vs BladeRunners<span class='sc'><span class='res L'>L</span>4–5</span></span></a></li>
-<li><a href='games/2026-11-02-vs-sb/'><span class='d'>Mon Nov 2, 2026 · 10:10 PM · Snoqualmie A</span><span class='t'>vs Strange Brews<span class='sc'><span class='res W'>W</span>6–4</span></span></a></li>
-<li><a href='games/2026-10-26-vs-wb/'><span class='d'>Mon Oct 26, 2026 · 10:15 PM · Renton</span><span class='t'>vs Weekday Benders<span class='sc'><span class='res W'>W</span>3–1</span></span></a></li>
-<li><a href='games/2026-10-19-vs-tm/'><span class='d'>Mon Oct 19, 2026 · 8:45 PM · Renton</span><span class='t'>vs Teamy McTeamface<span class='sc'><span class='res W'>W</span>6–3</span></span></a></li>
-<li><a href='games/2026-10-12-vs-fl/'><span class='d'>Mon Oct 12, 2026 · 10:10 PM · Snoqualmie A</span><span class='t'>vs Flounders<span class='sc'><span class='res T'>T</span>2–2</span></span></a></li>
-<li><a href='games/2026-10-05-vs-bv/'><span class='d'>Mon Oct 5, 2026 · 8:45 PM · Snoqualmie A</span><span class='t'>vs Best Vibes<span class='sc'><span class='res W'>W</span>3–1</span></span></a></li>
-<li><a href='games/2026-09-28-vs-y/'><span class='d'>Mon Sep 28, 2026 · 10:15 PM · Renton</span><span class='t'>vs LADA Y<span class='sc'><span class='res T'>T</span>2–2</span></span></a></li>
-<li><a href='games/2026-09-21-vs-tbd/'><span class='d'>Mon Sep 21, 2026 · 8:45 PM · Renton</span><span class='t'>vs T.B.D.<span class='sc'><span class='res L'>L</span>3–6</span></span></a></li>
-<li><a href='games/2026-09-14-vs-wa/'><span class='d'>Mon Sep 14, 2026 · 10:15 PM · Renton</span><span class='t'>vs Warriors<span class='sc'><span class='res L'>L</span>3–5</span></span></a></li></ul></section>
+<section><h2>Games</h2><ul class="games"><li><a href='games/2026-11-09-vs-br/'><span class='d'>Mon Nov 9, 2026 · 8:45 PM · Renton</span><span class='t'>vs BladeRunners</span><span class='sc'><span class='res L'>L</span><span class='n'>4–5</span></span></a></li>
+<li><a href='games/2026-11-02-vs-sb/'><span class='d'>Mon Nov 2, 2026 · 10:10 PM · Snoqualmie A</span><span class='t'>vs Strange Brews</span><span class='sc'><span class='res W'>W</span><span class='n'>6–4</span></span></a></li>
+<li><a href='games/2026-10-26-vs-wb/'><span class='d'>Mon Oct 26, 2026 · 10:15 PM · Renton</span><span class='t'>vs Weekday Benders</span><span class='sc'><span class='res W'>W</span><span class='n'>3–1</span></span></a></li>
+<li><a href='games/2026-10-19-vs-tm/'><span class='d'>Mon Oct 19, 2026 · 8:45 PM · Renton</span><span class='t'>vs Teamy McTeamface</span><span class='sc'><span class='res W'>W</span><span class='n'>6–3</span></span></a></li>
+<li><a href='games/2026-10-12-vs-fl/'><span class='d'>Mon Oct 12, 2026 · 10:10 PM · Snoqualmie A</span><span class='t'>vs Flounders</span><span class='sc'><span class='res T'>T</span><span class='n'>2–2</span></span></a></li>
+<li><a href='games/2026-10-05-vs-bv/'><span class='d'>Mon Oct 5, 2026 · 8:45 PM · Snoqualmie A</span><span class='t'>vs Best Vibes</span><span class='sc'><span class='res W'>W</span><span class='n'>3–1</span></span></a></li>
+<li><a href='games/2026-09-28-vs-y/'><span class='d'>Mon Sep 28, 2026 · 10:15 PM · Renton</span><span class='t'>vs LADA Y</span><span class='sc'><span class='res T'>T</span><span class='n'>2–2</span></span></a></li>
+<li><a href='games/2026-09-21-vs-tbd/'><span class='d'>Mon Sep 21, 2026 · 8:45 PM · Renton</span><span class='t'>vs T.B.D.</span><span class='sc'><span class='res L'>L</span><span class='n'>3–6</span></span></a></li>
+<li><a href='games/2026-09-14-vs-wa/'><span class='d'>Mon Sep 14, 2026 · 10:15 PM · Renton</span><span class='t'>vs Warriors</span><span class='sc'><span class='res L'>L</span><span class='n'>3–5</span></span></a></li></ul></section>
 <section><h2>Season</h2><div class="tablebox"><table id="season"><thead><tr><th class="l" tabindex="0">#</th><th class="l" tabindex="0" data-text="1">Player</th><th tabindex="0">GP</th><th tabindex="0">Shifts</th><th tabindex="0">Ice time</th><th tabindex="0" aria-sort="descending">Per game</th><th tabindex="0">Live play</th><th tabindex="0" title="Goals for minus goals against while on the ice (goals on video)">+/−</th><th tabindex="0">Avg shift</th><th tabindex="0">Longest</th><th tabindex="0">Shortest</th></tr></thead>
 <tbody><tr><td class='l num' data-v='84'>84</td><td class='l name' data-v='Severtokov'>Severtokov</td><td data-v='3.0'>3</td><td data-v='40.0'>40</td><td data-v='5657.0'>94:17</td><td data-v='1885.6666666666667'>31:26</td><td data-v='3875.0'>64:35</td><td data-v='-4.0'>−4</td><td data-v='141.425'>2:21</td><td data-v='271.0'>4:31</td><td data-v='57.0'>0:57</td></tr>
 <tr><td class='l num' data-v='79'>79</td><td class='l name' data-v='Rabotyagov'>Rabotyagov</td><td data-v='8.0'>8</td><td data-v='113.0'>113</td><td data-v='14428.0'>240:28</td><td data-v='1803.5'>30:04</td><td data-v='9601.0'>160:01</td><td data-v='6.0'>+6</td><td data-v='127.68141592920354'>2:08</td><td data-v='224.0'>3:44</td><td data-v='21.0'>0:21</td></tr>

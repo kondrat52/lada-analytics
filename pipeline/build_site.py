@@ -97,12 +97,12 @@ def score_tag(g):
     """W/L/T and the score on a game card; a score from the video alone (no game sheet or LADA score) gets a *."""
     sc = final_score(g)
     return (f"<span class='sc'><span class='res {sc['result']}'>{sc['result']}</span>"
-            f"{sc['gf']}–{sc['ga']}{'' if sc['official'] else '*'}</span>")
+            f"<span class='n'>{sc['gf']}–{sc['ga']}{'' if sc['official'] else '*'}</span></span>")
 
 
 cards = "\n".join(
     f"<li><a href='games/{g['id']}/'><span class='d'>{html.escape(g['eyebrow'])}</span>"
-    f"<span class='t'>vs {html.escape(opponent_name(g))}{score_tag(g)}</span></a></li>"
+    f"<span class='t'>vs {html.escape(opponent_name(g))}</span>{score_tag(g)}</a></li>"
     for g in sorted(games, key=lambda g: g["date"], reverse=True))
 unofficial = ("<p class='note'>* Goals on video: the game sheet has no final score yet.</p>"
               if any(not final_score(g)["official"] for g in games) else "")
@@ -154,11 +154,14 @@ h1 {{ font:800 clamp(34px,6vw,56px)/.95 var(--display); margin:0; }} h1 span {{ 
 h2 {{ font:700 26px/1.1 var(--display); letter-spacing:.02em; text-transform:uppercase; margin:0; }}
 section {{ display:grid; gap:12px; min-width:0; }}
 ul.games {{ list-style:none; margin:0; padding:0; display:grid; gap:8px; }}
-ul.games a {{ display:flex; flex-wrap:wrap; justify-content:space-between; gap:4px 16px; padding:12px 14px; background:var(--board); border:1px solid var(--rule); border-radius:4px; color:var(--ink); text-decoration:none; }}
+ul.games a {{ display:grid; grid-template-columns:1fr auto auto; grid-template-areas:"d t sc"; align-items:baseline; gap:4px 16px; padding:12px 14px; background:var(--board); border:1px solid var(--rule); border-radius:4px; color:var(--ink); text-decoration:none; }}
 ul.games a:hover, ul.games a:focus-visible {{ border-color:var(--team); outline:none; }}
-.d {{ font:500 15px/1.3 var(--data); letter-spacing:.04em; color:var(--muted); }} .t {{ font:700 20px/1.1 var(--display); }}
-.sc {{ margin-left:14px; font-variant-numeric:tabular-nums; white-space:nowrap; }}
-.res {{ font:600 12px/1 var(--data); letter-spacing:.1em; padding:3px 5px; margin-right:6px; border:1px solid currentColor; border-radius:3px; vertical-align:3px; }}
+ul.games .d {{ grid-area:d; font:500 15px/1.3 var(--data); letter-spacing:.04em; color:var(--muted); }}
+ul.games .t {{ grid-area:t; text-align:right; }} ul.games .t, ul.games .sc {{ font:700 20px/1.1 var(--display); }}
+ul.games .sc {{ grid-area:sc; font-variant-numeric:tabular-nums; white-space:nowrap; }}
+@media (max-width:720px) {{ ul.games a {{ grid-template-columns:1fr auto; grid-template-areas:"d d" "t sc"; gap:2px 12px; }} ul.games .t {{ text-align:left; }} }}
+.res {{ display:inline-block; width:2em; text-align:center; text-indent:.1em; font:600 12px/1 var(--data); letter-spacing:.1em; padding:3px 0; margin-right:6px; border:1px solid currentColor; border-radius:3px; vertical-align:3px; }}
+.sc .n {{ display:inline-block; min-width:1.45em; text-align:right; }}
 .res.W {{ color:var(--team); }} .res.L {{ color:var(--redline); }} .res.T {{ color:var(--muted); }}
 .tablebox {{ overflow-x:auto; background:var(--board); border:1px solid var(--rule); border-radius:4px; }}
 table {{ border-collapse:collapse; width:100%; min-width:620px; font-variant-numeric:tabular-nums; }}

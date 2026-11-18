@@ -15,11 +15,14 @@ h1 { font:800 clamp(34px,6vw,56px)/.95 var(--display); margin:0; } h1 span { col
 h2 { font:700 26px/1.1 var(--display); letter-spacing:.02em; text-transform:uppercase; margin:0; }
 section { display:grid; gap:12px; min-width:0; }
 ul.games { list-style:none; margin:0; padding:0; display:grid; gap:8px; }
-ul.games a { display:flex; flex-wrap:wrap; justify-content:space-between; gap:4px 16px; padding:12px 14px; background:var(--board); border:1px solid var(--rule); border-radius:4px; color:var(--ink); text-decoration:none; }
+ul.games a { display:grid; grid-template-columns:1fr auto auto; grid-template-areas:"d t sc"; align-items:baseline; gap:4px 16px; padding:12px 14px; background:var(--board); border:1px solid var(--rule); border-radius:4px; color:var(--ink); text-decoration:none; }
 ul.games a:hover, ul.games a:focus-visible { border-color:var(--team); outline:none; }
-.d { font:500 15px/1.3 var(--data); letter-spacing:.04em; color:var(--muted); } .t { font:700 20px/1.1 var(--display); }
-.sc { margin-left:14px; font-variant-numeric:tabular-nums; white-space:nowrap; }
-.res { font:600 12px/1 var(--data); letter-spacing:.1em; padding:3px 5px; margin-right:6px; border:1px solid currentColor; border-radius:3px; vertical-align:3px; }
+ul.games .d { grid-area:d; font:500 15px/1.3 var(--data); letter-spacing:.04em; color:var(--muted); }
+ul.games .t { grid-area:t; text-align:right; } ul.games .t, ul.games .sc { font:700 20px/1.1 var(--display); }
+ul.games .sc { grid-area:sc; font-variant-numeric:tabular-nums; white-space:nowrap; }
+@media (max-width:720px) { ul.games a { grid-template-columns:1fr auto; grid-template-areas:"d d" "t sc"; gap:2px 12px; } ul.games .t { text-align:left; } }
+.res { display:inline-block; width:2em; text-align:center; text-indent:.1em; font:600 12px/1 var(--data); letter-spacing:.1em; padding:3px 0; margin-right:6px; border:1px solid currentColor; border-radius:3px; vertical-align:3px; }
+.sc .n { display:inline-block; min-width:1.45em; text-align:right; }
 .res.W { color:var(--team); } .res.L { color:var(--redline); } .res.T { color:var(--muted); }
 .tablebox { overflow-x:auto; background:var(--board); border:1px solid var(--rule); border-radius:4px; }
 table { border-collapse:collapse; width:100%; min-width:620px; font-variant-numeric:tabular-nums; }
@@ -39,14 +42,14 @@ p.note { color:var(--muted); margin:0; max-width:70ch; } header p.note { max-wid
 </style></head><body><div class="wrap">
 <header><nav class="teams" aria-label="Team"><a href="../tk/">Turbo Kings</a><a href="../bt/">Beerteam</a><a href="../bw/">Blue Wings</a><a href="./" aria-current="page">Doofers</a><a href="../r/">R</a><a href="../y/">Y</a></nav><div class="eyebrow">LADA Seattle · Rec hockey · <a href="trends.html">Trends</a></div><h1><span>LADA Doofers</span> analytics</h1>
 <p class="note">Scores, ice time and shifts for every skater, measured from each week's wide-cut game video.</p></header>
-<section><h2>Games</h2><ul class="games"><li><a href='games/2026-11-08-vs-rn/'><span class='d'>Sun Nov 8, 2026 · 9:50 PM · Snoqualmie B</span><span class='t'>vs Rainucks<span class='sc'><span class='res T'>T</span>3–3</span></span></a></li>
-<li><a href='games/2026-10-25-vs-se/'><span class='d'>Sun Oct 25, 2026 · 9:50 PM · Snoqualmie B</span><span class='t'>vs Sentinels<span class='sc'><span class='res W'>W</span>3–1</span></span></a></li>
-<li><a href='games/2026-10-18-vs-rn/'><span class='d'>Sun Oct 18, 2026 · 10:10 PM · Snoqualmie A</span><span class='t'>vs Rainucks<span class='sc'><span class='res L'>L</span>2–3</span></span></a></li>
-<li><a href='games/2026-10-10-vs-fg/'><span class='d'>Sat Oct 10, 2026 · 10:10 PM · Snoqualmie B</span><span class='t'>vs Frost Giants<span class='sc'><span class='res L'>L</span>1–4</span></span></a></li>
-<li><a href='games/2026-10-04-vs-fg/'><span class='d'>Sun Oct 4, 2026 · 9:15 PM · Renton</span><span class='t'>vs Frost Giants<span class='sc'><span class='res L'>L</span>2–5</span></span></a></li>
-<li><a href='games/2026-09-27-vs-rn/'><span class='d'>Sun Sep 27, 2026 · 3:00 PM · Kirkland</span><span class='t'>vs Rainucks<span class='sc'><span class='res W'>W</span>6–4</span></span></a></li>
-<li><a href='games/2026-09-19-vs-se/'><span class='d'>Sat Sep 19, 2026 · 8:45 PM · Snoqualmie B</span><span class='t'>vs Sentinels<span class='sc'><span class='res W'>W</span>8–0</span></span></a></li>
-<li><a href='games/2026-09-13-vs-jp/'><span class='d'>Sun Sep 13, 2026 · 9:15 PM · Renton</span><span class='t'>vs Jurassic Puck<span class='sc'><span class='res L'>L</span>0–5</span></span></a></li></ul></section>
+<section><h2>Games</h2><ul class="games"><li><a href='games/2026-11-08-vs-rn/'><span class='d'>Sun Nov 8, 2026 · 9:50 PM · Snoqualmie B</span><span class='t'>vs Rainucks</span><span class='sc'><span class='res T'>T</span><span class='n'>3–3</span></span></a></li>
+<li><a href='games/2026-10-25-vs-se/'><span class='d'>Sun Oct 25, 2026 · 9:50 PM · Snoqualmie B</span><span class='t'>vs Sentinels</span><span class='sc'><span class='res W'>W</span><span class='n'>3–1</span></span></a></li>
+<li><a href='games/2026-10-18-vs-rn/'><span class='d'>Sun Oct 18, 2026 · 10:10 PM · Snoqualmie A</span><span class='t'>vs Rainucks</span><span class='sc'><span class='res L'>L</span><span class='n'>2–3</span></span></a></li>
+<li><a href='games/2026-10-10-vs-fg/'><span class='d'>Sat Oct 10, 2026 · 10:10 PM · Snoqualmie B</span><span class='t'>vs Frost Giants</span><span class='sc'><span class='res L'>L</span><span class='n'>1–4</span></span></a></li>
+<li><a href='games/2026-10-04-vs-fg/'><span class='d'>Sun Oct 4, 2026 · 9:15 PM · Renton</span><span class='t'>vs Frost Giants</span><span class='sc'><span class='res L'>L</span><span class='n'>2–5</span></span></a></li>
+<li><a href='games/2026-09-27-vs-rn/'><span class='d'>Sun Sep 27, 2026 · 3:00 PM · Kirkland</span><span class='t'>vs Rainucks</span><span class='sc'><span class='res W'>W</span><span class='n'>6–4</span></span></a></li>
+<li><a href='games/2026-09-19-vs-se/'><span class='d'>Sat Sep 19, 2026 · 8:45 PM · Snoqualmie B</span><span class='t'>vs Sentinels</span><span class='sc'><span class='res W'>W</span><span class='n'>8–0</span></span></a></li>
+<li><a href='games/2026-09-13-vs-jp/'><span class='d'>Sun Sep 13, 2026 · 9:15 PM · Renton</span><span class='t'>vs Jurassic Puck</span><span class='sc'><span class='res L'>L</span><span class='n'>0–5</span></span></a></li></ul></section>
 <section><h2>Season</h2><div class="tablebox"><table id="season"><thead><tr><th class="l" tabindex="0">#</th><th class="l" tabindex="0" data-text="1">Player</th><th tabindex="0">GP</th><th tabindex="0">Shifts</th><th tabindex="0">Ice time</th><th tabindex="0" aria-sort="descending">Per game</th><th tabindex="0">Live play</th><th tabindex="0" title="Goals for minus goals against while on the ice (goals on video)">+/−</th><th tabindex="0">Avg shift</th><th tabindex="0">Longest</th><th tabindex="0">Shortest</th></tr></thead>
 <tbody><tr><td class='l num' data-v='4'>4</td><td class='l name' data-v='Sokolov'>Sokolov<span class='sub'>sub</span></td><td data-v='1.0'>1</td><td data-v='13.0'>13</td><td data-v='2483.0'>41:23</td><td data-v='2483.0'>41:23</td><td data-v='2024.0'>33:44</td><td data-v='-5.0'>−5</td><td data-v='191.0'>3:11</td><td data-v='359.0'>5:59</td><td data-v='78.0'>1:18</td></tr>
 <tr><td class='l num' data-v='52'>52</td><td class='l name' data-v='Polyanskiy'>Polyanskiy</td><td data-v='4.0'>4</td><td data-v='59.0'>59</td><td data-v='8775.0'>146:15</td><td data-v='2193.75'>36:34</td><td data-v='6434.0'>107:14</td><td data-v='4.0'>+4</td><td data-v='148.72881355932202'>2:29</td><td data-v='560.0'>9:20</td><td data-v='35.0'>0:35</td></tr>

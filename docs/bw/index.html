@@ -15,11 +15,14 @@ h1 { font:800 clamp(34px,6vw,56px)/.95 var(--display); margin:0; } h1 span { col
 h2 { font:700 26px/1.1 var(--display); letter-spacing:.02em; text-transform:uppercase; margin:0; }
 section { display:grid; gap:12px; min-width:0; }
 ul.games { list-style:none; margin:0; padding:0; display:grid; gap:8px; }
-ul.games a { display:flex; flex-wrap:wrap; justify-content:space-between; gap:4px 16px; padding:12px 14px; background:var(--board); border:1px solid var(--rule); border-radius:4px; color:var(--ink); text-decoration:none; }
+ul.games a { display:grid; grid-template-columns:1fr auto auto; grid-template-areas:"d t sc"; align-items:baseline; gap:4px 16px; padding:12px 14px; background:var(--board); border:1px solid var(--rule); border-radius:4px; color:var(--ink); text-decoration:none; }
 ul.games a:hover, ul.games a:focus-visible { border-color:var(--team); outline:none; }
-.d { font:500 15px/1.3 var(--data); letter-spacing:.04em; color:var(--muted); } .t { font:700 20px/1.1 var(--display); }
-.sc { margin-left:14px; font-variant-numeric:tabular-nums; white-space:nowrap; }
-.res { font:600 12px/1 var(--data); letter-spacing:.1em; padding:3px 5px; margin-right:6px; border:1px solid currentColor; border-radius:3px; vertical-align:3px; }
+ul.games .d { grid-area:d; font:500 15px/1.3 var(--data); letter-spacing:.04em; color:var(--muted); }
+ul.games .t { grid-area:t; text-align:right; } ul.games .t, ul.games .sc { font:700 20px/1.1 var(--display); }
+ul.games .sc { grid-area:sc; font-variant-numeric:tabular-nums; white-space:nowrap; }
+@media (max-width:720px) { ul.games a { grid-template-columns:1fr auto; grid-template-areas:"d d" "t sc"; gap:2px 12px; } ul.games .t { text-align:left; } }
+.res { display:inline-block; width:2em; text-align:center; text-indent:.1em; font:600 12px/1 var(--data); letter-spacing:.1em; padding:3px 0; margin-right:6px; border:1px solid currentColor; border-radius:3px; vertical-align:3px; }
+.sc .n { display:inline-block; min-width:1.45em; text-align:right; }
 .res.W { color:var(--team); } .res.L { color:var(--redline); } .res.T { color:var(--muted); }
 .tablebox { overflow-x:auto; background:var(--board); border:1px solid var(--rule); border-radius:4px; }
 table { border-collapse:collapse; width:100%; min-width:620px; font-variant-numeric:tabular-nums; }
@@ -39,14 +42,14 @@ p.note { color:var(--muted); margin:0; max-width:70ch; } header p.note { max-wid
 </style></head><body><div class="wrap">
 <header><nav class="teams" aria-label="Team"><a href="../tk/">Turbo Kings</a><a href="../bt/">Beerteam</a><a href="./" aria-current="page">Blue Wings</a><a href="../df/">Doofers</a><a href="../r/">R</a><a href="../y/">Y</a></nav><div class="eyebrow">LADA Seattle · Rec hockey · <a href="trends.html">Trends</a></div><h1><span>LADA Blue Wings</span> analytics</h1>
 <p class="note">Scores, ice time and shifts for every skater, measured from each week's wide-cut game video.</p></header>
-<section><h2>Games</h2><ul class="games"><li><a href='games/2026-11-07-vs-db/'><span class='d'>Sat Nov 7, 2026 · 10:40 PM · Renton</span><span class='t'>vs Disco Bandoleros<span class='sc'><span class='res W'>W</span>6–5</span></span></a></li>
-<li><a href='games/2026-10-25-vs-gn/'><span class='d'>Sun Oct 25, 2026 · 7:00 PM · Snoqualmie A</span><span class='t'>vs Gnomies<span class='sc'><span class='res W'>W</span>6–2</span></span></a></li>
-<li><a href='games/2026-10-18-vs-si/'><span class='d'>Sun Oct 18, 2026 · 4:30 PM · Snoqualmie A</span><span class='t'>vs Shaved Ice: Tiger&#x27;s Blood<span class='sc'><span class='res W'>W</span>2–0</span></span></a></li>
-<li><a href='games/2026-10-11-vs-gn/'><span class='d'>Sun Oct 11, 2026 · 7:20 PM · Snoqualmie A</span><span class='t'>vs Gnomies<span class='sc'><span class='res T'>T</span>4–4</span></span></a></li>
-<li><a href='games/2026-10-03-vs-no/'><span class='d'>Sat Oct 3, 2026 · 9:15 PM · Renton</span><span class='t'>vs Night Owls<span class='sc'><span class='res W'>W</span>2–0</span></span></a></li>
-<li><a href='games/2026-09-27-vs-up/'><span class='d'>Sun Sep 27, 2026 · 10:40 PM · Renton</span><span class='t'>vs Ugly Pucklings<span class='sc'><span class='res W'>W</span>4–2</span></span></a></li>
-<li><a href='games/2026-09-20-vs-up/'><span class='d'>Sun Sep 20, 2026 · 8:45 PM · Snoqualmie A</span><span class='t'>vs Ugly Pucklings<span class='sc'><span class='res T'>T</span>2–2</span></span></a></li>
-<li><a href='games/2026-09-13-vs-db/'><span class='d'>Sun Sep 13, 2026 · 7:20 PM · Snoqualmie A</span><span class='t'>vs Disco Bandoleros<span class='sc'><span class='res L'>L</span>1–2</span></span></a></li></ul></section>
+<section><h2>Games</h2><ul class="games"><li><a href='games/2026-11-07-vs-db/'><span class='d'>Sat Nov 7, 2026 · 10:40 PM · Renton</span><span class='t'>vs Disco Bandoleros</span><span class='sc'><span class='res W'>W</span><span class='n'>6–5</span></span></a></li>
+<li><a href='games/2026-10-25-vs-gn/'><span class='d'>Sun Oct 25, 2026 · 7:00 PM · Snoqualmie A</span><span class='t'>vs Gnomies</span><span class='sc'><span class='res W'>W</span><span class='n'>6–2</span></span></a></li>
+<li><a href='games/2026-10-18-vs-si/'><span class='d'>Sun Oct 18, 2026 · 4:30 PM · Snoqualmie A</span><span class='t'>vs Shaved Ice: Tiger&#x27;s Blood</span><span class='sc'><span class='res W'>W</span><span class='n'>2–0</span></span></a></li>
+<li><a href='games/2026-10-11-vs-gn/'><span class='d'>Sun Oct 11, 2026 · 7:20 PM · Snoqualmie A</span><span class='t'>vs Gnomies</span><span class='sc'><span class='res T'>T</span><span class='n'>4–4</span></span></a></li>
+<li><a href='games/2026-10-03-vs-no/'><span class='d'>Sat Oct 3, 2026 · 9:15 PM · Renton</span><span class='t'>vs Night Owls</span><span class='sc'><span class='res W'>W</span><span class='n'>2–0</span></span></a></li>
+<li><a href='games/2026-09-27-vs-up/'><span class='d'>Sun Sep 27, 2026 · 10:40 PM · Renton</span><span class='t'>vs Ugly Pucklings</span><span class='sc'><span class='res W'>W</span><span class='n'>4–2</span></span></a></li>
+<li><a href='games/2026-09-20-vs-up/'><span class='d'>Sun Sep 20, 2026 · 8:45 PM · Snoqualmie A</span><span class='t'>vs Ugly Pucklings</span><span class='sc'><span class='res T'>T</span><span class='n'>2–2</span></span></a></li>
+<li><a href='games/2026-09-13-vs-db/'><span class='d'>Sun Sep 13, 2026 · 7:20 PM · Snoqualmie A</span><span class='t'>vs Disco Bandoleros</span><span class='sc'><span class='res L'>L</span><span class='n'>1–2</span></span></a></li></ul></section>
 <section><h2>Season</h2><div class="tablebox"><table id="season"><thead><tr><th class="l" tabindex="0">#</th><th class="l" tabindex="0" data-text="1">Player</th><th tabindex="0">GP</th><th tabindex="0">Shifts</th><th tabindex="0">Ice time</th><th tabindex="0" aria-sort="descending">Per game</th><th tabindex="0">Live play</th><th tabindex="0" title="Goals for minus goals against while on the ice (goals on video)">+/−</th><th tabindex="0">Avg shift</th><th tabindex="0">Longest</th><th tabindex="0">Shortest</th></tr></thead>
 <tbody><tr><td class='l num' data-v='74'>74</td><td class='l name' data-v='Bronnikov'>Bronnikov<span class='sub'>sub</span></td><td data-v='1.0'>1</td><td data-v='16.0'>16</td><td data-v='1970.0'>32:50</td><td data-v='1970.0'>32:50</td><td data-v='1361.0'>22:41</td><td data-v='1.0'>+1</td><td data-v='123.125'>2:03</td><td data-v='277.0'>4:37</td><td data-v='40.0'>0:40</td></tr>
 <tr><td class='l num' data-v='26'>26</td><td class='l name' data-v='Babkin'>Babkin</td><td data-v='6.0'>6</td><td data-v='87.0'>87</td><td data-v='11452.0'>190:52</td><td data-v='1908.6666666666667'>31:49</td><td data-v='8513.0'>141:53</td><td data-v='6.0'>+6</td><td data-v='131.632183908046'>2:12</td><td data-v='268.0'>4:28</td><td data-v='23.0'>0:23</td></tr>
