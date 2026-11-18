@@ -260,7 +260,13 @@ def player_path(tr, tids, anchor=None):
         if anchor is None:
             return p[["fx", "fy", "h"]]
         t, x, y, k = p.index.values, p.fx.values, p.fy.values, p.tid.values
-        i0, bad = int(np.abs(t - anchor).argmin()), None
+        # start on the first track (the one at the shot or pass) when it is there within 1 s: on the Doofers' Nov 15
+        # 5th goal Babkin's track had no box at the shot's frame, Fedotov's (in the group by a later #26 piece) had
+        # one 300 px away, the walk started on him and dropped Babkin, and the clip followed Fedotov
+        d = np.abs(t - anchor)
+        first = k == next(x for x in tids if x not in drop)
+        i0 = int(np.where(first, d, np.inf).argmin()) if (first & (d <= 1)).any() else int(d.argmin())
+        bad = None
         for order in (range(i0, len(p)), range(i0, -1, -1)):
             last = i0
             for i in order:

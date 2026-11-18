@@ -214,6 +214,13 @@ a scratch folder (`run_period.py $W/full $W/p3tail 3940 3986 <our net x>`). Then
 `clip.py` as `group:$W/p3tail/tracks_v1.csv:<tid>`, with the net and the shot as `run_game.py clip` would.
 In that clip the defender chasing on the near side filled the frame, and Bekker was small at the far boards at the
 same x. Check which track is the scorer's on a crop before deciding the camera follows the wrong player.
+A tid is one tracked body over all its pieces, and the camera follows all of it. On the Doofers' Nov 15 5th goal,
+Fedotov's track was #71 for 20 s of the clip and #26 for the last 2, so it joined Babkin's group. Babkin's own track
+had no box at the shot's frame (lost in the pile at the post) and Fedotov's had one 300 px away, so the walk started
+on Fedotov and dropped Babkin. The build-up and the replay followed #71 near the camera, with the goal small in a
+corner, and the user caught it. `clip` now leaves out a track that carries another number for longer in the window,
+looks up to 0.5 s from the shot for the scorer's track, and starts the walk on that track. Sheet every goal clip
+every 1.5 s (cv2 reads the mp4) and check the camera holds the scorer before reporting it.
 `--pass T,X,Y` (when the puck left the first assist's stick, and his skates) keeps the passer in the frame up to
 the full width until 1 s after the pass, ahead of the net, and starts the replay 2 s before it, so the replay
 shows the pass, then closes in on the scorer and the net. Without it the tight crop at the net keeps a passer only

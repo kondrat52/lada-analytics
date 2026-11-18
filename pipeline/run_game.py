@@ -675,10 +675,13 @@ def cmd_clip(a):
         """The track at a goal check's spot ("T,X,Y": a shot or a pass), whatever its label, or None."""
         ts, sx, sy = (float(v) for v in spot.split(","))
         tr = pd.read_csv(f"{pdir}/tracks_v1.csv")
-        near = tr[(tr.t - ts).abs() <= 0.25]
-        dist = np.hypot(near.fx - sx, near.fy - sy)
-        if len(near) and dist.min() < 200:
-            return int(near.tid.iat[int(dist.values.argmin())])
+        # then 0.5 s: in a pile at the post a track loses its box (Babkin's last one on the Doofers' Nov 15 5th goal
+        # was 0.375 s before the goal check's shot, 20 px from it)
+        for dt in (0.25, 0.5):
+            near = tr[(tr.t - ts).abs() <= dt]
+            dist = np.hypot(near.fx - sx, near.fy - sy)
+            if len(near) and dist.min() < 200:
+                return int(near.tid.iat[int(dist.values.argmin())])
         print(f"clip: no track within 200 px of the {what} at {spot}")
         return None
 
@@ -694,9 +697,17 @@ def cmd_clip(a):
         sg = sg[(sg.t1 > t0) & (sg.t0 < t1)].sort_values("t0")
         # a player's tracks in priority order: those his number was read on first. On TK's Oct 25 game a still
         # figure on the far boards was also labeled 61 beside the real #61, and the camera jumped between them
+        # a tid is one tracked body over all its pieces, and clip.py follows the whole of it, so leave out one that is
+        # someone else's for longer in this window: Fedotov's track on the Doofers' Nov 15 5th goal was #71 for 20 s
+        # and #26 for the last 2, and the camera followed him as Babkin
+        dur = (np.minimum(sg.t1, t1) - np.maximum(sg.t0, t0)).clip(lower=0)
+
         def ranked(n):
-            s = sg[sg.plabel == n]
-            return s.assign(unread=s.num != n, less=-s.nreads).sort_values(["unread", "less", "t0"]).tid
+            mine = dur[sg.plabel == n].groupby(sg.tid).sum()
+            other = dur[(sg.plabel >= 0) & (sg.plabel != n)].groupby(sg.tid).sum()
+            keep = [x for x in mine.index if mine[x] >= other.get(x, 0)]
+            s = sg[(sg.plabel == n) & sg.tid.isin(keep)]
+            return s.assign(unread=s.num != n, less=-s.nreads).sort_values(["unread", "less", "t0"]).tid.drop_duplicates()
         tids = [[int(x) for x in ranked(n)] for n in nums]
         if a.shot:
             # the goal check's shot names the scorer's track at it, whatever its label: on TK's Oct 25 empty-netter
