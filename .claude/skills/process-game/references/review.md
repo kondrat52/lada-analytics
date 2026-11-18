@@ -137,6 +137,13 @@ timeout at Kirkland.
   (OCR took his 14 for Sokolov's 4), though 112 confident "14" reads were all him on the ice. A `--note` that he
   played all game, and to read 14 against 4 carefully, got him labeled. Before review, sheet a few crops of any
   regular whose card row is empty everywhere but whose number is read often.
+- **An opponent with one of our numbers can fill a card row.** On Doofers' Nov 8 game, Rainucks' navy #38 and #46
+  passed the white test. The P3 card's #38 row was all their #38, so the solver gave most of Tislenok #38's P3 shifts
+  to others: 4:38 against 9-10 minutes in P1 and P2. Two reviewers flagged the navy row. A frame checker given a
+  whole-period window for him, with his look (the only one of ours in long plain black pants), found three missed
+  shifts and got him to 9:28. Read every period's card for rows in the opponents' colour. Put their shared numbers
+  in `--opp` and in each player's description. A player whose time drops in one period gets a whole-period window
+  in that period's gaps brief.
 - **The lineup check finds wrong labels, not just gaps.** On Sep 21 a 4-on stretch was a false line change: the
   solver had #14 off and #32 on at 48:00, but the "32" piece had one OCR read and started where #14's track ended,
   and two pieces labeled 70 and 37 were #18. A gap's subagent should judge who was on from full frames and the
