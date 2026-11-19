@@ -108,6 +108,7 @@
     "opponentName": "Cascadiens",
     "playHome": false,
     "rinkId": 1066,
-    "rinkName": "Snoqualmie B"
+    "rinkName": "Snoqualmie B",
+    "lines": "{\"offence\":[[null,null,null],[null,null,null],[null,null,null]],\"defence\":[[null,null],[null,null]],\"goalie\":[[null]],\"beer\":[]}"
   }
 }

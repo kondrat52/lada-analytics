@@ -13,7 +13,7 @@ by LADA's `rinkName` alone.
 | `renton2` | Renton from Oct 17, 3840x1920 | fisheye, low at center, near side | as `renton`: away from the post at x 1380, home to x 2500 | away 1735-1865, home 2020-2150 | 560, 3345 | as `renton` |
 | `renton2band` | LADA Y's Oct 12, LiveBarn 3600x1800 with a black band over the top 264 rows | `renton2`, 266 px lower | as `renton2` | as `renton2` | as `renton2` | as `renton` |
 | `renton2thin` | LADA R's Oct 19 and 26, 2560x1280 with a thin band | `renton2`, 62 px lower | as `renton2` | as `renton2` | as `renton2` | as `renton` |
-| `renton2nov` | Renton from Nov 7 (re-aimed), 3840x1920 | `renton2` re-aimed, ~65 px left; rolled about 1 degree since Nov 15 | away from the post at ~1310 to 1665, home 2080 to ~2430 | away 1665-1795, home 1950-2080 | 500, 3285 | as `renton` |
+| `renton2nov` | Renton from Nov 7 (re-aimed), 3840x1920 | `renton2` re-aimed, ~65 px left; rolled about 1 degree since Nov 14 | away from the post at ~1310 to 1665, home 2080 to ~2430 | away 1665-1795, home 1950-2080 | 500, 3285 | as `renton` |
 | `snoqualmie` | Snoqualmie A, a 3840x1536 strip (3440x1376, 3438x1374) | high at center, near side, very wide | near side at the frame edges: white left (home), light blue right (away) | home: near-left corner, bottom-left; away: just left of our bench, x 3450-3700 | 630, 3260 | as `renton` |
 | `snoqualmie2` | Snoqualmie B, the whole fisheye frame 3824x2160 (YouTube often 2548x1440) | as A, fisheye, dim and grey | as `snoqualmie` | on the near side next to each bench | 680, 3270 | as `renton` |
 | `kirkland` | Kirkland, 3840x1536 (3600x1440, 3438x1374) | fisheye, low at center, near side | behind the far boards, doors at the blue posts (x 1612, 2265); no jersey rule: fetch keeps its right side, check `bench_left.jpg`/`bench_right.jpg` | the near corners at the bottom, on each bench's side | 605, 3255 | as `renton`, and it also stops in the last minute or two of the 1st and 2nd |
@@ -95,7 +95,7 @@ share `crop_top`); the board is scanned and read again and the periods and nets 
 unless you have edited it, else into `periods.proposed.json`).
 
 A turn of up to 1.5 degrees is a roll: run as the given class if the nets, the bench and the board crop hold on
-`frame600.png`, and the ice maps correct it. Turbo Kings', Blue Wings' and Doofers' Nov 15 games were such a roll
+`frame600.png`, and the ice maps correct it. Beerteam's Nov 14 game (-0.90 degrees) and Turbo Kings', Blue Wings' and Doofers' Nov 15 games were such a roll
 against `renton2nov` (-0.96 degrees, a 19 px drop, residuals 3 px across the middle; the center line leans about 30 px over the frame's height) and ran as `renton2nov`.
 
 A larger turn, with the center line upright, is a re-aim: TK's Nov 8 game against `renton2` (-2.62 degrees; the curve
@@ -119,7 +119,7 @@ off when it ends, with his number readable on the way.
   is a box: `in_crease`). The scorekeeper's window is at center; he wore light blue and passes our test, but sits
   outside the bench zone. A player at the far boards is ~75 px tall, near the camera ~500 px. Bench sitters show only
   their heads; line changes are tracks ending at the boards. The board is small and tilted in the right corner
-  (readable on `sb.jpg`, not by `shots.py`). The video has real audio. The board was often dark for stretches (Blue
+  (readable on `sb.jpg`, not by `shots.py`). The video has real audio (not always: Beerteam's Nov 14 upload was silent, -91 dB throughout). The board was often dark for stretches (Blue
   Wings' Nov 7 at four of six period edges; Blue Wings' Nov 15 across one goal each way): where it is blank across a
   penalty call, take the call's time from the frames (Doofers' Nov 15: the sheet-implied time was 20 s late). TK's
   Nov 8 video stopped at 3970 with 20 s or more on the clock: the 3rd ends at the video's end (`--video-ends-early`).

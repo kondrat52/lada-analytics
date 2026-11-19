@@ -40,7 +40,7 @@ each game's pixels so its own far-boards curve (`boards_poly.npy`) falls on the 
 camera file); a straight shift alone left the Sep 13-14 games' far end 7 ft out. Every rink LADA plays at so far
 is calibrated (Oct 29, 2026); a new camera or rink needs one before its games get maps, and so does a camera
 re-aimed so that its far-boards curve changes shape, not just position. Renton's on Nov 7 was one
-(`renton2nov`): a turn and a shift can't make that curve fit. A roll is not (Renton's Nov 15 games, about 1 degree:
+(`renton2nov`): a turn and a shift can't make that curve fit. A roll is not (Renton's Nov 14 and 15 games, about 1 degree:
 `rinks.md`, "A camera that moved"), since `align` turns each game's pixels anyway.
 
 ## Calibrating a rink

@@ -83,6 +83,11 @@ while #4 is also skater Sokolov's number on our roster. Mark both #4 (Sokolov di
 sub goalie out of `roster.json`, and tell the reviewers with `--note` that the #4 in goalie pads is our goalie. An
 opponent's number can also pass our jersey test: Roadrunners' #4 ORR wears grey-white with light-blue stripes, and
 his crops were most of the 88 reads of "4".
+`absent --suggest` can say "played" for a roster number whose reads are all an opponent's: on Beerteam's Nov 14 game
+the 170 reads of "12" and the 80 of "54" were Cluster Pucks' BERRY and PIZANO, whose white with navy and yellow trim
+passes the light-blue crop test, while our own #54 that night was Pfeifer (the sheet's name; `roster.json` has Semenov
+there) in a dark green jersey the test can't see (`references/review.md`). `unknown` sheets only numbers off the
+roster, so sheet a roster number yourself when the sheet's name for it isn't `roster.json`'s.
 A goalie can come as a skater: on Y's Nov 9 game TK's goalie Fisenko #58 (DF's spare goalie too) played forward for
 Y and scored three of our four goals; he went under `subs` with his LADA id from TK's `roster.json`. Bronnikov #74,
 the same night, has two LADA ids in our rosters (BW's `subs` 20353, TK's `skaters` 20411); Y took TK's.

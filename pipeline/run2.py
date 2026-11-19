@@ -33,7 +33,13 @@ SH.ROSTER = sorted(set(SH.ROSTER) | (seen - ABSENT))
 S2 = SH.link(S2, rk)
 S2.to_csv(f"{out}/segs_final.csv", index=False)
 w = S2[S2.plabel >= 0].groupby("plabel").apply(lambda g: (g.t1 - g.t0).sum(), include_groups=False)
-players = sorted(p for p in SH.ROSTER if w.get(p, 0) >= 20)
+# a player a hand `on` span names plays even without 20 s of labeled track: the solver used to leave him out and drop
+# his spans without a word (Beerteam's Nov 14: #54 Pfeifer in a dark green jersey that fails the jersey test)
+span_on = {int(p[0]) for _a, _b, _n, *p in target_spans if len(p) > 1 and p[1] == "on" and p[0] is not None}
+players = sorted(p for p in SH.ROSTER if w.get(p, 0) >= 20 or p in span_on)
+span_lost = sorted({int(p[0]) for _a, _b, _n, *p in target_spans if p and p[0] is not None} - set(players))
+if span_lost:   # off the roster, absent, a goalie, or (an off span or a kill) a player with no labeled track
+    print("WARNING spans name players this solve leaves out: their on and off spans do nothing (a kill still takes a skater off):", ", ".join(f"#{p}" for p in span_lost))
 print("players:", players)
 S2["d0"] = np.asarray(rk.bench_depth(S2.x0, S2.r0)); S2["d1"] = np.asarray(rk.bench_depth(S2.x1, S2.r1))
 ev = np.r_[S2[S2.bench0 & (S2.d0 > -10)].t0.values, S2[S2.bench1 & (S2.d1 > -10)].t1.values]

@@ -59,14 +59,11 @@ an image you need yourself once, cropped tight, and the Gantt charts only when t
 `effort: "medium"`, and every checker (the goal and penalty checkers of step 2, the lineup checkers of step 6, the clip
 checker of step 7) with `model: "opus"` and `effort: "high"`. Subagents were about 70% of a game's tokens on the
 session's own model. Reviewers have "?" to fall back on and the lineup check catches what they miss; a checker's
-answer goes into the sheet or a clip without a second look, hence the higher effort. Nobody has measured Opus on these
-sheets, so on the first game run this way, once `check` says the review is complete, copy the review files of three
-chunks (the first of each period) to `$W/scratch/ab/opus/`, launch those three prompts again on the session's own
-model with "but write each sheet's CSV into `$W/scratch/ab/session/`, not into the review folder" added, and compare
-row by row: the share of "?" in each set (README's TODO 13 has 15.8% at high effort and 7.2% at xhigh on the session's
-model), and the rows where both give a number at high or med confidence and the numbers differ. Give the user the
-counts and add them to TODO 13; the user decides whether reviewers move to `effort: "high"`. Once a game has done
-this, replace these sentences with the result.
+answer goes into the sheet or a clip without a second look, hence the higher effort. Measured once, on Beerteam's Nov 14
+game: Opus at medium left 9.7% of 619 rows "?" (README's TODO 13 has 15.8% at high effort and 7.2% at xhigh on the
+session's model), and on three chunks reviewed twice (72 rows) it left 7 "?" against the session's model's 6, with no
+number differing on the 60 rows where both were confident; it reported a switch on 12 rows against 21, at roughly half
+the tokens a chunk (README's TODO 13 has both measures). The user decides whether reviewers move to `effort: "high"`.
 
 **One game per session.** In the two sessions that processed several games, the fourth and fifth games ran at 432 k
 and 521 k tokens of context per call, against 195 k for a median game. Compaction (7 of 14 games) came each time
@@ -294,7 +291,13 @@ general-purpose subagent on the brief it names (`model: "opus"`, `effort: "high"
 <brief> and do exactly what it says.
 Reply with one line per clip." It writes
 `$W/scratch/clips/answers.json`: for each clip not ok, fix what it points at (`t`, `shot` or `pass` in
-`highlights.json`, or `clip_args.json`), re-cut with `clips --only <names>` and give the new brief to a fresh checker.
+`highlights.json`, or `clip_args.json`), re-cut with `clips --only <name,name>` (one argument, comma-separated) and give the
+new brief to a fresh checker, after copying `answers.json` aside: the fresh one overwrites it. The replay must show the
+player who put the puck in, and for a goal against that is the sheet's scorer: when the checker says the shooter on the
+SHOT tiles is someone else, send a goal checker to find the scorer, re-cut on him (`shot`, `pass`, a trace as `tracks`)
+and take any credit question to the user. Beerteam's Nov 14: the checker said exactly that about their goal, the
+session filed it as a credit question, and the user complained about that clip. Only an unreadable number, or a SHOT
+tile that shows the drive before a jam (the goal brief's rule makes `shot` the drive), has nothing to re-cut.
 A clip that fails doesn't stop the others: `clips` exits 1 and prints the `--only` line that retries those.
 Show the user nothing until it has answered: the user complained about a clip in 7 of 14 games, and each time the
 session's own look had passed it. That is "ready to publish": write `$W/notes.txt` (step 8) and the summary, then

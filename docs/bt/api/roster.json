@@ -107,6 +107,12 @@
    "sub": true
   },
   {
+   "number": 18,
+   "name": "Petrov",
+   "lada_player_id": null,
+   "sub": true
+  },
+  {
    "number": 37,
    "name": "Akulov",
    "lada_player_id": 20379,

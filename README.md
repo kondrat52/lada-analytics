@@ -241,7 +241,16 @@ fetch logs will say.
     answers were right, so it is an open question, not a recommendation. Since Nov 18 the skill launches reviewers
     on Opus 5.5 at medium effort and the checkers on Opus 5.5 at high, as a trial (subagents were about 70% of a
     game's tokens on the session's own model): the first game run that way reviews three chunks twice, on Opus and
-    on the session's model, and its counts go here.
+    on the session's model, and its counts go here. Beerteam's Nov 14 game (Nov 19): 27 Opus reviewers at medium
+    left 60 of 619 rows "?" (9.7%; 13.3%, 11.8% and 5.0% by period), in 33 to 117 s and about 60k tokens each. On the
+    three chunks done twice (the first of each period, 72 rows) Opus left 7 "?" and the session's model (Fable 5.2 at
+    high) 6; both gave a number at high or med on 60 rows and no number differed; Opus reported a switch on 12 rows,
+    the session's model on 21 (three of them a "?" start that Opus had named outright). Tokens, two measures: by the
+    completion notices (an agent's final context) a chunk was 56-66k on Opus and 78-102k on the session's model and
+    a reviewer about 60k; by the cumulative count this TODO uses, as the Nov 19 review session measured it from the
+    transcripts, a reviewer was 0.66 M (27.8k a row, against 19.6k at high and 64.7k at xhigh on the session's
+    model) and a chunk 0.62-0.74 M on Opus against 1.04-1.62 M. One game, and nobody checked the switches: still
+    the user's call.
 14. **A later checker contradicting an earlier round's span: found Nov 19, open.** `gaps --apply` adds the later span
     and keeps the earlier one, so both stay in `periods.json` and in later briefs' "merged" lines, and the solver adds
     the same large cost to both states for those seconds, which leaves them to the tracks. On the redo of Y's Sep 21

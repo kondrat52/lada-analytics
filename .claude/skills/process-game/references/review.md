@@ -96,6 +96,19 @@ ones.
 - **A number that rarely faces the camera.** Prozhogin #61 (TK: black shorts, banded socks, red gloves) and Kleiman
   #69 (Beerteam: KLEIMAN nameplate, black helmet). Gear plus who else is accounted for settles most "?" rows: Prozhogin
   was labeled by hand in ten stretches because no other defenceman was out with his partner.
+- **A skater of ours in another colour.** Beerteam's Nov 14: Pfeifer #54 skated in a dark green jersey that fails the
+  light-blue test (torso blue 0.01, dark 0.28, the same as a referee), so he had no tracks, crops or review rows. Count
+  our skaters on `frame600_small.jpg`: four in our colour and a fifth in another is the sign. The first solve still
+  filled 95-97% by stretching the other ten over his minutes: 18 of its 20 short-handed windows touched his shifts, but
+  they covered 12 of his 15 shifts and 731 of his 2,026 s, so the lineup checkers alone would have found a third of him. Colour can't trace him from the video (dark green reads as black at
+  the far boards; a count of dark figures on the ice was too noisy). What worked: seven by-eye tracers (halves of the
+  1st and 2nd, thirds of the 3rd; Opus at high, 12 to 17 minutes each, 33.7 M tokens in all by the review session's
+  cumulative count) on a brief asking for every step through the bench
+  door, then `span on` for each shift AND `span off` for each stretch between (with no tracks nothing else holds him
+  off: the solver had him on 96 s too long), a `--note` for the reviewers and checkers, and a line to the goal and
+  penalty checkers already running. The lineup loop then ended in one round. A span for a player with no labeled
+  track was dropped silently until `run2.py` learned to solve him (it now warns when a span's player is left out). The
+  brief and answers are in that game's `green54/`.
 - **Opponents with our numbers.** Night Owls wore white #11, #35 and #43 against our light blue; on Doofers' Nov 8
   Rainucks' navy #38 and #46 passed the white test, their #38 filled our #38's P3 card row, and the solver gave most
   of Tislenok's P3 shifts to others (a checker found them by his look, the only one of ours in long plain black
