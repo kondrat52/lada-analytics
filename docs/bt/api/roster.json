@@ -97,7 +97,7 @@
   {
    "number": 13,
    "name": "Belousenko",
-   "lada_player_id": 20412,
+   "lada_player_id": 20430,
    "sub": true
   },
   {
@@ -109,7 +109,7 @@
   {
    "number": 18,
    "name": "Petrov",
-   "lada_player_id": null,
+   "lada_player_id": 11108,
    "sub": true
   },
   {
@@ -134,6 +134,12 @@
    "number": 61,
    "name": "Prozhogin",
    "lada_player_id": 14184,
+   "sub": true
+  },
+  {
+   "number": 71,
+   "name": "Polyanskiy",
+   "lada_player_id": 5818,
    "sub": true
   },
   {

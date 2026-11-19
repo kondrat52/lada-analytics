@@ -20,7 +20,7 @@
   {
    "number": 13,
    "name": "Belousenko",
-   "lada_player_id": 20412,
+   "lada_player_id": 20430,
    "sub": true,
    "games_played": 1,
    "shifts": 14,
@@ -815,7 +815,7 @@
   {
    "number": 18,
    "name": "Petrov",
-   "lada_player_id": null,
+   "lada_player_id": 11108,
    "sub": true,
    "games_played": 1,
    "shifts": 14,
