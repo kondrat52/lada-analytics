@@ -1,249 +1,146 @@
-# The visual review
+# Reviewers and gap checkers
+
+The visual review labels tracked segments before the solve; the gap checkers fix the lineup after it. Both are
+subagents on briefs the code writes (`pipeline/review_prompt.md`, `pipeline/gap_prompt.md`): edit the templates, not
+the briefs. Contents: the review; `review_zfix.txt`; a second opinion on rows; the gap checkers; what went wrong before
+(roster and goalies, then the lineup check's cases).
+
+## The review
 
 Prepare picks every tracked segment that isn't strongly and unambiguously read by OCR, plus every long one (a swap
 check), and renders them as sheets of 8 rows, one row per segment with up to 10 crops spread over its time
 (`review_sheets.py`; `manifest.csv` maps row ids to segments). The roster card (`roster_card.py`) shows each roster
-player in several views, half of them with a confident number or name read. Reviewer subagents label the rows;
-`apply_review.py` merges their answers into the segments before the solve.
+player in several views. On four October games reviewers disagreed with OCR's label on 23% of the rows that had one,
+reported a switch on 28% of the long rows there only for the swap check, and named a player on 48% of the unlabeled
+ones: the selection isn't padding, so don't trim it to save reviewers.
 
-Over the last four games the reviewers handled 3042 rows on 387 sheets. Where OCR had a label they disagreed with
-it on 23% of rows and reported a switch on 28% of the long rows that were there only for the swap check; on
-unlabeled rows they named a player 48% of the time. So the selection isn't padding: don't trim it to save
-reviewers.
+`run_game.py review $W` fills the template once per chunk of three sheets (`$W/rev_pN/prompt_cNN.md`) with the roster
+minus absent players, our jersey, the goalie line ("G" for any goalie's row, ours or theirs, which the solve drops),
+each period's empty card rows (a pointer to another period's card, or "probably did not play" under 30 reads, "may
+have played" above), the opponents' look (`--opp`, default by our jersey), the notes (`--note`, repeatable; both kept
+in `$W/review.json`, so a note is removed there), a private scratch folder per reviewer, and the `zoom.py` command
+for a closer look. It lists at most 20 chunks per call (`--batch`; 17 at once is the most seen to work) and prints
+what the prompts say beyond the template. Three sheets per reviewer and one CSV per sheet, written as soon as that
+sheet is decided, are deliberate: bigger chunks stalled before writing anything.
 
-## Prompts
-
-`run_game.py review $W` fills `pipeline/review_prompt.md` once per chunk of sheets and writes
-`$W/rev_pN/prompt_cNN.md`. Edit the template, not the prompts. It fills in:
-
-- the roster (minus absent players), our jersey's look, and the goalie line ("#58 is the goalie" or "our goalie
-  is not on the card");
-- empty roster-card rows: a player with a row on another period's card gets a pointer to it (wingers swap sides, so
-  a back turned away all period is common); one empty everywhere with under 30 reads "probably did not play"; one
-  empty everywhere but read often "may have played; report the number if you see it";
-- the opponents' look (`--opp`, saved in `$W/review.json`; default by our jersey) and your notes (`--note`,
-  repeatable, e.g. a player's distinctive look, a borrowed jersey with someone else's nameplate, opponents who wear
-  the same numbers as ours in their colour);
-- a private scratch folder per reviewer under `$W/scratch/` (two reviewers once wrote to the same temp file).
-
-The reviewer reads the roster card, then its sheets, and writes one CSV per sheet as soon as that sheet is decided,
-so whatever finished survives a stall. Three sheets per reviewer and about six reviewers at a time is the size that
-has worked; bigger chunks or many more at once tended to stall before writing anything.
-
-Launch each `[todo]` chunk as one general-purpose subagent whose whole prompt is: "Read <prompt file> and do
-exactly what it says. Reply with one line: how many rows you wrote." Start the next as each finishes. The
-subagent's report comes back as a one-line message; nothing in the main context grows with the sheets.
-
-## Coverage and relaunches
-
-`run_game.py check $W` parses every `review_*.txt` exactly as solve does (`apply_review.parse_review`, which
-tolerates a missing "R" and a "#") and lists the manifest rows without an answer, per sheet, plus any file whose
-notes mention a failed image read. `review` then prints only the chunks still `[todo]`, with just the missing sheets
-in each prompt. A reviewer that reported failed loads gets a fresh one: move its file to `old_review_sNNN.txt`
-first (solve and check read only `review_*.txt`).
-
-## A second opinion on specific rows
-
-When a batch of rows needs re-checking (the roster in the prompt was wrong, a player was declared absent who
-played, a swap looks doubtful), write a re-check prompt that lists the row ids with their sheet and the first
-answer including the switch fields: re-checkers shown only the player column silently drop switches. Have the
-re-checker write to its own file in its scratch folder, not into `rev_pN/`. Then merge by hand: dry-run the
-changes (which rows change from what to what), and apply them one by one as lines in `review_zfix.txt`, which sorts
-last and wins. On BW's Sep 20 game a 93-row re-check pass fixed a roster mistake this way.
+`check $W` parses every `review_*.txt` exactly as solve does and lists the rows without an answer, the files whose
+notes mention a failed image read, and the numbers reviewers gave that are off the roster or absent; `--wait` first
+blocks until the last launch is answered (540 s at most). A reviewer that reported failed loads gets a fresh one:
+move its file to `old_review_sNNN.txt` first (solve and check read only `review_*.txt`). A chunk `review` lists
+again while its reviewer is still writing is marked: relaunch it only once that reviewer has reported back.
 
 ## `review_zfix.txt`
 
-Your own labels, in the review CSV format, with a note starting "checked by hand":
+Your own labels for review rows, in the review CSV format, with a note starting "checked by hand":
 
 ```
 row_id,player,confidence,switch_time,player2,confidence2,note
 R326,69,med,3776,90,med,checked by hand: 69 looks at the net for the goal; 90 white helmet from 3779
 ```
 
-A later file overrides an earlier answer for the same row, so a zfix line replaces a reviewer's "?" (or a wrong
-number). Tell the user which rows you labeled by hand, and say so in `game.json`'s notes.
+It sorts last, so it overrides every reviewer's answer for the same row: a "?" for a misread number `check` lists,
+the player a gap checker saw on a piece that is a review row (`manifest.csv` maps `tid` to `row_id`), a switch where
+two rows carry the same label at once. Tell the user which rows you labeled by hand, and say so in the notes.
 
-## The lineup check and the gap briefs
+## A second opinion on specific rows
 
-Solve's lineup check lists every stretch of 15+ s where the shifts don't put the expected number of us on the ice,
-with who was on and how many of its seconds were live play (slow line changes during stoppages are legitimate
-6-on stretches). `run_game.py gaps $W` turns the list into one brief per period (`pipeline/gap_prompt.md` filled
-with the team's look, the rink's bench and box, our net, the roster, the known events, each window's tracked pieces
-with their review row ids, and the long pieces that sit in our bench zone) for a general-purpose subagent to check
-by eye with `frames` (`--view rink`, `--view bench`, the net zooms). The checker writes `fixes.json`, `gaps --apply`
-merges the `on`/`off` spans into `periods.json`, and solve runs again. Before Oct 22 every game's brief was written
-by hand (28 of them in 23 sessions); the generated one carries what those learned: judge from the frames, not the
-labels; watch the bench door; a piece that starts at the bench counts from its first frame; two pieces can swap at
-a crossing.
+When a batch of rows needs re-checking (the roster in the prompt was wrong, a player was declared absent who played,
+a swap looks doubtful), write a re-check prompt that lists the row ids with their sheet and the first answer
+including the switch fields: re-checkers shown only the player column silently drop switches. Have the re-checker
+write to its own file in its scratch folder, not into `rev_pN/`. Then dry-run the changes (which rows change from
+what to what) and apply them as `review_zfix.txt` lines. On BW's Sep 20 game a 93-row re-check fixed a roster mistake.
 
-Since Nov 1 the briefs also make a window of the 20 s around each goal the check flags ("goal at 493: on the ice
-[14, 70, 82], expected 5 skaters", "#29 is credited but not on the ice") and of every shift of 5+ minutes, with
-only that player's pieces listed. Before that the goal lines appeared only as known events: on Y's Oct 19 game both
-were added by hand as extra windows, and one found #78 in the crease pile on a track that had jumped from the bench,
-the other the sheet's scorer on the bench (highlights.md). A long shift has hidden a player seated through a
-timeout at Kirkland.
+## The gap checkers
+
+`run_game.py gaps $W` turns solve's lineup check into one brief per period (`W/scratch/gaps/prompt_pN.md`, split
+after 6 windows), with numbered items: the windows with the tracked pieces behind them, the 20 s around each flagged
+goal, every shift of 5+ minutes, each ice-time collapse (a player under half his share of the other periods with 8+
+minutes without a shift: a whole stretch, his look and his usual linemates' shifts), the leads earlier checkers left
+open, and the long pieces in our bench zone (B1, B2, ...). Each brief also gives the board's clock for that period
+(whether it stops at whistles or runs through stoppages: six checkers in four games had called a stretch live
+because the clock kept running), our net, the bench and box, the period's own roster card and the tools (`frames`,
+`--tracks` to draw our tracked boxes with track id and label, `follow` for one piece over time). Every item needs an
+answer; `gaps --apply` merges the spans, keeps every answer in `scratch/gaps/answers.json`, names the items left
+unanswered (an entry it can't read counts as none; the next round lists them again), turns leads into windows, and
+prints a kill reported as 5 on 5 with `!!` and the two steps to take, without applying it. It saves before it renames
+the fixes files, so a run that fails can be repeated. Later rounds show the spans already merged near each window and
+skip what was settled (a window answered "ok" only while its seconds and its count on the ice are the same).
+A window that the sheet's cleaning of hand-made spans explains (an `on` span under the 20 s minimum shift dropped, an
+`off` rest under 15 s joined) is reported as settled, not briefed.
+
+The Nov 1 additions found real errors (14 of 15 goal items, 10 of 10 long shifts, 39 of 81 bench pieces led to
+spans) without cutting spans or rounds. A checker's cost is per item (a median 12.6 minutes and 35 images), and spans
+under 5 s are 22% of the spans but 2.5% of the seconds moved, so nothing is gained by asking checkers to skip short
+ones.
 
 ## What went wrong before
 
-- **The other goalie as "G".** On Beerteam's Oct 25 game (we in white, Cascadiens in navy) reviewers marked
-  Cascadiens' blue-jersey goalie "G" in about 50 rows, some at low confidence ("team unsure"). It changes nothing:
-  `apply_review` drops "G" rows as it drops "N", and the switch part of a row still applies. A zfix for it isn't
-  needed; a `--note` with our goalie's jersey colour would spare the reviewers the doubt.
+### Roster, numbers and goalies (before and during the review)
 
-- **A late arrival looks absent.** On BW's Sep 20 game #55 Lisenko arrived mid-second period; her P1 card row was
-  empty and OCR had read her number 29 times (a ponytail hides it), so 30+ reviewers were told she hadn't played.
-  One reviewer caught the LISENKO nameplate. Keep anyone LADA's lines list on the roster unless every period's
-  card and the reads are empty; `review` now words the empty-row note by read count.
-- **The empty-row line contradicts a note.** On BW's Oct 11 game #55 Lisenko again had no card row (7 reads), and
-  `review` wrote "#55 probably did not play" right before the `--note` saying she was on the lineup; the line was
-  reworded by hand in every prompt. This time she really hadn't played: no reviewer found her, and the other 10
-  filled 102% of the spots in every period. Solve's shift-seconds line is the cleanest test of a missing player.
-- **A non-player's number soaks up partial reads.** On Oct 3, #3 Ilinskaya didn't play, but "3" read off 43, 53
-  and 35 labeled ~35 rows as #3, and a reviewer's "?" keeps the OCR label. That's what `run_game.py absent` is
-  for; set it before prepare. The game sheet can mark such a player playing: on Doofers' Oct 25 game #6 Zaychikov
-  had 670 reads of "6" (all partials of 26/46/61/76 on a sheet of them), no ZAYCHIKOV nameplate read at all, one
-  reviewer answer of 6 in 902 rows, and 3:10 after the first solve. Found after the review, `absent` can still be
-  set without preparing again: solve (`run2.py`) drops an absent player's labels and keeps segments and rows aligned.
-- **A sleeve number that reads as another.** On the same game Tislenok #98's sleeve read "91" (the 8 curves round
-  the arm); a reviewer reported a #91 not on the roster. The tracks with the 91 reads carried 128 reads of 98.
-- **Borrowed jerseys.** Dukhno #50 played in a jersey with the DERKACHEV nameplate; a `--note` tells reviewers.
-- **Two jerseys of ours at once.** On Beerteam's Oct 4 game four regulars (#10, #34, #41, #87) wore a white jersey with
-  teal and black trim ("Lada Family XV") and the rest the usual royal-blue trim. Both passed the white test. A
-  `--note` naming the four kept reviewers from calling them noise. The roster card shows such a split at a glance.
-- **Prompt wording versus a `--note`.** The template asks for "G" on goalie rows. A note that said "mark him '-'"
-  contradicted it and had to be fixed with sed in all 37 prompts (and in `review.json`, escaping the quotes). Word
-  notes to match the template's codes.
-- **A timeout late in the 3rd.** Beerteam's Oct 4 game had one at 2:34 of the 3rd (3687–3767 of video), which the
-  lineup check showed as 3 on. The gap checker found it on the board's frozen clock and gave the time to the five who
-  came out, as on Sep 20.
-- **Opponents with our numbers.** Night Owls wore white #11, #35 and #43 against our light blue; the `--opp` text
-  said a white jersey is an opponent whatever its number.
-- **Our goalie as a skater.** At Snoqualmie A our goalie (light blue, red pads) was sometimes tracked as a skater
-  away from the crease and kept a skater's shift running (Oct 11: a track labeled #11 parked by our net). Whoever
-  checks the lineup gaps should be told which net is ours each period.
-- **Referees as ours.** In Snoqualmie B's dim video referees' stripes passed the white-jersey test; reviewers
-  mark them noise.
-- **A number that never faces the camera.** Prozhogin #61 was labeled by hand in ten stretches from black shorts,
-  banded socks and red gloves and the fact that no other defenceman was out with his partner. Gear plus who is
-  accounted for settles most "?" rows.
-- **A track that breaks at the bench door.** Several Beerteam gaps were a player's track ending at the bench
-  boards and restarting a second later under a new id that the reviewers labeled: the unlabeled piece is the same
-  player (compare positions and times in `segs_final.csv`), and a zfix line closes the gap. Conversely, a segment
-  that starts behind the bench boards counts as on-ice from its first frame, so players stepping on during a
-  goal can be listed as on; an `"off"` entry until the goal fixes it. Trimming segments to their first on-ice
-  detection in shifts.py would fix this for every line change but changes every game's numbers; `pipeline/regress.py`
-  now measures such a change on every archived game, so it is the next solve change to try.
-- **A two-digit number OCR keeps reading as one.** On Y's Sep 21 game #14 Ber had no card row in any period
-  (OCR took his 14 for Sokolov's 4), though 112 confident "14" reads were all him on the ice. A `--note` that he
-  played all game, and to read 14 against 4 carefully, got him labeled. Before review, sheet a few crops of any
-  regular whose card row is empty everywhere but whose number is read often. The other way round: on Y's Nov 9
-  game `unknown` listed #27 with 285 reads, every crop AKULOV 37 (his 3 reads as a 2), and `absent --suggest` said
-  Sokolov #4 played on 215 reads of "4", all of them Ber #14 and Bronnikov #74 with no SOKOLOV plate. A `--note`
-  for each kept the reviewers off both numbers.
-- **An opponent with one of our numbers can fill a card row.** On Doofers' Nov 8 game, Rainucks' navy #38 and #46
-  passed the white test. The P3 card's #38 row was all their #38, so the solver gave most of Tislenok #38's P3 shifts
-  to others: 4:38 against 9-10 minutes in P1 and P2. Two reviewers flagged the navy row. A frame checker given a
-  whole-period window for him, with his look (the only one of ours in long plain black pants), found three missed
-  shifts and got him to 9:28. Read every period's card for rows in the opponents' colour. Put their shared numbers
-  in `--opp` and in each player's description. A player whose time drops in one period gets a whole-period window
-  in that period's gaps brief.
-- **The lineup check finds wrong labels, not just gaps.** On Sep 21 a 4-on stretch was a false line change: the
-  solver had #14 off and #32 on at 48:00, but the "32" piece had one OCR read and started where #14's track ended,
-  and two pieces labeled 70 and 37 were #18. A gap's subagent should judge who was on from full frames and the
-  bench door, not trust the labels; the fixes go in as `on`/`off` spans, or as zfix lines when the piece is a
-  review row (`manifest.csv` maps `tid` to row). When a reviewer and a full-frame check disagree, a zoom on the
-  player at the bench door settles it.
-- **A long row whose number shows only late.** On Y's Oct 12 game a 98 s row was labeled #18 "high" from its
-  later crops, while #18's own row ran in parallel until 3531.6; the early crops showed no number, and the gap check
-  read 97 on that player three times after he climbed over the bench boards. The tracker had swapped identities when
-  #18's track ended. Two rows with the same label overlapping in time is the sign: the zfix line gives the early
-  player with a switch to the late one at the other track's end.
-- **Shifts under 20 s are dropped** (`final_stats.py`'s `MIN_SHIFT`), including a real shift cut short by the final
-  horn: Sep 21's last 16 s show 3 skaters because Ber and Beregovoy came on 17–19 s before the end. That flag stays.
-- **A timeout with the goalie pulled.** On Beerteam's Sep 20 game Cluster Pucks called a timeout the moment our
-  goalie left the net; both teams stood at their benches for 36 s, and the solver had seven of ours "on" (6 were
-  expected, with an `extra` span). The six who came out of the timeout get it (`on` entries), the rest are `off`.
-- **A regular lost for minutes.** On the same game Kleiman #69 (KLEIMAN nameplate, black helmet; his number rarely
-  faces the camera) was missing from four 2nd-period stretches, and the period came to 94% of its shift seconds.
-  The gap subagent found him at the bench door each time, including a 225 s shift through a penalty kill. A period
-  under ~97% with one player's time far below his other periods points at him.
-- **A player who leaves hurt.** The opposite sign: on Beerteam's Sep 27 game Khristoforov #7 went down injured early in
-  the 3rd and never came back, the 3rd still came to 101% (Volkov #94 moved back to defence), and #7's 3rd-period time
-  was one shift. A period at ~100% with one regular's time far below his other periods means he left: a frame check
-  at a few later line changes confirms it, and an `off` span from the injury to the period's end keeps him off.
-- **The goalie who played isn't the roster's first.** Mark the goalies who didn't play absent too: the first goalie
-  not absent is the one the prompts' goalie line and shifts.py use (Doofers' Sep 19: Wheeler #0 in goal, #1 and #20
-  absent, no hand edits).
-- **A number no one wears.** On Doofers' Sep 19 game two rows were labeled 19 off a sleeve; a reviewer's number
-  joins the solve's roster, so it would have become a phantom player. Before solving, grep the reviews for numbers
-  not on the roster; a zfix "?" keeps them out (the gap check later found one was Kleiman #69).
-- **No goalie.** Doofers' Oct 4 game had no goalie until 51:40 of video (10:50 left in the 3rd): they skated six,
-  with a skater (#52, #61 or #13 at different times) standing or kneeling in our net, and a padded goalie in a navy
-  jersey came on through our bench then (the game sheet named Wheeler #0 in goal all game). Nothing before solve
-  showed it: the crease zooms for `net` saw "someone in light blue at our net". The first solve said 103-104% of
-  five, and its lineup check listed eight windows, most of them "6 on". The gap-check subagent counted six of ours
-  by eye again and again and found the goalie's entrance. `extra` spans for the whole of P1 and P2 and P3 up to
-  3100 brought it to 101-102% with one window left. Prepare had already dropped the stand-in's detections in our
-  crease (the `net` filter), and the review had started, so prepare couldn't be redone; solve filled him in from
-  the gaps between his tracks (a choppy track, on for 19 of 20 minutes). On a crease zoom, check for pads, a
-  blocker and a goalie mask, not just a body at the net.
-- **A sub in goal, again.** Doofers' Sep 27 game had David Pfeifer #54 (under `subs`) in goal in a red goalie
-  jersey: #0, #1, #20 and #54 all went on the absent list, so the prompts' goalie line read "Our goalie is not on the
-  card" and a `--note` named him and his colour; no prompt needed editing and no reviewer labeled anyone 54. The
-  first gap check also gets the bench right only half the time at Kirkland's staggered changes: a second pass over
-  the gaps it left (and over any shift over ~5 minutes) found #52 sitting a whole timeout and the next shift.
-- **A sub in goal.** On LADA R's Sep 21 game Perry #99, listed under `subs`, played goal instead of #35, but
-  the prompts' goalie line comes from the roster's first goalie and an empty-row line said #79 (a regular who
-  played all game, number rarely readable) probably hadn't played. Both were fixed by hand in every prompt
-  before launch, with `--note`s saying the same. Mark a sub who played goal absent (he isn't a skater) and read the
-  goalie and empty-row lines of one prompt before launching any. On Oct 5 (Perry in goal again) marking the
-  regular goalie #35 absent along with #99 made `review` write "Our goalie is not on the card" by itself. A
-  `--note` named Perry, so the prompts needed no hand edits. On Beerteam's Sep 20 game the goalie was a spare
-  not on `roster.json` at all (David Pfeifer, number never readable), and the prompts' "#1 is the goalie" line was
-  replaced in every prompt with sed before launch.
-- **"Noise" clears the label (since Oct 22).** The template's answer format allowed a number, "?" or "G", so most
-  reviewers marked an opponent or referee row "?" with "noise" in the note, and a few wrote "noise" as the player;
-  `apply_review` left the OCR label in place for "noise" and only weakened it for "?". On Doofers' Oct 10 game
-  (opponents' yokes passing the white test) 50 of P1's 538 rows were opponents or referees still carrying one of our
-  numbers from OCR. Solve still came to 100–102% per period, and the gap check fixed what it put on the ice. Now
-  reviewers answer "N" for a row with nobody of ours in it, and `apply_review` clears the OCR label for "N" and for
-  a "?" whose note is about noise, opponents or referees in every part (split at "then", "and" and commas), how
-  reviewers wrote it before. The first version of that rule took any note that started with "opponent", which
-  includes "opponent at start then white skater, number unreadable", one of ours: `regress.py` showed it as a new
-  19 s lineup gap in Doofers' Oct 10 game, hence the every-part rule. Measured on the 25 archived games: 18
-  unchanged, five moved by up to 45 s of one player's time (Doofers' Sep 19 referee-as-#97 lost his 45 s; Doofers'
-  Oct 10 moved 24 shifts), plus the two Blue Wings games that differed already. The five were re-solved from their
-  archives and republished on Oct 22, with a note in each `game.json` saying what moved.
-- **Seated players counted as on.** On LADA R's Oct 12 game at Snoqualmie A (our bench at the frame edge, right by
-  the camera) the first lineup check listed eight "6 on" windows, and almost every one was a player sitting at our
-  bench: his track, full of confident number reads, started there and the solver counted it as on the ice. The gap
-  subagent found each by the nameplate on the bench and the moment he went over the boards. Because the solver keeps
-  5 on, such tracks rarely show as a window, so a second pass over P2's segments that start at our bench and stay
-  there found nine more. 25 on/off entries took the periods from 104/104/102% to 102/103/102%. `gaps` now lists
-  every long piece that spends most of its frames in the bench zone in the brief, so that scan is part of the first
-  pass at every rink. Seated players are the by-eye work at Snoqualmie: 27 on/off spans per game at rink A and 48
-  at rink B against 6 at Renton (the 33 archived games, Nov 1), and 173 of the 328 off spans in all cover seconds
-  where the player's own track stood at the bench. Letting the solver count such seconds as off was measured on
-  Nov 1 and dropped (README's TODO has the numbers): a player standing at the door reads the same as a seated one,
-  and only the checkers tell them apart.
-- **A quick rest gets joined into one shift.** `final_stats.py` joins a player's shifts across gaps under 15 s
-  (`MERGE_GAP`, meant for tracking loss), so a real 8 s rest at a goal shows him on for it. On Oct 10, #29 went off
-  about 185 and came back at 193, and the goal at 191 listed six. An `off` span of 15 s (178–193) kept the shifts
-  apart at the cost of 7 s of his time.
-- **An opponent who passes our jersey test triples the review.** On LADA R's Oct 19 game (we in white) Teamy
-  McTeamface wore navy with big sky-blue panels and white numbers, and 89% of the crops read as their numbers passed
-  the plain white test: the first prepare made 295 sheets (80–120 is usual). Before launching reviewers, compare the
-  `dets.csv` colour fractions of crops OCR'd as our numbers with those read as `unknown`'s opponent numbers (join
-  `ocr_*.csv` on frame and box index); their blue was a greener hue (`bhue` ~107, ours ~118) and more of it, and the
-  `"white vs navy and sky blue"` test in `rink.py` kept 90% of ours and 11% of theirs. Set `jersey` in
-  `$W/full/rink.json`, move `p*` and `rev_p*` aside and prepare again (222 sheets; the rest came from the stutter below).
-- **A stuttering stream.** The same video carried only ~2 distinct frames a second from 45:30 to 66:00 (YouTube's
-  copy too, so a re-download doesn't help). Tracks fragmented (P3 had 1890 pieces against ~700 per period before),
-  and the stoppage estimate saw everyone standing still for 21 minutes until `stoppages.py` learned to skip repeated
-  frames. Check with ffmpeg's `mpdecimate` over 10 s in a suspect stretch (about 230 frames kept is normal at 24 fps).
-  Tell the gap checkers about it: frames at least 0.5 s apart.
-- **A checker with windows can skip the bench pieces.** On BW's Nov 15 game the P1 brief had 2 windows and 5 bench
-  pieces; the checker answered the windows only, and `gaps --apply` printed no `noted` line for P1 (P3's checker
-  noted every piece). Rerun with the next round's brief, which lists the bench pieces again; there it found 4 fixes in
-  two line changes (a player climbing over at 532-536 counted from 531, one counted on from inside the bench). After
-  `--apply`, each bench piece a brief listed should show up as a fix or a `noted` line.
+- **A late arrival looks absent.** BW's Sep 20: #55 Lisenko arrived mid-2nd, her P1 card row was empty and OCR had read
+  her 29 times (a ponytail hides the number), so 30+ reviewers were told she hadn't played; one caught the LISENKO
+  nameplate. Keep anyone LADA's lines list unless every card and the reads are empty. Solve's shift-seconds line is
+  the cleanest test of a missing player (BW's Oct 11: the other ten filled 102% of every period).
+- **A non-player's number soaks up partial reads.** Oct 3: "3" read off 43, 53 and 35 labeled ~35 rows as absent #3 —
+  `absent` is for that, before prepare. The sheet can mark such a player playing: Doofers' Oct 25 #6 Zaychikov had 670
+  reads of "6", all partials of 26/46/61/76, no nameplate read, and 3:10 after the first solve. `absent` set after the
+  review still applies at solve.
+- **A number OCR reads as another.** Y's Sep 21: #14 Ber had no card row anywhere (his 14 taken for Sokolov's 4)
+  though 112 confident "14" reads were his; Y's Nov 9: `unknown` listed #27 with 285 reads, every crop AKULOV 37, and
+  `absent --suggest` said Sokolov #4 played on reads that were Ber #14 and Bronnikov #74. Tislenok #98's sleeve read
+  "91". Sheet a few crops of a regular whose card row is empty everywhere but whose number is read often, and give
+  the reviewers a `--note` for each.
+- **Borrowed and mixed jerseys.** Dukhno #50 played in a DERKACHEV jersey; on Beerteam's Oct 4 four regulars (#10,
+  #34, #41, #87) wore a white "Lada Family XV" jersey with teal and black trim, the rest the usual royal-blue trim, and
+  both passed the white test. A `--note` each; the roster card shows such a split at a glance.
+- **A number that rarely faces the camera.** Prozhogin #61 (TK: black shorts, banded socks, red gloves) and Kleiman
+  #69 (Beerteam: KLEIMAN nameplate, black helmet). Gear plus who else is accounted for settles most "?" rows: Prozhogin
+  was labeled by hand in ten stretches because no other defenceman was out with his partner.
+- **Opponents with our numbers.** Night Owls wore white #11, #35 and #43 against our light blue; on Doofers' Nov 8
+  Rainucks' navy #38 and #46 passed the white test, their #38 filled our #38's P3 card row, and the solver gave most
+  of Tislenok's P3 shifts to others (a checker found them by his look, the only one of ours in long plain black
+  pants). The template now treats a card row in the opponents' colours as theirs, and a collapse window catches the
+  dropped player. Put their shared numbers in `--opp`.
+- **An opponent who passes our jersey test triples the review.** LADA R's Oct 19: Teamy McTeamface's navy with sky-blue
+  panels passed the white test on 89% of crops and the first prepare made 295 sheets (80-120 is usual). Measure a test
+  that separates them (`rinks.md`, "Jersey tests"), set `jersey` in `full/rink.json`, move `p*` and `rev_p*` aside and
+  prepare again (222 sheets).
+- **Goalies.** Mark every goalie who didn't play absent, and a sub who played goal absent too (he isn't a skater):
+  the goalie line then says ours is not on the card, and a `--note` gives his look. Cases: Doofers' Sep 19 (Wheeler in
+  goal, #1 and #20 absent), Sep 27 (Pfeifer #54 from `subs` in a red jersey), LADA R's Sep 21 and Oct 5 (Perry #99
+  for #35), Beerteam's Sep 20 (a spare not on `roster.json` at all). Our goalie tracked as a skater away from his
+  crease kept a skater's shift running at Snoqualmie A (Oct 11): the briefs give our net per period for that.
+- **No goalie.** Doofers' Oct 4 had none until 51:40 of video: six skaters with one standing in our net. The first
+  solve said 103-104% with eight mostly "6 on" windows; the checker counted six again and again and found the goalie's
+  entrance. `extra` spans over the stretch brought it to 101-102%. Prepare had dropped the stand-in's detections in
+  our crease, and solve filled him in from the gaps between his tracks.
+- **Word notes to match the template's codes.** A note that said "mark him '-'" for a goalie contradicted the
+  template's "G" and had to be fixed in all 37 prompts.
+- **"N" clears an OCR label**, and so does a "?" whose note is about noise, opponents or referees in every part (how
+  reviewers wrote it before "N" existed); a bare "?" keeps it. On Doofers' Oct 10 (opponents' yokes passing the white
+  test) 50 of P1's 538 rows had been opponents or referees still carrying our numbers.
+- **A stuttering stream.** LADA R's Oct 19 video carried only ~2 distinct frames a second from 45:30 to 66:00
+  (YouTube's copy too): tracks fragmented and the stoppage estimate saw everyone still until `stoppages.py` learned to
+  skip repeated frames. Check with ffmpeg's `mpdecimate` over 10 s (about 230 frames kept is normal at 24 fps), and
+  give the checkers a `--note`: frames at least 0.5 s apart.
+
+### The lineup check's cases
+
+| What the check shows | What it was | The fix |
+|---|---|---|
+| "6 on" stretches; pieces that start at our bench and stay there | a seated player the tracker followed as on (most at Snoqualmie, by the camera: on LADA R's Oct 12, 25 spans) | `off` spans; `gaps` lists those pieces as bench items |
+| 4 on at a "line change": a piece with one read starting where another's track ended | a false change: wrong labels (Y's Sep 21: "32" was #14, "70" and "37" were #18) | judge from full frames and the bench door; spans, or a zfix line when the piece is a review row |
+| two rows with the same label overlapping in time | the tracker swapped identities at a track's end (Y's Oct 12: a 98 s row labeled #18 was #97 until late) | a zfix line with a switch to the other player at the other track's end |
+| a gap at the bench boards, a new id a second later | one player's track broken at the door | a zfix line or an `on` span |
+| a player's time far below his other periods, the period at ~94-97% | a regular lost for minutes (BW Sep 20: Kleiman #69, a 225 s shift through a kill) | the collapse window |
+| a period at ~100%, one regular's time far below his other periods | he left (Beerteam's Sep 27: Khristoforov #7 hurt early in the 3rd) | an `off` span from then to the period's end |
+| odd counts with a frozen clock, players at both benches | a timeout (Beerteam's Oct 4: 3 on; Sep 20: one when our goalie was pulled, 7 on) | the five (six) who came out get it; the template says so |
+| a goal listing six of ours | a real rest under 15 s joined into one shift (`MERGE_GAP`; Oct 10: #29 off 185-193) | an `off` span of 15 s |
+| 3 on in a period's last seconds | a real shift under 20 s dropped (`MIN_SHIFT`; Sep 21's last 16 s) | none: the sheet drops it; the checker's "ok" settles the window |
+| a long shift hiding a seated stretch | a player sitting through a timeout (Kirkland) | the 5+ minute shift window |
+
+Seated players are the biggest by-eye cost at Snoqualmie: on the 33 archived games of Nov 1, 27 spans a game at rink A
+and 48 at rink B, and 173 of the 328 `off` spans covered seconds where the player's own track stood at the bench.
+Counting such seconds as off in the solver was measured and dropped (README's TODO): a player standing at the door
+reads the same as a seated one. Renton's re-aimed camera has needed a median 27.5 spans a game since Nov 7, with
+about 10 bench pieces a game.

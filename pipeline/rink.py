@@ -19,6 +19,10 @@ class Renton:
     """Camera high on the near side; both benches behind the far boards, one left of center and its mirror image
     right of center, with the penalty boxes between them. So far the away team (we wear light blue) has had the
     left one and the home team (white) the right one."""
+    # one sentence for the gap checkers' "Rink:" line (run_game.py gaps): what the camera sees, where the benches and
+    # boxes are. The docstrings keep the calibration history, which a checker doesn't need
+    brief = ("Camera high on the near side at center; both benches are behind the far boards, one either side of "
+             "center, with the penalty boxes between them.")
     crop_top = 560 / 1702         # detection band starts here (fraction of frame height); ceiling above
     board_band = (0.41, 0.76)     # rows where boards.py looks for the far boards' yellow kick plate (fractions)
     board_lowest = False          # boards.py: per column, only the lowest yellow run (yellow signs above the boards)
@@ -27,7 +31,11 @@ class Renton:
     nets = {"left": 540, "right": 3245}
     ocr_skip_depth = None         # OCR skips crops this deep in our bench (None: read everything)
     min_break = 25                # seconds of empty open ice that make an intermission
-    bench_side = "left"           # our usual bench; rink.json "bench" can pick the other one
+    bench_side = "left"           # our bench where rink.json has no "bench" (old folders keep resolving to it)
+    # the bench our jersey has put us on (fetch sets rink.json's "bench" from it when --bench isn't given; a jersey
+    # name's part before " vs "). Renton, every camera, Sep 13 - Nov 15, 2026: light blue on the left 15 of 15
+    # games, white on the right 6 of 6
+    bench_by_jersey = {"light blue": "left", "white": "right"}
     scoreboard = (3290, 690, 130, 80)  # x, y, w, h of the arena scoreboard (scoreboard.py)
     # the far-boards curve's y at REF_XS in the rink's usual framing, from the games so far; fetch measures a new
     # video against it. A late upload can sit tens of px low under a black band (LiveBarn's files): where the
@@ -73,13 +81,14 @@ class Renton:
         """Our goalie's spot in front of net_x (the goalie's detections are dropped from skater tracking)."""
         return (np.abs(x - net_x) < 110) & (rel > 0) & (rel < 75)
 
-    # where our bench and penalty box are in the picture, by the side we sit on (run_game.py gaps tells the checkers)
+    # where each bench and penalty box is in the picture, by side; the briefs (run_game.py) name the one on our side
+    # ours and the other theirs, so a box is worded by where it is, never by "our bench"
     bench_where = {"left": "behind the far boards, left of center (only heads show above the boards; line changes "
                            "are tracks ending or starting at those boards)",
                    "right": "behind the far boards, right of center (only heads show above the boards; line changes "
                             "are tracks ending or starting at those boards)"}
-    box_where = {"left": "the glassed compartment just right of our bench (x about 1740-1770)",
-                 "right": "the compartment just left of our bench (x about 1945-2055)"}
+    box_where = {"left": "the glassed compartment between the benches, just right of the left bench (x about 1740-1770)",
+                 "right": "the compartment between the benches, just left of the right bench (x about 1945-2055)"}
 
     @property
     def side(self):
@@ -96,6 +105,9 @@ class Snoqualmie(Renton):
     """Rink A: camera high on the near side at center, very wide (3840x1536). Both benches are on the near side at
     the frame edges: away right (Turbo Kings in light blue), home left (Blue Wings in white). The far boards sit at
     y 450-610."""
+    brief = ("Snoqualmie rink A: camera high at center on the near side, a very wide strip; both benches are on the "
+             "near side at the left and right edges of the frame, right by the camera, each with its penalty box just "
+             "inside it.")
     crop_top = 340 / 1536
     board_band = (0.27, 0.45)
     size = (3840, 1536)
@@ -115,6 +127,9 @@ class Snoqualmie(Renton):
     # intermissions are short (~1.5 min): players stand at their bench doors, then skate out to warm up
     min_break = 10
     bench_side = "right"
+    # Snoqualmie A and B, Sep 19 - Nov 15: white on the left 14 of 14 games, light blue on the right 7 of 7 (the
+    # usual right was wrong for 14 of the 21; 13 were set by hand and Y's Sep 21 was solved on the right)
+    bench_by_jersey = {"white": "left", "light blue": "right"}
     scoreboard = (1790, 262, 280, 116)
     ref_boards, reframe = (517, 452, 486, 508, 596), False   # 52 px lower on Oct 12, 18 and 25: tolerated (ice maps align)
     shots_boxes = {"home": (136, 76, 157, 95), "guest": (171, 76, 197, 95)}
@@ -125,8 +140,8 @@ class Snoqualmie(Renton):
                            "there are big, often get tracked as if on the ice, and climb over the boards to go on)",
                    "right": "on the near side at the RIGHT edge of the frame, right by the camera (players sitting "
                             "there are big, often get tracked as if on the ice, and climb over the boards to go on)"}
-    box_where = {"left": "on the near side just right of our bench, at the bottom of the frame",
-                 "right": "on the near side just left of our bench (x about 3450-3700)"}
+    box_where = {"left": "on the near side just right of the left bench, in the bottom-left corner of the frame",
+                 "right": "on the near side just left of the right bench (x about 3450-3700)"}
     BENCH_VIEWS = {"left": (0, 900, 700, 1536), "right": (2940, 3840, 700, 1536)}
 
     def __init__(self, board_poly, bench=None):
@@ -174,6 +189,10 @@ class Snoqualmie2(Snoqualmie):
     3840x1536 strip. The far boards bow up to y ~870 at center and dip to ~1170 at the frame edges; the near boards
     run along the bottom (y ~2100 at center). Benches at the frame edges as before: home left (we wore white), away
     right."""
+    brief = ("Snoqualmie, the camera's whole fisheye frame: high at center on the near side, the far boards bowing up "
+             "at center and the near boards along the bottom; both benches are on the near side at the left and right "
+             "edges of the frame, right by the camera, each with its penalty box just inside it; the picture is dim "
+             "and grey.")
     crop_top = 720 / 2160
     board_band = (0.38, 0.57)
     size = (3824, 2160)
@@ -205,6 +224,9 @@ class Snoqualmie2(Snoqualmie):
     views = {"rink": (0, 3824, 800, 2160), "left-net": (80, 1280, 820, 1370), "right-net": (2620, 3820, 820, 1370)}
 
     BENCH_VIEWS = {"left": (100, 1100, 1250, 2160), "right": (2724, 3724, 1250, 2160)}
+    # rink A's box x doesn't carry over to this frame, and none was measured on it
+    box_where = {"left": "on the near side just inside the left bench, toward center",
+                 "right": "on the near side just inside the right bench, toward center"}
 
     def __init__(self, board_poly, bench=None):
         self.P = board_poly
@@ -222,6 +244,9 @@ class Kirkland(Renton):
     the far boards like Renton's, but not mirror images: the home one (we wore white) right of center, the away
     one left; the doors are at the blue posts (x 1612 and 2265). The near-side corners at the bottom of the frame are
     off the ice (timekeeper and penalty boxes)."""
+    brief = ("Kirkland: fisheye camera low at center on the near side, the far boards bowing up at center; both "
+             "benches are behind the far boards, doors at the blue posts, and the penalty boxes are in the near "
+             "corners at the bottom of the frame.")
     crop_top = 320 / 1536
     board_band = (0.25, 0.49)
     board_lowest = True           # the HOCKEY sign at the right has yellow letters
@@ -230,6 +255,8 @@ class Kirkland(Renton):
     nets = {"left": 605, "right": 3255}
     min_break = 25
     bench_side = "right"
+    # no rule here: in white we sat left once and right twice, in light blue left once and right once (Sep 14 - Oct 26)
+    bench_by_jersey = {}
     BENCHES = {"left": (1340, 1720), "right": (2160, 2560)}   # x at the boards, with Renton's ~30 px margins
     scoreboard = (358, 396, 136, 82)
     ref_boards, reframe = (626, 455, 433, 489, 668), True   # Beerteam's Oct 18 upload sat 53 px low: shifted
@@ -283,6 +310,9 @@ class Renton2(Kirkland):
     boards run down to the near boards along the bottom. Same rink as before, so the benches are still behind the far
     boards, away left (we wore light blue) and home right, with the penalty boxes between them; a player at the far
     boards is about as tall as with the old camera (~75 px), so the bench rules need no scaling."""
+    brief = ("Renton's fisheye camera low at center on the near side, the far boards bowing up at center; both benches "
+             "are behind the far boards, either side of the scorekeeper's window at center, with the penalty boxes "
+             "between them.")
     crop_top = 220 / 1920
     board_band = (0.15, 0.56)
     board_lowest = True           # yellow signs above the end boards, and the scoreboard's digits
@@ -292,6 +322,7 @@ class Renton2(Kirkland):
     NET_Y = 755                   # both nets sit at about this y, right in front of the end boards' kick plate
     min_break = 25
     bench_side = "left"
+    bench_by_jersey = Renton.bench_by_jersey   # the same rink as Renton's old camera (Kirkland's geometry, not its benches)
     # x at the boards: the away bench runs from the glass post at 1380 to its box (1735-1865, a boxed player is
     # "at the bench" as with the old camera), the home bench from its box (2020-2150) to 2500
     BENCHES = {"left": (1380, 1800), "right": (2080, 2500)}
@@ -299,7 +330,8 @@ class Renton2(Kirkland):
                            "above the boards; the scorekeeper's window is at center)",
                    "right": "behind the far boards, from about 2150 to 2500 (only heads show above the boards; the "
                             "scorekeeper's window is at center)"}
-    box_where = {"left": "between the benches, x 1735-1865", "right": "between the benches, x 2020-2150"}
+    box_where = {"left": "between the benches, just right of the left bench, x 1735-1865",
+                 "right": "between the benches, just left of the right bench, x 2020-2150"}
     scoreboard = (3456, 576, 150, 126)    # even sides: ffmpeg rounds an odd crop of yuv420 video down, misaligning frames
     ref_boards, reframe = (1018, 505, 335, 458, 943), False   # +266 is renton2band's framing, +62 renton2thin's
     shots_boxes = {"home": (36, 57, 48, 69), "guest": (50, 66, 64, 79)}
@@ -323,6 +355,7 @@ class Renton2Band(Renton2):
     with the LiveBarn logo over the top 264 rows, and the picture 266 px lower than Oct 17's at the same scale (the
     far boards curve fits Oct 17's plus 266 at every x), cut off at the bottom by as much. Everything with a y moves
     down by DY; crop_top stays, since crops.py finds the crops by it and the band is above the ice anyway."""
+    brief = Renton2.brief[:-1] + "; a black LiveBarn band covers the top of the frame."
     DY = 266
     board_band = (0.29, 0.70)
     NET_Y = Renton2.NET_Y + DY
@@ -337,6 +370,7 @@ class Renton2Thin(Renton2):
     """Renton's new camera as LADA R's Oct 19 video came (LiveBarn, 2560x1280 at best on YouTube, scaled up to
     3840x1920): a thin black band over the top ~60 rows and the picture 62 px lower than Oct 17's at the same scale
     (the far boards curve fits Oct 17's plus 62 at every x). Renton2Band's shift, smaller."""
+    brief = Renton2.brief[:-1] + "; a thin black band runs along the top of the frame."
     DY = 62
     board_band = (0.18, 0.59)
     NET_Y = Renton2.NET_Y + DY
@@ -363,7 +397,8 @@ class Renton2Nov(Renton2):
                            "heads show above the boards; the scorekeeper's window is at center)",
                    "right": "behind the far boards, from about 2080 to 2430 (only heads show above the boards; the "
                             "scorekeeper's window is at center)"}
-    box_where = {"left": "between the benches, x 1665-1795 (red posts)", "right": "between the benches, x 1950-2080"}
+    box_where = {"left": "between the benches, just right of the left bench, x 1665-1795 (red posts)",
+                 "right": "between the benches, just left of the right bench, x 1950-2080"}
     scoreboard = (3376, 608, 150, 126)
     ref_boards = (963, 503, 374, 522, 1051)
     views = {"rink": (0, 3840, 220, 1920), "left-net": (40, 1240, 480, 1080), "right-net": (2540, 3740, 470, 1070)}
@@ -430,6 +465,12 @@ def jersey(folder):
     """Our jersey's colour tests (JERSEYS) for this video: rink.json's "jersey", light blue unless set."""
     name = _config(folder).get("jersey", "light blue")
     return RINKS[rink_name(folder)].jerseys.get(name) or JERSEYS[name]
+
+
+def jersey_bench(name, jersey_name):
+    """The bench a jersey has put us on at rink `name` (bench_by_jersey: "white vs royal blue" is white), or None
+    where the jersey doesn't decide it (Kirkland)."""
+    return RINKS[name].bench_by_jersey.get(jersey_name.split(" vs ")[0])
 
 
 def rink(folder):

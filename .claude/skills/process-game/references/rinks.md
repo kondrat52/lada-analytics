@@ -1,377 +1,230 @@
 # Rinks, benches, jerseys, scoreboards
 
-Each rink films from a different spot, so the camera geometry lives in a class in `pipeline/rink.py`: the detection
-crop, where the far boards are, the ice polygon, our bench, the nets, the scoreboard box, the clock and shots digits,
-and the `views` that `run_game.py frames --view` crops (`rink`, `left-net`, `right-net`, and `bench`: our bench and
-its door, mirrored to the side we sit on). `fetch --rink` records the rink in `$W/full/rink.json`; a folder without
-one is Renton. Pick the rink by the frame size and view of `frame600.png`, not by LADA's `rinkName` alone.
+Each camera's geometry is a class in `pipeline/rink.py`: the detection crop, the far boards, the ice, the benches and
+boxes, the nets, the scoreboard box with the clock and shots digits, the `views` that `run_game.py frames --view`
+crops (`rink`, `left-net`, `right-net`, `bench`), the bench our jersey puts us on (`bench_by_jersey`) and the one
+sentence the checkers' briefs give for the rink (`brief`). `fetch --rink` records the class in `$W/full/rink.json`;
+a folder without one is `renton`, the old camera. Pick the class by the frame size and view of `frame600.png`, not
+by LADA's `rinkName` alone.
 
-## What has held at every rink so far (29 games)
+| Class | Video | Camera | Our bench (fetch sets it) | Boxes | Nets x | Clock |
+|---|---|---|---|---|---|---|
+| `renton` | Renton to Oct 4, 3840x1702 (3600x1596, 3246x1440 scaled) | high, near side | behind the far boards: light blue left (away), white right (home) | between the benches: away x 1740-1770, home 1945-2055 | 540, 3245 | runs through stoppages in the 1st and 2nd, stops at whistles in the 3rd |
+| `renton2` | Renton from Oct 17, 3840x1920 | fisheye, low at center, near side | as `renton`: away from the post at x 1380, home to x 2500 | away 1735-1865, home 2020-2150 | 560, 3345 | as `renton` |
+| `renton2band` | LADA Y's Oct 12, LiveBarn 3600x1800 with a black band over the top 264 rows | `renton2`, 266 px lower | as `renton2` | as `renton2` | as `renton2` | as `renton` |
+| `renton2thin` | LADA R's Oct 19 and 26, 2560x1280 with a thin band | `renton2`, 62 px lower | as `renton2` | as `renton2` | as `renton2` | as `renton` |
+| `renton2nov` | Renton from Nov 7 (re-aimed), 3840x1920 | `renton2` re-aimed, ~65 px left; rolled about 1 degree since Nov 15 | away from the post at ~1310 to 1665, home 2080 to ~2430 | away 1665-1795, home 1950-2080 | 500, 3285 | as `renton` |
+| `snoqualmie` | Snoqualmie A, a 3840x1536 strip (3440x1376, 3438x1374) | high at center, near side, very wide | near side at the frame edges: white left (home), light blue right (away) | home: near-left corner, bottom-left; away: just left of our bench, x 3450-3700 | 630, 3260 | as `renton` |
+| `snoqualmie2` | Snoqualmie B, the whole fisheye frame 3824x2160 (YouTube often 2548x1440) | as A, fisheye, dim and grey | as `snoqualmie` | on the near side next to each bench | 680, 3270 | as `renton` |
+| `kirkland` | Kirkland, 3840x1536 (3600x1440, 3438x1374) | fisheye, low at center, near side | behind the far boards, doors at the blue posts (x 1612, 2265); no jersey rule: fetch keeps its right side, check `bench_left.jpg`/`bench_right.jpg` | the near corners at the bottom, on each bench's side | 605, 3255 | as `renton`, and it also stops in the last minute or two of the 1st and 2nd |
 
-- **Jerseys and benches.** Home wears white (blue numbers and trim), away light blue. The home bench at Renton and
-  Kirkland is right of center, the away bench left; at Snoqualmie home is left, away right. Set the bench from
-  `frame600.png` (our jerseys sit at our bench), never from home/away: Doofers were LADA's away team and the board's
-  guests at Kirkland on Sep 27 and still sat at the home-side bench. Fetch defaults to each rink's usual side
-  (`bench_side`), so a home game at Snoqualmie needs `--bench left`.
+The bench rules held on every archived game (Renton: light blue left 15 of 15, white right 6 of 6; Snoqualmie A and
+B: white left 14 of 14, light blue right 7 of 7). At Kirkland we sat left in white once and right twice, left and
+right once each in light blue; Doofers were LADA's away team there on Sep 27 and sat at the home bench.
+
+## What has held at every rink (53 games by Nov 18)
+
 - **Which side of the board we are.** Usually LADA's `playHome`, but go by the final score: LADA Y were away in LADA
-  and HOME on Kirkland's board on Sep 14.
-- **The period clock is the only reliable period source.** The empty-ice proposal has been wrong at nearly every
-  game: periods merged (two into one, or the whole video as one), a 3rd started 90 s early inside the intermission
-  countdown, nets reversed, edges 11–40 s off. Since Oct 24 fetch reads the clock off every second of the board
-  (`clock.py`) and takes the periods from it; check them on `clock_check.jpg`, and a 2 s sheet around any edge that
-  looks off (`scoreboard.py $W out.jpg $(seq a 2 b)`). A period starts when the clock first counts down from 18:00
-  (the opening faceoff; the board can sit at 18:00 through a minute of play first, see Kirkland) and ends at its
-  first 0.0, or earlier where play stopped and the operator ran the rest off on an empty rink (`run_game.py skaters`
-  drops from 6, `break_*.jpg` shows nobody playing): the reader can't see those, so move such an edge by hand.
-  After the 1st and 2nd the board counts a 1:00 intermission down (1:30 and 2:00 seen) with the old period still
-  lit, which looks like a last minute of play: play's last minute shows tenths ("45.9"), a countdown shows 0:ss
-  ("0:45"). On the one-a-minute `sb.jpg` the tenths read like minutes ("43.1" looks like 4:31).
-- **Reading the clock** (`clock.py`; what its fit allows for). The recogniser reads the seconds well and the minutes
-  badly: it drops a thin leading 1, runs "16" together into one character at Snoqualmie A, and reads 18:00 as "800" at
-  Snoqualmie B. Renton's boards (both cameras) draw the last minute's ss.t one cell left of m:ss, Kirkland's lights a
-  decimal point, Snoqualmie's use the same cells. The LEDs can stay dark for 15 s and more (Renton's new camera with
-  the band, Y's Oct 12), and then the fit assumes the clock kept running, so an edge in a dark stretch is an estimate.
-  `clock.py $W` on an archived folder (`scoreboard_jpg.npz`) reads it again and prints where `periods.json` differs.
-- **The clock runs through stoppages in the 1st and 2nd and stops at whistles in the 3rd**, in every game so far
-  (Kirkland: it also stops in the last minute or two of the 1st and 2nd). So "period start + 18:00 minus the clock"
-  gives a 1st or 2nd period event's video time to a second or two, until the operator takes a minute off (LADA R's
-  Oct 5: 3:00 to 2:00 with play going on).
-- **Minors run 3:00 on the board in the 1st and 2nd and 2:00 in the 3rd**, whatever the game sheet says (it calls
-  them all 2:00), at every rink; 4:00 and 6:00 seen at Kirkland. The panel lights 12–30 s after the whistle (the
-  scorekeeper posts it at the next faceoff, once stopping the running clock to do it) and counts from the faceoff,
-  so a kill runs from the whistle the box trip shows to the panel going dark, and the sheet's clock time is the
-  posting's or the faceoff's. A box attendant has kept a player in 22 s after the panel went dark (the kill ends
-  when he steps out), and referees have sent one back for 4 s at the next whistle (a second `pk` span, with an `on`
-  span for him in between). A power-play goal against ends the minor while the panel can stay lit (Doofers' Oct 18:
-  frozen at 0:44 for 33 s after the player left the box): end the `pk` when he steps out. A minor carried into the
-  3rd is rescaled to the 2:00 length there (1:14 left at the 2nd's buzzer showed 0:50 through the intermission).
-- **Scorekeepers slip.** Penalties on the wrong team's panel (Kirkland: ours on the guest panel while the score sat
-  on the home side), a penalty posted and removed at the same stoppage, the guests shown a goal too many for a
-  while, a goal counted that never happened (Beerteam's Oct 4: the score and a shot went up with the clock frozen
-  and the players lining up), the clock run on an empty rink after play ended. The penalty box decides whose a
-  penalty is; the sheet's score stands over the board's.
-- **Our goalie's net** switches each period, and the proposal gets it backwards often. At Snoqualmie (both cameras)
-  every home game had him in the left net in the 1st and 3rd and every away game in the right; at Renton home games
-  had him right in the 1st and 3rd and away games left. Check a crease zoom per period anyway, for pads, a blocker
-  and a mask rather than a body at the net (Doofers skated without a goalie for two periods on Oct 4), or go by
-  where the goals went in when both goalies wear white.
-- **The board's shot digits are a few pixels tall**, and `shots.py`'s OCR was wrong at most games (nearly always at
-  Renton, Kirkland and Snoqualmie B; Snoqualmie A's board showed no shots at all for the away side on Oct 12), so
-  the game sheet's shots are the default and `shots_check.jpg` a cross-check. The board itself lags the sheet by a
-  shot or two at period ends.
-- **The board flickers.** Its LEDs are dark in most single frames at Renton, and dark for whole stretches on Oct 12
-  (1196–1250 s, right across a faceoff), so `scoreboard.py` keeps the brightest frame of each second; fetch scans
-  it into `$W/scoreboard.npy` and `$W/sb.jpg`, and archive keeps the frames as `scoreboard_jpg.npz`. The camera
-  isn't framed the same every game (Snoqualmie A's board sat 50 px lower in its crop on Oct 12 and 18), so
-  `clock.py` moves `clock_box` to where the board changes most from second to second before reading.
-- **Sound.** The original wide cuts are silent. LiveBarn recordings (3438x1374, LiveBarn's score panel top-left and
-  a timeline bar along the bottom, both outside the ice) and Renton's new camera have audio: the whistles (about
-  2.4 kHz) pin goals and calls to a fraction of a second and the clips keep the sound. TK's Nov 1 wide cut at
-  Snoqualmie A had sound too (the whistles pinned every penalty call), so check each recording.
-- **Frame sizes.** Every rink's class has a usual `size`; fetch scales a smaller video of the same view up to it
-  and keeps the original as `video_<W>x<H>.webm`. Seen: Renton 3600x1596 and 3246x1440 (the late games),
-  Snoqualmie A 3440x1376 and 3438x1374, Snoqualmie B only 2548x1440 on YouTube, Kirkland 3600x1440 and 3438x1374.
-- **Framing.** Each class has `ref_boards`, the far-boards curve's y at x 200, 1000, 1920, 2800 and 3640 in the
-  rink's usual framing (every archived game's curve was within 4 px of it, except as noted below). Fetch measures
-  a new video's curve against it on a frame scaled to the rink's size, before any encode: at Kirkland and
-  Snoqualmie B (`reframe`) an offset over 20 px gets the picture shifted into place in the same encode that scales
-  the video (Beerteam's Oct 18 upload sat 53 px low, Doofers' Oct 25 70 px, both under a black band, and every
-  board-based step had failed silently); elsewhere the offset is logged. A fetch that already ran detection on a
-  misframed video stops with a message to move `full/` aside first.
+  and HOME on Kirkland's board on Sep 14. The goal and penalty briefs tell the checkers which side the sheet gives us.
+- **The period clock is the only reliable period source.** The empty-ice proposal has merged periods, started a 3rd
+  inside the intermission countdown and been 11-40 s off; fetch now uses it only as a cross-check (a warning past
+  100 s), and as the periods when the clock gives none (it logs `periods from the empty ice`). A period starts when the clock first counts down from 18:00 (the opening faceoff; the board can sit at 18:00
+  through a minute of play, see Kirkland) and ends at its first 0.0, or earlier where play stopped and the operator ran
+  the rest off on an empty rink (`run_game.py skaters` drops from 6, `break_*.jpg` shows nobody playing). After the 1st
+  and 2nd the board counts a 1:00 intermission down (1:30 and 2:00 seen) with the old period still lit: play's last
+  minute shows tenths ("45.9"), a countdown 0:ss ("0:45"). On the one-a-minute `sb.jpg` tenths read like minutes
+  ("43.1" looks like 4:31).
+- **Reading the clock** (`clock.py`). The recogniser reads the seconds well and the minutes badly: it drops a thin
+  leading 1, runs "16" into one character at Snoqualmie A and reads 18:00 as "800" at Snoqualmie B. The LEDs can stay
+  dark for 15 s and more; the fit then assumes the clock kept running, so an edge in a dark stretch is an estimate
+  (fetch's `clock:` line says so). Three period ends the reader got wrong, all at an end tile that wasn't a plain 00.0:
+  Y's Oct 19 1st (Snoqualmie A) held at 1.2 for 4 s before running out (the end is the 0.0 after the hold); LADA R's
+  Nov 2 3rd (Snoqualmie A) showed "1:02" with the 1 unlit, read as 0:02, and ended 148 s early; the Snoqualmie B Oct
+  25 operator set the clock back from 1:05 to 1:09 and the reader ended the 3rd there, 134 s early. So when the end
+  tiles of `clock_check.jpg` show the same non-zero digits, or 0:0x without tenths, sheet the board 2 s apart to the
+  video's end. Fix an edge before prepare: prepare tracks only inside the periods, and on R's Nov 2 the last 2:24
+  of the 3rd had to be given by a lineup checker as spans. An edge found wrong once the review has started is still
+  corrected in `periods.json`, without preparing again: the lineup check lists the untracked seconds and the checkers
+  give them as `on` spans (Y's Oct 5 at Kirkland: P1 moved back 50 s to the opening faceoff, and solve came to 100%).
+  `clock.py $W` on an archived folder reads
+  `scoreboard_jpg.npz` again and prints where `periods.json` differs.
+- **The clock runs through stoppages in the 1st and 2nd and stops at whistles in the 3rd**, on all 20 games with a
+  clock read (the gap briefs say which per period). So in the 1st and 2nd "period start + 18:00 minus the clock" gives
+  an event's video second to a second or two, until the operator takes a minute off (LADA R's Oct 5: 3:00 to 2:00
+  with play going on).
+- **Minors run 3:00 on the board in the 1st and 2nd and 2:00 in the 3rd**, whatever the sheet says (2:00); `pk`
+  proposes them so. 4:00 and 6:00 seen at Kirkland. The panel lights 12-30 s after the whistle (the scorekeeper posts
+  it at the next faceoff) and counts from the faceoff, so a kill runs from the whistle the box trip shows to the panel
+  going dark. A box attendant has kept a player in 22 s after the panel went dark (the kill ends when he steps out),
+  and referees have sent one back for 4 s at the next whistle (a second `pk`, with an `on` span between). A
+  power-play goal against ends the minor while the panel can stay lit (Doofers' Oct 18: frozen at 0:44 for 33 s). A
+  minor carried into the 3rd is rescaled to the 2:00 length (1:14 left at the 2nd's buzzer showed 0:50).
+- **Scorekeepers slip.** Penalties on the wrong team's panel, a penalty posted and removed at one stoppage, the guests
+  shown a goal too many for a while, a goal counted that never happened (Beerteam's Oct 4: score and shot up with the
+  clock frozen and the players lining up), a goal the sheet misses (Blue Wings' Nov 7: the board 6-5, the sheet 5-5,
+  corrected to 6-5 days later), goals posted late (Blue Wings' Nov 7 one 3.5 minutes late; Y's Nov 9 one 100 s late in
+  live play; R's Nov 2 one 8 s after the horn). The penalty box decides whose a penalty is; the sheet's score stands.
+- **Our goalie's net** switches each period and starts at our bench's end (141 of 141 periods). Fetch proposes it by
+  that rule, the opening faceoff and the crease count. Doofers skated without a goalie for two periods on Oct 4: a
+  crease zoom needs pads, a blocker and a mask, not a body at the net.
+- **The board's shot digits are a few pixels tall**: `shots.py` was wrong at most games (Snoqualmie A's board showed
+  no away shots on Oct 12), so the sheet's shots are the default. The board lags the sheet by a shot or two at period
+  ends.
+- **The board flickers.** Its LEDs are dark in most single frames at Renton, so `scoreboard.py` keeps the brightest
+  frame of each second (`$W/scoreboard.npy`, `$W/sb.jpg`; archive keeps `scoreboard_jpg.npz`). The camera isn't framed
+  the same every game, so `clock.py` moves `clock_box` to where the board changes most before reading.
+- **Sound.** The original wide cuts were silent; LiveBarn recordings (3438x1374, a score panel top-left and a timeline
+  bar along the bottom, both outside the ice), Renton's new camera and TK's Nov 1 cut at Snoqualmie A have audio: the
+  whistles (about 2.4 kHz) pin goals and calls, and the clips keep the sound. Check each recording.
+- **Frame sizes and framing.** Fetch scales a smaller video of the same view up to the class's `size` (keeping
+  `video_<W>x<H>.webm`) and measures the far-boards curve against `ref_boards` first. At Kirkland and Snoqualmie B
+  (`reframe`) an offset over 20 px is shifted into place in the same encode (late LiveBarn uploads under a black band
+  sat 53 to 70 px low); elsewhere it is logged (Snoqualmie A's 52 px lower framing is tolerated, and its `clock_box`
+  is found anyway). A fetch that already detected on a misframed video stops with a message to move `full/` aside.
 
-## Renton (`renton`, 3840x1702)
+## A camera that moved (Renton)
 
-Camera high on the near side. Both benches are behind the far boards: away left of center, home right. The away
-team's penalty box is the glassed compartment just right of the away bench (frame x about 1740–1770, past the glass
-post at x 1712), the home team's the matching compartment left of the home bench (x about 1945–2055, a boxed player
-at about 2000). A boxed player is tracked as "at the bench": he climbs over the boards there and skates off when it
-ends, with his number readable on the way. Nets at x 540 (left) and 3245 (right).
+Where the far boards sit more than 20 px (median) off the usual curve of the Renton class fetch was given, its
+`framing` line names another class whose curve fits within 25 px, or prints the turn and shift onto the given class's
+ice-map camera (`rinkcam.align`). A smaller offset prints nothing, whatever the curve's shape.
 
-Seen here: the proposal merged the 1st and 2nd (LADA R Sep 21), the 2nd and 3rd (LADA R Sep 14, Beerteam Sep 27,
-which it also put at the 1st's net), or the whole video into one period (LADA R vs LADA Y Sep 28), started the 3rd
-90 s early inside the countdown and the empty-board wait after it (Doofers Oct 4, with its net reversed), and was
-19–36 s off at four of five edges (Doofers Sep 13, whose 1st ended at 18:16 of video at the board's first 00.0, not
-18:41, and whose 2nd and 3rd started at the faceoff, 36 s and 19 s after it). Beerteam Sep 13: the operator let
-the 2nd period's clock hit 00.0, then ran an extra minute on an empty rink, and let the 1st's last 45 s run after
-play had ended. LADA R Sep 21: the board's shot count fell behind the sheet in the 3rd (about 20–29 against the
-sheet's 22–39), so the shots came from the sheet. The board was dark (flicker) for the seconds around a period's
-0.0 more than once: a 2 s sheet over the last minute pins the end. The camera was fixed all game on Sep 28,
-whatever a checker says: phase correlation of `full/ov/` frames gives the shift, and it was zero.
+A class that fits: fetch starts the board scan seconds after that line under the class it was given, so stop fetch,
+move `$W/scoreboard.npy` and `$W/clock_reads.json` aside if they exist (the clock's reads are cached by `clock_box`,
+which most Renton classes share), and run the same fetch with that `--rink`. Detection and OCR carry on (the classes
+share `crop_top`); the board is scanned and read again and the periods and nets proposed again (into `periods.json`
+unless you have edited it, else into `periods.proposed.json`).
 
-Views: `rink` 0–3840 × 700–1500; `left-net` 150–1450 × 720–1070; `right-net` 2500–3800 × 720–1070.
+A turn of up to 1.5 degrees is a roll: run as the given class if the nets, the bench and the board crop hold on
+`frame600.png`, and the ice maps correct it. Turbo Kings', Blue Wings' and Doofers' Nov 15 games were such a roll
+against `renton2nov` (-0.96 degrees, a 19 px drop, residuals 3 px across the middle; the center line leans about 30 px over the frame's height) and ran as `renton2nov`.
 
-## Renton, new camera (`renton2`, the whole fisheye frame, 3840x1920)
+A larger turn, with the center line upright, is a re-aim: TK's Nov 8 game against `renton2` (-2.62 degrees; the curve
+55 px higher at the left end and 108 px lower at the right, everything about 65 px left). Measure a new class off
+`frame600.png` before the scoreboard scan runs: the board, nets, box posts, near boards and center line, each with a
+ruler crop (`renton2nov`'s values in `rink.py` are an example), then calibrate the ice maps (`references/ice.md`).
+Under the wrong class the board crop catches only the board's edge, and the clock, the periods and `sb.jpg` with it.
 
-From Turbo Kings' Oct 17 game (9:15 PM) Renton's video comes from a new camera low at center ice on the near side,
-behind the netting, with a fisheye lens: fetch stops with "video is 3840x1920 ... new framing" under `renton`. The
-far boards bow up to y ~340 at center and drop to ~1030 at the frame edges; the near boards run along the bottom.
-The rink is the same, so the benches are still behind the far boards: away (light blue) from the glass post at
-x 1380 to ~1735, then the away box (1735–1865), the scorekeeper's window at center (the scorekeeper wore light blue
-and passes our jersey test; he is outside the bench zone, so he isn't tracked), the home box (2020–2150) and the
-home bench to ~2500. A player at the far boards is ~75 px tall, as with the old camera, so the bench rules are
-Kirkland's, unscaled. Bench sitters show only their heads above the boards and don't pass the jersey test; line
-changes come from on-ice tracks ending at the boards, as before. The nets sit at about (560, 755) and (3345, 755),
-right in front of the end boards' kick plate, where the boards curve is steep: the crease is a box in the frame
-(`in_crease`). The scoreboard is small and tilted in the right corner (x 3456–3606, y 576–702), readable on `sb.jpg`
-but not by `shots.py` (it read 30-6 for 38-16). Players near the camera are ~500 px tall. The video has real audio.
+## Renton
 
-On Oct 17 the proposal had the 1st period's net backwards and its edges 5–26 s off; the board lit the penalty panel
-during the stoppage, started it at the faceoff, and cleared it at the power-play goal.
+Both cameras look at the same rink: the benches behind the far boards, away left of center and home right, with the
+penalty boxes between them. A boxed player is tracked as "at the bench": he climbs over the boards there and skates
+off when it ends, with his number readable on the way.
 
-Views: `rink` 0–3840 × 220–1920; `left-net` 100–1300 × 480–1080; `right-net` 2600–3800 × 470–1070.
+- **Old camera (`renton`).** The proposal merged periods and reversed nets there more than once; the board was dark
+  around a period's 0.0 more than once (a 2 s sheet over the last minute pins the end). The camera was fixed all game
+  on Sep 28 whatever a checker says (phase correlation of `full/ov/` frames gave zero). Views: `rink` 0-3840 ×
+  700-1500; `left-net` 150-1450 × 720-1070; `right-net` 2500-3800 × 720-1070.
+- **New camera (`renton2`, `renton2nov`).** Fisheye from low at center behind the netting; the far boards bow up to
+  y ~340 at center, the nets sit right in front of the end boards' kick plate, where the curve is steep (the crease
+  is a box: `in_crease`). The scorekeeper's window is at center; he wore light blue and passes our test, but sits
+  outside the bench zone. A player at the far boards is ~75 px tall, near the camera ~500 px. Bench sitters show only
+  their heads; line changes are tracks ending at the boards. The board is small and tilted in the right corner
+  (readable on `sb.jpg`, not by `shots.py`). The video has real audio. The board was often dark for stretches (Blue
+  Wings' Nov 7 at four of six period edges; Blue Wings' Nov 15 across one goal each way): where it is blank across a
+  penalty call, take the call's time from the frames (Doofers' Nov 15: the sheet-implied time was 20 s late). TK's
+  Nov 8 video stopped at 3970 with 20 s or more on the clock: the 3rd ends at the video's end (`--video-ends-early`).
+  Views `renton2`: `rink` 0-3840 × 220-1920; `left-net` 100-1300 × 480-1080; `right-net` 2600-3800 × 470-1070;
+  `renton2nov`: `left-net` 40-1240 × 480-1080, `right-net` 2540-3740 × 470-1070.
+- **The same camera framed lower.** LiveBarn's cuts: `renton2band` (a black band and logo over the top 264 rows,
+  everything 266 px lower; the scoreboard crop under `renton2` showed the ceiling) and `renton2thin` (a thin band,
+  62 px; no error under `renton2`, since the size matches: compare `full/boards_poly.npy` with a `renton2` game's).
+  Any other shift is another class like them. Switching to one is in "A camera that moved" above.
 
-### The same camera with a black band (`renton2band`)
+## Snoqualmie A (`snoqualmie`)
 
-LADA Y's Oct 12 game (8:45 PM) already came from this camera, five days before Oct 17, but as LiveBarn's 3600x1800
-with a black band and the LiveBarn logo over the top 264 rows (of 1920 once scaled up): the picture is Oct 17's at
-the same scale, 266 px lower (the far boards curve is Oct 17's plus 266 at every x) and cut off at the bottom by as
-much. Under `renton2` detection ran fine (the band is above the ice), but the scoreboard crop showed the ceiling.
-`renton2band` moves everything with a y down by 266 and puts the scoreboard at (3434, 838). Tell the two apart on
-`frame600.png`: a black band across the top. If a fetch under `renton2` already ran, switch `rink` in
-`$W/full/rink.json`, move `scoreboard.npy` aside and run `scoreboard.py $W` again; the detections and crops stay.
-On Oct 12 the 2nd period's faceoff fell in a dark stretch of the board, so its start came from the clock counting
-1:1 afterwards (16:47 at 1290) and a frame check of the drop; the board's shots matched the sheet's totals but lagged
-a shot each at the 1st's end.
+Blue Wings' home rink. Both benches are on the near side at the frame edges, so bench sitters are close to the
+camera, make over half of all crops (their reads are skipped: `ocr_skip_depth`) and get tracked as if on the ice:
+`gaps` lists those long pieces and the checkers find each by the nameplate on the bench and the moment he climbs over.
+Seated players are most of the by-eye work here. As away, a boxed player sat about 20 s after the whistle.
+Intermissions are short (`min_break` 10 s): players stand at the bench doors, then skate out to warm up.
 
-Views: `rink` 0–3840 × 486–1920; `left-net` 100–1300 × 746–1346; `right-net` 2600–3800 × 736–1336.
+- Period ends haven't followed one rule: on BW's Oct 11 and Y's Sep 21 the 1st and 2nd stopped with 1:25, 1:03 and
+  ~55 s left, the board ran the rest off on an empty rink and the next period began ~25 s after 0:00; later games ran
+  each period to 0.0. On Oct 5 the 2nd ended on a goal against with 2 s left and the clock was then run out: end the
+  period at the goal.
+- On LADA R's Oct 12, Doofers' Oct 18 and Beerteam's Oct 25 the board sat about 50 px lower: the clock is still found,
+  but the shots panel falls below the crop and `shots.py` reads nothing useful. `boards.py` there gives [569, 504,
+  538, 560, 648] at x 200/1000/1920/2800/3640 against the usual [517, 453, 486, 509, 595]. To compare before fetch,
+  run `boards.py` on a scaled frame into a scratch folder holding a `rink.json` with the rink (without one it uses
+  Renton's band and the curve looks like a wild misfit).
+- Players gathered at our bench late in a game may be in a timeout (a 30 s timer on the board): R's Nov 2 at
+  3780-3805; on Y's Nov 9 one sat inside a 100 s stoppage that `stoppages.py` counted as live.
+- Jerseys: Flounders' white with light-blue trim passed our light-blue test a little (their #12 BUSH read 47 times);
+  Night Owls wear white #11, #35 and #43 (`review.md`). On Oct 4 both goalies wore white with white pads: where the
+  goals went in settled the nets.
+- Views: `rink` 0-3840 × 380-1536; `left-net` 200-1400 × 380-760; `right-net` 2600-3800 × 380-760; `bench` 0-900 ×
+  700-1536 (left) or 2940-3840 × 700-1536 (right).
 
-### A thin band (`renton2thin`)
+## Snoqualmie B (`snoqualmie2`)
 
-LADA R's Oct 19 game (8:45 PM) came at 2560x1280 at best (no 4K on YouTube), with a thin black band over the top
-~60 rows (of 1920 once scaled up) and LiveBarn's timeline bar along the bottom. Fetch under `renton2` raises no
-error, since the size matches. Compare `full/boards_poly.npy` with an Oct 17 or later `renton2` game's: on Oct 19
-it was Oct 17's plus 62 px at every x, so `renton2thin` shifts everything with a y by 62 and reads the scoreboard
-at (3456, 638). Any other shift is another class like it (or `renton2band`'s 266). Switching `rink` in
-`$W/full/rink.json` before fetch reaches the scoreboard scan saves rescanning the board; detection uses only
-`crop_top`, so it doesn't care. That night the clock ran through stoppages in the 1st and 2nd and stopped at whistles
-only in the 3rd, so the penalty panel lit about 25 s after the whistle (#9 was in the box at 936, the panel at 950):
-take a kill's start from the frames, not the panel. The intermissions were a 1:00–1:30 countdown on the board with
-players on the ice, so the empty-ice proposal found one period; the clock gave 12–1112, 1204–2285, 2391–4137.
+The same camera spot, the camera's whole fisheye frame: the far boards bow up to y ~870 at center, the near boards
+run along the bottom. The picture is dim and grey (the ice V ~150, white jerseys no brighter, blue numbers barely
+show), so the class has its own brightness levels and jersey tests: white is little dark in the torso, light blue
+counts blue from saturation 25 (`blue_s`), ours 5%+ against 0-2% for white jerseys and referees. That light-blue test
+came from Doofers' Oct 25, the first light-blue game here: the plain test had passed 0.8 of our players a frame and
+given whole players no time. Check a new jersey at a rink before prepare: our on-ice detections per frame
+(`track.load(...)`: `ours & onice`) should be near 5, not 1.
 
-Views: `rink` 0–3840 × 282–1920; `left-net` 100–1300 × 542–1142; `right-net` 2600–3800 × 532–1132.
+- Referees' stripes and dark jerseys with a cream or white yoke (Sentinels, Frost Giants) pass the white test: twice
+  the usual review sheets, `skaters` reading 8-10, and their numbers in `unknown` (their #13 and #16 read hundreds of
+  times on Oct 10, so our absent #13 and #16 had to be on the absent list). Puck Buddies OG's red with white
+  nameplates did too (#64, #7 LONGFELLOW; their #7 swelled our #7's reads): look at the crops before trusting a
+  number's count. SEA Otters' red and black didn't.
+- YouTube had these videos only at 2548x1440 on Sep 19, Oct 10 and Nov 7 (scaled up; the geometry fits); TK's Oct 25
+  came at 3824x2160. A late upload sitting low (Doofers' Oct 25: 70 px) is shifted by fetch now.
+- Seen here: the proposal merged the 1st and 2nd or put all three edges 11-40 s off; a 2:00 intermission; the board at
+  18:00 until the opening faceoff at 0:11 (Oct 10); our goalie in white with dark pads against theirs in light blue
+  (in a lopsided period the play sits at their net).
+- Views: `rink` 0-3824 × 800-2160; `left-net` 80-1280 × 820-1370; `right-net` 2620-3820 × 820-1370; `bench` 100-1100 ×
+  1250-2160 (left) or 2724-3724 × 1250-2160 (right). The nets sit at about (645, 1015) and (3250, 1020); early in a
+  video a net may not be on the ice yet, so check on a frame from the game.
 
-### Re-aimed (`renton2nov`, from Nov 7)
+## Kirkland (`kirkland`)
 
-Turbo Kings' Nov 8 game (6:25 PM, YouTube 3840x1920, no band) came from the same camera pointed differently: fetch
-under `renton2` logged "+39 px", but the far boards curve wasn't Oct 17's shifted. It sat 55 px higher at the left
-end and 108 px lower at the right ([963, 503, 374, 522, 1051] at REF_XS against [1018, 505, 335, 458, 943]). The
-center line stays upright, so the camera wasn't rolled, and everything sits about 65 px left: center line at x
-~1875, nets at (500, 760) and (3285, 760), away bench from the glass post at ~1310 to its box's red post at 1665,
-away box 1665–1795, home box 1950–2080, home bench to ~2430. The near boards leave the frame bottom at x ~950 and
-~2800, so more near ice is in the frame. The scoreboard is Oct 17's at the same scale and tilt moved by (−80, +32):
-`scoreboard = (3376, 608, 150, 126)`. Under `renton2` the board crop would have caught only its right edge, and the
-clock, the periods and `sb.jpg` with it. Since Nov 15 fetch's framing line names the Renton class whose curve
-fits within 25 px, or says none does. When none does, measure a class like this one off `frame600.png` before
-the scoreboard scan runs: the board, nets, box posts, near boards and center line, each with a ruler crop. Then
-calibrate the ice maps (`references/ice.md`). That night the board's LEDs went dark in the last 30 s and the video
-stopped at 3970 with 20 s or more on the clock and play going on, so the 3rd period ends at the video's end
-(`--video-ends-early`). The clock reader assumed it ran to 0.0 at 3966. Faint digits in a contrast-stretched
-crop showed two figures before the point.
-
-Blue Wings' Nov 7 game (10:40 PM, home, white, bench on the right) was already framed this way: its boards curve
-matched `renton2nov` within a few px, so fetch printed no framing line. That night the board was dark at four of the
-six period edges (both ends of the 1st, the starts of the 2nd and 3rd). The clock reader's edges held within about
-2 s against `break_*.jpg` and the clock's later readings. The clock ran through stoppages in the 1st and 2nd and
-stopped at whistles in the 3rd. The operator posted one guest goal about 3.5 minutes late, and the board counted a
-home goal the game sheet left out (`references/highlights.md`).
-
-Turbo Kings' Nov 15 game (10:40 PM, home, white, bench on the right) printed "no Renton framing fits: the camera
-moved": the far boards sat at [935, 471, 352, 517, 1074] against [963, 503, 374, 522, 1051], -28 px at the left end
-to +23 at the right. That was a roll, not a re-aim: `rinkcam.align` against `cams/renton2nov.json` fit a turn of
--0.96 degrees and a 19 px drop with residuals of 3 px across the middle and 8-19 px at the frame ends, and the center
-line leans about 30 px over the frame's height. Nets (about 490 and 3270) and the center line (~1860) stayed within
-15 px of `renton2nov`'s, the scoreboard crop still framed the board, and the bench and box zones held, so the game ran
-as `renton2nov` with no new class. Before measuring a new class off a "no framing fits" line, fit `align` against the
-nearest class (`rinkcam.align(json.load(open('pipeline/cams/<class>.json')), np.load('$W/full/boards_poly.npy'))`)
-and look at the residuals: a few px means a roll the ice maps already correct. The board clock read all six
-edges; the 3rd's clock stopped at whistles and ran to 0.0 with a penalty still on, at the video's end.
-
-Blue Wings' game earlier that night (9:15 PM, away, light blue, bench on the left) printed the same framing line with
-the same curve to the pixel, so the roll was already in place; it ran as `renton2nov` too, and the bench, box and
-crease zones held through the lineup checks. The clock reader read all six edges; the 3rd's start was a second late
-(the board left 18:00 at 2375, not 2374). The board was dark for long stretches of the 3rd (2378 on, 2780-2794,
-3112-3132), across one goal each way.
-
-Doofers' game that evening (6:25 PM, away, light blue, bench on the left) had the same curve within a pixel and ran
-as `renton2nov`. The video opened on the opening faceoff, and the board was dark at both ends of the 1st, so the
-clock reader placed those edges from its readings either side (17:50 at 11 s, 59.8 at 1022 s); a frame of the drop
-and the intermission countdown confirmed both. In the 3rd the digits were blank from 2788 to 2809, across a penalty
-call: the reader put the clock stopped at 13:25 and running down to 13:16 at about 2813, while the board's own
-13:16 stop came at 2792.5. The sheet-implied time for that penalty (2814) was 20 s late, so take a call's time
-from the frames there.
-
-Views: `rink` 0–3840 × 220–1920; `left-net` 40–1240 × 480–1080; `right-net` 2540–3740 × 470–1070.
-
-## Snoqualmie A (`snoqualmie`, a 3840x1536 strip)
-
-Blue Wings' home rink. Camera high on the near side at center, very wide. Both benches are on the near side at the
-frame edges, home left, away right, so the bench sitters are close to the camera, make over half of all crops
-(their reads are skipped: `ocr_skip_depth`), and get tracked as if they were on the ice: `run_game.py gaps` lists
-the long pieces that sit in the bench zone, and the checkers find each by the nameplate on the bench and the moment
-he goes over the boards (25 on/off entries on LADA R's Oct 12 game came from that). Our penalty box is on the near
-side next to our bench: as home, a player skates to the near-left corner and climbs in at the bottom-left of the
-frame; as away, the box is just left of our bench (x about 3450–3700) and he sat about 20 s after the whistle. Nets
-at 630 and 3260. Intermissions are short (`min_break` 10 s): players stand at the bench doors, then skate out to
-warm up, so the proposal merges periods here almost every time and once split the 3rd at a long power-play-goal
-stoppage into two.
-
-On LADA R's Oct 12 and Doofers' Oct 18 games the board sat about 50 px lower in the frame than on the other games
-(Blue Wings' game the same day as Doofers' had the usual framing): the clock was still found, but the shots panel fell
-below the scoreboard crop (likely why "the board showed no shots" on Oct 12, above) and `shots_boxes` lands on the
-clock's digits, so `shots.py` reads nothing useful on that framing. Period ends haven't followed one rule here, so
-read the clock every time: on BW's Oct 11 and Y's Sep 21 games the 1st and 2nd stopped with 1:25, 1:03 and about 55 s
-on the clock, the teams changed ends while the board ran the rest off on an empty rink, and the next period began
-about 25 s after 0:00 (so a period ends where `run_game.py skaters` drops from 6 and starts at the faceoff, not at the
-skate-out the proposal picks); every later game (Beerteam Sep 20
-and Oct 4, BW Oct 18, LADA R Oct 5 and Oct 12) ran each period to 0.0, with the 1:00 countdown after the 1st and 2nd
-(about 1:30 after the 2nd on Oct 5). On Oct 5 the 2nd ended on a goal against with about 2 s left and the operator
-then ran the clock to 0.0 with no play: end the period at the goal. On Y's Oct 19 game the 1st's clock stopped at 2.0
-and then held at 1.2 for 4 s (a faceoff with a second left) before running out; `clock.py` put the end at the start
-of the hold (1114), and a 1 s sheet over the last 25 s showed 0.0 at 1118. When `clock_check.jpg` shows the same
-non-zero digits on all three end tiles, sheet the board 1 s apart there. On Oct 4 both goalies wore white with white
-pads, so where our goal and the goals against went in settled the nets. Flounders' white with light-blue trim passed
-our light-blue test a little (their #12 BUSH read 47 times); Night Owls' white #11, #35 and #43 are in `review.md`.
-Beerteam's Oct 25 LiveBarn upload (3438x1374, uploaded Oct 31) was at the lower framing too, and needed no re-encode,
-unlike Kirkland's late upload: `boards.py` gave [569, 504, 538, 560, 648] at x 200/1000/1920/2800/3640, the same as BW
-Oct 25 (where the ice-map camera was fitted), DF Oct 18 and R Oct 12; the usual framing gives [517, 453, 486, 509, 595].
-To compare before fetch, run `boards.py` on a scaled frame into a scratch folder holding a `rink.json` with the rink:
-without one it uses Renton's band and returns a curve that looks like a wild misfit.
-
-On LADA R's Nov 2 game the clock reader ended the 3rd 2.5 minutes early. The board held "1:02" through a long
-stoppage, with the leading 1 too faint to show on `clock_check.jpg`, which looked like 0:02. Then it showed "1:00"
-(read as 0:00), and the clock reader ended the period there, at 3830. Play went on, and the 3rd's real end was 3974,
-2 s after Bekker's goal. The sign: the last minute shows tenths ("56.9", "40.8") after the supposed end. So when the
-end tiles show :0x with no tenths, sheet the board 2 s apart for the next three minutes. A period cut short is cut
-short in the tracks too: prepare had stopped P3's tracking at 3830. Re-preparing would have thrown away P3's
-reviewed rows, so a lineup checker gave the last 2:24 by eye, as on/off spans. The board never posted that goal
-until 8 s after the horn (guest 5 to 6 at 3982). The players gathered at our bench at 3780-3805 were in a timeout
-(a 30 s timer on the board), not celebrating.
-
-On Y's Nov 9 game (away, our bench right, the 68-minute video uploaded Nov 17) the clock gave all six edges within 1 s,
-and the nets followed the away rule (ours right in the 1st and 3rd). The board ran #97's 2nd-period tripping as 3:00
-(the sheet says a 2-minute minor; the `pk` follows the board). Our 4-on-4 goal at 2892 (clock 12:39 in the 3rd) went
-up on the board only at 2997, in live play 100 s later, so a score change can't be taken as the goal's time here. A
-30 s timeout at 3921-3952 sat inside a 100 s stoppage that `stoppages.py` counted as live; the lineup check called its
-line-up at our bench gaps until the checker saw it.
-
-Views: `rink` 0–3840 × 380–1536; `left-net` 200–1400 × 380–760; `right-net` 2600–3800 × 380–760; `bench` 0–900 ×
-700–1536 (left) or 2940–3840 × 700–1536 (right).
-
-## Snoqualmie B (`snoqualmie2`, the whole fisheye frame, 3824x2160)
-
-The same camera spot, but since Oct 2026 the video is the camera's whole fisheye frame: the far boards bow up to
-y ~870 at center and dip to ~1170 at the edges, the near boards run along the bottom. Benches as at rink A (home
-left); our (home) penalty box is on the near side just right of our bench, the opponents' its mirror next to theirs. Nets at 680 and 3270. The picture
-is dim and grey: the ice is V ~150 and white jerseys no brighter, blue numbers barely show, so the rink has its own
-brightness levels (`white_v`, `dark_v`) and its own white-jersey test (little dark in the torso tells our white
-from TTT's navy). Referees' stripes and dark jerseys with a cream or white shoulder yoke (Sentinels, Frost Giants)
-pass that test: twice the usual review sheets (210–223), `run_game.py skaters` reading 8–10 (check penalties at the
-box by eye), `unknown` listing their numbers, and their #13 and #16 read hundreds of times on Oct 10, so our own
-absent #13 and #16 had to be on the absent list. LADA's schedule calls it "Snoqualmie B". YouTube had these
-videos only at 2548x1440 on Sep 19 and Oct 10 (fetch takes the best webm and scales it up, and the geometry fits);
-TK's Oct 25 video came at the full 3824x2160 (format 313), so nothing was scaled. Against red and black jerseys
-(SEA Otters, Oct 25) the white test held: 199 review sheets and no opponent numbers in `unknown`.
-`Snoqualmie2.bench_side` is "right", so a home game here needs `--bench left` on fetch (or `"bench": "left"` in
-`full/rink.json`); every home game before Nov 7 had it set by hand. Beerteam's Nov 7 fetch left it out: the first
-solve ran with our bench on the right, and the gaps briefs told the checkers so. Look for "Our bench is on the near
-side at the LEFT edge" in a brief before launching it. Puck Buddies OG's red jerseys with white nameplates passed
-the white test often enough that their #64 and #7 LONGFELLOW were read hundreds of times (174 review sheets);
-`unknown` listed #64, and their #7 swelled our #7's reads, so look at the crops before trusting a number's count.
-Doofers' Oct 25 upload (2548x1440, video uploaded Oct 31) was the same view sitting 70 px low and 4 px right in
-the scaled frame, under a black band, with a player's progress bar near the bottom: the scoreboard crop then holds
-only the board's top edge and every board-based step fails silently. `boards.py`'s print gives it away: the far
-boards at ~938 at center instead of ~868 (compare `np.polyval` of `full/boards_poly.npy` with an earlier game's).
-Measure the offset by correlating `rink.py`'s scoreboard box against an archived game's `scoreboard_jpg.npz` crop,
-check it by running `boards.py` on a shifted `frame600.png` (within 4 px of TK's Oct 25 curve), then stop fetch,
-move `full/` aside except `rink.json`, re-encode from `video_<w>x<h>.webm` with
-`-vf scale=3824:2160:flags=bicubic,crop=3820:2090:4:70,pad=3824:2160:0:0:black` (h264_nvenc as `fit_size`) into
-`video.webm`, and fetch again: the geometry and the ice-map camera then fit unchanged.
-That game was also the first in light blue here, and the plain light-blue test (blue = hue 90-125 at saturation
-70+) passed 0.8 of our players a frame on the ice: the far side's light blue washes out to grey. The first solve
-showed it as whole players with no time (#31, #37), a period built from six players, #29 on for all 1104 s of the
-2nd, and only 46 review sheets. Snoqualmie B counts blue from saturation 25 (`blue_s`) with its own light-blue
-test (ours 5%+, crop 3%+), which passes ~5.5 a frame with Sentinels' white and the referees at 0-2%. Check a
-new jersey at a rink before prepare: our on-ice detections per frame (`track.load(...)`: `ours & onice` per
-frame) should be near 5, not 1.
-
-Seen here: the proposal merged the 1st and 2nd (Sep 19) or found all three 11–40 s off (Oct 10, nets right); after
-the 2nd on Sep 19 the board counted a 2:00 intermission; on Oct 10 the board sat at 18:00 until the opening faceoff
-at 0:11, and the box attendant kept #61 in for 22 s after the panel went dark. Our goalie wore white with dark pads,
-theirs light blue; in a lopsided period the play sits at their net, which tells the nets apart. Shots OCR was wrong
-in every period of both games. On Oct 25 the 1st and 2nd ran on a running clock with 3:00 minors and the 3rd on a
-stop clock with 2:00 minors. With 1:05 left in the 3rd the operator set the clock back to 1:09, and `clock.py` ended
-the period there (3754) instead of at the 00.0 at 3888: a period end that isn't 00.0 on `clock_check.jpg` needs a
-sheet of the board up to the video's end.
-
-Views: `rink` 0–3824 × 800–2160; `left-net` 80–1280 × 820–1370; `right-net` 2620–3820 × 820–1370; `bench` 100–1100 ×
-1250–2160 (left) or 2724–3724 × 1250–2160 (right). The nets sit at about (645, 1015) and (3250, 1020) in the frame,
-checked on the Oct 10 video; early in that video the right net wasn't on the ice yet, so a check should use a frame
-from the game itself.
-
-## Kirkland (`kirkland`, 3840x1536)
-
-Camera low at center ice on the near side through a fisheye lens: the far boards bow up to y ~430 at center and
-dip to ~700 at the edges, where the end boards run down the sides. Both benches are behind the far boards, home
-right of center, away left; the doors are at the blue posts (x 1612 and 2265). The penalty boxes are the near
-corners at the bottom of the frame, each on its bench's side (the right bench's team bottom-right; Beerteam on the
-left bench on Oct 18 used the bottom-left, their opponents the bottom-right), and a player drops out of
-the bottom of the frame as he sits: read his number or name on the way in. Nets at 605 and 3255.
+Fisheye from low at center on the near side: the far boards bow up to y ~430 and dip to ~700 at the edges, where the
+end boards run down the sides. A boxed player drops out of the bottom of the frame as he sits: read his number on the
+way in.
 
 - The HOCKEY sign at the right has yellow letters that pull the boards fit up; `board_lowest = True` keeps only the
   lowest yellow run per column.
-- Intermissions are about a minute and a referee stays on the ice, so the proposal finds a single period (Sep 14,
-  Oct 5: the 2nd and 3rd merged) or all three 20–40 s off (Sep 27). Take the periods from the clock.
-- The penalty clock jumped during an intermission (2:33 → 1:42): for a carried-over penalty use the moment the panel
-  goes dark, not the time it showed at the break. A 2:00 for the other team was posted and taken off again at the
-  same stoppage.
-- Teamy McTeamface's white jerseys have big sky-blue panels, so half of theirs pass the plain light-blue test:
-  `--jersey "light blue vs sky blue"` adds a hue test (`bhue` in `dets.csv`: ours ~113, theirs ~107). Rainucks' white
-  with blue numbers and green-and-blue stripes passed the light-blue test too (`unknown` listed six of their numbers,
-  #96 with more reads than any of ours); the goalies were told apart by colour (ours red, theirs white). BladeRunners
-  wear red; nothing of theirs passed the white test.
-- The operator can start the clock late. On LADA Y's Oct 5 game the board sat at 18:00 for the first 55 s of video
-  while the game went on: opening faceoff at 0:05, a goal against at 0:41 (the sheet's 17:50 is the scorekeeper's
-  guess), and the clock first counted down at the faceoff after it. The "18:00 starting to count" rule put P1 at 55,
-  prepare cut its segments from there, and only the goals check found the earlier goal. Before prepare, look at the
-  first minute of video (`frames --view rink 0 4 8 ... 40`) for play under a frozen 18:00. Once the review had
-  started, P1 was moved to 5 in `periods.json` without preparing again: `on` spans for the five seen from the opening
-  faceoff (and the changes after the goal) filled the seconds before the first segment, and solve came to 100%.
-- Late uploads can sit low. Beerteam's Oct 18 video (LiveBarn's 3438x1374 with its score panel top-left, uploaded Oct
-  31) was the usual view 53 px low and 0 px sideways once scaled to 3840x1536, under a black band: `boards.py`
-  printed ~488 at center instead of ~432. Measured as Snoqualmie B's (below): the scoreboard box correlated against
-  Doofers' Sep 27 `scoreboard_jpg.npz` (0, +53), `boards.py` on frame600 shifted up 53 within 3 px of Sep 27's
-  curve, then a re-encode from `video_3438x1374.webm` with
-  `scale=3840:1536:flags=bicubic,crop=3840:1483:0:53,pad=3840:1536:0:0:black` and fetch again.
-- The home team doesn't always take the right bench: Beerteam (home, white) sat at the left one on Oct 18, as
-  Doofers (away) sat right on Sep 27. Go by `frame600.png`.
-- The first gap check gets the bench right only half the time at Kirkland's staggered changes: a second pass over
-  the gaps it left (and over any shift over ~5 minutes) found #52 sitting a whole timeout and the next shift.
-
-Views: `rink` 0–3840 × 320–1536; `left-net` 150–1350 × 400–800; `right-net` 2600–3800 × 400–800.
+- Intermissions are about a minute with a referee on the ice, so the empty ice finds one period or all three 20-40 s
+  off. The penalty clock jumped during an intermission (2:33 to 1:42): for a carried-over penalty use the moment the
+  panel goes dark.
+- The operator can start the clock late: on LADA Y's Oct 5 the board sat at 18:00 for the first 55 s while the game
+  went on (opening faceoff at 0:05, a goal against at 0:41). Before prepare, look at the first minute (`frames --view
+  rink 0 4 8 ... 40`) for play under a frozen 18:00, and start P1 at the faceoff.
+- Jerseys: Teamy McTeamface's white with big sky-blue panels needs `light blue vs sky blue`; Rainucks' white with blue
+  numbers and green-and-blue stripes passed the light-blue test too (`unknown` listed six of their numbers); their
+  goalies were told apart by colour. BladeRunners wear red.
+- At Kirkland's staggered changes the first gap check has got the bench right only about half the time; a second
+  round over what it left (and any shift over ~5 minutes) found #52 sitting a whole timeout.
+- Views: `rink` 0-3840 × 320-1536; `left-net` 150-1350 × 400-800; `right-net` 2600-3800 × 400-800.
 
 ## Jersey tests
 
-`JERSEYS` in `rink.py` turns process.py's torso colour fractions into "ours" (tracked) and "crop" (saved for OCR
-and review). Light blue is the default; `white` is a white torso with little dark in it and under 10% red (Sea
-Otters' red with white stripes is 30–50% red); `light blue vs sky blue` adds the hue test; `white vs light blue` is
-the white test with under 30% blue, for a game against LADA's other light-blue team (`references/lada.md`, "A game
-between two LADA teams"). A rink can override a test for its own lighting (`jerseys` on the class, as Snoqualmie B
-does, and `blue_s`, the saturation floor of "blue", which Snoqualmie B lowers to 25; a change there means detecting
-again). Whenever the picture looks different from before, run YOLO on a few frames and check the test before
-detection: a wrong test loses our far-side players silently. Detection only saves crops of players in our jersey,
-so a jersey set wrong after the fact means `run_game.py jersey $W <name>` (no detection rerun; ~5 min for a few
-crops, 22 min of decoding for 100k on a 66-minute video). An opponent's jersey can pass our test on its trim alone
-(Roadrunners' #4 ORR in grey-white with light-blue stripes made most of the 88 reads of "4"); `unknown` shows them.
+`JERSEYS` in `rink.py` turns `process.py`'s torso colour fractions into "ours" (tracked, applied at prepare) and
+"crop" (cut and read; set before detection). A rink can override a test for its lighting (`jerseys` and `blue_s` on
+the class, as Snoqualmie B does; a change to `blue_s` means detecting again).
 
-A dark opponent can pass the white test wholesale on a fisheye camera, where the ice behind a player fills the box.
-On LADA R's Oct 26 game (Renton, `renton2thin`) Weekday Benders' royal blue with red numbers passed it 75% of the
-time: `unknown` listed five of their numbers with 400-670 reads each, as many as our regulars. The test only applies
-at prepare (`track.py`), and the crop test decides what gets cut and read, so a new test needs no detection rerun.
-Measure it before prepare: join `dets.csv` (row order within a frame = the crop's `_NN`) with the OCR reads, then
-compare the colour fractions of crops read as our numbers against crops read as theirs. Theirs had blue ~0.31 against
-white ~0.36 and red plus purple ~0.14; ours blue ~0.12, white ~0.68, red plus purple under 0.02. `white vs royal blue`
-(blue under half of white, red plus purple under 0.08) kept 89-100% of our numbers and 1-6% of theirs. Leave out
-numbers both teams wear: the Benders had a #66 and a #39 too, and those reads were mixed.
+| Test | When | Measured |
+|---|---|---|
+| `light blue` | the default: our light blue | |
+| `white` | our white: a white torso with little dark, under 10% red | Sea Otters' red with white stripes is 30-50% red |
+| `light blue vs sky blue` | against white jerseys with big sky-blue panels (Teamy McTeamface): adds a hue test | `bhue` ours ~113, theirs ~107 |
+| `white vs light blue` | against LADA's other light-blue team (`lada.md`, "A game between two LADA teams") | 174 review sheets down to 114 |
+| `white vs navy and sky blue` | against navy with sky-blue panels and white numbers (Teamy McTeamface, LADA R's Oct 19) | kept 90% of ours, 11% of theirs |
+| `white vs royal blue` | against royal blue with red numbers (Weekday Benders, LADA R's Oct 26) | kept 89-100% of ours, 1-6% of theirs |
+
+A wrong test loses our far-side players silently, so whenever the picture looks different from before, run YOLO on a
+few frames and check the test before detection. Detection only saves crops of players who pass the crop test, so a
+jersey set wrong afterwards means `run_game.py jersey $W <name>` (~5 min for a few crops, 22 min of decoding for 100k
+on a 66-minute video). An opponent can pass our test on its trim alone (Roadrunners' #4 ORR in grey-white with
+light-blue stripes made most of 88 reads of "4"), and a dark opponent can pass the white test wholesale on a fisheye
+camera, where the ice behind a player fills the box (Weekday Benders: 75%, five of their numbers with 400-670 reads;
+they also wear our #66 and #39, whose reads were mixed).
+To measure a new test before prepare (no detection rerun: the "ours" test applies at prepare), join `dets.csv` (row
+order within a frame = the crop's `_NN`) with the OCR reads, compare the colour fractions of crops read as our numbers
+against crops read as theirs, and leave out numbers both teams wear.
 
 ## A rink that isn't in `rink.py`
 
@@ -382,14 +235,14 @@ U=$($PY -m yt_dlp -g -f 313 "<url>"); $FF -loglevel error -ss 600 -i "$U" -frame
 ```
 
 Add a class: `crop_top` above the heads of players at the far boards (a wrong crop silently loses them), the board
-band, the ice polygon, the benches (with `bench_where`, `box_where` and `bench_view` for the checkers' briefs), the
-nets, `scoreboard` (x, y, w, h, all even: ffmpeg rounds an odd crop of yuv420 video down, every raw frame read then
-drifts a row, and the scan shows two half boards and runs short of the video, 3706 s for 3736), `clock_box` (the
-period clock's four digit cells inside that crop, x0, y0, x1, y1, as a level rectangle) with `clock_tilt` (degrees it
-is turned about its centre to lie on the digits, positive when they slope down to the right; 31 at Renton's new
-camera), `shots_boxes` (the home and guest shot digits inside that crop), `views`, and `board_lowest` if there's
-yellow lettering above the boards. Run `boards.py` on the frame and draw its curve over it; check it all the way to
-the frame edges. Then YOLO on a few frames and the jersey test under that lighting, and only then detection. Register
-the class in `RINKS`. Once the board is scanned, `clock.py $W` prints the box's offset (a few px is normal; tens of px
-means the box was measured on another framing) and writes `clock_check.jpg`: each row should show 18:00, 18:00, 17:59
-and then the period's last seconds to 00.0.
+band, the ice polygon, the benches (with `bench_where`, `box_where` and `bench_view` for the briefs, and
+`bench_by_jersey` once a few games show a rule), `brief`, the nets, `scoreboard` (x, y, w, h, all even: ffmpeg rounds
+an odd crop of yuv420 video down, every raw frame read then drifts a row, and the scan shows two half boards and runs
+short of the video), `clock_box` (the period clock's four digit cells inside that crop, x0, y0, x1, y1, as a level
+rectangle) with `clock_tilt` (degrees it is turned to lie on the digits, positive when they slope down to the right;
+31 at Renton's new camera), `shots_boxes`, `views`, `ref_boards`, and `board_lowest` if there's yellow lettering above
+the boards. Run `boards.py` on the frame and draw its curve over it to the frame edges. Then YOLO on a few frames and
+the jersey test under that lighting, and only then detection. Register the class in `RINKS`. Once the board is
+scanned, `clock.py $W` prints the box's offset (a few px is normal; tens of px means it was measured on another
+framing) and writes `clock_check.jpg`: each row should show 18:00, 18:00, 17:59 and the period's last seconds to
+00.0. Then calibrate the ice maps (`references/ice.md`).

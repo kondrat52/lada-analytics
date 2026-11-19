@@ -1,6 +1,7 @@
 """roster_card.py OUTDIR OUT.jpg PER: reference crops per player from reads (name reads preferred), mixed views.
 Also writes card_empty.json next to OUT.jpg: the roster numbers with no row (no confident reads this period), so
-`run_game.py review` can point reviewers at another period's card or say the player probably didn't play."""
+`run_game.py review` can point reviewers at another period's card or say the player probably didn't play; and
+card_rows.json, the numbers in row order, so zoom.py can find a player's row."""
 import sys, os, json, subprocess, numpy as np, pandas as pd
 sys.path.insert(0, os.path.dirname(os.path.abspath(__file__)))
 from reads import load_reads
@@ -30,3 +31,4 @@ for p in SH.ROSTER:
     items += row + ["none::"] * (per - len(row))
 subprocess.run([sys.executable, os.path.dirname(os.path.abspath(__file__)) + "/sheet.py", dst, "110", "180", str(per)] + items)
 json.dump(empty, open(os.path.join(os.path.dirname(os.path.abspath(dst)), "card_empty.json"), "w"))
+json.dump(SH.ROSTER, open(os.path.join(os.path.dirname(os.path.abspath(dst)), "card_rows.json"), "w"))   # zoom.py's #N

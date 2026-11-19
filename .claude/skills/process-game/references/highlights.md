@@ -1,288 +1,137 @@
 # Goals, penalties and clips
 
-## Finding the goals
+What the goal and penalty checkers do and where their rules live, what `highlights` prints and what to do about it,
+the penalty-kill cases step 3 meets, `highlights.json`, and the clips.
 
-`run_game.py goals $W` first prints the game sheet's goals (`sheet.json`, from `run_game.py sheet`) with the
-video time each period clock implies: the second the board's clock first showed the goal's time (`clock.json`,
-read by fetch), which the clock stops at in the 3rd too; without `clock.json`, period start plus the clock's elapsed
-time, exact where the clock runs through stoppages and otherwise the earliest the goal can be. Then it
-lists candidate goals from the video: center-ice faceoff formations that aren't period starts, and long stoppages
-with where play restarted (a goal is always followed by a center faceoff). It prints which net is ours each
-period, so goals for and against can be told apart. The scoreboard narrows each candidate: the clock stops a
-second or two after the goal and the score changes soon after (on Oct 3 the board changed about 12 s after the
-game sheet's time).
+## The goal and penalty checkers
 
-Check each by eye:
+`run_game.py goals $W --brief` writes one brief per period with goals on the sheet (`W/scratch/goals/prompt_pN.md`,
+answer `pN/goals.json`) and one for all the sheet's penalties, ours and theirs (`prompt_pens.md`, answer
+`pens/pens.json`), from `pipeline/goal_prompt.md` and `pen_prompt.md`. They need only fetch's output and
+`periods.json` with its nets, so they run beside prepare and the review. The templates carry the rules the session
+used to paste by hand: our net in that period, which side of the board we are, where to search from the second the
+clock showed the sheet's time (and the other period, and a lost digit: LADA R's Sep 21 had a goal in the wrong
+period, Beerteam's Sep 27 17:17 for 7:17), the board's late postings, the center faceoff that follows every goal,
+the operator running the clock in a stoppage, our goalie pulled, the box trip that decides whose penalty it was, and
+the fixed JSON answer. A period without a board clock read gets the earliest second the clock allows and a search on
+to the period's end. The briefs name the players the sheet marks playing who aren't in `roster.json` yet, and until
+`review --opp` the opponents' look comes from the jersey test's name ("white vs royal blue": royal blue jerseys). A
+new rule for the checkers goes into the template.
 
-```sh
-$PY pipeline/run_game.py frames $W $W/g.jpg --view rink --range <t-60> <t> 3      # the minute before the faceoff
-$PY pipeline/run_game.py frames $W $W/gz.jpg --view left-net <t1> <t2> ...        # or right-net, 1 s apart
-```
+One rule times every goal: **`t` is the second the puck crosses the line, in a scramble the last jam; `shot` is
+where the scoring sequence starts, in a scramble the shot or drive that began it.** Taking the first jam as the goal
+left two replays ending before the puck went in (LADA R's Nov 9 goals 4 and 5), and taking the pile as the shot left
+a replay that opened after the drive (LADA R's Oct 26 opener, 5 s after Shachak's drive) or on the wrong player
+(Beerteam's Oct 18 3rd, the last poke instead of Kleiman's jam).
 
-A real goal shows a scramble or shot at one net, the referee pointing at it, and one team celebrating before the
-players drift to center. Most candidates without that are false alarms (icings, offsides, a timeout). The
-scorekeeper can also be slow or wrong: on Sep 14 the board first credited our goal to the other team and fixed it
-minutes later. The sheet's clock lags the goal itself: on Doofers' Sep 13 game all five goals were 6–13 s of video
-before the time the sheet's clock implies, even in a period whose clock ran through stoppages. It isn't always that
-far: on Doofers' Oct 10 game (Snoqualmie B) the 1st period's three goals were 1–5 s before it and the 2nd's matched
-it, so search from about 15 s before the implied time to 5 s after. On LADA Y's Oct 12 game (Renton, clock running
-through stoppages in the 1st and 2nd) five goals were 2–7 s before it, but the 2nd period's last one was 7 s after:
-widen the search to 10 s after when the first pass finds nothing.
-The game sheet can put a goal in the wrong period: on LADA R's Sep 21 game it had Moshchuk's goal at 17:26 of
-the 2nd, but nothing happened then, and 34 s into the 3rd the board's clock stopped at 17:26 and the home score
-and shots went up. A sheet goal with no candidate near its time is worth looking for at the same clock in the
-next or previous period. The credited scorer can be wrong too: on Doofers' Sep 27 game the sheet gave the first goal to
-Babkin #26, who wasn't on the ice (two frame checks agreed; he came on for the faceoff after it, and Albantov #29 was
-at the crease). The page keeps the sheet's credit, the goal's note and `game.json`'s notes say what the video shows,
-and the lineup check keeps listing it, which is expected. A frame check can misread the scorer too: on Beerteam's
-Sep 27 game it read the winner's scorer as Kleiman #69 where the sheet had Shikhanov #70, both were on the ice, and
-the page credited Kleiman until the team confirmed Shikhanov, which the video shows as well. So `highlights.json`
-always keeps the sheet's scorer. When a frame check names someone else who was also on the ice, the page doesn't
-say so: ask the user in the summary to check with the team, and change the credit only on their word. A clock time can lose a digit too: on Beerteam's Sep 27 game the sheet put Bogdanov's goal at 17:17 of the 3rd, where nothing
-happened, and the board's clock stopped at 7:17 for it. The sheet's time for a power-play goal can be the penalty's, not the goal's: on TK's Oct 17
-game it had Roadrunners' goal at 12:25, but the board's clock read 11:48 when it went in, 37 s later, and the penalty
-panel went dark then. Where the video has sound (Renton's new camera), the whistle after a goal is audible and pins
-it to a fraction of a second.
+`goals $W` alone prints the sheet's goals at the seconds the clock implies and, once prepare has made tracks, the
+center-ice faceoffs and long stoppages that aren't period starts.
 
-The board can also count a goal that never happened. On Beerteam's Oct 4 game the clock froze at 18.6 for Jackalopes'
-3rd goal; 15 s later the guest score went to 4 and their shots up by one, while the players were only lining up at
-center. The sheet and LADA had 1-3. A score change while the clock is stopped and nobody is playing is the
-operator's slip: the sheet's score stands, and the shot that came with it comes off `shots.json` (and off its guest
-`series`). That sheet didn't mark the last goal as empty-net either. The frame check found our net empty, and a
-crease zoom 1 s apart found our goalie out from 3851 to 4026 (an `extra` span, about 1:30 of clock with stoppages).
+## What `highlights` prints, and what to do
 
-The sheet can also miss a goal the board counts. On Blue Wings' Nov 7 game the sheet and LADA had 5-5, and the board
-ended 6-5. The extra goal was ours, at 60:48 with about 1:45 left: a scramble at their net, a home goal and a home
-shot on the board, and a restart at center. Nobody could read the scorer. The page went out at the sheet's 5-5, with
-the goal described in the notes, and the user was asked to confirm it with the team. The scorekeeper later
-corrected the sheet to 6-5, which `run_game.py scores` brought to the site's score; the goal is still missing from the
-highlights. Adding it means one `highlights.json` entry, one clip and a republish.
+`highlights $W` builds the entries from the answers and the sheet and prints a `!` line for whatever doesn't add up;
+`--write` writes `highlights.json`, replaces `pk`'s kills with the penalty checker's, and logs an `off` span for a
+player boxed without a kill. It keeps hand edits to an existing file: `scratch/goals/generated.json` records what it
+wrote, matched by the sheet's goal or penalty number, so a goal whose time moves stays one entry, and an entry deleted
+by hand stays deleted (take its record out of `generated.json` to have it back).
 
-The recording itself can skip. LADA R's Sep 14 video loses about two minutes of the 3rd at 44:37: from one second to
-the next the board's clock jumps from 13:59 to 11:58, the home score and shots go up during live play, and every
-player is somewhere else (three tracks end at 2677.4 s and two begin at 2677.5 s). The sheet's 13:11 goal fell in
-the gap. A board score change with no stoppage or center faceoff before it is the sign; frames half a second apart
-confirm the cut. Such a goal stays out of `highlights.json` (the page counts goals on video, and there is nothing to
-clip), and the notes give the final score and the gap. In that game the clock ran through most goals and each goal
-came 1–6 s before the board's score changed, not 6–13 s before the sheet's time.
-
-On TK's Nov 1 game the goal check put the third goal at a stoppage 26 s too early and credited the player at the
-crease there; the board's score didn't change at that stoppage, and the real goal (a scramble, the clock stopped at
-4:05, the score up 7 s later, the penalized opponent let out of the box) came after it. Before taking a goal
-check's time, sheet the board 2 s apart around it: the score must change within about 10 s.
-
-In a scramble the goal check tends to take the first jam as the goal. On LADA R's Nov 9 game (Renton, clock running
-through stoppages in the 1st and 2nd) it put two 2nd-period goals 3 s before the clock-implied time. The puck went in
-from a second jam once the goalie was down: Soubochev at the near post at 1239.5, and a pile at our post at 1841. The
-replays (t −4 s to +1.5 s) ended before the puck went in, and the user caught it. Where the clock runs through
-stoppages its implied second is close to exact. When a goal check's `at` is 2+ s before it, sheet a tight crop of
-the crease every 0.25 s up to the implied time plus 2 s. Take the last jam before the first raised arm, and give the
-clip `--replay-from` back to the first shot.
-
-The sheet's clock can also be later than the goal because the operator ran the clock during the stoppage. On BW's
-Nov 15 game (3rd period, clock stopping at whistles) the goal check put Ilinskaya's goal at 3109, a pile-up at the
-crease, and the sheet's 8:42 implied 3140. The board read 8:48 at 3110, went dark, and was back at 8:42 with a shot
-more at 3136, which looked like a zone faceoff and a second goal 6 s later. The frames showed no faceoff in the zone
-between: the players hung around the net, then skated straight to center for the 3150 faceoff, which only follows a
-goal. So the stoppage that ends at a center faceoff is the goal; a clock that moved meanwhile was the operator's.
-
-A video can start after the game has begun. LADA R's Nov 9 video opened with the board at 17:23 of the 1st and the
-home side already up 1-0. The goal at 17:50 stays out of `highlights.json`, the notes say so, and the page heading
-takes its score from `lada_games.json`. A fallback to goals on video would have shown 4-4 for a 4-5 game.
-
-## Delegating the check
-
-The frames are mechanical and cost the main session a few thousand tokens each, so hand a batch of candidates to
-one general-purpose subagent:
-
-> Verify candidate goals in a rec-hockey video. Work folder: $W. Python: $PY. For each candidate time below, run
-> `$PY pipeline/run_game.py frames $W <your scratch>/g_<t>.jpg --view rink --range <t-60> <t> 3`, Read it, and if
-> play ended at a net run the matching `--view left-net` or `--view right-net` 1 s apart over the last 10 s.
-> A goal shows a shot or scramble at a net, the referee pointing at it, and one team celebrating before everyone
-> drifts to center. Our net this period is on the <left|right>. Write `<your scratch>/goals.json`: one object per
-> candidate with `t` (the candidate), `goal` (true/false), `at` (seconds of video of the goal itself), `net`
-> (left/right), `team` (for/against), a one-line `note` of what you saw, `pass`: [t, x, y] for the first assist's
-> pass (or his last touch) the same way, and for each goal `shot`: [t, x, y], the
-> moment the puck left the stick that sent it in (to 0.5 s; follow the puck back from the net on half-second
-> sheets, then quarter-second, with a crop tight enough to see it) and the shooter's skates then in source pixels.
-> A crop's tile maps linearly onto the X0..X1, Y0..Y1 you gave `frames` (`$PY pipeline/run_game.py frames $W OUT.jpg
-> X0 X1 Y0 Y1 TILE_W COLS t ...`); the tracked boxes near it give the exact spot:
-> `$PY -c "import pandas as pd; tr=pd.read_csv(r'$W/pN/tracks_v1.csv'); print(tr[(tr.t-<ts>).abs()<0.07][['tid','fx','fy','h']])"`
-> (fx, fy = skates). Candidates: <list>. Reply with one line per candidate.
-
-Give it the scoresheet's times when you have them and tell it which net is ours. The lineup windows have their own
-generated briefs (`run_game.py gaps`, step 6 of the skill); this one is for goals and penalties.
+- **Our scorer and assists are always the sheet's.** A checker who saw someone else put it in (`scorer_seen`) goes to
+  the user: ask them to check with the team, and change the credit only on their word. The sheet has been wrong
+  (Doofers' Sep 27 credited Babkin, who wasn't on the ice; Y's Oct 19 Yafunyaev, who sat on the bench while Lisitsyn
+  scored), and so has a frame check (Beerteam's Sep 27 read Kleiman for Shikhanov, both on the ice). The lineup check
+  then keeps listing the credited player as off the ice, which is expected; the clip still follows the shooter, since
+  the track at `shot` is followed whatever its label.
+- **An assist the team names that the sheet lacks** (TK's Oct 25: Prozhogin #61 on Belousenko's goal) goes into that
+  goal's `assists` in `highlights.json` by hand, which `--write` keeps, with a note that the sheet lacks it; then
+  `clips --only` that goal, since a clip frames only the credited players.
+- **Theirs** carry no `scorer` or `assists` (those keys hold our numbers); the note names the sheet's scorer.
+- **A goal the board counts and the sheet doesn't** isn't entered: the sheet's score stands, the notes describe it,
+  and the user is asked (Blue Wings' Nov 7: the board 6-5, the sheet 5-5, corrected days later and brought in by
+  `scores`). Adding it then means one hand-written `highlights.json` entry, one clip and a republish.
+- **A goal not on video** (the video starts after it, as LADA R's Nov 9 did with the board at 17:23 and 1-0; or the
+  recording skips, as LADA R's Sep 14 lost two minutes of the 3rd) stays out; the notes say so, and the page's score
+  is the sheet's.
+- **An empty-net goal** and the checker's note on our goalie leaving: an `extra` span (`span $W extra ...`).
+- The goal checker's `on_ice` goes into the lineup check: a skater it read on the ice whom the solver has off becomes
+  a gap window (TK's Oct 25 showed #33 in #89's place on the page before this check existed).
 
 ## Penalties
 
-A bench minor (too many players) is served by a skater: find who sat by zooming on the box as the panel goes
-dark (he climbs out and his number shows), and put him as the `pk`'s `player` so the solver keeps him off. Two
-penalties at once are two overlapping `pk` entries; the solver and the lineup check expect 3 skaters then.
+`pk` proposes our kills from the sheet and the clock (SKILL step 3); in a period without a board clock read the
+proposal is ROUGH (its start only the earliest it can be) and `pk --write` leaves it out unless `--rough`. The penalty
+checker's `kill` decides at `highlights --write`: [start, end] replaces the proposal; null with a reason in `why`
+means no kill and takes the proposal out; "unsure", or no `kill`, keeps the proposal, and `highlights` says so.
+`pk --write` skips a penalty the checker has answered. The cases where the two part, and what the answer then holds:
 
-The game sheet can name the wrong player: on Doofers' Sep 19 game it gave the last penalty to #31 Sourov, but the
-board's panel showed 37 and Akulov #37 went to the box. And a minor late in a period can wait for the next one:
-Sourov's coincidental tripping with 1:06 left in the 2nd wasn't served then (5 on 4 to the end, our box empty); he
-went in during the intermission and sat the first 2:00 of the 3rd, so the `pk` is in the 3rd only.
-
-It can name the wrong scorer too. On LADA Y's Oct 19 game the sheet gave our only goal to Yafunyaev #29 (from #14
-and #18), and solve's lineup check said #29 wasn't on the ice. The goal check had guessed the puck carrier was #29
-misread as 89, but a zoom at 1262.5 showed "70 LISITSYN" carrying it along the far boards on the track that jammed it
-in, and #29 (purple pants) sat on the front of our bench from 1248 to 1281. When the check says a credited scorer is
-off the ice, read the carrier's number and look at the bench before adding an `on` for the scorer. Then put the
-scorer the video shows in `highlights.json` (it drives the lineup check and the clip's framing, not the page's
-stats) and say in its note and in `game.json`'s notes what the sheet credits.
-
-A minor the game sheet gives at the same clock as a power-play goal against may never be served: on BW's Oct 11
-game #54's high-sticking at 15:09 never lit the panel and we had 5 skaters again from the faceoff. Check
-`run_game.py skaters` across the span before adding its `pk`.
-On LADA R's Sep 21 game two penalties on the sheet were never served at all (our #39's slashing and their #0's
-tripping): no panel, an empty box, and the player kept playing. A coincidental pair (one each) can leave 4-on-4,
-with a `pk` for ours, but it isn't always so: on LADA Y's Nov 9 game (Snoqualmie A) #29's and their #17's roughing at
-9:09 of the 3rd lit no panel, each sat the 2:00 in his box, and both teams played 5 on 5 with substitutes (5 of ours
-and 5 of theirs at the 3255 faceoff). The goal check read 4-on-4 off `run_game.py skaters`, whose count missed a
-player, and the `pk` had the solver short one skater for 4 minutes of video until a lineup checker counted. Count
-both teams on a faceoff frame (a wide crop, `frames ... 0 3840 380 1000 1990 1 t`) before adding a `pk` for a
-coincident minor; at 5 on 5 the boxed player gets an `off` span instead. A major or misconduct can have another player serve the minor: Sep 21's #81 got boarding plus a
-10-minute misconduct, #10 sat the minor (the `pk`'s `player`), and #81 never came back (an `off` to the end).
-Doofers' Oct 18 game had the same: #61's boarding plus misconduct, #61 in the box for half a minute, then Panova #75
-climbed in from the bench and sat the 2:00 (the panel still said 61).
-
-A penalty shot replaces the minor, and SportNinja's game sheet doesn't record it: on BW's Oct 18 game it still listed
-#88's hooking as a 2-minute minor. The board gives it away: the panel posts "88 2:00" while the clock is stopped, then
-goes dark before the faceoff, the clock stays frozen for about a minute, and `run_game.py skaters` drops to our goalie
-alone while their shooter skates in from center. There's no `pk`. Put the stretch with all our skaters at the bench
-in the period's `"ps"` (solve puts nobody on, so the clip's card lists no one), clip the infraction as a `penalty`, and
-clip the shot as a `"moment"` titled "Penalty shot". With one skater on the ice the default framing wanders off to
-center ice and misses the save, so pass the net's x as the focus (630 or 3260 at Snoqualmie A). A penalty shot for us
-leaves our shooter on the ice, which `ps` doesn't model yet: `ps` plus an `on` for the shooter would conflict.
-
-For each of our penalties, find the infraction: the referee raises an arm right after it (a delayed penalty),
-play goes on until our team touches the puck, then the whistle and the penalty-kill faceoff. In the 3rd the clock
-stops at the whistle and the sheet's video time lands there, 1–10 s after the infraction, so start 10–20 s before
-it. In the 1st and 2nd the clock runs through the stoppage, and the sheet's time is usually 20–50 s after the
-infraction (up to 73 s on the archived games), so look back from there. The referee may signal from the far end, so look where the penalized
-player was in the seconds before the arm went up: his track in `$W/pN/segs_final.csv` (`plabel` = his number) and
-full-rink frames 1 s apart. An opponent going down near him is the usual sign.
-
-## Clips
-
-```sh
-$PY pipeline/run_game.py clip $W <game-id> goal-1 <t-12> <t+10> <t> "#44,#2" --net for --shot <ts>,<x>,<y> --pass <tp>,<x>,<y>  # ours: scorer, then assists
-$PY pipeline/run_game.py clip $W <game-id> goal-3 <t-12> <t+10> <t> --net against --shot <ts>,<x>,<y>     # theirs aren't tracked
-$PY pipeline/run_game.py clip $W <game-id> penalty-88 <t-12> <t+10> <t> "#88"
-```
-
-About 22 s per event, ending a few seconds after the goal or call, with a poster frame at the last time given.
-Every goal clip gets `--net` and, for ours, the scorer and assists from `sheet.json`. The camera then keeps the
-credited players in the frame on the build-up, closes in on the net the goal went into (and the slot) from 6 s
-before `t` to 2 s after, keeping the scorer and any passer that fits that tight frame, and ends with an 11 s
-half-speed replay zoomed in on the net (`t` −4 s to +1.5 s, about 580 px of the 3840). So `t` must be the goal
-to the second. Following the main group alone had missed the scorers: on TK's Oct 25 game Belousenko shot from
-the slot just outside the frame, and at Snoqualmie A's far nets a scramble is a few dozen pixels tall at any crop
-the live camera holds (the replay is what shows the puck going in). The labels are the solver's, so cut clips
-after the last solve; a mislabeled track only moves the build-up, not the replay. Where two tracks carry the
-same number at once, the camera takes the one the number was read on. Only credited players are framed: TK's
-Oct 25 sheet had no assist on Belousenko's goal, the team named Prozhogin #61, and the first cut left him out.
-An assist the team names goes into `assists` (and the notes say the sheet lacks it), then cut the clip again.
-`--shot` is the goal check's `shot` (when the puck left the stick that sent it in, and where the shooter's skates
-were). With it the shooter's track is the one at that spot, whatever its label; the live camera keeps the
-scorer and the net together up to the widest crop (2800 px) instead of dropping the scorer from the tight one;
-from the shot to `t` it follows the puck on a straight line to the net; and the replay starts 1.5 s before the
-shot, close on the scorer until it, then pans with the puck onto the net. A scorer's track that would jump farther
-than a skater gets from the shot's spot is left out. A `--shot` with no tracked skater near its spot goes wrong:
-on Beerteam's Oct 18 game the scorer jamming at the post was untracked (the nearest track at that second was 400 px
-away), and both the close-in and the replay wandered to the other end of the rink. Before passing `--shot`, check
-that `pN/tracks_v1.csv` has a box within ~150 px of it at that second; if not, cut without it (the replay then zooms
-on the net, which a goal at the post needs anyway). The same game's 3rd goal shows the other way it goes wrong: the
-check gave the last poke (#87's) as the shot, while the credited scorer Kleiman #69 had jammed at the pads 1.5 s
-earlier, untracked. The replay opened close on #87 still well out from the net and only reached the scorer when it
-panned in; the user caught it. In a scramble, cut without `--shot`. Unless the scorer's track carries another number: on TK's Nov 1 game Belousenko's point
-shot led to a scramble, his track was labeled 89, and the clip without `--shot` never showed him (the user caught
-it); `--shot` at his track's spot when he shot put him in the build-up and the replay. Without `--shot` the replay starts 4 s before `t` and the
-tight frame drops a scorer more than about 1000 px from the net. TK's Oct 25 empty-netter shows why: Belov won a
-battle on the far boards at their blue line and poked the puck about 1000 px along the boards into the empty net,
-and the clip was 6 s of an empty net with him dropped from the frame, then swung to our bench after the goal,
-where a seated figure carried his number. Belousenko's goal in that game came out of a scramble 7 s after his
-shot, and the 4 s replay missed it (`--replay-from 8`, from before `--shot`).
-LADA R's Oct 26 opener went the same way with `--shot`: the check took the scramble at 197 s as the shot, but
-Shachak #92 (his track reviewed, his 92 readable) had driven to the net and jammed at the goalie at 191.75, and the
-puck went in from the pile 5 s later. The replay opened after his drive, and the user caught it. When the check's
-shot falls in a scramble, sheet the crease every 0.5 s over the 8 s before it, with a close crop (about 400 x 220
-px of source around the net): the drive or shot that started the pile is the `--shot`. A track's `plabel` at that
-second confirms whose it was.
-Before the shot, the camera keeps the net in with the scorer only while both fit `LEAD_W` (1300 px, the width used
-for following one player). LADA R's Nov 2 empty-netter needed that limit. Bekker carried the puck from our blue line
-down the far boards, and the old rule kept both while they fit 2800 px. The frame from center ice showed an empty
-net and two specks, and the user saw it as a cut to the net too early. That goal also came after the tracks ended:
-the 3rd had been cut short. To get tracks for the clip without touching the reviewed period, track the stretch into
-a scratch folder (`run_period.py $W/full $W/p3tail 3940 3986 <our net x>`). Then pass the scorer's track straight to
-`clip.py` as `group:$W/p3tail/tracks_v1.csv:<tid>`, with the net and the shot as `run_game.py clip` would.
-In that clip the defender chasing on the near side filled the frame, and Bekker was small at the far boards at the
-same x. Check which track is the scorer's on a crop before deciding the camera follows the wrong player.
-A tid is one tracked body over all its pieces, and the camera follows all of it. On the Doofers' Nov 15 5th goal,
-Fedotov's track was #71 for 20 s of the clip and #26 for the last 2, so it joined Babkin's group. Babkin's own track
-had no box at the shot's frame (lost in the pile at the post) and Fedotov's had one 300 px away, so the walk started
-on Fedotov and dropped Babkin. The build-up and the replay followed #71 near the camera, with the goal small in a
-corner, and the user caught it. `clip` now leaves out a track that carries another number for longer in the window,
-looks up to 0.5 s from the shot for the scorer's track, and starts the walk on that track. Sheet every goal clip
-every 1.5 s (cv2 reads the mp4) and check the camera holds the scorer before reporting it.
-`--pass T,X,Y` (when the puck left the first assist's stick, and his skates) keeps the passer in the frame up to
-the full width until 1 s after the pass, ahead of the net, and starts the replay 2 s before it, so the replay
-shows the pass, then closes in on the scorer and the net. Without it the tight crop at the net keeps a passer only
-within ~1150 px, and the replay (from 1.5 s before the shot) frames only the scorer: on LADA Y's Nov 2 game the user
-saw neither passer on the 1st, 2nd and last goals' replays, and lost Lisitsyn in the live part of the last. Give
-the goal-check subagent the passes too (pass [t, x, y], the passer's track at it). For an assist that was a
-rebound or a puck squirting out of a battle, the passer's last touch serves. The camera's path is smoothed over
-about 1 s either way, so it leaves the passer about a second before it's told to: holding him only 0.5 s past the
-pass left Lisitsyn's corner battle (the last goal) at the frame's bottom edge and gone 0.4 s after his touch. The
-hold starts 1 s before the replay for the same reason, and a held passer gets two body heights of room each side
-(the crop also keeping the net had squeezed the 3rd goal's battle into a corner). Where the passer has no track
-(always on a goal against: `tracks_v1.csv` holds only our players), he is walked back from the pass spot along the
-detections of either team (`walk_back` in `clip.py`; in a pile the jersey test fails). A scorer with no track is followed from the pass to the
-shot along the detections of his team, walked back from the shot (`carrier_path` in `clip.py`): without it the
-camera on Best Vibes' breakaway sat on our net from the pass on while #49 skated the length of the ice, and a
-straight line from pass to shot missed him by 300 px (he cut across close to the camera). So a goal against with a
-rush needs `--pass` too, at the pass or chip that sprang it.
-A solo rush has no pass to give, and the walk-back can lose a skater who chases a loose puck the length of the near
-boards. On Beerteam's Nov 7 1st goal, Lee #71 chased the puck from our left zone, picked it up at the right boards
-at 1706.25, and scored at 1708.5. Without `--pass` the camera closed in on the net 6 s early, and the user caught
-it. With `--pass` at the pickup it held him from 1705 on, but 1702-1704 showed empty center ice: he covers up to
-1800 px/s close to the camera. What worked was a subagent tracing his skates every 0.5 s from 1702 by eye. Those
-points went into a one-track CSV (each detection frame snapped to the nearest detection within 120 px;
-`$W/scratch/goal1_rush/lee_track.py`). `clip.py` then got it as `group:<csv>:<tid>` with the net and `--shot`, and
-no pass. Sample every detection frame: `player_path` drops a track that moves more than 200 + 700·dt px between
-two samples.
-The default framing (no `--net`) follows the main group of players. A focus x (about 500 = left corner, 3300 = right; a net x
-from `rink.py`) keeps the virtual camera on one end. For a penalty pass `#<number>` to follow the player who took
-it, starting a few seconds before the infraction. A focus x can lock onto someone right by the camera (at
-Kirkland a referee in the near corner filled the frame), so start with the default and check a few frames of each
-clip (cv2 can read the mp4). A focus x only weights where the players are, so it can't bring an empty net into
-the frame: TK's Oct 25 empty-netter stayed out of view with 2700 and 3250 alike (`--net` with `--shot` covers it). Clips land in the team site's `games/<id>/clips/`, about 5 MB each, served by GitHub
-Pages. Most recordings' audio is silent, so their clips have no sound; where it isn't (Renton's new camera, LADA R's
-Oct 5 LiveBarn recording at Snoqualmie A), `clip` keeps it.
+- **A bench minor** (too many players) is served by a skater: `sat` names him, and he is the kill's player.
+- **Two penalties of ours at once** are two overlapping kills: the solver expects 3 skaters then.
+- **The sheet names the wrong player**: the box decides (Doofers' Sep 19: the sheet #31, the panel and the box #37).
+- **A minor late in a period can wait for the next one** (Doofers' Sep 19: Sourov sat the first 2:00 of the 3rd, our
+  box empty to the end of the 2nd), so the kill is in the 3rd only.
+- **Never served**: no panel, an empty box, the player kept playing (LADA R's Sep 21, two of them). A minor at the clock
+  of a power-play goal against may never be served (BW's Oct 11: #54's high-sticking never lit the panel); `pk`
+  gives such a minor no kill and the brief asks.
+- **Coincident minors** (one of ours, one of theirs at once): `pk` gives none. At 4 on 4 it is a kill. At 5 on 5 with
+  substitutes (LADA Y's Nov 9: `skaters` missed a player and a kill cost the solver a skater for 4 minutes) the
+  checker answers no kill, and `highlights --write` puts our boxed player `off` from box_in to box_out. Count both
+  teams on a faceoff frame, never `skaters` alone; a gap checker who finds a listed kill played 5 on 5 reports it,
+  and `gaps --apply` prints it with `!!` and the two steps: the kill out of `periods.json` by hand, and the `span ...
+  off` line it gives for our boxed player.
+- **A major or misconduct with a minor** can have a teammate serve the minor (LADA R's Sep 21: #10 sat #81's, and #81
+  never came back, an `off` to the end; Doofers' Oct 18: Panova sat #61's while the panel said 61). A misconduct alone
+  sits the player without a kill.
+- **A penalty shot against us** replaces the minor, and SportNinja still lists the minor (BW's Oct 18). The panel posts
+  while the clock is stopped and goes dark before the faceoff, the clock stays frozen about a minute, and all our
+  skaters stand at the bench while their shooter skates in. No kill: a `ps` span (`span $W ps ...`), the infraction
+  clipped as the penalty and the shot as a `"moment"` titled "Penalty shot" with the net's x as its focus. A penalty
+  shot for us leaves our shooter on the ice, which `ps` doesn't model yet.
 
 ## `highlights.json`
 
 ```json
 [{"type": "goal", "team": "for", "t": 3828, "scorer": 54, "assists": [36], "clip": "clips/goal-3.mp4",
-  "poster": "clips/goal-3.jpg", "note": "3rd period, clock 9:06: in alone on the goalie, 4-2"},
+  "poster": "clips/goal-3.jpg", "note": "3rd period, clock 9:06: in alone on the goalie, 4-2",
+  "shot": [3826.5, 2900, 640], "pass": null, "on_ice": [54, 36, 12]},
  {"type": "penalty", "player": 4, "t": 3580, "clip": "clips/penalty-4.mp4", "poster": "clips/penalty-4.jpg",
-  "note": "1st period, clock 3:40: 3 minutes, ended by their power-play goal at 0:38"}]
+  "note": "1st period, clock 3:40: 3 minutes, ended by their power-play goal at 0:38"},
+ {"type": "moment", "title": "3 on 0, no goal", "t": 1234, "clip": "clips/moment-1.mp4", "poster": "clips/moment-1.jpg",
+  "note": "..."}]
 ```
 
-A play worth a clip that is neither (the user asked for TK's 3-on-0 that didn't score on Oct 17) is a
-`"moment"` with a `"title"`, the card's heading: `{"type": "moment", "title": "3 on 0, no goal", "t": 1234,
-"clip": "clips/moment-1.mp4", "poster": "clips/moment-1.jpg", "note": "..."}`. The page lists who was on the ice
-for it as for a goal; it doesn't count toward goals and the lineup check skips it. The user's "around 3:00 in the
-1st" was the clock (3:11 left, video 898), not 3:00 into the video: try both. A detection scan for 3+ of ours past
-every opponent finds too many runs to use alone (the white test misses opponents), so look at the frames.
+`t` is seconds of video at the goal or the infraction. `shot`, `pass` ([t, x, y], skates in source pixels) and
+`on_ice` are working keys for the clips and the lineup check; publish leaves them out of `game.json`. A `"moment"` (a
+play worth a clip that is neither goal nor penalty, as the user asked for TK's 3-on-0 on Oct 17) is written by hand:
+the page lists who was on the ice for it, and it doesn't count toward goals. A user's "around 3:00 in the 1st" is
+usually the clock (3:11 left, video 898), not 3:00 into the video: try both.
 
-`t` is seconds of video at the goal or infraction. `scorer` and `assists` are optional and come from the
-scoresheet; the lineup check in solve and publish then flags a credited player who isn't on the ice at `t`, which
-catches a shift the solver ran on past a line change (on Oct 3, #43's track ended mid-ice, his shift ran through
-the goal, and the scorer lost 10 s at the net; an `"off"` entry in `periods.json` fixed it). The page shows who
-was on the ice for each goal. The check only covers the credited players and the count, so a wrong uncredited
-skater gets through: on TK's Oct 25 game the empty-netter (scorer only) showed #33 in #89's place, because #89's
-track was lost 9 s before the goal and the next piece was chained to #33. The frame check had read #89 in the
-fist-bump line, and the user caught it on the page. So before publishing, compare the frame check's on-ice reads
-with the solver's lineup at every goal (`pN/shifts_final.csv` rows with `t0 <= t < t1`).
+## Clips
+
+`clips $W <game-id>` cuts every entry of `highlights.json` with the arguments the sessions used to type: each clip
+from 12 s before `t` (for a goal, 8 s before its pass or shot if that is earlier) to 10 s after, the poster at `t`. A
+goal closes in on the net it went into and ends with a zoomed half-speed replay, framing our credited scorer and
+assists and following the checker's `shot` and `pass`; a penalty follows the player who took it; a moment follows the
+main group. The replay starts 1.5 s before
+`shot` (4 s before `t` without one), or 2 s before `pass`. Every cut and `--dry-run` first checks the camera's path
+and saves the warnings in `$W/clips_check.json`: a shot after the goal or far before it, the replay window, the
+scorer's track missing or someone else's at the shot, the shooter, net or passer out of the frame, and the camera on
+an all-but-empty net while the play is elsewhere (the three complaints about rushes). The cut writes a contact sheet
+per clip (`W/scratch/clips/<name>.jpg`) and the checker's brief; `clipsheet <mp4> <out.jpg> --from <s> --to <s>
+--step 0.25` tiles any stretch closer. Clips land in the team site's `games/<id>/clips/`, about 5 MB each, with the
+recording's sound where it has any.
+
+A clip's own arguments go in `$W/clip_args.json`, keyed by clip name, and win over the generated ones: `t0`, `t1`,
+`focus` (an x, `#N`, or `"-"` for none), `shot` and `pass` (null leaves one out), `replay_from` (seconds before `t`),
+`tracks`. For example `{"goal-3": {"shot": null}, "moment-1": {"focus": "3260"}}`.
+
+| Situation | What to give |
+|---|---|
+| A scramble | `t` the last jam, `shot` the shot or drive that began it (the rule above); `replay_from` if the replay must start earlier still (TK's Oct 25: a scramble 7 s after the shot) |
+| The scorer's track carries another number | nothing: the track at `shot` is followed whatever its label (TK's Nov 1: Belousenko's track labeled 89) |
+| No track near the shot (an untracked scorer at the post; the dry run warns `scorer-track`) | `"shot": null`: the replay then zooms on the net (Beerteam's Oct 18: the nearest track 400 px away sent the camera to the other end) |
+| An assist, or a goal against off a rush | the checker's `pass`: without it the tight crop keeps a passer only within ~1150 px and the replay frames only the scorer (LADA Y's Nov 2) |
+| A long rush to an empty net | the checker's `shot`: before it the net joins the scorer only within 1300 px (`LEAD_W`), which TK's Oct 25 and LADA R's Nov 2 empty-netters needed |
+| The camera follows the wrong body (a track that is another player's in the window; a big player near the camera) | `"tracks": "TID;TID"` (scorer's first, then each assist's, from `frames --tracks` or `follow`); a track carrying another number for longer in the window is already left out |
+| A solo rush the length of the ice | a subagent traces his skates every 0.5 s by eye into a t, x, y CSV outside `scratch/` (archive keeps it there), then `"tracks": "<csv>"` (Beerteam's Nov 7: Lee from his own zone) |
+| A goal after the period's tracks end (a period cut short) | track the stretch into a folder of its own, `run_period.py $W/full $W/p3tail <t0> <t1> <our net x>`, then `"tracks": "<W>/p3tail/tracks_v1.csv:<tid>"` with the folder's full path, since `clip_args.json` expands no `$W` (LADA R's Nov 2) |
+| A penalty | the default `#player`; a focus x can lock onto someone right by the camera (at Kirkland a referee in the near corner) |
+| A moment or a penalty shot | `"focus"`: the net's x (`rink.py` nets) or a corner (about 500 left, 3300 right); a focus x only weights where the players are, so it can't bring an empty net into the frame |

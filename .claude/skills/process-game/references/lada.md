@@ -60,11 +60,8 @@ same LADA id, and the number he didn't wear goes on that game's absent list. `"a
 primary number: the game pages keep the number he wore, and the season table, trends page and feed totals list him
 once, under 67.
 
-LADA Y have worn white at every home game so far (Sep 21, Oct 5, Oct 19), so a Y home game needs `--jersey white` on
-fetch (the default test is light blue). Flounders own two jerseys: white with light-blue trim on Oct 4 (rinks.md) and
-black with light-blue and cream stripes against Y on Oct 19, where nothing of theirs passed the white test. On Oct 19
-fetch began with the default, `frame600.png` showed white, and detection was stopped 2 minutes in, its partial
-output moved aside, and fetch rerun with `--jersey white`: cheaper than `run_game.py jersey` after a full run.
+Flounders own two jerseys: white with light-blue trim on Oct 4 (rinks.md) and black with light-blue and cream
+stripes against Y on Oct 19, where nothing of theirs passed the white test.
 
 ## SportNinja game sheets
 
@@ -73,10 +70,12 @@ public: `https://metal-api.sportninja.net/v1/games/<id>` has both teams, the sco
 side, every goal (`goals`: period, clock, the shot's player id, assists), every penalty (`offenses`: player,
 type, severity, minutes) and both rosters with `player_number` and `is_playing` (`/rosters` alone gives just
 those). `run_game.py sheet $W` turns that into the printed sheet and `W/sheet.json`: `us` (home or visiting),
-`score`, `shots` per period as `[ours, theirs]`, `goals` with `scorer` and `assists` as jersey numbers and a
-`video_t` estimate once `periods.json` exists, `penalties`, `played`, and the roster numbers the sheet doesn't
-mark as playing. The user may also hand you the scoresheet PDF from the SportNinja app ("Game #...
-scoresheet.pdf"), which says the same things. `is_playing` is the scorekeeper's and can be wrong (Y's Shakhov
+`score`, `shots` per period as `[ours, theirs]`, `goals` with `scorer` and `assists` as jersey numbers,
+`penalties`, `played`, the roster numbers the sheet doesn't mark as playing, and the SportNinja and LADA ids (so
+`--lada` or `--sn` is needed once at most). Before fetch the folder's name gives the team. The goals' and penalties'
+video seconds come from the board's clock (`goals`, `pk`, the briefs). The user may also hand you the scoresheet PDF
+from the SportNinja app; its file name is the SportNinja id ("Game #aioe8TXnLIrFmOVD scoresheet.pdf" → `sheet --sn
+aioe8TXnLIrFmOVD`), so the PDF itself needn't be read. `is_playing` is the scorekeeper's and can be wrong (Y's Shakhov
 #78 was marked not playing with SHAKHOV 78 on his back all game; Potepalov #15 was marked playing and never
 seen; on Sep 21 Mischenko #72 was marked not playing and played from the 2nd period), so the video decides.
 Check the sheet's goalie too: on TK's Oct 17 game a sub goalie, Dmitriyev #4, was marked playing and Fisenko #58 not,
@@ -87,27 +86,15 @@ his crops were most of the 88 reads of "4".
 A goalie can come as a skater: on Y's Nov 9 game TK's goalie Fisenko #58 (DF's spare goalie too) played forward for
 Y and scored three of our four goals; he went under `subs` with his LADA id from TK's `roster.json`. Bronnikov #74,
 the same night, has two LADA ids in our rosters (BW's `subs` 20353, TK's `skaters` 20411); Y took TK's.
-`sheet` run before `periods.json` exists leaves `video_t` empty, and `goals` then prints every goal at its
-period's start: run `sheet` again once the periods are right.
 
-A game LADA's schedule view doesn't show (older than the cache, like Doofers' Sep 19 game): call
-`game/<any upcoming game's id against the same opponent>/opponentGames`. It lists every game against them with
-its id, date, score and `boxscoreLink` (the SportNinja id, so `sheet --sn` works too). Add the game to
-`lada_games.json` (`game/<id>` has the full record) and publish finds it by date. Store `date` as
-`YYYY-MM-DDTHH:MM:SS` from the record's `dayTime`: its own `date` is "9/27/2026", which publish's lookup by date
-misses; the record has no `rinkName` either. The schedule view can also skip games in mid-season: Doofers' Sep 27
-and Oct 4 games never showed up in it, between games that did, and `opponentGames` had both with their sheets (so
-did Beerteam's Sep 27 game, 32972, found through their Oct 25 game against the same Cascadiens). Beerteam's Oct 4 game
-vs Jackalopes had no later game against them; it was 32973, the id between the team's cached 32972 (Sep 27) and 32974
-(Oct 10), so probe the ids between a team's cached games first. LADA R's Oct 5 game vs Best Vibes was missing too
-and was 32966, the id right after the team's cached 32965 (Sep 28); `sheet $W --lada 32966 --team r` then worked.
-LADA Y's Oct 5 game vs BladeRunners was likewise 32968, right after Y's cached 32967 (Sep 28). With no upcoming game against
-that opponent (Doofers' Sep 13 game vs Jurassic Puck, their real first), probe `game/<id>` next to the other
-teams' games that day: 32947 sat between Blue Wings' 32945/32946 and Beerteam's 32949.
-
-The scoresheet PDF's file name is the SportNinja id ("Game #aioe8TXnLIrFmOVD scoresheet.pdf" → `sheet --sn
-aioe8TXnLIrFmOVD`), so the PDF itself needn't be read. Run before fetch, `sheet` also needs `--team <slug>`: the
-work folder doesn't record the team yet, and it defaults to Turbo Kings.
+A game LADA's schedule view doesn't show (older than the cache, or skipped in mid-season, as Doofers' Sep 27 and
+Oct 4 were): publish probes ids itself, but `sheet` doesn't; it stops and asks for `--sn` or `--lada`. The ids have
+mostly sat between or right after the team's cached ones (Beerteam's Oct 4 was 32973 between 32972 and 32974; LADA
+R's and Y's Oct 5 right after their Sep 28 games), so try `game/<id>` there first, then next to the other teams'
+games that day (Doofers' Sep 13, 32947, between Blue Wings' 32945/32946 and Beerteam's 32949).
+`game/<any game's id against the same opponent>/opponentGames` lists every game against them with its id, date,
+score and `boxscoreLink`. Once you have the id, `sheet $W --lada <id>` adds the game to `lada_games.json` (dated from
+the record's `dayTime`) and publish finds it by date.
 
 ## `roster.json`
 
@@ -124,12 +111,10 @@ aliases                          a player's second number -> his primary one, wh
 ```
 
 A surname two players share (a father and son) counts as a name read for neither; only their numbers tell them
-apart. Fragments of a shared surname can match someone else's: on Doofers' Nov 15 game `absent --suggest` said
-"reads say he played" for Belousenko #11 on 38 name reads, every one a piece of TISLENOK (SLENOK, OLENOK, ISLEND)
-from #38 and #98, and for Zaychikov #6 on 299 digit reads, every crop #46, #26, #97 or #98. Neither played. Sheet the
-crops behind such a suggestion (the files `ocr_*.csv` lists for those reads, through `pipeline/sheet.py` as
-`unknown` does) before keeping a player the sheet leaves out. New players go in before prepare (then prepare again); which part they go in changes only the site. Players
-who didn't play a game are marked with `run_game.py absent`, never by editing this file.
+apart; `absent --suggest` leaves out name reads that are pieces of a shared surname (on Doofers' Nov 15 the pieces of
+TISLENOK had made Belousenko look present) and, where the reads and the sheet disagree, lists what else was read on
+the same crops and tracks. New players go in before prepare (then prepare again); which part they go in changes
+only the site. Players who didn't play a game are marked with `run_game.py absent`, never by editing this file.
 
 A sub can wear a roster player's number: on Doofers' Oct 18 game Vasyliev (Turbo Kings) wore #31, Sourov's, with
 VASYLIEV on the nameplate and the game sheet naming him. Solve him as that number (mark nobody absent for it; tell
@@ -146,8 +131,9 @@ with the game.
 
 "2026/09/28 LADA R vs LADA Y" was both teams' game, and the user wanted it on both sites. Neither team's schedule
 view had it; probing found R's 32965 and Y's 32967, two ids apart, with one SportNinja sheet between them (`sheet
---lada` for each). Add it to both `lada_games.json` files and each team to the other's `opponents.json` (`R` = "LADA
-R", `Y` = "LADA Y", LADA's names). Detection doesn't depend on the jersey, so one fetch serves both:
+--lada` for each, which also adds the game to that team's `lada_games.json`). Each team goes into the other's
+`opponents.json` (`R` = "LADA R", `Y` = "LADA Y", LADA's names). Detection doesn't depend on the jersey, so one fetch
+serves both:
 
 1. Fetch for the light-blue team (the default jersey) and carry it through as usual.
 2. Make the other folder by hand: hard links (`ln`) to `video.webm`, `audio.m4a`, `frame600.png`, `video_info.json`,

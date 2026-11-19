@@ -34,18 +34,21 @@ The weekly run is driven by Claude Code. Open this repo and run the project skil
 
 for Turbo Kings, or name the team: `/process-game https://youtu.be/XXXXXXXXXXX bw vs DB`.
 
-The skill (`.claude/skills/process-game/SKILL.md`, with its `references/`) reads the SportNinja scoresheet if you
-give it one, asks for the opponent and any new players, finds periods, goals, penalties and shots from the arena
-scoreboard and the video, then runs `pipeline/run_game.py` (fetch → absent → prepare → review → solve → publish)
-and asks before pushing. Only the score confirmation and the push wait for you.
+The skill (`.claude/skills/process-game/SKILL.md`, with its `references/`) reads the SportNinja game sheet, asks
+for the opponent and any new players, and runs `pipeline/run_game.py`: fetch → goals --brief (the goal and penalty
+checkers, beside the next steps) → pk → absent → prepare → review → solve, and highlights once the checkers are
+back → gaps, round by round → clips → publish. The by-eye work goes to subagents on briefs the code writes. It asks
+before pushing; only the score confirmation and the push wait for you.
 
-It takes two to four hours of session time on the Windows PC (fetch 25–45 minutes when YouTube serves the video,
-prepare and review 15–25, the by-eye lineup checks 20–70, then goals, clips and publish 10–30), or a few hours more
-on an M-series Mac, where detection alone is about two hours. YouTube's bot block adds anything from nothing to
-hours: three of the four games fetched on Oct 31 needed the user's browser cookies (`run_game.py download
---cookies firefox`, which the user runs), and one waited nearly three hours for the block to lift. The Nov 2
-changes to detection and OCR (TODO 1–3) should take about 10 minutes off a fetch; they are measured on a slice so
-far, and the first full fetch will tell.
+On the 14 games since Nov 1 a game took a median 109 minutes from start to "ready to publish" on the Windows PC (65
+to 149, leaving out two broken by outside events): 28 minutes of active session time and 77 of waiting on background
+work (fetch 26, the lineup checkers 26, the goal checker 12, the reviewers 6, the clips 4). By stage: fetch 29 (24
+to 38), prepare to the first solve 16 (6 to 35), the lineup loop 47 (20 to 79, a median two rounds), the last solve
+to ready 8. A median game was 142 M tokens: the lineup checkers 28%, the reviewers 27%, the main session 26%, the
+goal and penalty checks 16%. On an M-series Mac it takes a few hours more, where detection alone is about two hours.
+YouTube's bot block has added anything from nothing to hours: three of the four games fetched on Oct 31 needed the
+user's browser cookies (`run_game.py download --cookies firefox`, which the user runs), and one waited nearly three
+hours for the block to lift; none of the 13 fetches since Nov 2 met it.
 
 On a Windows PC with an NVIDIA GPU, detection runs on CUDA and should be much faster. To set one up, run this in
 PowerShell; `WINDOWS.md` has the details and the steps by hand:
@@ -89,46 +92,54 @@ python pipeline/build_site.py
 4. Solve for who is on the ice every second, assuming 5 skaters (4 on a penalty kill), with changes happening at the bench.
 5. Clean up: gaps under 15 s are merged, and hops under 20 s don't count as shifts.
 6. Estimate stoppages from player motion (a still faceoff setup, then the puck-drop burst) for live play time.
-7. Find goals (every non-period-start center-ice faceoff follows one) and cut zoomed highlight clips with a
-   virtual camera that follows the play or a chosen player.
+7. Find goals and penalties from the game sheet and the board's period clock, pin each down by eye, and cut zoomed
+   highlight clips with a virtual camera that follows the play or a chosen player.
 
-Ice time is real elapsed time on the ice, including stoppages, because the video has no game clock. The
-recordings' audio is silent, so nothing relies on sound.
+Ice time is real elapsed time on the ice, including stoppages; live play time comes from the stoppage estimate.
 
 ## TODO
 
-What's left from the reviews of the processed games (Oct 22, 2026: the first 29; Nov 1: the 39 so far, 7 of them
-since Oct 22, with every stage log and session timed and every hand-made lineup fix counted). Fetch is 25–45
-minutes of a game's 2–4 hours; the by-eye lineup checks, 20–70 minutes and 19–56 on/off spans per game at
-Snoqualmie's two cameras (6 per game at Renton), are the biggest cost left, and no measured change has beaten
-the checkers at it yet. What they contribute, measured by solving every archived game without its hand-made
-spans (`regress.py --strip-spans`): the solver alone leaves a median of 7 lineup windows and 6 minutes of
-ice time per game moved against the published sheet, and inside the checkers' `off` spans it still has the
-player on for 56% of the seconds.
+What's left from the reviews of the processed games (Oct 22, 2026: the first 29; Nov 1: 39; Nov 18: 53 published,
+47 archived, 14 of them since Nov 1, with every stage log and session timed and every hand-made lineup fix counted).
+The by-eye lineup checks are still the biggest cost: 13 to 70 on/off spans a game (median 28.5; Renton's re-aimed
+camera a median 27.5, with about 10 bench pieces a game), and no measured change has beaten the checkers at it yet.
+What they contribute, measured by solving every archived game without its hand-made spans (`regress.py
+--strip-spans`): the solver alone leaves a median of 7 lineup windows and 7.3 minutes of ice time per game moved
+against the published sheet, and inside the checkers' `off` spans it has the player on for 90% of the seconds (the
+56% of Nov 1 was dragged down by three long spans for players who had left). The regress baseline on Nov 18: 45 of
+47 archived games identical, the same two Blue Wings games as since Oct 22.
 
-1. **OCR alongside detection: made Nov 2.** `run_game.ocr_alongside` starts the four workers with detection; they
-   read each crop as it lands (`ocr_worker.py` leaves the newest 2 s of crops alone, which may still be being
-   written) and finish seconds after detection instead of 8–14 minutes after it. On a 4-minute slice of TK's Nov 1
-   game: detection 52.6 s then OCR 46 s, against 77 s for both at once (detection itself a fifth slower with the
-   workers beside it). On the Mac OCR stays after detection (the workers starved its decoder); `OCR_AFTER=1` does
-   the same on the PC. Not yet measured on a full fetch, where the scoreboard scan runs alongside too: the next
-   game's fetch log will say.
-2. **Detection in three processes: made Nov 2.** A thread for the post-processing gained nothing (52.3 s against
-   52.6 s on the slice): the pipe reader, the model's Python wrapper and the colour statistics all hold the GIL,
-   about 24 s of the 53 (ffmpeg alone 21 s, reader 29, reader and model 40). `process.py` now runs the pipe reader
-   and the post-processing in their own processes over a ring of 48 frames in shared memory: 34.3 s on the slice
-   with the same detections and crops, the model now the limit (36 s with nothing else running). Detection of a
-   game should drop from 13 minutes to about 9. A restart from a frame and a kill of the main process (the children
-   exit within 5 s) are tested on the slice.
-3. **GPU decode: measured Nov 2, not used; nvenc's p1 preset made.** `-hwaccel cuda` decodes the VP9 (14.0 s
-   against 18.2 s for the slice) but made detection slower (57.9 s against 52.3 s, the GPU being busy with the
-   model) and the scaling re-encode no faster (42.9 s against 43.2 s): that encode is NVENC-bound. Its p1 preset
-   instead of p5 does it in 18.6 s (PSNR 50.4 dB against 50.5 for p5 against the scaled source, a 15% larger
-   file), so `fit_size`'s 10 minutes should be 4 or 5.
-4. **One decode of the video for detection and the scoreboard.** Measured over six fetches since Oct 26: the board
-   scan alongside detection takes 6.7–11.4 minutes and detection 12.5–17.5 with it (11–16 before), so about 2–3
-   minutes per fetch are saved and a minute or two is left to gain from a `split` off `process.py`'s ffmpeg graph
-   (a named pipe on Windows, per-second picks that survive `detect()`'s restarts). Not worth it.
+Fetch, on the 13 full fetches made with the Nov 2 code: 24.3 to 38.0 minutes, median 28.6; downloads 1.4 to 3.9
+(one of 14.5 with no error logged), and no bot block or cookies on any of them; the clock read in 1.1 to 1.4.
+
+1. **OCR alongside detection: made Nov 2, delivered in part.** `run_game.ocr_alongside` starts the four workers with
+   detection; they read each crop as it lands (`ocr_worker.py` leaves the newest 2 s of crops alone). On full games
+   OCR finished 0.1 to 2.6 minutes after detection under 160k crops, and 6.1 to 8.8 after on the five with 204k to
+   262k (white jerseys at `renton2nov`, `snoqualmie2` and `renton2thin`), against 6.7 to 14.2 minutes after it
+   before Nov 2. On the Mac OCR stays after detection (the workers starved its decoder); `OCR_AFTER=1` does the same
+   on the PC.
+2. **Detection in three processes: made Nov 2, not delivered on a full game.** `process.py` runs the pipe reader and
+   the post-processing in their own processes over a ring of 48 frames in shared memory: 34.3 s against 52.6 s on a
+   4-minute slice of TK's Nov 1 game, with the same detections and crops (a thread had gained nothing: the reader,
+   the model's Python wrapper and the colour statistics all hold the GIL). On full games detection took 12.2 to 16.9
+   minutes, median 14.9 (31 to 44 frames a second, by the height of the rink's detection band): per hour of video
+   what it was before Nov 2, not the 9 minutes predicted. Each change was measured on the slice alone, and all of
+   them needed the same CPU headroom.
+3. **GPU decode: measured Nov 2, not used; nvenc's p1 preset made and delivered.** `-hwaccel cuda` decoded the VP9
+   faster but made detection slower (the GPU busy with the model) and the scaling re-encode no faster: that encode
+   is NVENC-bound. Its p1 preset instead of p5 (PSNR 50.4 dB against 50.5 on the slice, a 15% larger file) took
+   5.2 to 7.2 minutes on full fetches against 11.2 to 16.9 before: 3.0, 2.3 and 1.9 times faster at the three sizes
+   seen (6.3 minutes at 3840x1536 against the 4 to 5 predicted).
+4. **The scoreboard scan beside detection: open.** It finished last on 13 of 13 fetches: 18.2 to 27.5 minutes beside
+   detection (6.7 to 8.2 before Nov 2 beside the old detection; 2.6 to 4.7 run alone), ending 4.9 to 12.1 minutes
+   after detection, median 7.9. `scoreboard.py` hasn't changed: the video is decoded twice in software while three
+   detection processes and four OCR workers fill the CPU's 16 threads, and the scan runs at below-normal priority. If
+   fetch waited only for detection, a median fetch would take 21.0 minutes instead of 28.6. The Oct 26 measurement
+   that called one decode for both "not worth it" is reversed by these numbers. Being measured on TK's Nov 15 video,
+   kept in `~/hockey-work/_bench`: the scan's decode on the GPU's decoder with the crop done before frames return to
+   the CPU; a second output from detection's own decode; the scan run alone after detection. The lesson of items 1 to
+   4: measure a fetch change with detection, OCR and the scan running together, and confirm it on a full fetch before
+   writing a prediction into the docs.
 5. **The solver and seated players: measured Nov 1, not made.** 173 of the 328 hand-made `off` spans on the 33
    archived games cover seconds where the player's own track stood at the bench (`rink.at_bench`, or off the ice),
    which the solver scores as "on" because a labeled piece counts from its first second to its last. Counting
@@ -139,3 +150,57 @@ player on for 56% of the seconds.
    door or along the boards reads the same as a seated one. Position and duration don't tell them apart (nor
    does the box height); the checkers' eyes do, and `gaps` now lists the long bench pieces, the flagged goals and
    shifts of 5+ minutes for them. `regress.py --strip-spans` measures the next attempt the same way.
+6. **The setup checks: made Nov 18.** Fetch sets our bench from the jersey where it follows it (Renton, every camera:
+   light blue left 15 of 15, white right 6 of 6; Snoqualmie A and B: white left 14 of 14, light blue right 7 of 7;
+   Snoqualmie's usual right side had been wrong for 14 of its 21 games) and keeps Kirkland's, which follows nothing.
+   It proposes each period's net by three reads, our bench's end in the 1st and switching (47 of 47 games), the half
+   our skaters line up in at the opening faceoff (139 of 140 periods) and the crease count (138 of 141), and prepare
+   stops on a net that goes against the first two (TK's Nov 8, set backwards by hand, would have stopped). It logs per
+   period whether the clock ran out and warns where a clock edge and the empty ice part by over 100 s (on 33
+   archived clocks: the two wrong edges, no false alarm), says when publish needs `--video-ends-early` and when the
+   periods came from the empty ice, writes the frame views the jersey and bench are checked on, and prints the turn
+   where no Renton framing fits (a roll up to 1.5 degrees). A fetch run again keeps an edited `periods.json` (its
+   proposal goes to `periods.proposed.json`). Solves are byte-identical.
+7. **The goal and penalty checkers' briefs, kills from the sheet, highlights from the answers: made Nov 18.** `goals
+   --brief` writes them from fetch's output and `periods.json`, so they run beside prepare and the review: the goal
+   check took a median 27.6 minutes, and run after the review it had left the session idle 12 to 26 minutes in 11 of
+   14 games. `pk` proposes our kills from the sheet and the clock: on the 16 archived games with a clock read, 32 of
+   36 starts and 32 of 36 ends within 15 s of the published kills; a period without a clock read gives only a rough
+   kill, left to the penalty checker, whose answers `pk --write` never overwrites. The briefs name the sheet's players
+   not yet in `roster.json`, and an overtime runs its sheet's length. `highlights` builds `highlights.json` from the
+   answers and the sheet (our scorers always the sheet's), matches its entries by the sheet's numbers so hand edits and
+   deletions stay, and the goal checker's on-ice reads join the lineup check.
+8. **Reviewers in batches with one wait: made Nov 18.** Each reviewer's hand-back woke the main session, 22 to 132
+   times a game, which made the review 39% of the main session's tokens; `review` now lists at most 20 chunks and
+   `check --wait` blocks until they are answered. `check` lists numbers reviewers gave that are off the roster;
+   reviewers get `zoom.py` (106 of 198 in five sessions had written their own crop scripts); "G" is any goalie.
+9. **Gap briefs with an answer per item: made Nov 18.** Every window and bench piece needs an answer, `gaps --apply`
+   names the unanswered, leads become the next round's windows, a kill reported as 5 on 5 is printed and not applied,
+   each brief says whether the period's clock stops at whistles (the 3rds) or runs through stoppages (the 1sts and
+   2nds, on all 20 games with a clock read), later rounds show the spans already merged and skip what was settled,
+   and an ice-time collapse gets a window of its own (10 windows over the 14 games, the 3 real cases among them).
+   The checkers get `frames --tracks` (our tracked boxes with track id and label) and `follow` (one piece over time),
+   which ten checkers in four games had scripted for themselves.
+   The Nov 1 additions found real errors (14 of 15 goal items, 10 of 10 long shifts and 39 of 81 bench pieces led to
+   spans) without cutting spans or rounds. A checker's cost is per item (a median 12.6 minutes and 35 images), and
+   spans under 5 s are 22% of the spans but 2.5% of the seconds moved, so nothing is gained by skipping short ones.
+10. **Clips from `highlights.json`, checked: made Nov 18.** `clips` cuts every highlight with the sessions' arguments,
+    checks each camera path first (`--dry-run` alone), tiles each clip into a contact sheet and briefs one checker;
+    a clip that fails doesn't stop the rest.
+    The user had complained about a clip in 7 of the 14 games, each one the session's own look had passed. On the
+    archives the check flags the first cuts of TK Nov 1 #3, R Nov 2 #10, Y Nov 2 #4, BT Nov 7 #1 and DF Nov 15 #5,
+    and 6 of the 87 accepted goal clips (all early-net, as their sheets show).
+11. **The command line: made Nov 18.** Git Bash's `/c/...` paths work everywhere; `sheet` works before fetch for every
+    team and keeps its ids; `absent --suggest` drops shared-surname pieces and shows what was read alongside a number;
+    `span` writes a hand-made span with its reason into `hand_spans.txt`; `publish` builds the header line (the same
+    as the typed one on 40 of 53 games), adds a new opponent, writes the notes from `--notes-file`, prints the table
+    and opens the page on a first publish. `archive` now also keeps `hand_spans.txt`, `clip_args.json`,
+    `clips_check.json` and the checkers' briefs and answers under `scratch/goals`, `gaps` and `clips`.
+12. **Gates for the collapse window: measured Nov 18, not made.** Of the seven stretches briefed by hand from Nov 1 to
+    15, three had missing shifts; gates on the player's number reads in the gap, his linemates playing on, or
+    unlabeled pieces of ours separated those from the rest only by a hair (one read; 0.97 against 0.92 of the game's
+    rate; 0.50 against 0.49), so every collapse gets a window.
+13. **The reviewers' effort level: measured Nov 18, open.** The 8 games reviewed at high effort against the 5 at xhigh:
+    1.0 against 3.2 minutes and 0.32 M against 1.41 M tokens per reviewer, a game at 117 M against 145 M tokens and 99
+    against 125 minutes, and 15.8% against 7.2% of rows answered "?". The games differ and nobody checked which
+    answers were right, so it is an open question, not a recommendation.

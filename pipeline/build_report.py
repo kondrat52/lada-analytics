@@ -84,7 +84,8 @@ def highlights(A, game):
     return out
 
 
-def build(gamedir, out):
+def page_data(gamedir):
+    """GAMEDIR/game.json + shifts.csv -> (game, shifts, the data the page draws); publish prints its table from it."""
     game = json.load(open(f"{gamedir}/game.json"))
     A = pd.read_csv(f"{gamedir}/shifts.csv")
     periods = game["periods"]
@@ -94,6 +95,11 @@ def build(gamedir, out):
                 stoppages=game.get("stoppages", []),
                 shifts=[dict(player=int(r.player), period=r.period, t0=float(r.t0), t1=float(r.t1)) for r in A.itertuples()],
                 video=game["video"], fun=fun_stats(A, game), shots=game.get("shots"), ice=game.get("ice"))
+    return game, A, data
+
+
+def build(gamedir, out):
+    game, A, data = page_data(gamedir)
     html = open(os.path.join(os.path.dirname(os.path.abspath(__file__)), "report_template.html")).read()
     if not game["video"]:   # no public video yet: the header names it without a link
         html = html.replace('<a href="__VIDEO__" target="_blank" rel="noopener">wide-cut game video</a>', "wide-cut game video")
