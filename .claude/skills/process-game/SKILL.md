@@ -342,3 +342,14 @@ fixes). Run it after any change to `shifts.py`, `apply_review.py`, `solver.py`, 
 change against the checkers' spans. README's TODO lists what was measured. Anything this game taught about a rink,
 a jersey, the scoreboard or the checkers goes into the matching `references/*.md` now, not into memory: memory stays
 on one machine, the skill travels.
+
+To redo an archived game (Y's Sep 21, published on the wrong bench, was redone on Nov 19), first run
+`regress.py --only <folder>` with `--out` in a scratch folder: it must come out identical. `download` brings the video
+back, and YouTube's bot check needs the user's `--cookies firefox` line from step 1. Scale it to the size `dets.csv`
+was detected at with `run_game.fit_size` (the old size is in `$W.fetch.log`), never with `fetch`, which goes on to
+detect, and check on one frame that a box from `dets.csv` sits on a player. Change `full/rink.json` through
+`set_config` (`set_config(W, bench=None)` sets the bench from the jersey as fetch does), never by `prepare`, then
+solve and run step 6's lineup loop. Publish with one `--notes-file` holding every old note unchanged plus one on what
+was redone and what moved: `--notes` and `--notes-file` replace the notes. On an old folder the gap briefs have no
+clock line (no `clock.json`), the first checker to run `scoreboard.py` scans the whole video (a few minutes), and
+publish recounts the name reads against today's `roster.json`, so `fun.name_reads` and `pipeline.reads` move a little.

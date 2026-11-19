@@ -242,3 +242,13 @@ fetch logs will say.
     on Opus 5.5 at medium effort and the checkers on Opus 5.5 at high, as a trial (subagents were about 70% of a
     game's tokens on the session's own model): the first game run that way reviews three chunks twice, on Opus and
     on the session's model, and its counts go here.
+14. **A later checker contradicting an earlier round's span: found Nov 19, open.** `gaps --apply` adds the later span
+    and keeps the earlier one, so both stay in `periods.json` and in later briefs' "merged" lines, and the solver adds
+    the same large cost to both states for those seconds, which leaves them to the tracks. On the redo of Y's Sep 21
+    round 1 had #29 off 2458-2478 and #12 on 2458-2467; round 2 saw the change at the bench door 4-5 s later (#29 on
+    2458-2463, #12 off 2458-2462). The solve came out as round 2 saw it (#29 off and #12 on at 2462) and round 3
+    confirmed it, but `periods.json` holds both pairs.
+15. **Read counts on a republish: found Nov 19, open.** `publish` recounts `fun.name_reads` and `pipeline.reads` from
+    the folder's OCR against today's `roster.json` (`reads.py` matches names against it), so an old game's read counts
+    drift with every roster change since its first publish: on the redo of Y's Sep 21, #12 106 to 105, #72 86 to 82
+    and the reads 5142 to 5149, with `reads.py` unchanged since Oct 16. The page's fun stats show them.
