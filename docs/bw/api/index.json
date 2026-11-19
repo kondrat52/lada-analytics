@@ -55,7 +55,7 @@
    },
    "lada_game_id": 33029,
    "goals_on_video": {
-    "for": 5,
+    "for": 6,
     "against": 5
    },
    "score": {
@@ -66,10 +66,10 @@
     "source": "sheet"
    },
    "shots": {
-    "for": 19,
+    "for": 20,
     "against": 18
    },
-   "highlights": 10,
+   "highlights": 11,
    "page_url": "https://kondrat52.github.io/lada-analytics/bw/games/2026-11-07-vs-db/",
    "json_url": "https://kondrat52.github.io/lada-analytics/bw/api/games/2026-11-07-vs-db.json"
   },

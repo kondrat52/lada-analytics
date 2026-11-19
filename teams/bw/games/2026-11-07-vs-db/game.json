@@ -32,7 +32,7 @@
     "Renton's new camera re-aimed (rink renton2nov, measured on Turbo Kings' Nov 8 game), already pointed this way on Nov 7. Periods come from the board's clock, and each ran to 0.0. The board was dark at the start of the 1st, the end of the 1st and the starts of the 2nd and 3rd, so those four edges come from the clock's run and the frames, within about 2 s. The clock ran through stoppages in the 1st and 2nd and stopped at whistles in the 3rd.",
     "Played: 10 skaters, with sub goalie Toth #0. Trunov #35 played (his TRUNOV nameplate was read all game), though the game sheet doesn't mark him. Skitsko #16 is marked playing on the sheet, but nothing on the video shows him: OCR's few 16 reads were Disco's #91 and #63. Didn't play: Belousenko #11, Potepalov #15, Skitsko #16, Tverskoy #44, Dukhno #50, Lisenko #55, Horokh #77 and the subs.",
     "Goal times come from the video, each to the second the puck went in. The credits are the game sheet's. Where the frames say otherwise: on the 3-2 goal (2nd period, 6:18) Babkin #26 is the one jabbing at the post and Antonov #95 couldn't be picked out; on Disco's 4-4 goal (3rd period, 8:19) the player at the post wore #45, not the sheet's #36. The board posted Disco's 4-3 goal about 3.5 minutes late.",
-    "The score: the game sheet and LADA have 5-5, and so does this page. The video shows one more goal, for us, at 60:48 (about 1:45 left in the 3rd): a scramble at Disco's net, the board added a home goal and a home shot, and play restarted at center ice. The board ended 6-5. The scorer can't be read, and this page keeps the official 5-5.",
+    "The score: when this page was first published on Nov 16 the game sheet had 5-5, and so did this page. The scorekeeper later corrected the sheet to 6-5 by adding a goal for us at 2:06 of the 3rd, Charnysh #36 unassisted, his fourth of the game (and a shot for us, 7-8 in the 3rd). It is the goal the video shows at 60:48 (3648 s): Charnysh (his CHARNYSH nameplate read at 60:41 and 60:44) carries the puck down the far boards and shoots from there at 60:47; it reaches their crease a quarter second later, where Disco's #4 is crossing in front of their goalie as he goes down, and goes in, though the puck crossing the line is hidden in that traffic. The clock stopped at 2:06 a second later, the referee pointed at their net, the board added a home goal and a home shot, and play restarted at center ice. The page was corrected on Nov 19, 2026; LADA's own record still had 5-5 that day.",
     "Lineups were checked by eye: 49 on/off spans fix line changes the tracker missed. Two of them (Charnysh #36 at 576-595 and Gareev #53 at 3497-3544) were added from what the checkers saw at the 1-1 and 5-4 goals, after their first pass. Charnysh's tracks in the 2nd carried no number, so three of his shifts there (24:00-24:43, 27:51-29:21 and 31:48-32:28 of the video) were found by eye. Shipachev's 5:16 shift in the 2nd is real: he never sat, and his linemates' shifts were as long.",
     "From behind, Trunov #35 and Charnysh #36 look alike (dark helmet, black shorts, white socks), and one Disco player wears a navy jersey with white shoulders that passes for ours."
   ],
@@ -57,117 +57,6 @@
     "reads": 5912,
     "reviewed": 1687
   },
-  "lada_game_id": 33029,
-  "stoppages": [
-    [
-      12,
-      14
-    ],
-    [
-      119,
-      138
-    ],
-    [
-      208,
-      265
-    ],
-    [
-      265,
-      294
-    ],
-    [
-      358,
-      380
-    ],
-    [
-      409,
-      430
-    ],
-    [
-      577,
-      607
-    ],
-    [
-      607,
-      666
-    ],
-    [
-      760,
-      785
-    ],
-    [
-      891,
-      918
-    ],
-    [
-      982,
-      1015
-    ],
-    [
-      1033,
-      1069
-    ],
-    [
-      1202,
-      1205
-    ],
-    [
-      1410,
-      1455
-    ],
-    [
-      1496,
-      1552
-    ],
-    [
-      1658,
-      1690
-    ],
-    [
-      1766,
-      1809
-    ],
-    [
-      1851,
-      1875
-    ],
-    [
-      1939,
-      1981
-    ],
-    [
-      2284,
-      2290
-    ],
-    [
-      2385,
-      2388
-    ],
-    [
-      2419,
-      2473
-    ],
-    [
-      2523,
-      2552
-    ],
-    [
-      2572,
-      2611
-    ],
-    [
-      2936,
-      2986
-    ],
-    [
-      3227,
-      3264
-    ],
-    [
-      3646,
-      3680
-    ]
-  ],
   "highlights": [
     {
       "type": "goal",
@@ -276,15 +165,30 @@
     },
     {
       "type": "goal",
+      "team": "for",
+      "t": 3648,
+      "scorer": 36,
+      "assists": [],
+      "clip": "clips/goal-11.mp4",
+      "poster": "clips/goal-11.jpg",
+      "note": "3rd period, clock 2:06: Charnysh carries it down the far boards and his shot goes in through traffic in their crease, his fourth, 6-4"
+    },
+    {
+      "type": "goal",
       "team": "against",
       "t": 3805,
       "scorer": 63,
       "assists": [],
       "clip": "clips/goal-10.mp4",
       "poster": "clips/goal-10.jpg",
-      "note": "3rd period, clock 0:01: they crash our net and pile on our goalie with a second left, 5-5"
+      "note": "3rd period, clock 0:01: they crash our net and pile on our goalie with a second left, 6-5"
     }
   ],
+  "lada_game_id": 33029,
+  "zones": {
+    "offence": 0.3747,
+    "defence": 0.3539
+  },
   "shots": {
     "P1": [
       7,
@@ -295,15 +199,11 @@
       6
     ],
     "P3": [
-      6,
+      7,
       8
     ]
   },
   "shots_source": "sheet",
-  "zones": {
-    "offence": 0.3747,
-    "defence": 0.3539
-  },
   "ice": {
     "cell": 2,
     "cols": 42,
@@ -414,5 +314,115 @@
     "for": 6,
     "against": 5
   },
-  "sportninja_id": "mY3xmRfrStZcfcLv"
+  "sportninja_id": "mY3xmRfrStZcfcLv",
+  "stoppages": [
+    [
+      12,
+      14
+    ],
+    [
+      119,
+      138
+    ],
+    [
+      208,
+      265
+    ],
+    [
+      265,
+      294
+    ],
+    [
+      358,
+      380
+    ],
+    [
+      409,
+      430
+    ],
+    [
+      577,
+      607
+    ],
+    [
+      607,
+      666
+    ],
+    [
+      760,
+      785
+    ],
+    [
+      891,
+      918
+    ],
+    [
+      982,
+      1015
+    ],
+    [
+      1033,
+      1069
+    ],
+    [
+      1202,
+      1205
+    ],
+    [
+      1410,
+      1455
+    ],
+    [
+      1496,
+      1552
+    ],
+    [
+      1658,
+      1690
+    ],
+    [
+      1766,
+      1809
+    ],
+    [
+      1851,
+      1875
+    ],
+    [
+      1939,
+      1981
+    ],
+    [
+      2284,
+      2290
+    ],
+    [
+      2385,
+      2388
+    ],
+    [
+      2419,
+      2473
+    ],
+    [
+      2523,
+      2552
+    ],
+    [
+      2572,
+      2611
+    ],
+    [
+      2936,
+      2986
+    ],
+    [
+      3227,
+      3264
+    ],
+    [
+      3646,
+      3680
+    ]
+  ]
 }

@@ -287,7 +287,7 @@
    "avg_shift": 123.4,
    "longest_shift": 316,
    "shortest_shift": 20,
-   "plus_minus": 7,
+   "plus_minus": 8,
    "games": [
     {
      "id": "2026-11-07-vs-db",
@@ -300,7 +300,7 @@
      "shifts": 14,
      "avg_shift": 141.1,
      "play": 1569,
-     "plus_minus": 3
+     "plus_minus": 4
     },
     {
      "id": "2026-10-25-vs-gn",
@@ -368,7 +368,7 @@
    "avg_shift": 116.1,
    "longest_shift": 193,
    "shortest_shift": 40,
-   "plus_minus": -1,
+   "plus_minus": 0,
    "games": [
     {
      "id": "2026-11-07-vs-db",
@@ -381,7 +381,7 @@
      "shifts": 14,
      "avg_shift": 117.7,
      "play": 1223,
-     "plus_minus": -2
+     "plus_minus": -1
     },
     {
      "id": "2026-10-18-vs-si",
@@ -1020,7 +1020,7 @@
    "avg_shift": 113.0,
    "longest_shift": 268,
    "shortest_shift": 23,
-   "plus_minus": 1,
+   "plus_minus": 2,
    "games": [
     {
      "id": "2026-11-15-vs-no",
@@ -1046,7 +1046,7 @@
      "shifts": 15,
      "avg_shift": 124.6,
      "play": 1399,
-     "plus_minus": 0
+     "plus_minus": 1
     },
     {
      "id": "2026-10-25-vs-gn",
@@ -1461,7 +1461,7 @@
    "avg_shift": 107.3,
    "longest_shift": 199,
    "shortest_shift": 40,
-   "plus_minus": 7,
+   "plus_minus": 8,
    "games": [
     {
      "id": "2026-11-15-vs-no",
@@ -1487,7 +1487,7 @@
      "shifts": 16,
      "avg_shift": 98,
      "play": 1211,
-     "plus_minus": 3
+     "plus_minus": 4
     },
     {
      "id": "2026-10-25-vs-gn",
@@ -1581,7 +1581,7 @@
    "avg_shift": 92.1,
    "longest_shift": 150,
    "shortest_shift": 42,
-   "plus_minus": 3,
+   "plus_minus": 4,
    "games": [
     {
      "id": "2026-11-07-vs-db",
@@ -1594,7 +1594,7 @@
      "shifts": 19,
      "avg_shift": 83.3,
      "play": 1153,
-     "plus_minus": 3
+     "plus_minus": 4
     },
     {
      "id": "2026-10-03-vs-no",

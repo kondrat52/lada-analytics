@@ -3931,8 +3931,10 @@ def cmd_publish(a):
     if os.path.exists(f"{W}/shots.json") and json.load(open(f"{W}/shots.json")).get("checked"):
         game["shots"] = json.load(open(f"{W}/shots.json"))["periods"]   # shots.py, once checked against the board
         game["shots_source"] = "board"
-    elif not game.get("shots") and os.path.exists(f"{W}/sheet.json"):
-        # the game sheet's shots per period (SportNinja); the board's OCR is wrong more often than not
+    elif (not game.get("shots") or game.get("shots_source") == "sheet") and os.path.exists(f"{W}/sheet.json"):
+        # the game sheet's shots per period (SportNinja); the board's OCR is wrong more often than not. Shots that
+        # came from the sheet follow the folder's sheet.json on a republish: scorekeepers correct sheets after the
+        # game (Blue Wings' Nov 7 gained a goal and a shot), and an earlier publish's shots used to stay
         sh_shots = json.load(open(f"{W}/sheet.json", encoding="utf-8")).get("shots") or {}
         if all(P["label"] in sh_shots for P in Ps):
             game["shots"] = {P["label"]: sh_shots[P["label"]] for P in Ps}
