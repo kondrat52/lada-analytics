@@ -203,4 +203,7 @@ Fetch, on the 13 full fetches made with the Nov 2 code: 24.3 to 38.0 minutes, me
 13. **The reviewers' effort level: measured Nov 18, open.** The 8 games reviewed at high effort against the 5 at xhigh:
     1.0 against 3.2 minutes and 0.32 M against 1.41 M tokens per reviewer, a game at 117 M against 145 M tokens and 99
     against 125 minutes, and 15.8% against 7.2% of rows answered "?". The games differ and nobody checked which
-    answers were right, so it is an open question, not a recommendation.
+    answers were right, so it is an open question, not a recommendation. Since Nov 18 the skill launches reviewers
+    on Opus 5.5 at medium effort and the checkers on Opus 5.5 at high, as a trial (subagents were about 70% of a
+    game's tokens on the session's own model): the first game run that way reviews three chunks twice, on Opus and
+    on the session's model, and its counts go here.

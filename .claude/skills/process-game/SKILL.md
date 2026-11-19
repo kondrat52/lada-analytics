@@ -52,6 +52,19 @@ times a game, 39% of its tokens), so launch a whole batch in one message, then w
 (`check --wait`) or Yield, with no status lines in between. Every frames job has a generated brief; delegate it. Read
 an image you need yourself once, cropped tight, and the Gantt charts only when the lineup check lists something.
 
+**Subagent models (a trial since Nov 18, 2026).** Launch every reviewer (step 5) with `model: "opus"` and
+`effort: "medium"`, and every checker (the goal and penalty checkers of step 2, the lineup checkers of step 6, the clip
+checker of step 7) with `model: "opus"` and `effort: "high"`. Subagents were about 70% of a game's tokens on the
+session's own model. Reviewers have "?" to fall back on and the lineup check catches what they miss; a checker's
+answer goes into the sheet or a clip without a second look, hence the higher effort. Nobody has measured Opus on these
+sheets, so on the first game run this way, once `check` says the review is complete, copy the review files of three
+chunks (the first of each period) to `$W/scratch/ab/opus/`, launch those three prompts again on the session's own
+model with "but write each sheet's CSV into `$W/scratch/ab/session/`, not into the review folder" added, and compare
+row by row: the share of "?" in each set (README's TODO 13 has 15.8% at high effort and 7.2% at xhigh on the session's
+model), and the rows where both give a number at high or med confidence and the numbers differ. Give the user the
+counts and add them to TODO 13; the user decides whether reviewers move to `effort: "high"`. Once a game has done
+this, replace these sentences with the result.
+
 **One game per session.** In the two sessions that processed several games, the fourth and fifth games ran at 432 k
 and 521 k tokens of context per call, against 195 k for a median game. Compaction (7 of 14 games) came each time
 while idle, waiting on the user after "ready to publish": write the notes file and the summary before you stop.
@@ -146,8 +159,8 @@ session idle 12 to 26 minutes in 11 of 14 games):
 $PY pipeline/run_game.py goals $W --brief           # W/scratch/goals/prompt_pN.md per period with goals, prompt_pens.md
 ```
 
-One general-purpose subagent per brief, whose whole prompt is "Read <brief> and do exactly what it says. Reply with
-one line per goal or penalty." Each writes a JSON answer that step 6 reads; don't wait for them, go on with step 3.
+One general-purpose subagent per brief (`model: "opus"`, `effort: "high"`), whose whole prompt is "Read <brief> and
+do exactly what it says. Reply with one line per goal or penalty." Each writes a JSON answer that step 6 reads; don't wait for them, go on with step 3.
 The briefs name the players the sheet marks playing who aren't in `roster.json` yet, so they needn't wait for step 4.
 
 The score and shots come from the game sheet: publish copies its final score (`sheet_score`, what the site shows) and
@@ -214,7 +227,8 @@ $PY pipeline/run_game.py check $W --wait            # Bash timeout 600000: block
 the template: the goalie line, each period's empty card rows, `--opp` and `--note`. Read those first; a note that
 contradicts them misleads every reviewer (change the note, kept in `$W/review.json`, or the absent list, and run
 `review` again). `--opp` gives the opponents' look and any of our numbers they wear. Launch every listed prompt in one
-message, one general-purpose subagent each, whose whole prompt is "Read <prompt file> and do exactly what it says.
+message, one general-purpose subagent each (`model: "opus"`, `effort: "medium"`), whose whole prompt is "Read
+<prompt file> and do exactly what it says.
 Reply with one line: how many rows you wrote." Then `check --wait` once; repeat `review` and `check --wait` until
 `review` lists nothing, leaving out a prompt it marks "listed before" while that reviewer hasn't reported back.
 
@@ -251,8 +265,8 @@ stretches of 15+ s without 5 of us on (4 in a kill, 6 with the goalie pulled), g
 credited or seen player off the ice, shifts of 5+ minutes, ice-time collapses, and windows hand spans already explain.
 `gaps` briefs those with our long pieces in the bench zone (seated players counted as on, most at Snoqualmie) and the
 leads earlier checkers left; later rounds show the spans already merged and skip what was settled. Launch one
-general-purpose subagent per brief, all in one message, whose whole prompt is "Read <file> and do exactly what it
-says. Reply with one line per window and bench piece.", then Yield until all are back. `--apply` prints each span it
+general-purpose subagent per brief (`model: "opus"`, `effort: "high"`), all in one message, whose whole prompt is
+"Read <file> and do exactly what it says. Reply with one line per window and bench piece.", then Yield until all are back. `--apply` prints each span it
 merges and names every item left unanswered (the next `gaps` lists it again). A `!!` line is a listed kill a checker
 saw played 5 on 5: do the two things it says (take that `pk` out of `periods.json` or cut it to the part that was
 short, and run the `span ... off` line it prints for our boxed player). Repeat solve, `gaps`, the checkers and
@@ -273,7 +287,8 @@ $PY pipeline/run_game.py clips $W <game-id>             # cut, a contact sheet e
 The clips frame the solver's tracks, so they come after the last solve; `<game-id>` is publish's,
 `<YYYY-MM-DD>-vs-<opp>`. Fix what the dry run warns about first: the times in `highlights.json`, or a clip's own
 arguments in `$W/clip_args.json` (`references/highlights.md` has the situations and flags). After the cut, one
-general-purpose subagent on the brief it names, whose whole prompt is "Read <brief> and do exactly what it says.
+general-purpose subagent on the brief it names (`model: "opus"`, `effort: "high"`), whose whole prompt is "Read
+<brief> and do exactly what it says.
 Reply with one line per clip." It writes
 `$W/scratch/clips/answers.json`: for each clip not ok, fix what it points at (`t`, `shot` or `pass` in
 `highlights.json`, or `clip_args.json`), re-cut with `clips --only <names>` and give the new brief to a fresh checker.
