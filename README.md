@@ -110,36 +110,71 @@ against the published sheet, and inside the checkers' `off` spans it has the pla
 47 archived games identical, the same two Blue Wings games as since Oct 22.
 
 Fetch, on the 13 full fetches made with the Nov 2 code: 24.3 to 38.0 minutes, median 28.6; downloads 1.4 to 3.9
-(one of 14.5 with no error logged), and no bot block or cookies on any of them; the clock read in 1.1 to 1.4.
+(one of 14.5 with no error logged), and no bot block or cookies on any of them; the clock read in 1.1 to 1.4. Since
+Nov 19 the board scan decodes on the GPU and OCR runs in six single-threaded workers (items 1 and 4): TK's Nov 15
+video (204k crops), fetched again from its download on a quiet machine, took 18.5 minutes from the stages' start to
+done, against 25.3 with the code before (27.2 in its own fetch log). On other games the scan's part should be what it
+led OCR by on the 13 fetches (0.6 to 6.7 minutes, median 5.0), and the OCR part smaller with fewer crops; the next
+fetch logs will say.
 
-1. **OCR alongside detection: made Nov 2, delivered in part.** `run_game.ocr_alongside` starts the four workers with
-   detection; they read each crop as it lands (`ocr_worker.py` leaves the newest 2 s of crops alone). On full games
+1. **OCR alongside detection: made Nov 2, delivered in part.** `run_game.ocr_alongside` starts the workers (four
+   until Nov 19, six since) with detection; they read each crop as it lands (`ocr_worker.py` leaves the newest 2 s of crops alone). On full games
    OCR finished 0.1 to 2.6 minutes after detection under 160k crops, and 6.1 to 8.8 after on the five with 204k to
    262k (white jerseys at `renton2nov`, `snoqualmie2` and `renton2thin`), against 6.7 to 14.2 minutes after it
    before Nov 2. On the Mac OCR stays after detection (the workers starved its decoder); `OCR_AFTER=1` does the same
-   on the PC.
+   on the PC. **Six single-threaded workers on the PC: made Nov 19.** Each worker had 2 onnxruntime threads; with 1
+   they read the same rows (the union of the csv rows identical on 27 slice runs and 8 full fetches) with less
+   waiting. Full fetches of TK's Nov 15 video with the board scan on the GPU, quiet machine: 4 x 2 detection 14.8
+   minutes, OCR done 4.9 after it, fetch 20.9; 6 x 1 15.6, 1.7, 18.5; 8 x 1 17.2, 0.2, 18.6 (and with
+   Steam and Firefox busy: 4 x 2 15.7, 5.7, 22.7; 6 x 1 18.1, 2.7, 22.2; 8 x 1 18.1, 0.2, 19.6). With the scan on the
+   GPU, 6 x 1 and 8 x 1 tie on fetch (18.5 and 18.6 quiet) and both beat 4 x 2 (20.9), because OCR no longer ends 5
+   minutes after detection; 6 x 1 was taken over 8 x 1 because it slows detection less (15.6 against 17.2). 4 x 2
+   detects fastest (14.8), and 8 x 2 starved detection on the slice (24 to 27 frames a second). Not measured: more
+   than one run per setting under each condition (the outside load differed between the runs); a game with few crops,
+   where detection sets the pace and may come out a little slower with 6 x 1 than with 4 x 2; and `jersey`'s OCR,
+   `OCR_AFTER=1` and the `ocr()` tail after detection, which now run 6 x 1 too. A worker now writes its `ocr_N.csv`
+   with its first row, so one that reads nothing leaves no empty file; every reader globs `ocr_*.csv`, so a folder
+   resumed at another worker count works. The Mac keeps 4 x 2.
 2. **Detection in three processes: made Nov 2, not delivered on a full game.** `process.py` runs the pipe reader and
    the post-processing in their own processes over a ring of 48 frames in shared memory: 34.3 s against 52.6 s on a
    4-minute slice of TK's Nov 1 game, with the same detections and crops (a thread had gained nothing: the reader,
    the model's Python wrapper and the colour statistics all hold the GIL). On full games detection took 12.2 to 16.9
    minutes, median 14.9 (31 to 44 frames a second, by the height of the rink's detection band): per hour of video
    what it was before Nov 2, not the 9 minutes predicted. Each change was measured on the slice alone, and all of
-   them needed the same CPU headroom.
+   them needed the same CPU headroom. On Nov 19 TK's Nov 15 video detected in 14.2 minutes with the old fetch (36.6
+   frames a second, quiet machine; 14.8 in its own fetch log), 14.8 with the board scan on the GPU and 4 x 2 OCR,
+   15.6 with 6 x 1 (OCR takes more of the CPU and ends sooner), and 0.8 to 2.5 minutes slower again with Steam and
+   Firefox busy beside it.
 3. **GPU decode: measured Nov 2, not used; nvenc's p1 preset made and delivered.** `-hwaccel cuda` decoded the VP9
    faster but made detection slower (the GPU busy with the model) and the scaling re-encode no faster: that encode
    is NVENC-bound. Its p1 preset instead of p5 (PSNR 50.4 dB against 50.5 on the slice, a 15% larger file) took
    5.2 to 7.2 minutes on full fetches against 11.2 to 16.9 before: 3.0, 2.3 and 1.9 times faster at the three sizes
-   seen (6.3 minutes at 3840x1536 against the 4 to 5 predicted).
-4. **The scoreboard scan beside detection: open.** It finished last on 13 of 13 fetches: 18.2 to 27.5 minutes beside
-   detection (6.7 to 8.2 before Nov 2 beside the old detection; 2.6 to 4.7 run alone), ending 4.9 to 12.1 minutes
-   after detection, median 7.9. `scoreboard.py` hasn't changed: the video is decoded twice in software while three
-   detection processes and four OCR workers fill the CPU's 16 threads, and the scan runs at below-normal priority. If
-   fetch waited only for detection, a median fetch would take 21.0 minutes instead of 28.6. The Oct 26 measurement
-   that called one decode for both "not worth it" is reversed by these numbers. Being measured on TK's Nov 15 video,
-   kept in `~/hockey-work/_bench`: the scan's decode on the GPU's decoder with the crop done before frames return to
-   the CPU; a second output from detection's own decode; the scan run alone after detection. The lesson of items 1 to
-   4: measure a fetch change with detection, OCR and the scan running together, and confirm it on a full fetch before
-   writing a prediction into the docs.
+   seen (6.3 minutes at 3840x1536 against the 4 to 5 predicted). The board scan's decode on NVDEC (item 4) costs
+   detection little (14.8 against 14.2 minutes with the same OCR): the slowdown found here was for detection's own
+   decode moved to the GPU.
+4. **The scoreboard scan on the GPU: made Nov 19.** It had finished last on 13 of 13 fetches: 18.2 to 27.5 minutes
+   beside detection (6.7 to 8.2 before Nov 2 beside the old detection; 2.6 to 4.7 run alone), ending 4.9 to 12.1
+   minutes after detection, median 7.9: the video was decoded twice in software while three detection processes and
+   four OCR workers filled the CPU's 16 threads, and the scan at below-normal priority got the leftovers. Now
+   `scoreboard.py` decodes on NVDEC (`-hwaccel cuda`: ffmpeg's own VP9 parser driving it) and cuts the board out on the
+   GPU (`overlay_cuda` at minus the box's corner onto a box-sized frame: this ffmpeg has no crop for CUDA frames), at
+   normal priority: 2.5 CPU-seconds per minute of 4K VP9 against 23.5 for the CPU decode at 4 threads. On full fetches
+   of TK's Nov 15 video it took 5.5 to 6.8 minutes and ended 9 to 12 minutes before detection; its 3,880 boards are
+   byte-identical to the CPU scan's (their JPEGs to the archive's), and so are the clock, the periods and `sb.jpg`.
+   Where the first and middle seconds don't come out byte-identical to the CPU path (no NVDEC or CUDA filters, a
+   container with no duration), or the GPU pass fails, stalls (no frame for 2 minutes) or comes up short, the scan runs
+   on the CPU as before; so it does on the Mac, which skips the check, and with `SCOREBOARD_CPU=1`. Every rink's
+   `scoreboard` box must have even sides and corner: an odd one fails the check and is wrong on the CPU path too
+   (`crop` evens it, and the raw frames read then drift a row). Tried and
+   not used: the `vp9_cuvid` decoder's own `-crop` (1.1 CPU-seconds a minute, but it drifted from the software decode
+   by up to 28 levels within a GOP); the GPU scan at below-normal priority (starved: on an 8-minute slice it ended 50
+   to 60 s after detection, against 60 to 80 s before it at normal); the scan alone after detection and OCR (on the
+   slice no faster than beside them: 215 to 221 s against 206 to 221). Not built: a second output from detection's own
+   decode (all it could save now is the GPU scan's 2.5 CPU-seconds a minute). Not measured: half precision and larger
+   batches for the model (the GPU was 28 to 36% busy during detection, so the model waits on the CPU), and TensorRT (not
+   installed; its install needs the network). The lesson of items 1 to 4 stands: measure a fetch change with
+   detection, OCR and the scan running together, and confirm it on a full fetch before writing a prediction into the
+   docs.
 5. **The solver and seated players: measured Nov 1, not made.** 173 of the 328 hand-made `off` spans on the 33
    archived games cover seconds where the player's own track stood at the bench (`rink.at_bench`, or off the ice),
    which the solver scores as "on" because a labeled piece counts from its first second to its last. Counting

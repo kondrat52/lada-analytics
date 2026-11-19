@@ -29,7 +29,8 @@ Developer Mode if not). There `PY=~/.venvs/hockey/Scripts/python.exe`; no `caffe
 Bash's `/c/Users/...` paths.
 
 `run_game.py fetch "<url>" $W --team <slug> --rink <class> [--jersey white] [--bench left|right]` does steps 1 to 5
-in one go (24 to 38 minutes on the PC on the 13 fetches since Nov 2) and resumes after any interruption.
+in one go (24 to 38 minutes on the PC on the 13 fetches from Nov 2 to 17; 18.5 to 22 for TK's Nov 15 video since the
+Nov 19 change to the board scan and OCR, plus the download) and resumes after any interruption.
 
 ## 1. Download (1.5 to 4 min on the PC)
 
@@ -96,11 +97,18 @@ nohup $PY pipeline/process.py $W/video.webm $W/full 8 > $W/full/log.txt 2>&1 &
 - `process.py` is three processes since Nov 2 (the pipe reader, the model, the post-processing) over a ring of
   frames in shared memory; a kill of the main one takes the other two with it within 5 s. On a full game it runs at
   31 to 44 frames a second (by the height of the rink's detection band), as before Nov 2.
-- On the Mac don't run OCR at the same time: it starves the video decoder. On the PC `fetch` starts the four OCR
-  workers alongside detection (`run_game.ocr_alongside`): they finish 0.1 to 2.6 minutes after it under 160k crops,
-  6 to 9 minutes after with 204k to 262k (white jerseys).
-- `fetch` also scans the scoreboard beside detection (`scoreboard.py`, at below-normal priority). On the PC it takes
-  18 to 28 minutes there and finishes last on every fetch, 5 to 12 minutes after detection (2.6 to 4.7 run alone).
+- On the Mac don't run OCR at the same time: it starves the video decoder. On the PC `fetch` starts six OCR workers
+  of one onnxruntime thread each alongside detection (`run_game.ocr_alongside`; four of two threads until Nov 19, which
+  finished 0.1 to 2.6 minutes after detection under 160k crops and 6 to 9 after with 204k to 262k, white jerseys). On
+  TK's Nov 15 video (204k crops) the six finish 1.7 minutes after detection.
+- `fetch` also scans the scoreboard beside detection (`scoreboard.py`). On the PC it decodes on NVDEC and cuts the
+  board out on the GPU, at normal priority: 5.5 to 6.8 minutes for TK's 65-minute Nov 15 video, ending well before
+  detection, with the same bytes as the CPU decode (`scoreboard.gpu_ok` checks the first and middle seconds before
+  each scan). Where that check fails (no NVDEC or CUDA filters, a container with no duration), where a GPU pass fails,
+  stalls (no frame for 2 minutes) or comes up short, on the Mac (which skips the check) and with `SCOREBOARD_CPU=1`,
+  it decodes on the CPU at below-normal priority as before: 18 to 28 minutes beside detection, finishing last, 5 to
+  12 minutes after it (2.6 to 4.7 alone). A CPU pass that stalls saves no `scoreboard.npy`, and `scoreboard_sheet`
+  scans again. Every rink's `scoreboard` box must have even sides and corner (an odd one is wrong on either path).
 
 ## 4. Read numbers (10–15 min)
 

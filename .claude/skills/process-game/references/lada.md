@@ -139,7 +139,8 @@ serves both:
 2. Make the other folder by hand: hard links (`ln`) to `video.webm`, `audio.m4a`, `frame600.png`, `video_info.json`,
    `url.txt`, `scoreboard.npy` and `sb.jpg`; copies of `full/dets.csv`, `full/boards_poly.npy`, `full/ov/` and
    `full/log.txt`; and `full/rink.json` with its team, rink, jersey and bench. Without `log.txt` the OCR workers
-   crash at once and `jersey` still reports "done" with no reads (check that `full/ocr_*.csv` aren't empty). Then
+   crash at once and `jersey` still reports "done" with no reads (check that `full/ocr_*.csv` exist and aren't empty:
+   a worker writes its csv with its first read, so one that crashed at once leaves none). Then
    `run_game.py jersey $W2 "white vs light blue"` cuts its crops and OCRs them: 22 minutes of decoding for a
    66-minute video, so start it the moment fetch is done.
 3. Shared: the periods (each team's own `net`, so swapped), the scoreboard, the shots (pairs reversed, `us`

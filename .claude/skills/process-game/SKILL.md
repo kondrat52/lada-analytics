@@ -33,8 +33,11 @@ W=~/hockey-work/<slug>-<YYYY-MM-DD>-vs-<opp>      # outside the repo, ~5 GB; all
 ```
 
 Detection needs the local GPU, so none of this runs in the cloud. On the Windows PC (RTX 5090, `WINDOWS.md`) fetch
-takes 24 to 38 minutes (median 29): download 1.5 to 4, detection 12 to 17 with OCR beside it, and the scoreboard
-scan, which finishes last, 5 to 12 minutes after detection; a smaller video's scaling re-encode adds 5 to 7. A game
+took 24 to 38 minutes (median 29) on the 13 fetches from Nov 2 to 17: download 1.5 to 4, detection 12 to 17 with OCR
+beside it, and the scoreboard scan, which finished last, 5 to 12 minutes after detection. Since Nov 19 the scan runs
+on the GPU and ends well before detection, and OCR (six single-threaded workers) ended 1.7 to 2.7 minutes after it
+on TK's Nov 15 video (204k crops, among the most), which took 18.5 to 22 minutes after its download against 25.3
+before. A smaller video's scaling re-encode adds 5 to 7. A game
 has taken a median 109 minutes from start to "ready to publish" (65 to 149), 28 of them active and 77 waiting on
 background work (fetch 26, lineup checkers 26, the goal checker 12, reviewers 6, clips 4); the lineup loop alone
 took 20 to 79 (median two rounds). `run_game.py` keeps Windows awake. On the Mac fetch takes about 2 hours and needs

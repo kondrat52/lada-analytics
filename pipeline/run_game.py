@@ -89,6 +89,14 @@ HERE = os.path.dirname(os.path.abspath(__file__))
 ROOT = os.path.dirname(HERE)
 PY = sys.executable
 FPS = 8
+# OCR workers x onnxruntime threads each. On the PC (i9-9900K, 8 cores / 16 threads) single-threaded workers read the
+# same rows faster than 4 x 2, whose second threads mostly wait. Full fetches of TK's Nov 15 video (204k crops, the
+# board scan on the GPU, Nov 19, 2026), one each on a quiet machine: 6 x 1 detection 15.6 min, OCR done 1.7 after it,
+# fetch 18.5; 8 x 1 17.2, 0.2, 18.6; 4 x 2 14.8, 4.9, 20.9. 6 x 1 and 8 x 1 tie on fetch and both beat 4 x 2, whose OCR
+# ends 5 minutes after detection; 6 x 1 over 8 x 1 because it slows detection less. 4 x 2 detects fastest, so a game
+# with few crops, where detection sets the pace, may come out a little slower than with 4 x 2 (not measured).
+# Elsewhere (the Mac, where OCR runs after detection) 4 x 2 as before: nothing else was measured there.
+OCR_WORKERS, OCR_THREADS = (6, 1) if sys.platform == "win32" else (4, 2)
 COOKIES = []   # yt-dlp's --cookies-from-browser BROWSER, set by `download --cookies`
 sys.path.insert(0, HERE)
 from rink import rink
@@ -303,7 +311,10 @@ def detect(vid, W, limit=None):
         proc = subprocess.Popen(cmd, stdout=lf, stderr=subprocess.STDOUT, cwd=W, env=env)
         t_start, hist, slow_since = time.time(), [], None
         while proc.poll() is None:
-            time.sleep(30)
+            try:   # back as soon as it exits (a 30 s sleep left fetch up to 30 s behind a finished detection)
+                proc.wait(timeout=30)
+            except subprocess.TimeoutExpired:
+                pass
             lines = [l for l in open(logp).read().splitlines() if l.startswith("frame ")]
             if lines:
                 m = re.search(r" t=(\d+)s", lines[-1])
@@ -353,10 +364,10 @@ def ocr(W):
         done |= set(open(p).read().split())
     if not crops - done:
         return
-    log(f"OCR on {len(crops - done)} crops (4 workers)")
-    env = dict(os.environ, PYTHONHASHSEED="0")
-    ps = [subprocess.Popen([PY, f"{HERE}/ocr_worker.py", full, "1000000000", "1", str(k), "4"], env=env,
-                           stdout=open(f"{full}/ocr_log_{k}.txt", "w"), stderr=subprocess.STDOUT) for k in range(4)]
+    log(f"OCR on {len(crops - done)} crops ({OCR_WORKERS} workers)")
+    env = dict(os.environ, PYTHONHASHSEED="0", OCR_THREADS=str(OCR_THREADS))
+    ps = [subprocess.Popen([PY, f"{HERE}/ocr_worker.py", full, "1000000000", "1", str(k), str(OCR_WORKERS)], env=env,
+                           stdout=open(f"{full}/ocr_log_{k}.txt", "w"), stderr=subprocess.STDOUT) for k in range(OCR_WORKERS)]
     for p in ps:
         p.wait()
 
@@ -376,10 +387,10 @@ def ocr_alongside(W):
         return []   # detection already done: ocr() after it does the work
     os.makedirs(f"{full}/crops", exist_ok=True)
     open(logp, "a").close()
-    log("OCR: 4 workers alongside detection")
-    env = dict(os.environ, PYTHONHASHSEED="0")
-    return [subprocess.Popen([PY, f"{HERE}/ocr_worker.py", full, "1000000000", "1", str(k), "4"], env=env,
-                             stdout=open(f"{full}/ocr_log_{k}.txt", "a"), stderr=subprocess.STDOUT) for k in range(4)]
+    log(f"OCR: {OCR_WORKERS} workers alongside detection")
+    env = dict(os.environ, PYTHONHASHSEED="0", OCR_THREADS=str(OCR_THREADS))
+    return [subprocess.Popen([PY, f"{HERE}/ocr_worker.py", full, "1000000000", "1", str(k), str(OCR_WORKERS)], env=env,
+                             stdout=open(f"{full}/ocr_log_{k}.txt", "a"), stderr=subprocess.STDOUT) for k in range(OCR_WORKERS)]
 
 
 def propose_periods(W):
@@ -442,10 +453,20 @@ def set_config(W, **kw):
         json.dump(cfg, open(p, "w"))
 
 
+def _detection_end(W):
+    """When process.py wrote its DONE (log.txt's last write), or None while it runs."""
+    logp = f"{W}/full/log.txt"
+    if os.path.exists(logp) and "\nDONE" in "\n" + open(logp).read():
+        return os.path.getmtime(logp)
+    return None
+
+
 def scoreboard_alongside(W):
-    """The scoreboard's pass over the video (3-5 minutes on its own) in a thread while process.py detects, its
-    decode at below-normal priority so it only takes CPU detection leaves idle. Returns the thread to join before
-    OCR; if the scan fails, scoreboard_sheet scans again."""
+    """The scoreboard's pass over the video in a thread while process.py detects. On the GPU where it can
+    (scoreboard.gpu_ok; SCOREBOARD_CPU=1 to not), at normal priority: NVDEC decodes and only the board comes back, so
+    the scan stops competing with detection and OCR for the CPU. Else on the CPU at below-normal priority, as before,
+    where it took 18-28 minutes of a fetch from Nov 2 to 17, ending 5-12 minutes after detection (3-5 alone).
+    Returns the thread for scoreboard_wait; if the scan fails, scoreboard_sheet scans again."""
     if os.path.exists(f"{W}/scoreboard.npy"):
         return None
     import threading
@@ -453,14 +474,30 @@ def scoreboard_alongside(W):
     def run():
         t0 = time.time()
         try:
-            scan(W, low_priority=True)
-            log(f"scoreboard: scanned in {(time.time() - t0) / 60:.1f} min alongside detection")
+            how = scan(W, low_priority=True)
+            th.ended = time.time(); det = _detection_end(W)
+            took = f"scoreboard: scanned in {(th.ended - t0) / 60:.1f} min ({how})"
+            if det is not None and det < t0:   # a fetch run again for the scan alone (detection done earlier)
+                log(f"{took}; detection was already done")
+            elif det is None or det >= th.ended:
+                log(f"{took} alongside detection, which is still running")
+            else:
+                log(f"{took} alongside detection, ending {(th.ended - det) / 60:.1f} min after it")
         except Exception as e:
             log(f"scoreboard scan alongside detection failed ({e!r})")
     log("scoreboard: one pass over the video, alongside detection")
     th = threading.Thread(target=run, daemon=True)
+    th.ended = None
     th.start()
     return th
+
+
+def scoreboard_wait(th, W):
+    """Join the scan; one that ended before detection says by how much."""
+    th.join()
+    det = _detection_end(W)
+    if th.ended and det and th.ended < det:
+        log(f"scoreboard: the scan ended {(det - th.ended) / 60:.1f} min before detection")
 
 
 def scoreboard_sheet(W):
@@ -503,7 +540,7 @@ def cmd_fetch(a):
     workers = ocr_alongside(W)
     detect(vid, W, a.limit)
     if board:
-        board.join()
+        scoreboard_wait(board, W)
     for p in workers:
         p.wait()
     ocr(W)
