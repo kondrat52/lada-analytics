@@ -17,17 +17,24 @@ ones: the selection isn't padding, so don't trim it to save reviewers.
 `run_game.py review $W` fills the template once per chunk of three sheets (`$W/rev_pN/prompt_cNN.md`) with the roster
 minus absent players, our jersey, the goalie line ("G" for any goalie's row, ours or theirs, which the solve drops),
 each period's empty card rows (a pointer to another period's card, or "probably did not play" under 30 reads, "may
-have played" above), the opponents' look (`--opp`, default by our jersey), the notes (`--note`, repeatable; both kept
+have played" above, unless the nameplates read with the number are someone else's: then whose, an opponent's or a
+teammate's), the opponents' look (`--opp`, default by our jersey), the notes (`--note`, repeatable; both kept
 in `$W/review.json`, so a note is removed there), a private scratch folder per reviewer, and the `zoom.py` command
-for a closer look. It lists at most 20 chunks per call (`--batch`; 17 at once is the most seen to work) and prints
-what the prompts say beyond the template. Three sheets per reviewer and one CSV per sheet, written as soon as that
-sheet is decided, are deliberate: bigger chunks stalled before writing anything.
+for a closer look. The roster names a number the sheet gives another surname as the briefs do ("#54 PFEIFER
+(roster.json: SEMENOV)"). It lists at most 16 chunks per call (`--batch`): the harness runs 20 subagents at once,
+and up to four goal and penalty checkers may still be running (on Beerteam's Nov 14 game 3 of 20 reviewers were
+refused). It prints what the prompts say beyond the template. Three sheets per reviewer and one CSV per sheet,
+written as soon as that sheet is decided, are deliberate: bigger chunks stalled before writing anything.
 
 `check $W` parses every `review_*.txt` exactly as solve does and lists the rows without an answer, the files whose
-notes mention a failed image read, and the numbers reviewers gave that are off the roster or absent; `--wait` first
-blocks until the last launch is answered (540 s at most). A reviewer that reported failed loads gets a fresh one:
-move its file to `old_review_sNNN.txt` first (solve and check read only `review_*.txt`). A chunk `review` lists
-again while its reviewer is still writing is marked: relaunch it only once that reviewer has reported back.
+notes mention a failed image read, and the numbers reviewers gave that are off the roster or absent. `--wait` blocks
+until the launch is answered, 180 s pass with no new answer or zoom crop (`--quiet`: over 1,355 reviewer
+transcripts, scratch writes counted as signs of life, no launch went quiet longer than 102 s), or 540 s, then names
+the prompts that never answered (not launched, or dead) in `$W/review_dead.txt` (each wait writes it afresh), and
+the next `review` lists them marked to launch again, unless their reviewer has written since. A reviewer that reported failed loads
+gets a fresh one: move its file to `old_review_sNNN.txt` first (solve and check read only `review_*.txt`). A chunk
+`review` lists again while its reviewer is still writing is marked: relaunch it only once that reviewer has reported
+back.
 
 ## `review_zfix.txt`
 
@@ -63,7 +70,10 @@ because the clock kept running), our net, the bench and box, the period's own ro
 answer; `gaps --apply` merges the spans, keeps every answer in `scratch/gaps/answers.json`, names the items left
 unanswered (an entry it can't read counts as none; the next round lists them again), turns leads into windows, and
 prints a kill reported as 5 on 5 with `!!` and the two steps to take, without applying it. It saves before it renames
-the fixes files, so a run that fails can be repeated. Later rounds show the spans already merged near each window and
+the fixes files, so a run that fails can be repeated. A later round's span cuts the seconds it contradicts out of an
+earlier one; `answers.json` keeps what is left (`now`, `trimmed`), so the merged lines show the current seconds. Two
+checkers of the same round who disagree get a `!!` line and both spans stay (the tracks decide those seconds) until
+`span` settles it. Later rounds show the spans already merged near each window and
 skip what was settled (a window answered "ok" only while its seconds and its count on the ice are the same).
 A window that the sheet's cleaning of hand-made spans explains (an `on` span under the 20 s minimum shift dropped, an
 `off` rest under 15 s joined) is reported as settled, not briefed.
@@ -80,7 +90,9 @@ ones.
 - **A late arrival looks absent.** BW's Sep 20: #55 Lisenko arrived mid-2nd, her P1 card row was empty and OCR had read
   her 29 times (a ponytail hides the number), so 30+ reviewers were told she hadn't played; one caught the LISENKO
   nameplate. Keep anyone LADA's lines list unless every card and the reads are empty. Solve's shift-seconds line is
-  the cleanest test of a missing player (BW's Oct 11: the other ten filled 102% of every period).
+  the cleanest test of a missing player (BW's Oct 11: the other ten filled 102% of every period). The lineup check
+  names a skater the sheet marks playing who has no shift; one who didn't play is marked absent, or it keeps naming
+  him (BW's Oct 11 #55, decided by hand and never marked absent, is the one published game it names).
 - **A non-player's number soaks up partial reads.** Oct 3: "3" read off 43, 53 and 35 labeled ~35 rows as absent #3 —
   `absent` is for that, before prepare. The sheet can mark such a player playing: Doofers' Oct 25 #6 Zaychikov had 670
   reads of "6", all partials of 26/46/61/76, no nameplate read, and 3:10 after the first solve. `absent` set after the
@@ -102,13 +114,16 @@ ones.
   filled 95-97% by stretching the other ten over his minutes: 18 of its 20 short-handed windows touched his shifts, but
   they covered 12 of his 15 shifts and 731 of his 2,026 s, so the lineup checkers alone would have found a third of him. Colour can't trace him from the video (dark green reads as black at
   the far boards; a count of dark figures on the ice was too noisy). What worked: seven by-eye tracers (halves of the
-  1st and 2nd, thirds of the 3rd; Opus at high, 12 to 17 minutes each, 33.7 M tokens in all by the review session's
-  cumulative count) on a brief asking for every step through the bench
-  door, then `span on` for each shift AND `span off` for each stretch between (with no tracks nothing else holds him
-  off: the solver had him on 96 s too long), a `--note` for the reviewers and checkers, and a line to the goal and
-  penalty checkers already running. The lineup loop then ended in one round. A span for a player with no labeled
-  track was dropped silently until `run2.py` learned to solve him (it now warns when a span's player is left out). The
-  brief and answers are in that game's `green54/`.
+  1st and 2nd, thirds of the 3rd; Opus at high, 11.7 to 17.1 minutes each, 33.7 M tokens in all, cumulative) on a
+  brief asking for every step through the bench door, a `--note` for the reviewers and checkers, and a line to the
+  goal and penalty checkers already running. The lineup loop then ended in one round. Now `run_game.py trace $W <n>
+  --look "..."` writes those briefs (`pipeline/trace_prompt.md`, parts of at most 600 s, `--part`) and `trace --apply`
+  adds the `on` spans; the solve holds such a player off outside them (`run2.py`), so no `off` spans (that game
+  needed 17 by hand: without them the solver had him on 96 s too long). The seven answers fed to `trace --apply` give
+  the same 15 shifts and the published solve. The lineup check names him at the first solve when the sheet marks him
+  playing; without a sheet it flags a game with one of ours short in 15+ s windows over 15% of it, filled under 98%
+  (only this game, 23% at 96.8%, among the 48 solved without spans). A player left out of a solve is named with why
+  and his spans. The brief and answers are in that game's `green54/`.
 - **Opponents with our numbers.** Night Owls wore white #11, #35 and #43 against our light blue; on Doofers' Nov 8
   Rainucks' navy #38 and #46 passed the white test, their #38 filled our #38's P3 card row, and the solver gave most
   of Tislenok's P3 shifts to others (a checker found them by his look, the only one of ours in long plain black

@@ -48,7 +48,20 @@ to ready 8. A median game was 142 M tokens: the lineup checkers 28%, the reviewe
 goal and penalty checks 16%. On an M-series Mac it takes a few hours more, where detection alone is about two hours.
 YouTube's bot block has added anything from nothing to hours: three of the four games fetched on Oct 31 needed the
 user's browser cookies (`run_game.py download --cookies firefox`, which the user runs), and one waited nearly three
-hours for the block to lift; none of the 13 fetches since Nov 2 met it.
+hours for the block to lift; Beerteam's Nov 14 video met it on Nov 19, and the user's cookies line took 1.6 minutes.
+
+The first game under the Nov 18 rework, Beerteam's Nov 14 (processed Nov 19), is one game, with one unusual skater:
+our #54 skated in a dark green jersey the tracker can't see and was traced by eye, about 22.5 minutes and 39.4 M
+tokens of it (seven tracers 33.7 M, the main session 5.7 M). Against the medians above, in parentheses: 129.7 minutes
+to "ready to publish", about 107 without that skater (109); 36.9 active and 91.0 waiting (28 and 77); fetch 19.6
+with its 1.6-minute download (29); 9.5 minutes waiting on reviewers, 7.2 of them on 3 reviewers the harness refused (6);
+1.05 on the goal and penalty checkers, run beside prepare and the review (12); the lineup loop one round, 3
+checkers, 11 spans and 7.4 M tokens (two rounds and 37 M); the clips 51 minutes and about 31 M tokens from the first
+clip command to the second checker's return, with 2 checker rounds and 3 hand-briefed helpers (4 minutes of waiting
+on clips); 134.2 M tokens in all, 94.8 M without the untracked skater and 89.8 M also without the reviewers' A/B
+(142 M); the main session 30.4 M, the review 4.6% of it (40.9 M and 39%); 49 subagents; and one clip the user
+complained about, their goal 2, "doesn't have actual scorer in the slow-mo replay" (a clip complaint in 7 of the 14
+games).
 
 On a Windows PC with an NVIDIA GPU, detection runs on CUDA and should be much faster. To set one up, run this in
 PowerShell; `WINDOWS.md` has the details and the steps by hand:
@@ -106,16 +119,18 @@ camera a median 27.5, with about 10 bench pieces a game), and no measured change
 What they contribute, measured by solving every archived game without its hand-made spans (`regress.py
 --strip-spans`): the solver alone leaves a median of 7 lineup windows and 7.3 minutes of ice time per game moved
 against the published sheet, and inside the checkers' `off` spans it has the player on for 90% of the seconds (the
-56% of Nov 1 was dragged down by three long spans for players who had left). The regress baseline on Nov 18: 45 of
-47 archived games identical, the same two Blue Wings games as since Oct 22.
+56% of Nov 1 was dragged down by three long spans for players who had left). The regress baseline on Nov 19: 46 of
+48 archived games identical, the same two Blue Wings games as since Oct 22.
 
 Fetch, on the 13 full fetches made with the Nov 2 code: 24.3 to 38.0 minutes, median 28.6; downloads 1.4 to 3.9
 (one of 14.5 with no error logged), and no bot block or cookies on any of them; the clock read in 1.1 to 1.4. Since
 Nov 19 the board scan decodes on the GPU and OCR runs in six single-threaded workers (items 1 and 4): TK's Nov 15
 video (204k crops), fetched again from its download on a quiet machine, took 18.5 minutes from the stages' start to
 done, against 25.3 with the code before (27.2 in its own fetch log). On other games the scan's part should be what it
-led OCR by on the 13 fetches (0.6 to 6.7 minutes, median 5.0), and the OCR part smaller with fewer crops; the next
-fetch logs will say.
+led OCR by on the 13 fetches (0.6 to 6.7 minutes, median 5.0), and the OCR part smaller with fewer crops. The first
+fetch since, Beerteam's Nov 14 (about 116k crops): 18.0 minutes after a 1.6-minute download, the board scan 5.7 on
+the GPU and ending 10.4 minutes before detection, the last of the six OCR workers 14 s after detection (fetch now
+logs that line).
 
 1. **OCR alongside detection: made Nov 2, delivered in part.** `run_game.ocr_alongside` starts the workers (four
    until Nov 19, six since) with detection; they read each crop as it lands (`ocr_worker.py` leaves the newest 2 s of crops alone). On full games
@@ -206,9 +221,17 @@ fetch logs will say.
    answers and the sheet (our scorers always the sheet's), matches its entries by the sheet's numbers so hand edits and
    deletions stay, and the goal checker's on-ice reads join the lineup check.
 8. **Reviewers in batches with one wait: made Nov 18.** Each reviewer's hand-back woke the main session, 22 to 132
-   times a game, which made the review 39% of the main session's tokens; `review` now lists at most 20 chunks and
-   `check --wait` blocks until they are answered. `check` lists numbers reviewers gave that are off the roster;
-   reviewers get `zoom.py` (106 of 198 in five sessions had written their own crop scripts); "G" is any goalie.
+   times a game, which made the review 39% of the main session's tokens (4.6% on Beerteam's Nov 14, in two
+   batches); `review` lists a batch and `check --wait` blocks until it is answered. `check` lists numbers reviewers
+   gave that are off the roster; reviewers get `zoom.py` (106 of 198 in five sessions had written their own crop
+   scripts); "G" is any goalie. **Batches of 16 and a wait that gives up: made Nov 19.** On Beerteam's Nov 14 3 of 20
+   reviewers were refused (the harness runs 20 subagents at once, and three checkers were running) and `check --wait`
+   sat out its 540 s on them, 7.2 of the 9.5 minutes spent waiting on reviewers. `review` now lists 16 (`--batch`),
+   and `check --wait` returns once the batch is answered, after 180 s with no new answer or zoom crop (`--quiet`), or
+   at 540 s, naming the prompts that never answered so that the next `review` lists them again. Reviewer durations
+   from 1,355 transcripts: the 1,301 on Opus 5.5 a median 129 s, at most 438; the 51 on Fable 5.1 at high effort,
+   all on one game (TK's Nov 1), a median 267 s, at most 599; with scratch writes counted as signs of life no launch
+   was quiet for more than 102 s, hence 180.
 9. **Gap briefs with an answer per item: made Nov 18.** Every window and bench piece needs an answer, `gaps --apply`
    names the unanswered, leads become the next round's windows, a kill reported as 5 on 5 is printed and not applied,
    each brief says whether the period's clock stops at whistles (the 3rds) or runs through stoppages (the 1sts and
@@ -224,40 +247,92 @@ fetch logs will say.
     a clip that fails doesn't stop the rest.
     The user had complained about a clip in 7 of the 14 games, each one the session's own look had passed. On the
     archives the check flags the first cuts of TK Nov 1 #3, R Nov 2 #10, Y Nov 2 #4, BT Nov 7 #1 and DF Nov 15 #5,
-    and 6 of the 87 accepted goal clips (all early-net, as their sheets show).
+    and 6 of the 87 accepted goal clips (all early-net, as their sheets show). **The scorer in the replay: made Nov
+    19.** Both November complaints (Beerteam's Nov 14 goal-2, Blue Wings' Nov 7 goal-11) were a replay on someone
+    else while the sheet's scorer shot from the far point or the far boards. The goal brief now has the checker find
+    the sheet's scorer first; `shot` is his last touch and `start` where the play began; the penalty brief asks for
+    `spot`; new dry-run checks (`shooter-edge`, `scorer-jump`, `player-jump`, `spot-track`); the clip checker's
+    problems carry a kind, its rounds are numbered, and `clips --answers` sorts them. On the last approved cut of 221
+    clips in 30 games 16 warned before and 20 after, and both bad first cuts (0 warnings before) warn now.
 11. **The command line: made Nov 18.** Git Bash's `/c/...` paths work everywhere; `sheet` works before fetch for every
     team and keeps its ids; `absent --suggest` drops shared-surname pieces and shows what was read alongside a number;
     `span` writes a hand-made span with its reason into `hand_spans.txt`; `publish` builds the header line (the same
     as the typed one on 40 of 53 games), adds a new opponent, writes the notes from `--notes-file`, prints the table
     and opens the page on a first publish. `archive` now also keeps `hand_spans.txt`, `clip_args.json`,
-    `clips_check.json` and the checkers' briefs and answers under `scratch/goals`, `gaps` and `clips`.
+    `clips_check.json` and, since Nov 19, the text files anywhere under `scratch/` (`.md`, `.json`, `.csv` and `.txt`
+    up to 10 MB; it had kept only `scratch/goals`, `gaps` and `clips`, and lost Beerteam's Nov 7 goal-1 trace), and
+    it goes into no linked folder or junction there. **`title <link>`: made Nov 19.** It reads the video's title from
+    oEmbed, which the bot check doesn't block, and says the date, team, opponent's code and work folder.
 12. **Gates for the collapse window: measured Nov 18, not made.** Of the seven stretches briefed by hand from Nov 1 to
     15, three had missing shifts; gates on the player's number reads in the gap, his linemates playing on, or
     unlabeled pieces of ours separated those from the rest only by a hair (one read; 0.97 against 0.92 of the game's
     rate; 0.50 against 0.49), so every collapse gets a window.
-13. **The reviewers' effort level: measured Nov 18, open.** The 8 games reviewed at high effort against the 5 at xhigh:
-    1.0 against 3.2 minutes and 0.32 M against 1.41 M tokens per reviewer, a game at 117 M against 145 M tokens and 99
-    against 125 minutes, and 15.8% against 7.2% of rows answered "?". The games differ and nobody checked which
-    answers were right, so it is an open question, not a recommendation. Since Nov 18 the skill launches reviewers
-    on Opus 5.5 at medium effort and the checkers on Opus 5.5 at high, as a trial (subagents were about 70% of a
-    game's tokens on the session's own model): the first game run that way reviews three chunks twice, on Opus and
-    on the session's model, and its counts go here. Beerteam's Nov 14 game (Nov 19): 27 Opus reviewers at medium
-    left 60 of 619 rows "?" (9.7%; 13.3%, 11.8% and 5.0% by period), in 33 to 117 s and about 60k tokens each. On the
-    three chunks done twice (the first of each period, 72 rows) Opus left 7 "?" and the session's model (Fable 5.2 at
-    high) 6; both gave a number at high or med on 60 rows and no number differed; Opus reported a switch on 12 rows,
-    the session's model on 21 (three of them a "?" start that Opus had named outright). Tokens, two measures: by the
-    completion notices (an agent's final context) a chunk was 56-66k on Opus and 78-102k on the session's model and
-    a reviewer about 60k; by the cumulative count this TODO uses, as the Nov 19 review session measured it from the
-    transcripts, a reviewer was 0.66 M (27.8k a row, against 19.6k at high and 64.7k at xhigh on the session's
-    model) and a chunk 0.62-0.74 M on Opus against 1.04-1.62 M. One game, and nobody checked the switches: still
-    the user's call.
-14. **A later checker contradicting an earlier round's span: found Nov 19, open.** `gaps --apply` adds the later span
-    and keeps the earlier one, so both stay in `periods.json` and in later briefs' "merged" lines, and the solver adds
-    the same large cost to both states for those seconds, which leaves them to the tracks. On the redo of Y's Sep 21
-    round 1 had #29 off 2458-2478 and #12 on 2458-2467; round 2 saw the change at the bench door 4-5 s later (#29 on
-    2458-2463, #12 off 2458-2462). The solve came out as round 2 saw it (#29 off and #12 on at 2462) and round 3
-    confirmed it, but `periods.json` holds both pairs.
+13. **The reviewers' effort level and model: measured Nov 18 and 19, open.** The 8 games reviewed at high effort
+    against the 5 at xhigh, on the session's model: 1.0 against 3.2 minutes and 0.32 M against 1.41 M tokens per
+    reviewer (19.6k against 64.7k a row), a game at 117 M against 145 M tokens and 99 against 125 minutes, and 15.8%
+    against 7.2% of rows answered "?". The games differ and nobody checked which answers were right, so it is an open
+    question, not a recommendation. Since Nov 18 the skill launches reviewers on Opus 5.5 at medium effort and the
+    checkers on Opus 5.5 at high, as a trial (subagents were about 70% of a game's tokens on the session's own model).
+    The first game run that way, Beerteam's Nov 14 (Nov 19): 27 Opus reviewers at medium, 0.5 to 1.9 minutes and
+    0.66 M tokens each (0.24 to 0.92 M), 27.8k a row, left 60 of 619 rows "?" (9.7%; 13.3%, 11.8% and 5.0% by
+    period). The first chunk of each period (72 rows) was reviewed again on the session's model (Fable 5.2 at high):
+    Opus left 7 "?", the session's model 6; of the rows where both were confident (60 by the session's count, 62 by
+    another) none differ; Opus reported a switch on 12 rows, the session's model on 21 (three of them a
+    "?" start that Opus had named outright); a chunk took 0.62 to 0.74 M tokens on Opus against 1.04 to 1.62 M. So on
+    the same chunks Opus at medium was cheaper, while its 27.8k a row on this game is more than the 19.6k of the high-
+    effort games of Nov 18, which were other games. Token figures here are cumulative, by the Nov 18 method (Opus and
+    Fable tokens counted alike), never an agent's final context. One game, and nobody checked the switches: still the
+    user's call.
+14. **A later checker contradicting an earlier round's span: found Nov 19, fixed Nov 19.** `gaps --apply` added the
+    later span and kept the earlier one, so both stayed in `periods.json` and in later briefs' "merged" lines, and the
+    solver added the same large cost to both states for those seconds, which left them to the tracks. On the redo of
+    Y's Sep 21 round 1 had #29 off 2458-2478 and #12 on 2458-2467; round 2 saw the change at the bench door 4-5 s
+    later (#29 on 2458-2463, #12 off 2458-2462). Fixed Nov 19: the newest span wins (`trim_opposite`): `gaps --apply`,
+    `span`, `trace --apply`, and for a kill or a boxed player's `off` `pk --write` and `highlights --write`, cut its
+    seconds out of the player's opposite spans and print it, and `answers.json` and `hand_spans.txt` keep what is
+    left; two checkers of one round who disagree get a `!!` line and both stay. The Y Sep 21 replay keeps only round
+    2's pair, and the solve then has #29 off at 2463 per that checker, 1 s later than the published 2462.
 15. **Read counts on a republish: found Nov 19, open.** `publish` recounts `fun.name_reads` and `pipeline.reads` from
     the folder's OCR against today's `roster.json` (`reads.py` matches names against it), so an old game's read counts
     drift with every roster change since its first publish: on the redo of Y's Sep 21, #12 106 to 105, #72 86 to 82
     and the reads 5142 to 5149, with `reads.py` unchanged since Oct 16. The page's fun stats show them.
+16. **Three more clip checks: measured Nov 19, not made.** An empty-net check on the replay fired on 22 approved
+    clips; `EMPTY_N` 3 instead of 2 (the early-net check's "all but empty") gave 5 false alarms; the three label
+    checks as counted warnings would have flagged 28 approved clips, since the solver's labels are often wrong at a
+    goal while the spot is right, so they stay `clip note:` lines. Not caught by any dry-run check: a checker's shot
+    on the wrong player (Blue Wings' Nov 7 goal-11's second cut); only the briefs address that.
+17. **An absent player's surname in the name reads: made Nov 19; the tie on the full name: measured, not made.**
+    `absent --suggest` now compares the sheet's surnames with `roster.json`'s (after transliteration) as well as the
+    numbers, and prints the nameplates read on each played or check number's crops; the review card's line for a
+    number with no card row says whose nameplates its reads carry. `reads.RIVALS`: a plate that scores strictly
+    higher against an absent player's surname than against every playing player's is nobody's. Of 137,586 name reads in the 48 folders it drops 242 in 28 games and changes no
+    owner; letting absent names join the margin instead would have dropped 3,111, nearly all of them players' own
+    reads. On Beerteam's Nov 14 PIZANO's 70 reads had gone to #27: no piece, review row or shift was affected (the
+    crops are not on our tracks), but the published page's name-read count for #27 says 546 where 476 are his (item
+    15 has why a republish moves it). Not made: breaking a tie between a playing and an absent surname on the
+    full-name ratio (DUTSENKO is DOTSENKO, not BELOUSENKO), which would let "about as well" count; it changes the
+    scoring for every game.
+18. **A guest's LADA id: found Nov 19, open (the user's call).** `"guests": {"54": "Pfeifer"}` in `game.json` holds a
+    name only, so David Pfeifer's LADA id 20433 (no number on LADA's Beerteam roster) is nowhere in the feed: his row
+    has `lada_player_id: null`. Where a guest's id goes is a question of the feed's format, not of the pipeline.
+19. **What the next game must prove: open.** No game video was on disk during the Nov 19 fix round, so no clip was
+    cut and no checker read the new briefs. Untested on a real game: the goal checker's scorer-first search and
+    `start`, the clip checker's answer kinds and `clips --answers` on its new answers, the penalty checker's `spot`
+    and the clip that follows it, and `trace` (its briefs, `pipeline/trace_prompt.md`, went to no tracer; `trace
+    --apply` was fed the Nov 14 tracers' answers and gave the published solve). The next game's notes should say how
+    each did.
+20. **A skater of ours the tracker can't see: made Nov 19.** Beerteam's Nov 14 #54 in dark green had no track; 15
+    `on` spans for him were dropped without a word, then he came out 96 s too long until 17 hand-made `off` spans
+    held him. Now a player known only from `on` spans (under 20 s of labeled track) is held off wherever neither an
+    `on` span nor a labeled piece of his is (`run2.py`): Beerteam's game with the 17 `off 54` spans deleted solves
+    identical to the published sheet. A player still left out of a solve is named with why and his spans. The
+    lineup check's first line names a roster skater the sheet has playing who has no shift (the sheet's name where
+    it differs, "#54 PFEIFER (roster.json: SEMENOV)"); on the published states it fires once, on Blue Wings' Oct 11
+    #55 Lisenko, whom the sheet marks playing and the session decided hadn't played without marking her absent.
+    Without a sheet, a game with one of ours short in 15+ s windows over 15% of it while filled under 98% is flagged
+    (`SHORT_SHARE`, `SHORT_FILL`): of the 48 archived games solved without their spans only Beerteam's Nov 14 passes
+    both (816 s, 23.0%, at 96.8%); next come Doofers' Nov 8 (12.2%, 97.5%) and Beerteam's Nov 7 (10.7%, 98.4%), each
+    a player lost for one period, and every other game is at 7.7% or less and filled 98.9% or more. `trace` writes
+    the by-eye briefs for such a player (`pipeline/trace_prompt.md`, parts of at most 600 s) and `trace --apply` adds
+    his shifts as `on` spans: the seven Nov 14 tracer answers give the same 15 shifts (2,026 s) and the published
+    solve.

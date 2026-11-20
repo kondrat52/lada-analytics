@@ -43,10 +43,10 @@ $PY pipeline/run_game.py download "https://youtu.be/VIDEO_ID" $W --cookies firef
 ```
 
 YouTube's bot block refuses every client alike. It has cleared by itself after 25 and 50 minutes (Oct 19) and not in
-three hours (Beerteam's Oct 25 video, Oct 31, when three of four games needed cookies); none of the 13 fetches since
-Nov 2 met it. During a block oEmbed still answers with the title (`curl "https://www.youtube.com/oembed?url=<url>&format=json"`),
-and a background loop that runs `$PY -m yt_dlp -F <url>` every 5 minutes and starts fetch once format 313 is listed
-gets through without cookies. Reading the browser's cookies is the user's to run.
+three hours (Beerteam's Oct 25 video, Oct 31, when three of four games needed cookies); Beerteam's Nov 14 video met
+it on Nov 19, and the user's cookies line took 1.6 minutes. During a block oEmbed still answers (`run_game.py title
+<url>`: the date, the team, the opponent's code and the work folder); the fix is the user's `--cookies firefox`
+line, not waiting. Reading the browser's cookies is the user's to run.
 
 Every rink in `rink.py` has its usual frame `size` (Renton's new camera 3840x1920, Kirkland 3840x1536), and `fetch`
 scales a smaller video of the same view up to it (`run_game.fit_size`, nvenc's p1 preset on the PC: 5 to 7 minutes).
@@ -113,7 +113,8 @@ nohup $PY pipeline/process.py $W/video.webm $W/full 8 > $W/full/log.txt 2>&1 &
 ## 4. Read numbers (10–15 min)
 
 ```sh
-for k in 0 1 2 3; do PYTHONHASHSEED=0 $PY pipeline/ocr_worker.py $W/full 1000000000 1 $k 4 > $W/full/ocr_$k.log 2>&1 & done
+# as fetch runs it on the PC: six workers of one onnxruntime thread each (the Mac: OCR_THREADS=2, k 0 to 3, 4 parts)
+for k in 0 1 2 3 4 5; do OCR_THREADS=1 PYTHONHASHSEED=0 $PY pipeline/ocr_worker.py $W/full 1000000000 1 $k 6 > $W/full/ocr_$k.log 2>&1 & done
 ```
 
 ## 5. Find the periods and the nets
@@ -148,6 +149,7 @@ so publish prefers the board's.
 
 ```sh
 $PY pipeline/run_game.py goals $W --brief        # the goal and penalty checkers' briefs, W/scratch/goals/prompt_*.md
+$PY pipeline/run_game.py goals $W --brief --only 6   # one goal's brief (the sheet's goal 6): prompt_g6.md, answer g6/goals.json
 $PY pipeline/run_game.py pk $W --write           # our penalty kills from the sheet and the clock, into periods.json
 #   (not a ROUGH one, in a period without a clock read, unless --rough; not one the penalty checker has answered)
 $PY pipeline/run_game.py highlights $W --write   # once the checkers have answered: highlights.json, their kills
@@ -155,12 +157,21 @@ $PY pipeline/run_game.py span $W ps 3724 3765 --note "penalty shot against: all 
 $PY pipeline/run_game.py span $W extra 3666 3754 --note "goalie pulled"
 $PY pipeline/run_game.py span $W off 18 2410 2442 --note "sat at the bench, his track ran on"   # on|off PLAYER T0 T1
 $PY pipeline/run_game.py span $W --list          # every hand-made span and why (W/hand_spans.txt)
+$PY pipeline/run_game.py trace $W 54 --look "dark green jersey, white helmet, green socks"   # tracer briefs, W/scratch/trace/
+$PY pipeline/run_game.py trace $W 54 --apply     # the tracers' shifts.json files as `on` spans
 ```
 
-Each brief is one subagent's whole job; the answers land in `W/scratch/goals/pN/goals.json` and `pens/pens.json`.
-`highlights` prints what doesn't add up before `--write`. `periods.json` per period then holds `pk` (`{start, end,
-player}`), `ps` and `extra` (`{start, end}`) and the `on`/`off` spans (`{start, end, player}`); `span` is the hand
-writer for the last four, so each has a logged reason.
+Each brief is one subagent's whole job; the answers land in `W/scratch/goals/pN/goals.json` and `pens/pens.json`
+(a `gN/goals.json` wins over the period's answer for its goal). After a corrected sheet run `sheet $W` first:
+`highlights` finds each goal answer's goal by period and clock, so an inserted goal doesn't shift the others' answers,
+and it says when the numbers moved. `highlights` prints what doesn't add up before `--write`; `pk --write` and
+`highlights --write` apply each proposal or answer once (`scratch/goals/applied.json`), so a hand edit to a kill
+stays. `periods.json` per period then holds `pk` (`{start, end, player}`), `ps` and `extra` (`{start, end}`) and
+the `on`/`off` spans (`{start, end, player}`); `span` is the hand writer for the last four, so each has a logged
+reason. The newest span wins: an `on` or `off` cuts its seconds out of the player's opposite spans, and a kill or a
+boxed player's `off` out of his `on` spans, and the command that adds it prints what it cut. `trace` is for one of
+ours the tracker can't see (another colour): one subagent per part of at most 600 s (`--part`); the solve holds a
+player known only from `on` spans off outside them.
 
 ## 7. Track each period
 
@@ -185,12 +196,15 @@ picks it up.
 
 ```sh
 $PY pipeline/run_game.py review $W [--opp "white jerseys"] [--note "#55 LISENKO: a ponytail hides her number"]
-$PY pipeline/run_game.py check $W --wait   # up to 540 s until the batch is answered (Bash timeout 600000 ms)
+$PY pipeline/run_game.py check $W --wait   # until the batch is answered, 180 s pass with no new answer, or 540 s (Bash timeout 600000 ms)
 ```
 
 `review` fills `pipeline/review_prompt.md` once per chunk of 3 sheets into `$W/rev_pN/prompt_cNN.md` (roster minus
-absent players, jersey, goalie, empty roster-card rows, the opponents' look, your notes) and lists up to 20 to launch
-(`$W/review_todo.txt`). Each is one general-purpose subagent told to read its prompt file and do what it says; all of
+absent players, jersey, goalie, empty roster-card rows, the opponents' look, your notes) and lists up to 16 to launch
+(`$W/review_todo.txt`; `--batch`: the harness runs 20 subagents at once, and up to four goal and penalty checkers may
+be running). `check --wait` returns when the launch is answered, after 180 s with no new answer or zoom crop
+(`--quiet`), or at 540 s, and names the prompts that never answered (`$W/review_dead.txt`), which the next `review`
+lists marked to launch again. Each is one general-purpose subagent told to read its prompt file and do what it says; all of
 a batch at once. Each reviewer writes one `review_sNNN.txt` per sheet, CSV with the header
 `row_id,player,confidence,switch_time,player2,confidence2,note`. `check` also lists numbers reviewers gave that are
 off the roster or absent. The skill's `references/review.md` has the relaunch and re-check protocol and
@@ -222,13 +236,16 @@ was on in each gap and how much of it was live play, flagged goals, shifts of 5+
 ```sh
 $PY pipeline/run_game.py clips $W <game-id> --dry-run    # every clip in highlights.json: the camera path, checked
 $PY pipeline/run_game.py clips $W <game-id>              # cut into the team site's games/<id>/clips/, contact sheets
+$PY pipeline/run_game.py clips $W <game-id> --answers    # the clip checker's answers: what to re-cut, what to tell
 $PY pipeline/run_game.py clipsheet <clip.mp4> out.jpg --from 20 --to 26 --step 0.25    # any stretch of a clip, tiled
 ```
 
-`$W/clip_args.json` overrides one clip's arguments (`t0`, `t1`, `focus`, `shot`, `pass`, `replay_from`, `tracks`);
-`run_game.py clip` cuts a single clip by hand. `clips` writes `W/scratch/clips/prompt.md` for the subagent that
-checks every contact sheet; a clip that fails doesn't stop the rest, and `clips` exits 1 with the `--only` line that
-retries it. `run_game.py frames $W out.jpg --view rink|left-net|right-net|bench --range T0 T1 STEP`
+`$W/clip_args.json` overrides one clip's arguments (`t0`, `t1`, `focus`, `shot`, `start`, `pass`, `spot`,
+`replay_from`, `tracks`); `run_game.py clip` cuts a single clip by hand. `clips` writes round N's
+`W/scratch/clips/prompt.rN.md` for the subagent that checks every contact sheet, which answers in `answers.rN.json`;
+`--answers` sorts the newest round's problems by kind (camera and time to re-cut, credit and can't-tell for the
+user) and prints the `--only` line (commas or spaces). A clip that fails doesn't stop the rest, and `clips` exits 1
+with the `--only` line that retries it. `run_game.py frames $W out.jpg --view rink|left-net|right-net|bench --range T0 T1 STEP`
 renders frames (`--tracks` draws our tracked boxes); `follow` crops one tracked piece over time.
 
 ## 11. Publish
@@ -249,7 +266,7 @@ on a first publish (`--open` on a republish, `--no-open` never). Don't make a `g
 its score, ids, highlights, shots and ice maps would come along, and the site shows the copied score.
 
 GitHub Pages redeploys in 4 to 5 minutes. Then `run_game.py archive $W` drops the video, crops and sheets and keeps
-the game's data (~100 MB, the scoreboard frames as JPEGs, the hand spans, the clips' arguments and the checkers'
-briefs and answers among it), so it can be re-solved later. Keep every game's archive: `pipeline/regress.py`
+the game's data (~100 MB, the scoreboard frames as JPEGs, the hand spans, the clips' arguments and the text files
+under `scratch/`, briefs, answers and traces, among it), so it can be re-solved later. Keep every game's archive: `pipeline/regress.py`
 re-solves all of them and diffs each against its published `shifts.csv`, which is how a change to the solve is
 checked before any site is rebuilt.

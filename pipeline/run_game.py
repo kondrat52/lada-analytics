@@ -1,5 +1,8 @@
 """Driver for processing one game. Run with the hockey env's python (see setup_env.sh).
 
+  run_game.py title   URL                    the video's title from YouTube's oEmbed (no sign-in; it answers during
+                                             the bot check) and what it says: the date, whose game, the opponent's
+                                             code (or "new opponent") and the work folder's name
   run_game.py download URL W [--cookies BROWSER]   the video, its audio and title, before fetch (which then skips
                                              them); --cookies firefox: with that browser's YouTube cookies, for a
                                              video YouTube serves only to a signed-in browser (the user runs it)
@@ -24,10 +27,10 @@
                                              the ids are kept there, so only the first run needs --sn or --lada
   run_game.py scores [--team T]              every published game's final score from its game sheet into game.json
                                              (sheets get corrected after the game); then build_site.py
-  run_game.py goals   W [--brief]            the sheet's goals at the seconds the board's clock implies; after prepare,
+  run_game.py goals   W [--brief [--only N]]  the sheet's goals at the seconds the board's clock implies; after prepare,
                                              candidates too (center-ice faceoffs, long stoppages); --brief writes the
                                              goal and penalty checkers' briefs (W/scratch/goals/prompt_*.md), which
-                                             need no tracks
+                                             need no tracks; --only N: the sheet's goal N alone (prompt_gN.md)
   run_game.py pk      W [--write [--rough]]  our penalty kills from the sheet and the board's clock alone (coincident
                                              minors: none); --write merges them into periods.json for the first solve,
                                              but not those the penalty checker has answered, nor rough ones (a period
@@ -36,11 +39,14 @@
                                              and the nets (--force: prepare on nets the checks contradict)
   run_game.py review  W [--opp DESC] [--note TEXT] [--chunk N] [--batch N]   write one filled reviewer prompt per
                                              chunk of sheets (W/rev_pN/prompt_cNN.md); print the next batch of
-                                             prompts to launch (20; also W/review_todo.txt) and what the prompts say
+                                             prompts to launch (16, room for the goal and penalty checkers under the
+                                             harness's 20 subagents; also W/review_todo.txt) and what the prompts say
                                              beyond the template
-  run_game.py check   W [--wait [SECONDS]]   which review rows are still missing or unreadable, per sheet, and the
-                                             reviewers' numbers that aren't on the roster; --wait: first block until
-                                             the last launch is answered or 540 s pass, then say what is still open
+  run_game.py check   W [--wait [SECONDS]] [--quiet S]   which review rows are still missing or unreadable, per
+                                             sheet, and the reviewers' numbers that aren't on the roster; --wait:
+                                             first block until the last launch is answered, no new answer has come
+                                             for 180 s (--quiet) or 540 s pass, then say what is still open and which
+                                             prompts never answered (not launched or dead: launch them again)
   run_game.py highlights W [--write]         highlights.json from the checkers' answers and the sheet (our scorers
                                              always the sheet's; theirs named in the note), with what doesn't add up;
                                              --write writes it and puts the checker's kills in periods.json in place
@@ -52,7 +58,11 @@
                                              one subagent each); --apply merges the checkers' fixes.json into
                                              periods.json as on/off spans and names the items left unanswered
   run_game.py span    W on|off|extra|ps [PLAYER] T0 T1 --note WHY   one hand-made span into its period in
-                                             periods.json, logged in W/hand_spans.txt; span W --list prints the log
+                                             periods.json, logged in W/hand_spans.txt; span W --list prints the log;
+                                             an on/off span cuts its seconds out of the player's opposite spans
+  run_game.py trace   W PLAYER --look TEXT [--part SEC] | --apply   by-eye briefs listing one skater's shifts, a
+                                             part of the game each (W/scratch/trace/), for one of ours the tracker
+                                             can't see; --apply adds his shifts as `on` spans
   run_game.py frames  W OUT.jpg --view rink|left-net|right-net|bench t1 t2 ...   4K frames (cropped) as a sheet, for
                                              verifying; --range T0 T1 STEP instead of times; or the crop by hand:
                                              X0 X1 Y0 Y1 TILE_W COLS t1 t2 ...; --tracks draws our tracked boxes
@@ -61,25 +71,31 @@
                                              one row per track id
   run_game.py clip    W GAME_ID NAME T0 T1 POSTER_T [FOCUS]          zoomed clip into <site>/games/<id>/clips;
                                              FOCUS = x px (a net x from rink.py) or #N to follow player N; --tracks
-                                             to follow chosen tracks; --dry-run: check the camera path, cut nothing
-  run_game.py clips   W GAME_ID [--only NAME,...] [--dry-run]   every clip highlights.json lists (W/clip_args.json
-                                             overrides per clip), checked, with a contact sheet each and the
-                                             checker's brief (W/scratch/clips/prompt.md)
+                                             to follow chosen tracks; a goal's --shot (the scorer's last touch),
+                                             --start, --pass, a penalty's --spot; --dry-run: check the camera path,
+                                             cut nothing
+  run_game.py clips   W GAME_ID [--only NAME ...] [--dry-run | --answers]   every clip highlights.json lists
+                                             (W/clip_args.json overrides per clip), checked, with a contact sheet each
+                                             and the checker's brief (W/scratch/clips/prompt.rN.md, round N);
+                                             --answers: what the checkers' answers say to re-cut, and what goes to
+                                             the user
   run_game.py clipsheet MP4 OUT.jpg [--W W] [--mark LABEL=SEC]   any rendered clip as one image of tiles
   run_game.py publish W GAME_ID --opponent RR [--eyebrow "Sun Sep 27, 2026 · 7:50 PM · Renton"] [--notes TEXT ...]
                                              [--notes-file F] [--no-open | --open]: game.json + shifts.csv, every site
                                              rebuilt, the game's table and fun stats printed, its page opened on a
                                              first publish (--open: on a republish too)
   run_game.py archive W                      after publishing: drop the video, crops and sheets (~5 GB), keep the
-                                             game's data (detections, reads, tracks, reviews, the checkers' briefs
-                                             and answers in scratch/; ~100 MB)
+                                             game's data (detections, reads, tracks, reviews, and scratch/'s text:
+                                             the checkers' briefs and answers, traces, notes; ~100 MB)
 
 W is the per-game work folder (outside the repo). Every step skips work that is already done, so re-running
 after an interruption continues where it stopped. W/full/rink.json records the team (fetch --team), and every
 command works on that team's roster, games and site (roster.py); before fetch has written it, the folder's name
 says whose game it is (bw-2026-11-07-vs-db; Turbo Kings' have no prefix). W/periods.json holds the period windows;
 fetch writes a proposal, which you check (the nets above all) before prepare; pk --write adds the penalty kills,
-highlights --write the checker's, gaps --apply and span the on/off spans (add_span: one rule for duplicates). Every
+highlights --write the checker's, gaps --apply, span and trace --apply the on/off spans (add_span: one rule for
+duplicates; trim_opposite: the newest span wins, so an on cuts its seconds out of the player's off spans, and an off
+or a kill, which holds him off, out of his on spans). Every
 command sets ROSTER_ABSENT from rink.json's "absent" list, so roster.py leaves those players out (see `absent`).
 """
 import argparse, glob, json, os, re, shutil, signal, subprocess, sys, time
@@ -154,6 +170,148 @@ def video_info(url, W):
     json.dump(info, open(p, "w", encoding="utf-8"), ensure_ascii=False, indent=2)
     log(f"video: {info['title']!r} ({dur // 60 if dur else '?'} min, uploaded {info['upload_date']})")
     return info
+
+
+def oembed_title(url, timeout=20):
+    """The video's title from YouTube's oEmbed endpoint, which needs no sign-in and still answers while YouTube's bot
+    check refuses yt-dlp (Beerteam's Nov 14 session got the date that way, after `yt_dlp --print title` was blocked).
+    Returns (title, None), or (None, why)."""
+    import urllib.request, urllib.parse, urllib.error
+    q = "https://www.youtube.com/oembed?" + urllib.parse.urlencode({"url": url, "format": "json"})
+    try:
+        with urllib.request.urlopen(urllib.request.Request(q, headers={"User-Agent": "Mozilla/5.0"}), timeout=timeout) as r:
+            x = json.load(r)
+        t = x.get("title") if isinstance(x, dict) else None
+        return (t, None) if t else (None, "oEmbed answered without a title")
+    except urllib.error.HTTPError as e:
+        return None, (f"oEmbed answered HTTP {e.code} {e.reason}" +
+                      (": no such video, or a private one" if e.code in (400, 401, 403, 404) else ""))
+    except (urllib.error.URLError, OSError, ValueError) as e:
+        return None, f"oEmbed unreachable ({getattr(e, 'reason', e)})"
+    except Exception as e:   # a broken answer (http.client's IncompleteRead, ...) mustn't stop `download --cookies`
+        return None, f"oEmbed's answer unreadable ({type(e).__name__}: {e})"
+
+
+_MONTHS = ("jan", "feb", "mar", "apr", "may", "jun", "jul", "aug", "sep", "oct", "nov", "dec")
+
+
+def title_games(title):
+    """What a LADA video title says: [dict(slug, team, date, opp, code, folder, notes)], one per LADA team the title
+    names (two for "2026/09/28 LADA R vs LADA Y"), [] when it hasn't the usual shape. The shapes seen: "2026/11/14
+    LADA Beerteam vs Cluster Pucks", "LADA Blue Wings vs Gnomies, Oct 25, 2026" and Turbo Kings' "LTKvsRR 9:15 PM PDT
+    - OCT 17, 2026 (Renton) - wide cut". The opponent's code comes from teams/<slug>/opponents.json (Turbo Kings'
+    titles give it); the date is checked against LADA's cache (lada_games.json), since TK's Nov 8 game was titled
+    NOV 9. The folder is the skill's: <slug>-<YYYY-MM-DD>-vs-<code>, Turbo Kings' without the slug."""
+    from lada_ids import fold
+    import datetime
+    t = " ".join(title.split())
+    m = re.search(r"\b(20\d\d)[/.-](\d{1,2})[/.-](\d{1,2})\b", t)
+    if m:
+        y, mo, d = int(m.group(1)), int(m.group(2)), int(m.group(3))
+    else:
+        m = next((x for x in re.finditer(r"\b([A-Za-z]{3})[a-z]*\.?\s+(\d{1,2}),?\s+(20\d\d)\b", t)
+                  if x.group(1).lower() in _MONTHS), None)
+        if not m:
+            return []
+        y, mo, d = int(m.group(3)), _MONTHS.index(m.group(1).lower()) + 1, int(m.group(2))
+    try:
+        date = datetime.date(y, mo, d)
+    except ValueError:
+        return []
+    rest = t.replace(m.group(0), " ")
+    teams = {}
+    for slug in sorted(os.listdir(f"{ROOT}/teams")):
+        p = f"{ROOT}/teams/{slug}/roster.json"
+        if os.path.exists(p):
+            r = json.load(open(p, encoding="utf-8"))
+            teams[slug] = dict(names={fold(r.get(k, "")) for k in ("team", "team_name") if r.get(k)},
+                               short=r.get("team_short", ""), team=r.get("team", slug))
+    clean = lambda s: re.sub(r"^[\s\d/:.,;-]+|[\s:.,;-]+$", "", re.sub(r"\d{1,2}:\d\d\s*[AP]M(\s+P[SD]T)?|\([^)]*\)|"
+                                                                         r"-\s*wide cut", " ", s, flags=re.I)).strip()
+    found = []   # (slug, opponent name or None, opponent code or None)
+    short = {v["short"]: k for k, v in teams.items() if v["short"]}
+    ms = re.match(r"^\s*(L[A-Z]{1,3})\s*vs\.?\s*([A-Z0-9]{1,5})\b", rest)
+    if ms and ms.group(1) in short:   # Turbo Kings' titles: their short name, "vs", the opponent's code
+        found.append((short[ms.group(1)], None, ms.group(2)))
+    else:
+        parts = re.split(r"\s+vs\.?\s+", rest, flags=re.I)
+        if len(parts) != 2:
+            return []
+        side = [clean(x) for x in parts]
+        for k in (0, 1):
+            for slug, v in teams.items():
+                if any(re.search(rf"(^|\W){re.escape(n)}($|\W)", fold(side[k])) for n in v["names"]):
+                    found.append((slug, side[1 - k], None))
+    out = []
+    day = lambda g: datetime.date.fromisoformat(str(g["date"])[:10])
+    key = lambda s: re.sub(r"[^a-z0-9]", "", fold(s or ""))   # "T.B.D" (its last dot cleaned off) is "T.B.D."
+    for slug, opp, code in found:
+        po = f"{ROOT}/teams/{slug}/opponents.json"
+        opps = json.load(open(po, encoding="utf-8")) if os.path.exists(po) else {}
+        if code is None:
+            code = next((c for c, n in opps.items() if key(n) == key(opp)), None)
+            opp = opps.get(code, opp)
+        else:
+            opp = opps.get(code)
+        notes, gdate = [], date
+        lp = f"{ROOT}/teams/{slug}/lada_games.json"
+        games = [(i, g) for i, g in (json.load(open(lp, encoding="utf-8")).items() if os.path.exists(lp) else [])
+                 if g.get("date")]
+        same = [(i, g) for i, g in games if day(g) == date]
+        near = [(i, g) for i, g in games if abs((day(g) - date).days) == 1 and opp
+                and key(g.get("opponentName")) == key(opp)]
+        if not same and near:
+            gdate = day(near[0][1])
+            notes.append(f"the title says {date}, LADA's schedule has the game vs {opp} on {gdate}: the folder takes "
+                         f"LADA's date (TK's Nov 8 game was titled NOV 9)")
+            same = near
+        if same:
+            i, g = same[0]
+            home = {True: "home", False: "away"}.get(g.get("playHome"), "home or away unknown")
+            notes.append(f"LADA game {i}: {str(g['date'])[11:16]}, {home}" + (f", {g['rinkName']}" if g.get("rinkName") else "")
+                         + (f", vs {g['opponentName']}" if g.get("opponentName") and opp
+                            and key(g["opponentName"]) != key(opp) else ""))
+        else:
+            notes.append(f"no game on {date} in LADA's cache (teams/{slug}/lada_games.json): `schedule --team {slug}` "
+                         f"looks again")
+        gid = f"{gdate}-vs-{code.lower() if code else '<code>'}"
+        out.append(dict(slug=slug, team=teams[slug]["team"], date=str(gdate), opp=opp, code=code,
+                        folder=gid if slug == "tk" else f"{slug}-{gid}", notes=notes,
+                        initials="".join(w[0] for w in re.findall(r"[A-Za-z0-9][\w'.]*", opp or "")).upper()))
+    return out
+
+
+def title_lines(url):
+    """The lines `title` prints, and `download` first: the title, then per LADA team it names the date, the team's
+    slug, the opponent's code (or "new opponent: <name>") and the work folder the skill would use. None when oEmbed
+    doesn't answer, with why."""
+    title, why = oembed_title(url)
+    if title is None:
+        return None, why
+    lines = [f"title: {title}"]
+    games = title_games(title)
+    if not games:
+        lines.append("  not the usual shape (a date, a LADA team, vs, the opponent): name the work folder by hand")
+    if len(games) > 1:
+        lines.append("  a game between two LADA teams: one work folder per team (references/lada.md)")
+    for g in games:
+        opp = (f"opponent {g['code']} ({g['opp']})" if g["code"] and g["opp"] else
+               f"opponent {g['code']} (new opponent: not in teams/{g['slug']}/opponents.json)" if g["code"] else
+               f"new opponent: {g['opp']} (no code in teams/{g['slug']}/opponents.json: ask the user; its initials "
+               f"are {g['initials']})")
+        lines.append(f"  {g['date']}, {g['team']} ({g['slug']}), {opp}: work folder ~/hockey-work/{g['folder']}")
+        lines += [f"    {n}" for n in g["notes"]]
+    return lines, None
+
+
+def cmd_title(a):
+    """The video's title (YouTube's oEmbed, no sign-in, standard library only) and what it says: the game's date,
+    whose game, the opponent's code and the work folder's name, all of which the skill needs before the folder
+    exists. A link alone in the user's message used to cost a blocked `yt_dlp --print title` first."""
+    lines, why = title_lines(a.url)
+    if lines is None:
+        sys.exit(f"no title for {a.url}: {why}")
+    print("\n".join(lines))
 
 
 def download(url, W):
@@ -365,11 +523,61 @@ def ocr(W):
     if not crops - done:
         return
     log(f"OCR on {len(crops - done)} crops ({OCR_WORKERS} workers)")
+    t0 = time.time()
     env = dict(os.environ, PYTHONHASHSEED="0", OCR_THREADS=str(OCR_THREADS))
     ps = [subprocess.Popen([PY, f"{HERE}/ocr_worker.py", full, "1000000000", "1", str(k), str(OCR_WORKERS)], env=env,
                            stdout=open(f"{full}/ocr_log_{k}.txt", "w"), stderr=subprocess.STDOUT) for k in range(OCR_WORKERS)]
     for p in ps:
         p.wait()
+    left = len(crops - done - _ocr_done(full))   # done: what was read before, and the bench sitters skipped
+    log(f"OCR: the {OCR_WORKERS} workers done in {(time.time() - t0) / 60:.1f} min; {len(_ocr_done(full)):,} crops read"
+        + (f"; {left:,} left unread: see {full}/ocr_log_*.txt" if left else "")
+        + ("" if all(p.returncode == 0 for p in ps) else
+           f"; worker exit codes {[p.returncode for p in ps]}: see {full}/ocr_log_*.txt"))
+
+
+def _ocr_done(full):
+    """The crops the OCR workers have passed over (ocr_done_<k>.txt, one name a line; not the bench sitters'
+    ocr_done_bench.txt, which no worker reads)."""
+    done = set()
+    for p in glob.glob(f"{full}/ocr_done_[0-9]*.txt"):
+        done |= set(open(p).read().split())
+    return done
+
+
+def ocr_watch(W, workers):
+    """A thread that waits for the OCR workers started alongside detection and logs, the moment the last of them
+    exits, how many crops they read and how long after detection's end that was (or before it: a worker that
+    crashed; ocr() then reads what is left). Fetch's log had no line for OCR's end: on Beerteam's Nov 14 game the
+    session read full/ocr_log_0.txt, whose worker ended 3 s after detection, while the last of the six ended 14 s
+    after it. Join it before using the reads."""
+    if not workers:
+        return None
+    import threading
+    full = f"{W}/full"
+    def run():
+        ends = {}
+        while len(ends) < len(workers):   # each worker's end to the second
+            for k, p in enumerate(workers):
+                if k not in ends and p.poll() is not None:
+                    ends[k] = time.time()
+            time.sleep(1)
+        last, first = max(ends.values()), min(ends.values())
+        det = _detection_end(W)
+        n = len(_ocr_done(full))
+        bad = [p.returncode for p in workers if p.returncode != 0]
+        rel = lambda t: (f"{abs(t - det):.0f} s" if abs(t - det) < 120 else f"{abs(t - det) / 60:.1f} min") + \
+            (" after" if t >= det else " before")
+        if det is None:
+            log(f"OCR: the last of {len(workers)} workers ended while detection still runs (exit codes "
+                f"{[p.returncode for p in workers]}); {n:,} crops read. Crashed? See {full}/ocr_log_*.txt; after "
+                f"detection ocr() reads the rest")
+        else:
+            log(f"OCR: the last of {len(workers)} workers ended {rel(last)} detection (the first {rel(first)}); "
+                f"{n:,} crops read" + (f"; exit codes {bad}: see {full}/ocr_log_*.txt" if bad else ""))
+    th = threading.Thread(target=run, daemon=True)
+    th.start()
+    return th
 
 
 def ocr_alongside(W):
@@ -538,11 +746,12 @@ def cmd_fetch(a):
     download_audio(a.url, W)
     board = None if a.limit else scoreboard_alongside(W)
     workers = ocr_alongside(W)
+    ocr_end = ocr_watch(W, workers)   # logs the moment the last worker ends, whatever the main thread waits on
     detect(vid, W, a.limit)
     if board:
         scoreboard_wait(board, W)
-    for p in workers:
-        p.wait()
+    if ocr_end:
+        ocr_end.join()
     ocr(W)
     if not a.limit:
         scoreboard_sheet(W)
@@ -560,6 +769,15 @@ def cmd_download(a):
     Claude Code), and this is the one line to give them."""
     global COOKIES
     W = os.path.abspath(a.W); os.makedirs(f"{W}/full", exist_ok=True)
+    lines, why = title_lines(a.url)   # first, from oEmbed: the date, team, opponent and folder, even if yt-dlp is blocked
+    if lines:
+        print("\n".join(lines))
+        folders = re.findall(r"work folder ~/hockey-work/(\S+)", "\n".join(lines))
+        name = os.path.basename(W)
+        if folders and not any(name == f or ("<code>" in f and name.startswith(f.split("<code>")[0])) for f in folders):
+            print(f"  this folder is {name}, the title gives {' or '.join(folders)}: right game?")
+    else:
+        print(f"title: none from oEmbed ({why})")
     open(f"{W}/url.txt", "w").write(a.url)
     COOKIES = ["--cookies-from-browser", a.cookies] if a.cookies else []
     video_info(a.url, W)
@@ -586,9 +804,10 @@ def periods(W):
     return json.load(open(f"{W}/periods.json"))
 
 
-# ---------------------------------------------------------------- spans in periods.json: one writer for the four
+# ---------------------------------------------------------------- spans in periods.json: one writer for the five
 # commands that add them (gaps --apply: on/off; pk --write and highlights --write: pk, and off for a player boxed
-# without a kill; span: on/off/extra/ps by hand)
+# without a kill; span: on/off/extra/ps by hand; trace --apply: on). Each new on, off or kill (which holds its player
+# off) cuts its seconds out of the player's opposite spans (trim_opposite), and note_trims/log_trims say so
 
 def same_span(e, start, end, player=None):
     """The duplicate rule: the same player (None for extra and ps) from the same second to the same second, to 0.1 s."""
@@ -604,6 +823,59 @@ def add_span(P, kind, start, end, player=None):
     e = dict(start=start, end=end) if kind in ("extra", "ps") else dict(start=start, end=end, player=player)
     P.setdefault(kind, []).append(e)
     return e
+
+
+def trim_opposite(P, kind, start, end, player, spare=lambda e: False):
+    """The newest span wins: cut [start, end) out of `player`'s spans of the other kind (on against off) in period P,
+    each one's pieces outside it left in its place in the list (none: dropped); a span `spare` returns True for stays
+    whole. Returns [(the old span, [(start, end) of each piece left])]. Both used to stay, and the solver, adding the
+    same cost to both states, left those seconds to the tracks (Y's Sep 21: round 1's #29 off 2458-2478 and #12 on
+    2458-2467 under round 2's #29 on 2458-2463 and #12 off 2458-2462)."""
+    other = {"on": "off", "off": "on"}.get(kind)
+    out, keep = [], []
+    for e in P.get(other, []) if other and player is not None else []:
+        if e.get("player") == player and e["start"] < end and start < e["end"] and not spare(e):
+            left = [(a, b) for a, b in ((e["start"], start), (end, e["end"])) if a < b]
+            out.append((dict(e), left))
+            keep += [dict(e, start=a, end=b) for a, b in left]
+        else:
+            keep.append(e)
+    if out:
+        P[other] = keep
+    return out
+
+
+def _span_records(answers, lab, kind, player, start, end):
+    """The checkers' entries (answers.json) behind a span in periods.json: those whose span, or what a newer span left
+    of it ("now"), is these seconds."""
+    return [x for x in answers if x.get("span") and x.get("P") == lab and x.get("kind") == kind
+            and int(x["player"]) == player and any(abs(float(a) - float(start)) < 0.05 and abs(float(b) - float(end)) < 0.05
+                                                   for a, b in x.get("now", [x["span"]]))]
+
+
+def note_trims(W, P, kind, player, trims, by, answers):
+    """Print what trim_opposite cut and keep the record of each cut span in step with periods.json, so a later brief's
+    "merged" line still says why it is there: a checker's entry in `answers` (answers.json, saved by the caller) gets
+    "now", the pieces left, and "trimmed", by what; any other span (made by `span`, `trace` or `highlights --write`)
+    gets what log_span needs for a line per piece left, with its logged why, or for one saying it was dropped. Returns
+    (log_span argument lists, entries changed); the caller logs them once periods.json is saved."""
+    other, logs, changed = ("off" if kind == "on" else "on"), [], 0
+    hand = _logged_whys(W)
+    for old, left in trims:
+        s, e = old["start"], old["end"]
+        print(f"  {'trimmed' if left else 'dropped'} {P['label']} {other} #{player} {s:g}-{e:g}"
+              + (" to " + ", ".join(f"{a:g}-{b:g}" for a, b in left) if left else "") + f": {by} is newer and wins")
+        recs = _span_records(answers, P["label"], other, player, s, e)
+        for x in recs:
+            x["now"] = [q for q in x.get("now", [x["span"]]) if (abs(q[0] - s) >= 0.05 or abs(q[1] - e) >= 0.05)] \
+                + [[float(a), float(b)] for a, b in left]
+            x.setdefault("trimmed", []).append(by)
+            changed += 1
+        if not recs:
+            why = hand.get((P["label"], other, player, float(s), float(e)), "")
+            logs += [(P, other, a, b, player, f"{why} (what {by} left of {s:g}-{e:g})") for a, b in left] or \
+                [(P, f"dropped {other}", s, e, player, f"{by} covers it{f'; it was: {why}' if why else ''}")]
+    return logs, changed
 
 
 def save_periods(W, Ps, sort=()):
@@ -670,8 +942,10 @@ def cmd_goals(a):
     formations that aren't period starts, and every long stoppage with where play restarted. Each needs checking by
     eye (frames command). --brief writes the goal and penalty checkers' briefs instead (goal_briefs)."""
     W = os.path.abspath(a.W)
+    if getattr(a, "only", None) is not None and not a.brief:
+        sys.exit("--only N goes with --brief: one goal's brief")
     if a.brief:
-        return goal_briefs(W)
+        return goal_briefs(W, getattr(a, "only", None))
     R = rink(f"{W}/full")
     center = R.center_x
     Ps = periods(W)
@@ -740,8 +1014,12 @@ def cmd_goals(a):
 # ---------------------------------------------------------------- goals and penalties: checker briefs, kills, highlights
 
 PERIOD_NAMES = {"P1": "1st period", "P2": "2nd period", "P3": "3rd period", "P4": "overtime"}
-HL_WORK = ("shot", "pass", "on_ice")   # highlights.json keys for the clips and the lineup check, never published
-HL_RECORD = ("sheet_n",)               # generated.json's only: the sheet's goal or penalty number of each entry
+# highlights.json keys for the clips and the lineup check, never published: a goal's shot (the scorer's last touch),
+# start (where its play began, when earlier), pass and on_ice; a penalty's spot (the player at the infraction)
+# the goal checker's scorer_seen and credited_at too, where he saw someone else score: the clip checker's brief says so
+HL_WORK = ("shot", "pass", "start", "on_ice", "spot", "scorer_seen", "credited_at")
+HL_RECORD = ("sheet_n", "sheet_key")   # generated.json's only: the sheet's goal or penalty number of each entry,
+# and a goal's period and clock on the sheet
 GOAL_DIR = "scratch/goals"             # under W: the goal and penalty checkers' briefs and answers
 KILL_GOAL_PAD = 1                      # s: a kill ended by a power-play goal ends this long after the goal's second
 # Where the clock runs through stoppages the board runs a 2-minute minor for 3:00, and its time on the sheet is the
@@ -871,7 +1149,11 @@ def _penalty_items(sheet_):
             x = dict(n=len(items) + 1, team=p["team"], player=p["player"], name=p["name"], period=p["period"],
                      clock=p["clock"], type=p["type"], parts=[], minutes=0, major=False)
             items.append(x)
-        x["parts"].append(f"{p['type']} ({p['severity']}, {p['minutes']} min)")
+        # SportNinja's "Dbl Minor" came with 2 minutes on all 32 archived ones; on Beerteam's Nov 14 (their #11) the
+        # board ran 2 and he sat 2. The minutes are what the kill takes, so they lead, and the mismatch is named
+        dbl = "dbl" in p["severity"].lower() or "double" in p["severity"].lower()
+        x["parts"].append(f"{p['type']} ({p['minutes']} min; the sheet's {p['severity']} would be 4)"
+                          if dbl and int(p["minutes"]) != 4 else f"{p['type']} ({p['severity']}, {p['minutes']} min)")
         if "misconduct" not in p["severity"].lower():
             x.update(type=p["type"], minutes=max(x["minutes"], int(p["minutes"])), major=p["severity"] == "Major")
     return items
@@ -998,7 +1280,9 @@ def cmd_pk(a):
     has them. --write merges them into periods.json, leaving out: a kill already there for the same player over the
     same stretch (another player's overlapping kill stays beside it: a 5 on 3), a penalty the penalty checker has
     answered (pens.json: `highlights --write` puts the checker's kill in), and a rough proposal, in a period without
-    a board clock read, unless --rough (the penalty checker then gives the kill)."""
+    a board clock read, unless --rough (the penalty checker then gives the kill), and a proposal an earlier --write
+    wrote (scratch/goals/applied.json: a kill cut or taken out by hand since stays so). A kill added holds its player
+    off, so it cuts its seconds out of his `on` spans (trim_opposite), said and logged as `span` does."""
     import clock as clock_
     W = os.path.abspath(a.W)
     if not os.path.exists(f"{W}/sheet.json"):
@@ -1021,7 +1305,8 @@ def cmd_pk(a):
     pf = f"{W}/{GOAL_DIR}/pens/pens.json"
     answered = {int(e["n"]): _kill_answer(e) for e in (_load_answers(pf) if os.path.exists(pf) else [])
                 if str(e.get("n", "")).isdigit()}
-    added = 0
+    added, cuts = 0, []
+    applied = _load_applied(W)
     for x in items:
         ans = answered.get(x["n"])
         if x["spans"] and ans and ans[0] != "unsure":
@@ -1033,6 +1318,13 @@ def cmd_pk(a):
             print(f"  #{x['player']} {x['period']} {x['clock']}: rough (no board clock read), not written: the penalty "
                   f"checker's kill comes in with `highlights --write` (--rough writes this one)")
             continue
+        key, prop = _pen_key(x), [list(s) for s in x["spans"]]
+        if x["spans"] and applied["pk"].get(key) == prop:   # written before: a hand edit since (a kill cut or taken
+            print(f"  #{x['player']} {x['period']} {x['clock']}: an earlier `pk --write` wrote this kill; periods.json "
+                  f"keeps what was decided since")   # out after "!! played 5 on 5") stays
+            continue
+        if x["spans"]:
+            applied["pk"][key] = prop
         for lab, s, e in x["spans"]:
             P = next(P for P in Ps if P["label"] == lab)
             same = [k for k in P.get("pk", []) if k["start"] < e and s < k["end"] and k.get("player") == x["player"]]
@@ -1043,8 +1335,13 @@ def cmd_pk(a):
             add_span(P, "pk", s, e, x["player"])
             added += 1
             print(f"  + {lab} pk #{x['player']} {s}-{e}")
+            # the kill holds him off (run2.py's boxed), as an `off` span does: newer, it wins over his `on` spans
+            cuts.append((P, x["player"], trim_opposite(P, "off", s, e, x["player"]), f"pk --write's kill #{x['player']} {s}-{e}"))
     if added:
         save_periods(W, Ps, sort=("pk",))
+    _save_applied(W, applied)
+    for P, pl, trims, by in cuts:
+        log_trims(W, P, "off", pl, trims, by)
     print(f"{added} kill(s) added to {W}/periods.json")
 
 
@@ -1084,7 +1381,7 @@ def _brief_context(W, P=None):
                      else "LIGHT-BLUE jerseys with white numbers"),
         opp_desc=_opp_look(jersey, opt),
         notes="".join(f" {n.rstrip('.')}." for n in opt.get("notes", [])),
-        roster=", ".join(f"#{n} {v.upper()}" for n, v in sorted(SKATERS.items())),
+        roster=", ".join(f"#{n} {_player_name(W, n)}" for n in sorted(SKATERS)),   # the sheet's name, as the lineup check says it
         goalie_line=(f"Our goalie is #{GOALIES[0]} {GOALIE_NAMES.get(GOALIES[0], '').upper()} (big leg pads), never a skater."
                      if GOALIES else "Our goalie isn't on the roster card (a sub in goal, big leg pads); he is never a skater."),
         nets_line=("Our net is the " + ", ".join(f"{_net_side(R, Q['net'])} one in {Q['label']}" for Q in Ps)
@@ -1131,9 +1428,10 @@ def _penalty_state(items, e):
             f"game was 37 s after the sheet's 12:25, when the panel went dark).")
 
 
-def _goal_lines(sheet_, clk, Ps, items, lab, opp):
-    """The brief's lines for period lab's goals: sheet order, scorer, the clock's second, where it stopped, the
-    search window, the penalties running, and the other times worth trying when nothing is there."""
+def _goal_lines(sheet_, clk, Ps, items, lab, opp, opp_look="", only=None):
+    """The brief's lines for period lab's goals (or only the sheet's goal `only`): sheet order, scorer (theirs with
+    their jersey's look, opp_look), the clock's second, where it stopped, the search window, the penalties running,
+    and the other times worth trying when nothing is there."""
     Ls, off = _game_clock(Ps, sheet_)
     L, end = Ls[lab], next(P["end"] for P in Ps if P["label"] == lab)
     runs = _clock_runs(clk, Ps, lab)
@@ -1141,14 +1439,15 @@ def _goal_lines(sheet_, clk, Ps, items, lab, opp):
     for n, g in enumerate(sheet_.get("goals", []), 1):
         before = f"{score[0]}-{score[1]}"
         score[0 if g["team"] == "for" else 1] += 1
-        if g["period"] != lab:
+        if g["period"] != lab or (only is not None and n != only):
             continue
         c = _mmss(g["clock"]); vt = _sheet_t(clk, Ps, lab, c, L)
         names = lambda nums, nm: ", ".join(f"#{a} {b}" for a, b in zip(nums, nm)) or "unassisted"
         if g["team"] == "for":
             who = f"OURS, #{g['scorer']} {str(g['scorer_name']).upper()} (assists: {names(g['assists'], [str(x).upper() for x in g['assist_names']])})"
         else:
-            who = f"THEIRS ({opp}), #{g['scorer']} {g['scorer_name']} (assists: {names(g['assists'], g['assist_names'])})"
+            who = (f"THEIRS ({opp}), #{g['scorer']} {g['scorer_name']} (assists: {names(g['assists'], g['assist_names'])})"
+                   + (f"; find their #{g['scorer']} in {opp_look}" if opp_look and g.get("scorer") is not None else ""))
         s = f"{n}. {lab} {_mm(c)}, {who}. Score before it {before} (ours first)."
         C = _clock_period(clk, Ps, lab)
         if C and C["knots"][0][1] < c:   # LADA R's Nov 9 video began at 17:23 of the 1st, after a goal at 17:50
@@ -1241,12 +1540,15 @@ def _pen_brief_lines(items, clk, Ps, sheet_=None):
     return out
 
 
-def goal_briefs(W):
+def goal_briefs(W, only=None):
     """One goal checker's brief per period with goals on the game sheet (W/scratch/goals/prompt_pN.md, from
     pipeline/goal_prompt.md) and one for all of the sheet's penalties, ours and theirs (prompt_pens.md, from
     pipeline/pen_prompt.md), with the rules the session used to carry by hand. They need only what fetch leaves and
     periods.json with its nets (frames, the board, sheet.json, clock.json), no tracks, so the checkers can run beside
-    prepare and the review. Each writes one JSON file in its scratch folder, which `highlights` reads."""
+    prepare and the review. Each writes one JSON file in its scratch folder, which `highlights` reads. `only` (the
+    sheet's goal number) briefs that goal alone, prompt_gN.md answered in gN/goals.json, and nothing else: a goal
+    added to a finished game (BW's Nov 7, the sheet corrected days later), or one whose clip needs its scorer found
+    again (Beerteam's Nov 14 2nd goal, briefed by hand); `highlights` takes gN's answer over the period's."""
     import clock as clock_
     W = W.replace("\\", "/")
     if not os.path.exists(f"{W}/sheet.json"):
@@ -1255,12 +1557,17 @@ def goal_briefs(W):
     clk, Ps, R = clock_.load(W), periods(W), rink(f"{W}/full")
     if any(P.get("net") is None for P in Ps):   # the briefs tell each checker which net is ours
         sys.exit(f"set each period's net in {W}/periods.json first")
+    goals = sheet_.get("goals", [])
+    if only is not None and not 1 <= only <= len(goals):
+        sys.exit(f"--only {only}: the game sheet has goals 1-{len(goals)}" if goals else "--only: the sheet has no goals")
+    if only is not None and goals[only - 1]["period"] not in [P["label"] for P in Ps]:
+        sys.exit(f"--only {only}: its period {goals[only - 1]['period']} isn't in periods.json")
     opp = _opp_name(sheet_)
     game = dict(opp_name=opp, opp_poss=_their_scorer(dict(scorer=None, scorer_name=""), opp).strip(),
                 board_side="HOME" if sheet_.get("us") == "home" else "GUEST", sheet_side=sheet_.get("us", "?"))
     items = penalty_kills(W, Ps, sheet_, clk)
     gd = f"{W}/{GOAL_DIR}"; os.makedirs(gd, exist_ok=True)
-    plan = [_missing_periods(sheet_, Ps)] if _missing_periods(sheet_, Ps) else []
+    plan = [_missing_periods(sheet_, Ps)] if _missing_periods(sheet_, Ps) and only is None else []
     # these briefs can come before the roster work: a sub the sheet has playing who isn't in roster.json yet is named
     from roster import ALL_SKATERS, GOALIE_NAMES
     known = set(ALL_SKATERS) | set(GOALIE_NAMES)
@@ -1270,21 +1577,32 @@ def goal_briefs(W):
         ctx = _brief_context(W, P)
         ctx["roster"] += sub_line
         return ctx
+    look = _opp_look(json.load(open(f"{W}/full/rink.json")).get("jersey", "light blue")
+                     if os.path.exists(f"{W}/full/rink.json") else "light blue", _review_options(W))
     for P in Ps:
-        lab = P["label"]; p = lab.lower()
-        lines = _goal_lines(sheet_, clk, Ps, items, lab, opp)
+        lab = P["label"]
+        p = lab.lower() if only is None else f"g{only}"
+        lines = _goal_lines(sheet_, clk, Ps, items, lab, opp, look, only)
         if not lines:
             continue
+        ctx = context(P)
         ours = _net_side(R, P["net"]).lower(); theirs = "right" if ours == "left" else "left"
         # the gap briefs' context for this period: its own roster card once prepare has made one, its clock line
         text = open(f"{HERE}/goal_prompt.md", encoding="utf-8").read().format(
-            **context(P), **game, scratch=f"{gd}/{p}", out_file=f"{gd}/{p}/goals.json", period=lab,
+            **ctx, **game, scratch=f"{gd}/{p}", out_file=f"{gd}/{p}/goals.json", period=lab,
             period_name=PERIOD_NAMES.get(lab, lab), pstart=P["start"], pend=P["end"], our_side=ours.upper(),
             our_net=R.nets[ours], their_side=theirs.upper(), their_net=R.nets[theirs],
             clock_desc=_clock_text(W, P), goals="\n".join(lines))
         open(f"{gd}/prompt_{p}.md", "w", encoding="utf-8").write(text)
-        plan.append(f"{lab}: {len(lines)} goal(s) -> {gd}/prompt_{p}.md (answers {gd}/{p}/goals.json)")
-    if items:
+        # the sheet's goals as this brief numbers them, so that `highlights` finds each answer's goal by its period
+        # and clock after a corrected sheet has renumbered them (_goal_match)
+        json.dump(dict(goals=[dict(n=n, period=g["period"], clock=g["clock"], team=g["team"])
+                              for n, g in enumerate(goals, 1) if g["period"] == lab and only in (None, n)]),
+                  open(f"{gd}/prompt_{p}.json", "w", encoding="utf-8"), indent=1)
+        plan.append(f"{lab}: {len(lines)} goal(s) -> {gd}/prompt_{p}.md (answers {gd}/{p}/goals.json)"
+                    + (f"; `highlights` takes it over {gd}/{lab.lower()}/goals.json's entry for goal {only}"
+                       if only is not None else ""))
+    if items and only is None:
         text = open(f"{HERE}/pen_prompt.md", encoding="utf-8").read().format(
             **context(), **game, scratch=f"{gd}/pens", out_file=f"{gd}/pens/pens.json",
             clock_desc=" ".join(_clock_text(W, P) for P in Ps), pens="\n".join(_pen_brief_lines(items, clk, Ps, sheet_)))
@@ -1295,7 +1613,8 @@ def goal_briefs(W):
     if any("-> " in x for x in plan):
         print(f"{len(plan)} brief(s): for each, one general-purpose subagent whose whole prompt is\n"
               f"  'Read <brief> and do exactly what it says. Reply with one line per goal or penalty.'\n"
-              f"  All at once, beside prepare and the review. Then `run_game.py highlights {W} --write`.")
+              + ("  All at once, beside prepare and the review. " if only is None else "  ")
+              + f"Then `run_game.py highlights {W} --write`.")
 
 
 def _load_answers(f):
@@ -1335,6 +1654,33 @@ def _their_scorer(g, opp):
     return f"{poss} {who(g['scorer'], g['scorer_name'])}" + (f" from {ast}" if ast else "")
 
 
+GOAL_MATCH_S = 30   # a goal checker's clock (the board's) within this of the sheet's, in the same period: that goal
+
+
+def _goal_match(n, e, briefed, goals):
+    """The sheet's goal number (1-based) a goal checker's answer is for. Its brief numbered the goals as the sheet
+    then did, and a corrected sheet can add one before it (Blue Wings' Nov 7, a sixth goal of ours days later), so
+    the answer goes by period and clock: the brief's own record of its goal (prompt_<folder>.json, `briefed`), else
+    the answer's period and clock (the board's, 1-4 s off the sheet's on 3 of 8 answers of Beerteam's Nov 14). Its
+    own number stands while that goal still fits (the same clock, or within GOAL_MATCH_S with none the same); else
+    the one goal there with that clock, else the nearest within GOAL_MATCH_S (the same team first); else, with no
+    period known or the number's goal in it, the number. None: the sheet no longer has that goal."""
+    key = briefed or e
+    per, c, team = key.get("period"), _mmss(key["clock"]) if key.get("clock") else None, key.get("team")
+    if per is None or c is None:
+        return n if 1 <= n <= len(goals) else None
+    here = [(m, abs(_mmss(g["clock"]) - c), g["team"] != team) for m, g in enumerate(goals, 1) if g["period"] == per]
+    exact = [m for m, d, _ in here if d == 0]
+    near = sorted((t, d, m) for m, d, t in here if d <= GOAL_MATCH_S)
+    if n in exact or (not exact and n in [m for _, _, m in near]):
+        return n
+    if len(exact) == 1:
+        return exact[0]
+    if near and not exact:
+        return near[0][2]
+    return n if 1 <= n <= len(goals) and goals[n - 1]["period"] == per and not briefed else None
+
+
 def _build_highlights(W, Ps, sheet_, clk, items, gseen, pseen, say):
     """The goal and penalty entries from the sheet and the checkers' answers, goals by t then penalties by t; `say`
     collects what the session should know (missing entries, odd times, a scorer seen differently)."""
@@ -1353,7 +1699,8 @@ def _build_highlights(W, Ps, sheet_, clk, items, gseen, pseen, say):
         score[0 if g["team"] == "for" else 1] += 1
         what = f"goal {n} ({g['period']} {g['clock']}, {g['team']}, #{g['scorer']} {g['scorer_name']})"
         if not e:
-            say.append(f"{what}: no entry from the goal checker; not in highlights.json"); continue
+            say.append(f"{what}: no entry from the goal checker; not in highlights.json: `goals {W} --brief --only {n}` "
+                       f"briefs it"); continue
         if e.get("t") is None:
             say.append(f"{what}: the checker didn't find it ({e.get('desc') or e.get('note') or 'no reason given'}); "
                        f"not in highlights.json: the page counts goals on video"); continue
@@ -1361,7 +1708,8 @@ def _build_highlights(W, Ps, sheet_, clk, items, gseen, pseen, say):
         P = next((P for P in Ps if P["start"] <= t <= P["end"]), None)
         if P is None or P["label"] != per:
             say.append(f"{what}: t {t} is " + (f"in {P['label']}, not {per}" if P else "outside every period"))
-        h = dict(type="goal", team=g["team"], t=t, sheet_n=n)   # sheet_n: generated.json's only (HL_RECORD)
+        # sheet_n and sheet_key (its period and clock, which a goal added before it doesn't change): generated.json's only
+        h = dict(type="goal", team=g["team"], t=t, sheet_n=n, sheet_key=f"{g['period']} {_mm(_mmss(g['clock']))}")
         desc = str(e.get("desc") or "").strip()
         if g["team"] == "for":   # scorer and assists hold OUR numbers (lineup check, page, season tables)
             if g.get("scorer") is not None:
@@ -1373,20 +1721,31 @@ def _build_highlights(W, Ps, sheet_, clk, items, gseen, pseen, say):
         if not e.get("desc"):
             say.append(f"{what}: the checker gave no desc; the note names only the scorer")
         h["note"] = _note(per, e.get("clock") or g["clock"], desc, score)
-        h.update(shot=_spot(e.get("shot")), **{"pass": _spot(e.get("pass"))},
+        h.update(shot=_spot(e.get("shot")), **{"pass": _spot(e.get("pass"))}, start=_spot(e.get("start")),
                  on_ice=sorted({int(x) for x in e.get("on_ice") or [] if str(x).lstrip("-").isdigit()}))
         if e.get("team") and e["team"] != g["team"]:
             say.append(f"{what}: the checker calls it {e['team']}; the sheet's {g['team']} stands")
         if h["shot"] and h["shot"][0] > t:
             say.append(f"{what}: shot at {h['shot'][0]} is after t {t}")
-        elif h["shot"] and t - h["shot"][0] > 15:
-            say.append(f"{what}: shot at {h['shot'][0]} is {t - h['shot'][0]:.1f} s before t {t} (a replay that long?)")
+        elif h["shot"] and t - h["shot"][0] > 8:
+            say.append(f"{what}: shot at {h['shot'][0]} is {t - h['shot'][0]:.1f} s before t {t}: `shot` is the scorer's "
+                       f"last touch, and a drive or rush that began the play is `start`")
         if h["pass"] and (h["pass"][0] > t or (h["shot"] and h["pass"][0] > h["shot"][0])):
             say.append(f"{what}: pass at {h['pass'][0]} comes after the shot or the goal")
+        if h["start"] and (h["shot"] and h["start"][0] > h["shot"][0] or h["start"][0] > t):
+            say.append(f"{what}: start at {h['start'][0]} comes after the shot or the goal")
+        elif h["start"] and t - h["start"][0] > 12:
+            say.append(f"{what}: start at {h['start'][0]} is {t - h['start'][0]:.1f} s before t {t} (a replay that long?)")
         seen = e.get("scorer_seen")
-        if seen is not None and str(seen) != str(g["scorer"]) and g["team"] == "for":
-            say.append(f"{what}: the checker saw #{seen} put it in ({e.get('scorer_sure') or 'sureness not given'}); the "
-                       f"sheet's #{g['scorer']} stands on the page: ask the user to check with the team")
+        if seen is not None and str(seen) != str(g["scorer"]):
+            where = _spot(e.get("credited_at"))
+            h.update(scorer_seen=int(seen) if str(seen).isdigit() else str(seen), credited_at=where)
+            say.append(f"{what}: the checker saw #{seen} put it in ({e.get('scorer_sure') or 'sureness not given'})"
+                       + (f", with the sheet's #{g['scorer']} at {where}" if where else
+                          f", without saying where the sheet's #{g['scorer']} was (the brief asks for it)")
+                       + (f"; the sheet's #{g['scorer']} stands on the page: ask the user to check with the team"
+                          if g["team"] == "for" else "; the note names the sheet's scorer")
+                       + ". The replay must show who put it in: check the clip on him")
         odd = [p for p in h["on_ice"] if p not in ALL_SKATERS and p not in GOALIE_NAMES]
         if odd:
             say.append(f"{what}: on_ice has numbers not on our roster: {odd}")
@@ -1401,7 +1760,7 @@ def _build_highlights(W, Ps, sheet_, clk, items, gseen, pseen, say):
         gl.append(h)
     gl.sort(key=lambda h: h["t"])
     for k, h in enumerate(gl, 1):   # key order as the hand-written files have it
-        rest = {x: h.pop(x) for x in ("note",) + HL_WORK}
+        rest = {x: h.pop(x) for x in ("note",) + HL_WORK if x in h}
         h.update(clip=f"clips/goal-{k}.mp4", poster=f"clips/goal-{k}.jpg", **rest)
     pl = []
     mine = [x for x in items if x["team"] == "ours"]
@@ -1417,8 +1776,14 @@ def _build_highlights(W, Ps, sheet_, clk, items, gseen, pseen, say):
         if t is None:
             say.append(f"{what}: no time for it; not in highlights.json"); continue
         desc = e.get("desc") or f"{x['type'].lower()}, {x['minutes']} minutes"
+        spot = _spot(e.get("spot"))
+        if e and not spot:
+            say.append(f"{what}: no `spot` from the penalty checker: the clip follows #{player}'s labeled tracks, "
+                       f"whoever they are on at the infraction (Beerteam's Nov 14: #24's was #27's from 2100)")
+        elif spot and abs(spot[0] - float(t)) > 15:
+            say.append(f"{what}: spot at {spot[0]} is {spot[0] - float(t):+.1f} s from the infraction's t {_num(t)}")
         pl.append(dict(type="penalty", player=player, t=_num(t), sheet_n=x["n"],
-                       note=_note(e.get("period") or x["period"], e.get("clock") or x["clock"], desc)))
+                       note=_note(e.get("period") or x["period"], e.get("clock") or x["clock"], desc), spot=spot))
         if e and _kill_answer(e)[0] == "none":   # the unsure ones: _apply_kills says what stays
             say.append(f"{what}: no kill: {_kill_answer(e)[1]}")
         if e.get("ps"):
@@ -1428,11 +1793,11 @@ def _build_highlights(W, Ps, sheet_, clk, items, gseen, pseen, say):
     for h in pl:
         many = sum(q["player"] == h["player"] for q in pl) > 1
         name = f"penalty-{h['player'] if h['player'] is not None else 'bench'}" + (f"-{int(h['t'])}" if many else "")
-        h.update(clip=f"clips/{name}.mp4", poster=f"clips/{name}.jpg", note=h.pop("note"))
+        h.update(clip=f"clips/{name}.mp4", poster=f"clips/{name}.jpg", note=h.pop("note"), spot=h.pop("spot"))
     return gl + pl
 
 
-def _merge_highlights(old, new, gen, say):
+def _merge_highlights(old, new, gen, say, renum=None):
     """new entries onto an existing highlights.json without losing hand edits. An entry's record in gen (the entries
     the last `highlights --write` wrote, generated.json) is found by the sheet's goal or penalty number (sheet_n), and
     its entry in highlights.json by the record's clip, however far the checker's t moved; a record whose entry is no
@@ -1440,12 +1805,22 @@ def _merge_highlights(old, new, gen, say):
     generated.json kept the numbers) an entry matches by its clip within 60 s (goals), else by team or player and
     time. A field the record holds takes the new value; one that differs from the record was edited by hand and
     stays, as does anything without a record. Clip names stay. Entries the checkers don't give (moments, a goal they
-    no longer find) stay as they are."""
+    no longer find) stay as they are. A goal's record is found by its period and clock on the sheet (sheet_key)
+    where the record has them, else by its number as the goal briefs had it (renum: the briefs' numbers to the
+    sheet's now, after a corrected sheet added a goal)."""
     out, used = [], set()
-    gen = gen or []
+    gen, renum = gen or [], renum or {}
     def record(h):
-        return next((x for x in gen if x.get("type") == h["type"] and x.get("sheet_n") is not None
-                     and x.get("sheet_n") == h.get("sheet_n")), None)
+        for x in gen:
+            if x.get("type") != h["type"]:
+                continue
+            if h["type"] == "goal" and x.get("sheet_key") and h.get("sheet_key"):
+                if x["sheet_key"] == h["sheet_key"]:
+                    return x
+            elif x.get("sheet_n") is not None and \
+                    (renum.get(x["sheet_n"], x["sheet_n"]) if h["type"] == "goal" else x["sheet_n"]) == h.get("sheet_n"):
+                return x
+        return None
     def match(h):
         rec = record(h)
         if rec is not None:
@@ -1507,14 +1882,45 @@ def _merge_highlights(old, new, gen, say):
     return sorted(out, key=lambda h: (rank.get(h.get("type"), 2), float(h["t"]) if h.get("type") in rank else 0))
 
 
-def _apply_kills(Ps, items, pseen, say):
+APPLIED = "applied.json"   # under GOAL_DIR: what `pk --write` and `highlights --write` last put into periods.json
+
+
+def _pen_key(x):
+    """A penalty of the sheet as applied.json keys it: period, clock and player, which a corrected sheet that adds a
+    penalty before it doesn't change (its number would)."""
+    return f"{x.get('period')} {x.get('clock')} #{x['player'] if x.get('player') is not None else 'bench'}"
+
+
+def _load_applied(W):
+    p = f"{W}/{GOAL_DIR}/{APPLIED}"
+    try:
+        rec = json.load(open(p, encoding="utf-8")) if os.path.exists(p) else {}
+    except ValueError:
+        print(f"{p}: not readable JSON; taken as empty (each kill is applied again)"); rec = {}
+    return {k: dict(rec.get(k) or {}) for k in ("pk", "pens")}
+
+
+def _save_applied(W, rec):
+    os.makedirs(f"{W}/{GOAL_DIR}", exist_ok=True)
+    json.dump(rec, open(f"{W}/{GOAL_DIR}/{APPLIED}", "w", encoding="utf-8"), indent=1)
+
+
+def _apply_kills(Ps, items, pseen, say, applied=None):
     """Each of our penalties' kill in periods.json (the one `pk` proposed, or any there for that player and stretch)
     replaced by the penalty checker's, split at intermissions, each change said. A penalty that sat without a kill
-    (coincident minors at 5 on 5, a misconduct) gets an `off` span for the player over box_in..box_out. Returns
-    whether periods.json changed and those off spans as (period, span, penalty number), for W/hand_spans.txt."""
+    (coincident minors at 5 on 5, a misconduct) gets an `off` span for the player over box_in..box_out, unless an
+    `off` of his already overlaps it. A kill or an off span added holds the player off, so it wins over his `on`
+    spans over its seconds (trim_opposite, as `span` does). Only what is new is applied: `applied` (applied.json's
+    "pens", updated here) holds each answer an earlier `--write` put in, and an answer applied before is left to
+    whatever periods.json says now, since a later `on` span, the "!! played 5 on 5" steps or a hand edit may have
+    cut it (re-adding it used to undo them, and the trim then cut a newer `on`). Returns whether periods.json changed,
+    those off spans as (period, span, penalty number), for W/hand_spans.txt, and the cuts as (period, player, trims,
+    by) for log_trims."""
     def split(a, b):
         return [(P["label"], _num(max(a, P["start"])), _num(min(b, P["end"]))) for P in Ps if max(a, P["start"]) < min(b, P["end"])]
-    fresh, changed, offs = [], False, []
+    applied = {} if applied is None else applied
+    fmt = lambda s: ", ".join(f"{lab} {a}-{b}" for lab, a, b in s) or "none"
+    fresh, changed, offs, cuts = [], False, [], []
     for x in sorted((x for x in items if x["team"] == "ours"), key=lambda x: x["player"] is None):
         e = pseen.get(x["n"])
         if not e:
@@ -1535,6 +1941,16 @@ def _apply_kills(Ps, items, pseen, say):
         old = [(P, k) for P in Ps for k in P.get("pk", []) if all(k is not f for f in fresh) and ok(k)
                and any(lab == P["label"] and k["start"] < b and a < k["end"] for lab, a, b in look)]
         was = sorted((P["label"], _num(k["start"]), _num(k["end"])) for P, k in old)
+        box = [_num(e["box_in"]), _num(e["box_out"])] if e.get("box_in") is not None and e.get("box_out") is not None \
+            else None
+        want = dict(kill=[_num(ans[1]), _num(ans[2])] if ans[0] == "kill" else None, who=who, box=box)
+        key = _pen_key(x)
+        if applied.get(key) == want:   # applied by an earlier --write: periods.json holds what was decided since
+            if was != sorted(new):
+                say.append(f"penalty {x['n']} #{who}: periods.json's kill {fmt(was)} is not the checker's {fmt(new)}, "
+                           f"which an earlier --write put in: kept as edited")
+            continue
+        applied[key] = want
         if was != sorted(new) or any(k.get("player") != who for _, k in old):
             for P, k in old:
                 P["pk"].remove(k)
@@ -1543,22 +1959,25 @@ def _apply_kills(Ps, items, pseen, say):
                 k = add_span(P, "pk", a, b, who)
                 if k is not None:
                     fresh.append(k)
-            fmt = lambda s: ", ".join(f"{lab} {a}-{b}" for lab, a, b in s) or "none"
+                    cuts.append((P, who, trim_opposite(P, "off", a, b, who), f"penalty {x['n']}'s kill #{who} {a}-{b}"))
             say.append(f"penalty {x['n']} #{who}: kill {fmt(was)} -> {fmt(new)}" + (f" ({e.get('why')})" if e.get("why") else ""))
             changed = True
-        if not new and who is not None and e.get("box_in") is not None and e.get("box_out") is not None:
-            for lab, a, b in split(float(e["box_in"]), float(e["box_out"])):
+        if not new and who is not None and box:
+            for lab, a, b in split(float(box[0]), float(box[1])):
                 P = next(P for P in Ps if P["label"] == lab)
+                if any(o.get("player") == who and o["start"] < b and a < o["end"] for o in P.get("off", [])):
+                    continue   # an off of his there already (this one, as a later span left it, or one by hand)
                 o = add_span(P, "off", a, b, who)
                 if o is None:
                     continue
                 offs.append((P, o, x["n"])); changed = True
                 say.append(f"penalty {x['n']} #{who}: + {lab} off {a}-{b}, in the box with no kill")
+                cuts.append((P, who, trim_opposite(P, "off", a, b, who), f"penalty {x['n']}'s off #{who} {a}-{b}"))
     for P in Ps:
         for k in ("pk", "off"):
             if k in P:
                 P[k] = sorted(P[k], key=lambda s: (s["start"], s.get("player") or 0))
-    return changed, offs
+    return changed, offs, [c for c in cuts if c[2]]
 
 
 def cmd_highlights(a):
@@ -1569,7 +1988,8 @@ def cmd_highlights(a):
     infraction, note and clip. Each goal also carries the checker's shot, pass and on_ice for the clips and the
     lineup check (publish leaves them out of game.json). It prints what doesn't add up. An existing
     highlights.json is updated entry by entry (_merge_highlights). With --write it writes the file and replaces our
-    kills in periods.json with the checker's (_apply_kills); without, it only prints."""
+    kills in periods.json with the checker's (_apply_kills: a new kill or a boxed player's off cuts his on spans);
+    without, it only prints, the cuts too."""
     import clock as clock_
     W = os.path.abspath(a.W).replace("\\", "/")
     if not os.path.exists(f"{W}/sheet.json"):
@@ -1577,14 +1997,47 @@ def cmd_highlights(a):
     Ps, clk = periods(W), clock_.load(W)
     sheet_ = json.load(open(f"{W}/sheet.json", encoding="utf-8"))
     gd = f"{W}/{GOAL_DIR}"
-    gseen, say = {}, []
-    for f in sorted(glob.glob(f"{gd}/p*/goals.json")):
+    gseen, gsrc, say, moved = {}, {}, [], []
+    def briefed(f):   # {n: the goal as the answer's brief listed it} (prompt_<folder>.json), {} for a folder without
+        p = f"{gd}/prompt_{os.path.basename(os.path.dirname(f))}.json"
+        try:
+            return {int(g["n"]): g for g in json.load(open(p, encoding="utf-8"))["goals"]} if os.path.exists(p) else {}
+        except (ValueError, KeyError, TypeError):
+            return {}
+    # the periods' answers, then the one-goal briefs' (goals --brief --only N: gN/goals.json), which win for their goal;
+    # among the rest the last in sort order wins (a hand-named p2b/ over p2/), and the line below says so. Each
+    # answer's goal is found by period and clock (_goal_match): a corrected sheet can add a goal before it
+    for f in sorted(glob.glob(f"{gd}/p*/goals.json")) + sorted(glob.glob(f"{gd}/g[0-9]*/goals.json")):
+        f = f.replace("\\", "/")
+        one = re.match(r"g(\d+)$", os.path.basename(os.path.dirname(f)))
         for e in _load_answers(f):
             if e.get("n") is None:
                 say.append(f"the goal checker reports a goal the sheet doesn't have, at {e.get('t')} ({e.get('team')}): "
                            f"{e.get('desc') or e.get('note')}; not entered (the sheet's score stands): ask the user")
+            elif one and str(e["n"]) != one.group(1):
+                say.append(f"{f} answers goal {e['n']}, but its brief was goal {one.group(1)}'s: left out")
             else:
-                gseen[int(e["n"])] = e
+                n0 = int(e["n"])
+                n = _goal_match(n0, e, briefed(f).get(n0), sheet_.get("goals", []))
+                if n is None:
+                    g0 = briefed(f).get(n0) or e
+                    say.append(f"{os.path.relpath(f, gd).replace(chr(92), '/')} answers goal {n0} ({g0.get('period')} "
+                               f"{g0.get('clock')}), which the game sheet no longer has: left out")
+                    continue
+                if n != n0:
+                    moved.append((n0, n))
+                if n in gseen:
+                    rel = lambda p: os.path.relpath(p, gd).replace("\\", "/")
+                    say.append(f"goal {n}: " + (f"{rel(f)} (its own brief) replaces {rel(gsrc[n])}'s answer" if one else
+                                                f"{rel(gsrc[n])} answers it twice; taking the later entry" if gsrc[n] == f else
+                                                f"{rel(gsrc[n])} and {rel(f)} both answer it; taking {rel(f)}'s (the last "
+                                                f"in sort order)"))
+                gseen[n], gsrc[n] = e, f
+    renum = dict(sorted(set(moved)))   # the briefs' numbers -> the sheet's now, for generated.json's records too
+    if renum:
+        say.insert(0, "the game sheet's goals are numbered differently from the goal briefs (a corrected sheet?): the "
+                      "answers are taken by period and clock, goal " + ", ".join(f"{a} as {b}" for a, b in renum.items())
+                   + "; a goal no checker has answered is `goals --brief --only N`'s")
     pf = f"{gd}/pens/pens.json"
     pseen = {int(e["n"]): e for e in (_load_answers(pf) if os.path.exists(pf) else []) if e.get("n") is not None}
     if not gseen and sheet_.get("goals"):
@@ -1598,10 +2051,12 @@ def cmd_highlights(a):
     hp, rec = f"{W}/highlights.json", f"{gd}/generated.json"
     if os.path.exists(hp):
         old = json.load(open(hp, encoding="utf-8"))
-        hl = _merge_highlights(old, new, json.load(open(rec, encoding="utf-8")) if os.path.exists(rec) else None, say)
+        hl = _merge_highlights(old, new, json.load(open(rec, encoding="utf-8")) if os.path.exists(rec) else None, say,
+                               renum)
     else:
         hl = new
-    kills, offs = _apply_kills(Ps, items, pseen, say)
+    applied = _load_applied(W)
+    kills, offs, cuts = _apply_kills(Ps, items, pseen, say, applied["pens"])
     for h in hl:
         who = (f" #{h['scorer']}" + (f" (A {', '.join(f'#{x}' for x in h.get('assists') or [])})" if h.get("assists") else "")
                if h.get("scorer") is not None and h["type"] == "goal" else f" #{h['player']}" if h["type"] == "penalty" else "")
@@ -1613,17 +2068,22 @@ def cmd_highlights(a):
     gf, ga = (sum(h["type"] == "goal" and h["team"] == x for h in hl) for x in ("for", "against"))
     print(f"goals on video {gf}-{ga}" + (f", the sheet's final {sc[0]}-{sc[1]}" if sc else ""))
     if not a.write:
+        for P, pl, trims, by in cuts:   # what --write would cut, worded as `span` words it
+            note_trims(W, P, "off", pl, trims, by, [])
         print(f"`run_game.py highlights {a.W} --write` writes {hp}" + (" and the kills into periods.json" if kills else ""))
         return
     os.makedirs(gd, exist_ok=True)
     hl = [{k: v for k, v in h.items() if k not in HL_RECORD} for h in hl]
     json.dump(hl, open(hp, "w", encoding="utf-8"), indent=1)   # ASCII: lineup_windows and gaps read it without an encoding
     json.dump(new, open(rec, "w", encoding="utf-8"), indent=1)
+    _save_applied(W, applied)
     if kills:
         save_periods(W, Ps, sort=("pk", "off"))
         for P, o, n in offs:   # the spans no checker's fixes.json holds go into span's log, marked as this command's
             log_span(W, P, "off", o["start"], o["end"], o["player"],
                      f"in the box with no kill, penalty {n}; added by highlights --write")
+        for P, pl, trims, by in cuts:   # what they cut of his `on` spans, printed and logged as `span` does
+            log_trims(W, P, "off", pl, trims, by)
     print(f"wrote {hp}" + (f" and the kills into {W}/periods.json" + (f" ({len(offs)} off span(s) logged in "
                                                                        f"{W}/hand_spans.txt)" if offs else "")
                            + "; solve again" if kills else ""))
@@ -1660,17 +2120,18 @@ def cmd_unknown(a):
     for n, c in cnt[cnt >= floor].items():
         files = sorted(set(dig[dig.num == n].file))
         sheet = f"{W}/unknown_{n}.jpg"
-        subprocess.run([PY, f"{HERE}/sheet.py", sheet, "110", "180", "12"] +
-                       [f"{full}/crops/{f}::" for f in files[::max(1, len(files) // 12)][:12]], stderr=subprocess.DEVNULL)
+        made = _crop_sheet(W, files, sheet)
         print(f"  #{n}: {c} reads; surnames on the same crops: {fmt(alpha[alpha.file.isin(files)].up.value_counts().head(3))}; "
-              f"crops: {sheet}")
+              f"crops: {sheet if made else 'none left (archived?)'}")
     if not (cnt >= floor).any():
         print("  none")
     print("  fewer reads (usually opponents or misreads):", fmt(cnt[(cnt < floor) & (cnt >= 30)].head(8)))
     lone = alpha[~alpha.file.isin(set(dig.file))].up.value_counts()
     print("  other surnames read 20+ times:", fmt(lone[lone >= 20].head(8)))
     print("Check each sheet: our jersey (light blue, or white with blue numbers and trim when we wear white) = ours "
-          "(add number and surname to roster.json, then prepare); another team's jersey = an opponent (ignore).")
+          "(add number and surname to roster.json, then prepare); another team's jersey = an opponent (ignore). "
+          "Roster numbers are `absent --suggest`'s: an opponent or a sub in one of our numbers shows there as a "
+          "check, with the plates read on its crops and a sheet of them (check_<N>.jpg).")
 
 
 def _grab(vid, t, x0, x1, y0, y1):
@@ -1823,30 +2284,139 @@ def cmd_frames(a):
     print(a.out)
 
 
-def _tracks_arg(spec, pdir):
+def _tracks_arg(spec, pdir, warns=None):
     """`clip --tracks` as (tracks file, tid lists per player, scorer first). "TID,TID;TID" are tracks in the
     period's tracks_v1.csv, each player's in priority order; "FILE.csv[:TIDS]" is a tracks file of its own: a
     stretch tracked into a folder of its own by run_period.py (LADA R's Nov 2 empty-netter came after the 3rd's tracks
     ended), or a skater traced by hand as t, x, y rows (clip.read_tracks; Beerteam's Nov 7 1st goal), all its
-    tracks when no TIDS follow. Such a file belongs outside W/scratch, where archive keeps only the checkers' .md and
-    .json: a clip re-cut from the archive needs it (with clip_args.json and clips_check.json, which archive keeps)."""
+    tracks when no TIDS follow. A clip re-cut from the archive needs it (with clip_args.json and clips_check.json,
+    which archive keeps); under W/scratch archive keeps a .csv of up to 10 MB (_scratch_keeps), so a bigger one there
+    warns. A warning goes into `warns` (cmd_clip's list) as well as on the screen."""
     m = re.match(r"^(.+\.csv)(?::([\d,;]*))?$", spec, re.I)
     if not m:
         return f"{pdir}/tracks_v1.csv", [[int(x) for x in g.split(",") if x.strip()] for g in spec.split(";")]
     path = os.path.abspath(norm_path(m.group(1)))   # clip_args.json's paths don't pass through main()
     scratch = os.path.abspath(f"{os.path.dirname(os.path.abspath(pdir))}/scratch")
-    if os.path.normcase(path).startswith(os.path.normcase(scratch) + os.sep):
-        print(f"WARNING clip --tracks: {path} is inside {scratch}, where archive keeps only the checkers' .md and "
-              f".json; move it out (say to "
-              f"{os.path.dirname(scratch)}/traces/) and give that path, so the clip can be cut again from the archive",
-              flush=True)
+    if os.path.normcase(path).startswith(os.path.normcase(scratch) + os.sep) and os.path.exists(path) \
+            and not _scratch_keeps(path):
+        msg = (f"--tracks {path} is inside {scratch}, where archive drops a file over {SCRATCH_TEXT_MAX / 1e6:.0f} MB; "
+               f"move it out (say to {os.path.dirname(scratch)}/traces/) and give that path, so the clip can be cut "
+               f"again from the archive")
+        print(f"WARNING clip {msg}", flush=True)
+        if warns is not None:
+            warns.append(dict(check="tracks-file", t=None, msg=msg))
     if m.group(2):
         return path, [[int(x) for x in g.split(",") if x] for g in m.group(2).split(";")]
     tr = pd.read_csv(path)
     return path, [list(dict.fromkeys(int(x) for x in tr.sort_values("t").tid)) if "tid" in tr else [0]]
 
 
+DUP_PX = 300   # two tracks labeled with one number, boxed at once this far apart (median), are two bodies
+# What the labels say against the followed body goes to the session and the clip checker as notes, not warnings: on
+# the dry run of the 221 accepted clips (Nov 20) the track at the shot spot carried another of our numbers at 18 of
+# them (the solver's label wrong, the spot right: TK's Nov 1 Belousenko labeled 89), the scorer had no labeled piece at
+# the goal second at 11, and two tracks labeled with his number were boxed at once far apart at 7 (28 clips in all)
+LABEL_NOTES = ("spot-label", "scorer-unlabeled", "number-twice")
+PEN_JUMPS_N = 1   # a penalty's camera changing bodies this often around the infraction (_follow_jumps) is a warning
+
+
+def _follow_jumps(tr, tids, win):
+    """A penalty clip's camera (clip.py's track: focus, the first of `tids` boxed within 0.5 s of each moment) over
+    win: the moments it changes to another track farther than a skater gets, as (t, from, to, px)."""
+    parts = [(x, tr[tr.tid == x].groupby("t")[["fx", "fy"]].first().sort_index()) for x in tids]
+    parts = [(x, p) for x, p in parts if len(p)]
+    ts = sorted({t for _, p in parts for t in p.index if win[0] <= t <= win[1]})
+    prev, out = None, []
+    for t in ts:
+        cur = next(((x, float(np.interp(t, p.index, p.fx)), float(np.interp(t, p.index, p.fy))) for x, p in parts
+                    if p.index.min() - 0.5 <= t <= p.index.max() + 0.5), None)
+        if cur and prev and cur[0] != prev[1][0]:
+            d = float(np.hypot(cur[1] - prev[1][1], cur[2] - prev[1][2]))
+            if d > 200 + 700 * (t - prev[0]):
+                out.append((t, prev[1][0], cur[0], d))
+        prev = (t, cur) if cur else prev
+    return out
+
+
+def _clip_label_warnings(sg, tr, num, group, adopted, anchor, tg, win, what):
+    """What the solver's labels (segs_final.csv's pieces sg, tracks_v1.csv's boxes tr) say against the body a clip
+    follows as player `num` (the scorer, or a penalty's player): his tracks `group` in the order the camera takes
+    them, `adopted` the one at the goal check's spot `anchor` (t, x, y: the shot, or the penalty's spot; None
+    without), tg the goal second (None for a penalty), win the stretch that matters. As check() words them, and
+    all LABEL_NOTES (labels too often wrong at a goal to warn on alone):
+    - spot-label: the track at the spot carries another of our numbers there or in `win`. TK's Nov 1: Belousenko's
+      own track labeled 89, so it can be the label that is wrong; it can as well be the spot, on another player.
+    - scorer-unlabeled: a shot spot was given and no piece labeled with his number covers the goal second, so only
+      the track at the spot says where he is (Beerteam's Nov 14 1st goal, first cut: an unlabeled track 107 px from
+      Kleiman's spot, which went off with another skater while he jammed it in).
+    - number-twice: two of the tracks labeled with his number boxed at once, DUP_PX or more apart: one of them is
+      someone else's (BW's Nov 7 6th goal: 1062 went from Charnysh to Disco's #91 at 3643 while 1071, also 36, had
+      him on the far boards; the clip followed 1062, without him at his shot)."""
+    out = []
+    lab = lambda x, a, b: sorted({int(v) for v in sg[(sg.tid == x) & (sg.t1 >= a) & (sg.t0 <= b) & (sg.plabel >= 0)].plabel})
+    if adopted is not None and anchor is not None:
+        other = [n for n in lab(adopted, anchor[0] - 0.5, anchor[0] + 0.5) if n != num]
+        if other:
+            out.append(dict(check="spot-label", t=anchor[0], msg=(
+                f"the track at the {what} spot (tid {adopted}) is labeled " + " and ".join(f"#{n}" for n in other)
+                + f" there in the solve, not #{num}: either that label or the spot is wrong, and the camera follows it "
+                f"as #{num}; look at it on `frames --tracks` (or the contact sheet): if it isn't him, give the {what} "
+                f"at his skates or --tracks")))
+    if tg is not None and anchor is not None and not len(
+            sg[(sg.plabel == num) & (sg.t1 >= tg - 0.5) & (sg.t0 <= tg + 0.5)]):
+        out.append(dict(check="scorer-unlabeled", t=tg, msg=(
+            f"#{num} has no labeled track at the goal second ({tg:g}): only the track at the shot spot "
+            f"({'tid ' + str(adopted) if adopted is not None else 'none within 200 px'}) says where he is, and the "
+            f"camera follows it; check on the dry run's table and the contact sheet that the replay is on him, else "
+            f"--tracks with his track or a hand trace")))
+    pieces = sg[(sg.plabel == num) & (sg.t1 >= win[0]) & (sg.t0 <= win[1])]
+    mine = sorted({int(x) for x in pieces.tid})
+    if len(mine) > 1:
+        # each track's boxes while a piece of it carries his number
+        b = tr[tr.tid.isin(mine) & (tr.t >= win[0]) & (tr.t <= win[1])]
+        inn = np.zeros(len(b), bool)
+        for s_ in pieces.itertuples():
+            inn |= ((b.tid == s_.tid) & (b.t >= s_.t0 - 0.07) & (b.t <= s_.t1 + 0.07)).values
+        pos = {x: g.groupby("t")[["fx", "fy"]].first() for x, g in b[inn].groupby("tid")}
+        follow = [int(x) for x in group]
+        pairs = []
+        for i, x in enumerate(mine):
+            for y in mine[i + 1:]:
+                if x not in pos or y not in pos:
+                    continue
+                j = pos[x].join(pos[y], how="inner", lsuffix="a", rsuffix="b")
+                if len(j) >= 3:
+                    d = float(np.median(np.hypot(j.fxa - j.fxb, j.fya - j.fyb)))
+                    if d >= DUP_PX:
+                        pairs.append((x, y, float(j.index.min()), float(j.index.max()), d))
+        for x, y, a_, b_, d in pairs:
+            on = [z for z in (x, y) if z in follow]
+            out.append(dict(check="number-twice", t=a_, msg=(
+                f"tracks {x} and {y} are both labeled #{num} at {a_:g}-{b_:g}, {d:.0f} px apart: one of them is "
+                f"someone else's" + (f", and the camera follows {' and '.join(map(str, on))} as #{num}" if on else "")
+                + f"; look at both on `frames --tracks`, then give the {what} at his skates or --tracks with his")))
+    return out
+
+
+def _add_clip_warnings(W, name, warns, notes=()):
+    """cmd_clip's own warnings into the clip's clips_check.json entry beside clip.py's (which wrote it), so that
+    `clips` counts them and the checker's brief lists them; its label notes under "notes", for the brief only."""
+    p = f"{W}/clips_check.json"
+    allc = json.load(open(p)) if os.path.exists(p) else {}
+    if name not in allc:
+        return
+    have = {(w.get("check"), w.get("msg")) for w in allc[name].get("warnings", [])}
+    allc[name]["warnings"] = [w for w in warns if (w["check"], w["msg"]) not in have] + allc[name].get("warnings", [])
+    allc[name]["notes"] = list(notes)
+    json.dump(allc, open(p, "w"), indent=1)
+
+
 def cmd_clip(a):
+    """One clip (clip.py) with the camera on the credited players' tracks: the scorer and assists (a goal, focus
+    "#N,#N") or the penalized player (a penalty, "#N"), from their labeled tracks in the window, the scorer's from
+    the track at the goal check's `shot` spot (`at_spot`, whatever its label), a penalty's from the track at its
+    `spot`. What the labels say against the followed body (_clip_label_warnings) and anything else that goes wrong
+    here is printed as a clip check and added to clips_check.json (_add_clip_warnings). Returns those warnings."""
     from roster import SITE_DIR
     W = os.path.abspath(a.W)
     out = f"{SITE_DIR}/games/{a.game_id}/clips/{a.name}.mp4"
@@ -1859,11 +2429,21 @@ def cmd_clip(a):
     cmd = [PY, f"{HERE}/clip.py", f"{W}/full", f"{W}/video.webm", f"{W}/audio.m4a", out, a.t0, a.t1, a.poster]
     focus = a.focus
     tracks = getattr(a, "tracks", None)
+    start, spot = getattr(a, "start", None), getattr(a, "spot", None)
+    anchor = a.shot if a.net else spot   # a goal's scorer is the track at his shot, a penalty's player at the spot
+    warns = []
+    t0, t1, tg = float(a.t0), float(a.t1), float(a.poster)
+    _tr = {}
+
+    def boxes(pdir):
+        if pdir not in _tr:
+            _tr[pdir] = pd.read_csv(f"{pdir}/tracks_v1.csv", usecols=["t", "tid", "fx", "fy"])
+        return _tr[pdir]
 
     def at_spot(pdir, spot, what):
-        """The track at a goal check's spot ("T,X,Y": a shot or a pass), whatever its label, or None."""
+        """The track at a goal check's spot ("T,X,Y": a shot, a pass or a penalty's spot), whatever its label, or None."""
         ts, sx, sy = (float(v) for v in spot.split(","))
-        tr = pd.read_csv(f"{pdir}/tracks_v1.csv")
+        tr = boxes(pdir)
         # then 0.5 s: in a pile at the post a track loses its box (Babkin's last one on the Doofers' Nov 15 5th goal
         # was 0.375 s before the goal check's shot, 20 px from it)
         for dt in (0.25, 0.5):
@@ -1871,7 +2451,9 @@ def cmd_clip(a):
             dist = np.hypot(near.fx - sx, near.fy - sy)
             if len(near) and dist.min() < 200:
                 return int(near.tid.iat[int(dist.values.argmin())])
-        print(f"clip: no track within 200 px of the {what} at {spot}")
+        warns.append(dict(check="spot-track", t=ts, msg=f"no track within 200 px of the {what} at {spot}: the camera "
+                          "follows the labeled tracks (or the spot itself); check them on the dry run's table, or "
+                          "--tracks with a trace"))
         return None
 
     # a goal against has no players to name: tracks_v1 holds only ours, so a track at their shot or pass is one of
@@ -1880,13 +2462,13 @@ def cmd_clip(a):
         # follow a player (his labeled tracks in this window, in time order: the first covering track wins), or
         # for a goal keep the scorer and assists in the frame ("#14,#13,#89", scorer first)
         nums = [int(n.strip().lstrip("#")) for n in focus.split(",")] if focus and focus.startswith("#") else []
-        t0, t1 = float(a.t0), float(a.t1)
         P = next(P for P in periods(W) if P["start"] - 30 <= float(a.poster) <= P["end"] + 30)
         pdir = f"{W}/{P['label'].lower()}"
-        path, tids = f"{pdir}/tracks_v1.csv", []
+        path, tids, adopted = f"{pdir}/tracks_v1.csv", [], None
+        sg = pd.read_csv(f"{pdir}/segs_final.csv") if os.path.exists(f"{pdir}/segs_final.csv") or nums else \
+            pd.DataFrame(columns=["tid", "t0", "t1", "num", "nreads", "plabel"])
+        sg = sg[(sg.t1 > t0) & (sg.t0 < t1)].sort_values("t0")
         if nums:
-            sg = pd.read_csv(f"{pdir}/segs_final.csv")
-            sg = sg[(sg.t1 > t0) & (sg.t0 < t1)].sort_values("t0")
             # a player's tracks in priority order: those his number was read on first. On TK's Oct 25 game a still
             # figure on the far boards was also labeled 61 beside the real #61, and the camera jumped between them
             # a tid is one tracked body over all its pieces, and clip.py follows the whole of it, so leave out one that
@@ -1905,20 +2487,54 @@ def cmd_clip(a):
         if tracks:
             # tracks chosen by hand replace the labeled ones player by player (scorer first); a tracks file of its
             # own holds the whole group. R's Oct 26 4th goal: #12's labeled tracks took in our goalie (1465)
-            path_, mine = _tracks_arg(tracks, pdir)
+            path_, mine = _tracks_arg(tracks, pdir, warns)
             tids, chosen = (mine + tids[len(mine):] if path_ == path else mine), len(mine)
             path = path_
-        if a.shot and chosen < 1 and tids:
+        if anchor and chosen < 1 and tids:
             # the goal check's shot names the scorer's track at it, whatever its label: on TK's Oct 25 empty-netter
-            # the tracks labeled 64 were other players, and the camera framed one of them with the empty net
-            tid = at_spot(pdir, a.shot, "shot (the scorer's labeled tracks stand)")
-            if tid is not None:
-                tids[0] = [tid] + [x for x in tids[0] if x != tid]
+            # the tracks labeled 64 were other players, and the camera framed one of them with the empty net. A
+            # penalty's spot does the same for the penalized player (Beerteam's Nov 14: #24's labeled track was #27's
+            # from 2100, ten seconds before his infraction)
+            adopted = at_spot(pdir, anchor, "shot" if a.net else "penalty's spot")
+            if adopted is not None:
+                tids[0] = [adopted] + [x for x in tids[0] if x != adopted]
+                if not a.net:
+                    # a penalty follows the first of his tracks that covers each moment (clip.py's track: focus), so a
+                    # track labeled with his number boxed beside the one at his spot but far from it is someone
+                    # else's: left out
+                    tr_ = boxes(pdir)
+                    here = tr_[tr_.tid == adopted].groupby("t")[["fx", "fy"]].first()
+                    keep = [adopted]
+                    for x in tids[0][1:]:
+                        j = here.join(tr_[tr_.tid == x].groupby("t")[["fx", "fy"]].first(), how="inner", rsuffix="b")
+                        if len(j) >= 3 and float(np.median(np.hypot(j.fx - j.fxb, j.fy - j.fyb))) >= DUP_PX:
+                            print(f"clip: track {x}, labeled #{nums[0]}, is boxed beside {adopted} (at the spot) "
+                                  f"{float(j.index.min()):g}-{float(j.index.max()):g}, far from it: left out")
+                            continue
+                        keep.append(x)
+                    tids[0] = keep
         if a.pass_ and len(tids) > 1 and chosen < 2:
             # the passer (the first assist) is the track at the pass, whatever its label
             tid = at_spot(pdir, a.pass_, "pass")
             if tid is not None:
                 tids[1] = [tid] + [x for x in tids[1] if x != tid]
+        if nums and path == f"{pdir}/tracks_v1.csv":
+            # what the labels say against the body followed as the scorer (or the penalized player), over the play
+            # and the replay: from 8 s before the goal (2 s before the start, shot or pass if earlier) to 2 s after
+            marks = [float(v.split(",")[0]) for v in (start, a.shot, a.pass_) if v] if a.net else []
+            win = (min([tg - 8] + [m - 2 for m in marks]), tg + 2) if a.net else (tg - 6, tg + 2)
+            spot_ = tuple(float(v) for v in anchor.split(",")) if anchor else None
+            warns += _clip_label_warnings(sg, boxes(pdir), nums[0], tids[0] if tids else [], adopted, spot_,
+                                          tg if a.net else None, win, "shot" if a.net else "penalty's")
+            if not a.net and tids and tids[0]:
+                # a penalty's camera changing bodies around the infraction (clip.py checks a goal's path itself)
+                jumps = _follow_jumps(boxes(pdir), tids[0], win)
+                if len(jumps) >= PEN_JUMPS_N:
+                    t_, x_, y_, d_ = max(jumps, key=lambda j: j[3])
+                    warns.append(dict(check="player-jump", t=jumps[0][0], msg=(
+                        f"the camera changes from track {x_} to {y_} ({d_:.0f} px) at {t_:g}"
+                        + (f", {len(jumps)} such changes in {win[0]:g}-{win[1]:g}" if len(jumps) > 1 else "")
+                        + f": two bodies carry #{nums[0]}; give `spot` (his skates at the infraction) or --tracks")))
         tids = [",".join(str(x) for x in g) for g in tids]
         if len(tids) > 1 or a.net:
             focus = f"group:{path}:" + ";".join(tids) if any(tids) else None
@@ -1928,14 +2544,24 @@ def cmd_clip(a):
     if a.net:
         # the net the goal went into: ours (`net` in periods.json) for one against, the other one for ours
         R = rink(f"{W}/full")
-        tg = float(a.poster)
         ours = next(P for P in periods(W) if P["start"] - 30 <= tg <= P["end"] + 30)["net"]
         side = next(s for s, x in R.nets.items() if (x == ours) == (a.net == "against"))
         v = R.views[f"{side}-net"]
         net = [f"{R.nets[side]},{getattr(R, 'NET_Y', (v[2] + v[3]) / 2)}"]
-        if a.replay_from or a.shot or a.pass_:
-            net += [a.replay_from or "-"] + ([a.shot or "-"] if a.shot or a.pass_ else []) + ([a.pass_] if a.pass_ else [])
+        rest = [a.replay_from, a.shot, a.pass_, start]   # clip.py's REPLAY_FROM SHOT PASS START, "-" for none
+        while rest and not rest[-1]:
+            rest.pop()
+        net += [v or "-" for v in rest]
+    notes = [w for w in warns if w["check"] in LABEL_NOTES]
+    warns = [w for w in warns if w["check"] not in LABEL_NOTES]
+    for w in warns + notes:
+        w.setdefault("at", None if w.get("t") is None else round(float(w["t"]) - t0, 2))
+        print(f"clip {'note' if w in notes else 'check'}: {a.name}: {w['msg']}"
+              + (f" (clip {w['at']:g} s)" if w["at"] is not None else ""), flush=True)
     sh(*cmd + ([focus or "-"] + net if net else [focus] if focus else []) + (["--dry-run"] if dry else []))
+    if warns or notes:
+        _add_clip_warnings(W, a.name, warns, notes)
+    return warns
 
 
 # s before and after the poster that a clip of each kind runs, as the sessions cut them: the last cut of each clip in
@@ -1947,16 +2573,18 @@ CLIP_WINDOW = {"goal": (12, 10), "penalty": (12, 10), "moment": (12, 10)}
 
 def clip_line(h, over):
     """One highlights.json entry's `clip` arguments as (name, {argument: value}), as the sessions wrote them in each
-    game's clips.sh: CLIP_WINDOW around the poster at t (t-12 .. t+10 for every kind); a goal with --net and the goal check's shot and pass, ours
-    framing the scorer and assists; a penalty following the player who took it; a moment on the main group. The clip
-    starts at least 8 s before the pass (or the shot), as LADA Y's Nov 2 clips did for the build-up. `over` (the
-    clip's entry in W/clip_args.json) replaces any of it: t0, t1, focus ("-" for none), shot, pass (null: leave it
-    out), replay_from, tracks."""
+    game's clips.sh: CLIP_WINDOW around the poster at t (t-12 .. t+10 for every kind); a goal with --net and the goal
+    check's shot, pass and start, ours framing the scorer and assists; a penalty following the player who took it,
+    from the track at the penalty checker's spot; a moment on the main group. The clip starts at least 8 s before the
+    start, the pass or the shot, as LADA Y's Nov 2 clips did for the build-up. `over` (the clip's entry in
+    W/clip_args.json) replaces any of it: t0, t1, focus ("-" for none), shot, pass, start, spot (null: leave it out),
+    replay_from, tracks."""
     name = os.path.splitext(os.path.basename(h["clip"]))[0]
-    o = {"shot": h.get("shot"), "pass": h.get("pass"), **over}
+    o = {"shot": h.get("shot"), "pass": h.get("pass"), "start": h.get("start"), "spot": h.get("spot"), **over}
     t, kind = float(h["t"]), h.get("type")
-    shot, pas = (o["shot"], o["pass"]) if kind == "goal" else (None, None)
-    first = min([float(v[0]) for v in (shot, pas) if v] + [t])
+    shot, pas, start = (o["shot"], o["pass"], o["start"]) if kind == "goal" else (None, None, None)
+    spot = o["spot"] if kind == "penalty" else None
+    first = min([float(v[0]) for v in (shot, pas, start) if v] + [t])
     focus = o.get("focus")
     if focus is None and kind == "goal" and h.get("team", "for") == "for" and h.get("scorer") is not None:
         focus = ",".join(f"#{n}" for n in [h["scorer"]] + list(h.get("assists") or []))
@@ -1967,6 +2595,7 @@ def clip_line(h, over):
     args = dict(t0=g(o.get("t0", min(t - before, np.floor(first - 8)))), t1=g(o.get("t1", t + after)), poster=g(t),
                 focus=None if focus in (None, "", "-") else str(focus), net=h.get("team", "for") if kind == "goal" else None,
                 shot=",".join(g(v) for v in shot) if shot else None, pass_=",".join(g(v) for v in pas) if pas else None,
+                start=",".join(g(v) for v in start) if start else None, spot=",".join(g(v) for v in spot) if spot else None,
                 replay_from=g(o["replay_from"]) if o.get("replay_from") is not None and kind == "goal" else None,
                 tracks=str(o["tracks"]) if o.get("tracks") else None)
     return name, args
@@ -1975,20 +2604,34 @@ def clip_line(h, over):
 def _clip_cmd(name, c):
     """A clip's arguments as the `run_game.py clip` line a clips.sh held."""
     import shlex
-    opts = [(f"--{k.rstrip('_').replace('_', '-')}", c[k]) for k in ("net", "shot", "pass_", "replay_from", "tracks")]
+    opts = [(f"--{k.rstrip('_').replace('_', '-')}", c.get(k))
+            for k in ("net", "start", "shot", "pass_", "spot", "replay_from", "tracks")]
     return " ".join(["$PY pipeline/run_game.py clip $W $G", name, c["t0"], c["t1"], c["poster"]]
                     + ([shlex.quote(c["focus"])] if c["focus"] else []) + [f"{k} {shlex.quote(v)}" for k, v in opts if v])
+
+
+def _only_names(only):
+    """--only's clip names, given as one comma-separated argument or several (Beerteam's Nov 14 session typed
+    `--only goal-1 penalty-69 penalty-24` and got argparse's 'unrecognized arguments')."""
+    if isinstance(only, str):
+        only = [only]
+    return [n.strip() for x in only or [] for n in x.split(",") if n.strip()]
 
 
 def cmd_clips(a):
     """Cut every clip highlights.json lists (clip_line, with W/clip_args.json's hand-set arguments), each checked on
     its camera path first; tile each rendered clip into a contact sheet (W/scratch/clips/NAME.jpg) and write the brief
-    for the one subagent that checks them all (clip_brief). --only re-cuts the named clips and leaves the rest;
-    --dry-run computes and checks the paths and cuts nothing. A clip that fails doesn't stop the others, the brief
-    covers those that were cut, and the exit status is 1 when any failed."""
+    for the one subagent that checks them all (clip_brief: round N's prompt.rN.md, its answers answers.rN.json).
+    --only re-cuts the named clips and leaves the rest; --dry-run computes and checks the paths and cuts nothing;
+    --answers reads the checker's answers instead (clip_answers). A clip that fails doesn't stop the others, the
+    brief covers those that were cut, and the exit status is 1 when any failed. The warnings counted and repeated
+    at the end are clip.py's path checks and cmd_clip's own (the labels against the followed track, a spot without a
+    track, a trace in scratch/ too big for archive to keep), all kept in clips_check.json."""
     from roster import SITE_DIR
     from clip import contact_sheet, sheet_marks
     W = os.path.abspath(a.W).replace("\\", "/")
+    if getattr(a, "answers", False):
+        return clip_answers(W, a.game_id, a.W)
     if not os.path.exists(f"{W}/highlights.json"):
         sys.exit(f"no {W}/highlights.json: `run_game.py highlights {a.W} --write` builds it from the goal and penalty "
                  f"checkers' answers")
@@ -1999,7 +2642,7 @@ def cmd_clips(a):
     jobs = [clip_line(h, over.get(os.path.splitext(os.path.basename(h["clip"]))[0], {})) for h in hl]
     unknown = sorted(set(over) - {n for n, _ in jobs})
     if a.only:
-        want = [n.strip() for n in a.only.split(",") if n.strip()]
+        want = _only_names(a.only)
         match = lambda n, w: n == w or n.startswith(w + "-")   # penalty-97: penalty-97-1676 and penalty-97-2820
         miss = [w for w in want if not any(match(n, w) for n, _ in jobs)]
         if miss:
@@ -2032,17 +2675,24 @@ def cmd_clips(a):
                               sheet_marks(rec), title=title, live_s=rec["live_s"] if rec["replay"] else None)
             except (SystemExit, Exception) as e:
                 print(f"clips: {name}'s contact sheet failed ({type(e).__name__}: {e})"); done.remove(name); failed.append(name)
-    n = 0
+    n, warned = 0, []
     for name in done:
         for w in checks.get(name, {}).get("warnings", []):
-            print(f"  {name} at clip {w['at']:g} s: {w['msg']}"); n += 1
+            at_ = f" at clip {w['at']:g} s" if w.get("at") is not None else ""
+            print(f"  {name}{at_}: {w['msg']}"); n += 1
+            warned += [name] if name not in warned else []
+    noted = [(name, w) for name in done for w in checks.get(name, {}).get("notes", [])]
     print(f"{len(done)} clip(s) {'checked' if a.dry_run else 'cut and checked'}, {n} warning(s)"
-          + (f"; failed: {', '.join(failed)}" if failed else ""))
+          + (f" on {', '.join(warned)}" if warned else "") + (f"; failed: {', '.join(failed)}" if failed else ""))
+    if noted:
+        print(f"{len(noted)} label note(s), not counted (the solver's labels at a goal are often wrong where the spot is "
+              f"right; the clip checker's brief carries them): " + "; ".join(f"{nm} {w['check']}" for nm, w in noted))
     if done and not a.dry_run:
-        pf = clip_brief(W, a.game_id, done, checks)
+        pf, out_file = clip_brief(W, a.game_id, done, checks)
         print(f"contact sheets in {W}/scratch/clips/. One general-purpose subagent whose whole prompt is\n"
               f"  'Read {pf} and do exactly what it says. Reply with one line per clip.'\n"
-              f"  It writes {W}/scratch/clips/answers.json. Show the user nothing until it has answered.")
+              f"  It writes {out_file}; then `run_game.py clips {a.W} {a.game_id} --answers` says what to re-cut and "
+              f"what goes to the user. Show the user nothing until it has answered.")
     if failed:
         sys.exit(f"clips: {len(failed)} of {len(jobs)} failed ({', '.join(failed)}); `run_game.py clips {a.W} "
                  f"{a.game_id} --only {','.join(failed)}` tries them again")
@@ -2069,18 +2719,73 @@ def cmd_clipsheet(a):
     print(contact_sheet(a.mp4, a.out, marks, a.step, span, title=title, live_s=live_s))
 
 
+CLIPS_DIR = "scratch/clips"   # under W: the contact sheets, and each round's brief and the clip checker's answers
+
+
+def _clip_rounds(scratch):
+    """{round N: (prompt.rN.json's record or None, answers.rN.json's path or None)} in W/scratch/clips. Folders from
+    before Nov 20, 2026 have prompt.md and answers.json, the last checker's, and the copies sessions made by hand of
+    earlier ones (answers.r1.json ...): those copies are their rounds, and answers.json the round after them unless it
+    is the same as one of them, also once a new round has been briefed there (Blue Wings' Nov 7: rounds 1 and 2 by
+    hand, answers.json 3, then round 4)."""
+    R = {}
+    for f in glob.glob(f"{scratch}/prompt.r*.json") + glob.glob(f"{scratch}/answers.r*.json"):
+        m = re.match(r"(prompt|answers)\.r(\d+)\.json$", os.path.basename(f))
+        if not m:
+            continue
+        rec, ans = R.get(int(m.group(2)), (None, None))
+        if m.group(1) == "prompt":
+            try:
+                rec = json.load(open(f, encoding="utf-8"))
+            except ValueError:
+                rec = None
+        else:
+            ans = f
+        R[int(m.group(2))] = (rec, ans)
+    if os.path.exists(f"{scratch}/answers.json"):
+        body = open(f"{scratch}/answers.json", "rb").read().strip()
+        if not any(a and open(a, "rb").read().strip() == body for _, a in R.values()):
+            # after the hand copies and before the first round briefed by `clips` (which numbered on from it)
+            n = 1 + max([k for k, (rec, _) in R.items() if rec is None and k < min([k for k, (rec, _) in R.items()
+                                                                                  if rec] + [10 ** 6])], default=0)
+            R[n if n not in R else n - 0.5] = (None, f"{scratch}/answers.json")
+    return R
+
+
+def _sheet_goal(W, name, with_n=False):
+    """The game sheet's goal a highlights.json clip is (scratch/goals/generated.json records its sheet_n), or None;
+    with_n: (its number on the sheet, the goal)."""
+    rec, sp = f"{W}/{GOAL_DIR}/generated.json", f"{W}/sheet.json"
+    if not (os.path.exists(rec) and os.path.exists(sp)):
+        return None
+    n = next((x.get("sheet_n") for x in json.load(open(rec, encoding="utf-8"))
+              if x.get("type") == "goal" and os.path.splitext(os.path.basename(x.get("clip") or ""))[0] == name), None)
+    goals = json.load(open(sp, encoding="utf-8")).get("goals", [])
+    if not (n and 0 < n <= len(goals)):
+        return None
+    return (n, goals[n - 1]) if with_n else goals[n - 1]
+
+
 def clip_brief(W, game_id, names, checks):
-    """The brief for the one subagent that checks every clip's contact sheet (W/scratch/clips/prompt.md, from
-    pipeline/clip_prompt.md): per clip who scores from where into which net, the pass, the infraction, the moments
-    to look at in clip seconds and the path check's warnings, then the questions the user's complaints raised."""
+    """The brief for the one subagent that checks every clip's contact sheet (W/scratch/clips/prompt.rN.md, from
+    pipeline/clip_prompt.md, N the round: one more than any round there, so a second checker's answers don't
+    overwrite the first's): per clip who scores from where into which net (for theirs the sheet's scorer, number and
+    name, with their jersey's look), the start, the pass, the infraction, the moments to look at in clip seconds and
+    the path check's warnings, then the questions the user's complaints raised. prompt.rN.json keeps the round's
+    clips and their times, which `clips --answers` needs to turn the checker's clip seconds into seconds of video.
+    Returns the brief's path and the answers' (answers.rN.json)."""
     from roster import ALL_SKATERS, GOALIE_NAMES, SITE_DIR
     R = rink(f"{W}/full")
     Ps = periods(W)
     ctx = _brief_context(W)   # our look and the opponents' as the gap and goal briefs word them
     hl = {os.path.splitext(os.path.basename(h["clip"]))[0]: h
           for h in json.load(open(f"{W}/highlights.json", encoding="utf-8")) if h.get("clip")}
-    scratch = f"{W}/scratch/clips"
-    who = lambda n: f"#{n} {ALL_SKATERS.get(n, GOALIE_NAMES.get(n, '')).upper()}".strip()
+    scratch = f"{W}/{CLIPS_DIR}"
+    os.makedirs(scratch, exist_ok=True)
+    rnd = 1 + max([n for n in _clip_rounds(scratch)] + [
+        int(m.group(1)) for f in os.listdir(scratch) for m in [re.match(r"(?:prompt|answers)\.r(\d+)\.(?:md|json)$", f)] if m]
+        + [0])
+    who = lambda n: f"#{n} {_player_name(W, n)}".strip()   # the sheet's name where it differs, as the roster line
     blocks = []
     for name in names:
         h, rec = hl[name], checks.get(name, {})
@@ -2095,20 +2800,38 @@ def clip_brief(W, game_id, names, checks):
             ours = h.get("team", "for") == "for"
             nx = rec["net"][0] if rec.get("net") else None
             side = _net_side(R, nx) if nx is not None else "?"
-            scorer = (who(h["scorer"]) + (" from " + ", ".join(who(n) for n in h.get("assists") or []) if h.get("assists") else ""))\
-                if ours and h.get("scorer") is not None else "their scorer (see the note)"
+            sg = _sheet_goal(W, name) if not ours else None
+            if ours and h.get("scorer") is not None:
+                scorer = who(h["scorer"]) + (" from " + ", ".join(who(n) for n in h.get("assists") or []) if h.get("assists") else "")
+            elif sg and sg.get("scorer") is not None:
+                scorer = (f"their #{sg['scorer']} {sg.get('scorer_name') or ''}".rstrip() + f", the game sheet's scorer "
+                          f"({ctx['opp_desc']}),")
+            else:
+                scorer = f"their scorer ({ctx['opp_desc']}; the note names him)"
             L.append(f"Goal {'for us' if ours else 'against us'}, {when}: {note}")
-            L.append(f"Scored by {scorer} into {'their' if ours else 'our'} net, the {side} one.")
+            L.append(f"Scored by {scorer} into {'their' if ours else 'our'} net, the {side} one. The credited scorer is "
+                     "the one the replay must show taking his shot.")
+            if h.get("scorer_seen") is not None:   # the goal checker saw someone else put it in (highlights.json)
+                at = h.get("credited_at")
+                L.append(f"But the goal checker saw #{h['scorer_seen']} put it in, and the clip follows him: the SHOT "
+                         f"tiles are his last touch. " + (
+                             f"The credited scorer was then at {at[0]:g} s of video, skates at ({at[1]}, {at[2]}) in "
+                             f"frame pixels. " if at else "The goal checker didn't say where the credited scorer was. ")
+                         + "If the replay shows that touch, and the credited scorer where the goal checker saw him (in "
+                         "the frame or not), it is `credit` with `seen` and `credited_at`, not `camera`.")
             must = []
+            if rec.get("start"):
+                must.append(f"the start of the scoring play, where the replay opens ({cs('start')}, tiles START)")
             if rec.get("shot"):
                 dx = abs(rec["shot"][1] - nx)
                 far = ("at the crease" if dx < 250 else "from close in" if dx < 600 else "from the slot or the circles"
                        if dx < 1100 else "from the point or farther out")
                 dy = rec["shot"][2] - rec["net"][1]
                 across = " on the far side" if dy < -80 else " on the near side" if dy > 80 else ""
-                must.append(f"the shooter as the puck leaves his stick, {far}{across} ({cs('shot')}, tiles SHOT)")
+                must.append(f"the scorer at his last touch (his shot, deflection or jam), {far}{across} ({cs('shot')}, "
+                            f"tiles SHOT)")
             else:
-                must.append("the scorer as he scores (no shot time was given: the last touch before the goal)")
+                must.append("the scorer as he scores (no shot time was given: his last touch before the goal)")
             must.append(f"the puck in {'their' if ours else 'our'} net or the goalie beaten ({cs('goal')}, tiles GOAL)")
             if rec.get("pas"):
                 passer = who(h["assists"][0]) if ours and h.get("assists") else "the passer"
@@ -2117,27 +2840,179 @@ def clip_brief(W, game_id, names, checks):
                 must.append(f"the assist{'s' if len(h['assists']) > 1 else ''} in the build-up (no pass time was given)")
             L.append("Must be visible: " + "; ".join(must) + ".")
             if rec.get("replay"):
-                L.append(f"The replay is clip {rec['live_s']:g}-{rec['length_s']:g} s: play {rec['replay'][0]:g}-"
-                         f"{rec['replay'][1]:g} s at half speed.")
+                L.append(f"Live clip second s is {rec['t0']:g} + s s of video; the replay is clip {rec['live_s']:g}-"
+                         f"{rec['length_s']:g} s, play {rec['replay'][0]:g}-{rec['replay'][1]:g} s at half speed (replay "
+                         f"clip second s is {rec['replay'][0]:g} + (s - {rec['live_s']:g}) / 2 s of video).")
         elif h["type"] == "penalty":
             L.append(f"Our {who(h['player'])}'s penalty, {when}: {note}")
             L.append(f"Must be visible: {who(h['player'])} and the infraction in the seconds before the call "
                      f"(clip {mk.get('poster', [0])[0]:g} s, tile POSTER), not the main group elsewhere. If the note says "
-                     "the infraction isn't on camera, say whether the clip shows the player and the call.")
+                     "the infraction isn't on camera, say whether the clip shows the player and the call. Clip second s "
+                     f"is {rec.get('t0', float(h['t']) - 12):g} + s s of video.")
         else:
             L.append(f"{h.get('title', 'A moment')}, {when}: {note}")
             L.append(f"Must be visible: what the title says, around clip {mk.get('poster', [0])[0]:g} s (tile POSTER).")
         ws = rec.get("warnings", [])
-        L.append("The camera-path check warned: " + "; ".join(f"{w['msg']} (clip {w['at']:g} s)" for w in ws)
+        L.append("The camera-path check warned: " + "; ".join(
+            w["msg"] + (f" (clip {w['at']:g} s)" if w.get("at") is not None else "") for w in ws)
                  + ". Confirm or refute each from the sheet." if ws else "The camera-path check found nothing; look anyway.")
+        if rec.get("notes"):
+            L.append("The solver's labels note (more often a wrong label than a wrong camera): " + "; ".join(
+                w["msg"].split(": look at")[0].split("; check on")[0] + (f" (clip {w['at']:g} s)" if w.get("at") is not None else "")
+                for w in rec["notes"]) + ". Make sure the camera is on him there.")
         blocks.append("\n".join(L))
+    out_file = f"{scratch}/answers.r{rnd}.json"
     tmpl = open(f"{HERE}/clip_prompt.md", encoding="utf-8").read()
-    text = tmpl.format(**ctx, scratch=scratch, n=len(names), clips="\n\n".join(blocks),
-                       out_file=f"{scratch}/answers.json", example=names[0])
-    os.makedirs(scratch, exist_ok=True)
-    pf = f"{scratch}/prompt.md"
+    text = tmpl.format(**ctx, scratch=scratch, n=len(names), clips="\n\n".join(blocks), out_file=out_file,
+                       example=names[0])
+    pf = f"{scratch}/prompt.r{rnd}.md"
     open(pf, "w", encoding="utf-8").write(text)
-    return pf
+    keep = ("t0", "t1", "poster", "net", "shot", "pas", "start", "replay", "live_s", "length_s", "marks")
+    json.dump(dict(round=rnd, clips=list(names), game_id=game_id,
+                   records={n: {k: checks.get(n, {}).get(k) for k in keep} for n in names}),
+              open(f"{scratch}/prompt.r{rnd}.json", "w", encoding="utf-8"), indent=1)
+    return pf, out_file
+
+
+CLIP_KINDS = ("camera", "time", "credit", "cant_tell")   # the clip checker's problem kinds (clip_prompt.md)
+
+
+def _problem_kind(p):
+    """A clip checker's problem's kind (None for an answer without one: from before Nov 20, 2026, when every problem
+    was 'not ok', or a checker that left it out), and a note when it was changed: a `credit` that doesn't say where
+    the credited scorer is seen (`credited_at`) is `camera`, since the replay must show him (Beerteam's Nov 14: 'the
+    shooter on both SHOT tiles is #76 ... the note credits #36, who shows up only at live 17', filed by hand as a
+    credit, was the user's complaint)."""
+    k = str(p.get("kind") or "").strip().lower().replace("'", "").replace(" ", "_").replace("-", "_")
+    k = {"cannot_tell": "cant_tell", "unsure": "cant_tell"}.get(k, k)
+    if k not in CLIP_KINDS:
+        return None, ""
+    if k == "credit" and p.get("credited_at") in (None, "", []):
+        return "camera", "a credit that doesn't say where the credited scorer is seen: the replay must show him, so camera"
+    return k, ""
+
+
+def _video_t(rec, s):
+    """A clip second (as on the contact sheet's tiles) as seconds of video, by the round's record of the clip."""
+    s = float(s)
+    if rec and rec.get("replay") and s >= rec["live_s"]:
+        return round(rec["replay"][0] + (s - rec["live_s"]) / 2, 2)
+    return round((rec or {}).get("t0", 0) + s, 2) if rec else None
+
+
+def clip_answers(W, game_id, Warg=None):
+    """`clips --answers`: the clip checkers' answers, the newest round that covered each clip, sorted into what to
+    re-cut (`camera` and `time` problems, each with what to change: the checker's spot for the scorer as `shot`, a
+    time in seconds of video) and the `--only` line for it, what goes to the user's summary (`credit`, `cant_tell`)
+    and the clips that are fine. `ok` is taken from the kinds, not the checker's word."""
+    scratch = f"{W}/{CLIPS_DIR}"
+    rounds = _clip_rounds(scratch)
+    if not rounds:
+        sys.exit(f"no clip checker's answers in {scratch} (each `clips` cut writes prompt.rN.md for one)")
+    hl = {os.path.splitext(os.path.basename(h["clip"]))[0]: h
+          for h in json.load(open(f"{W}/highlights.json", encoding="utf-8")) if h.get("clip")} \
+        if os.path.exists(f"{W}/highlights.json") else {}
+    latest, waiting = {}, []
+    for n in sorted(rounds):
+        rec, ans = rounds[n]
+        entries = _load_answers(ans) if ans else []
+        got = {str(e.get("clip")): e for e in entries if e.get("clip")}
+        for c in (rec or {}).get("clips") or list(got):
+            if c in got:
+                latest[c] = (n, got[c], (rec or {}).get("records", {}).get(c))
+            else:   # briefed in this round and not answered: an answer from an earlier round is out of date
+                latest.pop(c, None)
+                waiting.append((n, c))
+    waiting = [(n, c) for n, c in waiting if c not in latest or latest[c][0] < n]
+    recut, user, fine, unsorted = {}, [], [], {}
+    fmt = lambda v: ", ".join(f"{float(x):g}" for x in v)
+    num = lambda v: str(v).replace(".", "", 1).isdigit()
+    for c, (n, e, rec) in sorted(latest.items()):
+        probs = [p for p in e.get("problems") or [] if isinstance(p, dict)]
+        lines = []
+        h = hl.get(c, {})
+        sn = _sheet_goal(W, c, True) if h.get("type") == "goal" else None
+        for p in probs:
+            kind, why = _problem_kind(p)
+            at_, q = p.get("at"), p.get("question")
+            try:   # 2, "2" or 2.0
+                q = int(float(q))
+            except (TypeError, ValueError):
+                pass
+            head = ((kind or "no kind") + (f" at clip {float(at_):g} s" if num(at_) else "")
+                    + (f" (q{q})" if q not in (None, "") else "")
+                    + f": {str(p.get('what') or '').strip()}" + (f" [{why}]" if why else ""))
+            if kind is None:
+                unsorted.setdefault(c, (n, []))[1].append(head)
+                continue
+            if kind in ("credit", "cant_tell"):
+                user.append(f"{c} (round {n}): {head}" + (f"; seen #{p['seen']}" if p.get("seen") not in (None, "") else ""))
+                continue
+            todo = ""
+            sp = _spot(p.get("spot"))
+            if kind == "camera":   # its spot is the credited scorer at his last touch (clip_prompt.md), whatever the
+                key = "spot" if h.get("type") == "penalty" else "shot"   # question, or the penalized player
+                who_ = {"spot": "the player at the infraction", "shot": "the credited scorer at his last touch"}[key]
+                if sp:
+                    todo = (f"the checker found {who_} at [{fmt(sp)}]: clip_args.json \"{c}\": {{\"{key}\": [{fmt(sp)}]}}"
+                            + (" (and \"start\" where his play began, if earlier)" if key == "shot" else "")
+                            + ", or --tracks with a trace of him")
+                elif key == "shot":
+                    todo = ("no spot given: find the credited scorer at his last touch, wherever he is on the ice (a goal "
+                            f"checker on `goals {Warg or W} --brief --only {sn[0] if sn else '<its number on the sheet>'}`), "
+                            "then `shot` at his skates, or --tracks with a trace of him")
+                else:
+                    todo = f"no spot given: `{key}` at the skates of {who_}, or --tracks with a trace of him"
+            else:
+                which = str(p.get("which") or "").strip().lower() or "?"
+                t_ = float(p["estimate_t"]) if num(p.get("estimate_t")) else (
+                    _video_t(rec, p["estimate"]) if num(p.get("estimate")) else None)
+                if t_ is None and num(p.get("estimate")):   # a round from before prompt.rN.json kept the clip's times
+                    todo = (f"{which} at clip {float(p['estimate']):g} s; this round has no record of the clip's times "
+                            f"(no prompt.r{n}.json), so read its second of video off the contact sheet or `clipsheet`")
+                elif t_ is None:
+                    todo = f"{which}: no estimate given; tile the stretch closer (`clipsheet`) and find it"
+                elif which == "goal":
+                    todo = f"`t` in highlights.json {h.get('t')} -> about {t_:g} (the poster and the replay's end follow it)"
+                elif which in ("shot", "start", "pass"):
+                    todo = (f"`{which}` at about {t_:g} s of video" + (f": clip_args.json \"{c}\": {{\"{which}\": [{fmt(sp)}]}}"
+                            if sp else ": its [t, x, y] with the skates from the detections command, into clip_args.json"))
+                else:
+                    todo = f"{which} at about {t_:g} s of video"
+            lines.append(f"{head}\n      -> {todo}")
+        if lines:
+            recut[c] = (n, lines)
+        elif c not in unsorted:
+            fine.append(c + (f" (round {n}" + (", the checker said not ok, but only for the user" if e.get("ok") is False else "")
+                             + ")"))
+    print(f"clip checker answers in {scratch}: rounds {', '.join(str(n) for n in sorted(rounds))}")
+    if recut:
+        print("RE-CUT (camera or time):")
+        for c, (n, lines) in recut.items():
+            print(f"  {c} (round {n}):")
+            for x in lines:
+                print(f"    {x}")
+        print(f"  then: $PY pipeline/run_game.py clips {Warg or W} {game_id} --only {','.join(recut)}   and a fresh clip "
+              f"checker on the brief it writes")
+    if user:
+        print("FOR THE USER'S SUMMARY (no re-cut):")
+        for x in user:
+            print(f"  {x}")
+    if unsorted:
+        print("NO KIND (an answer from before Nov 20, 2026, or the checker left it out): decide each as camera or time "
+              "(re-cut) or credit or can't tell (the user); the replay must show the scorer at his last touch, so a "
+              "shooter who isn't the credited one, with the credited one out of the frame, is camera:")
+        for c, (n, heads) in unsorted.items():
+            for x in heads:
+                print(f"  {c} (round {n}): {x}")
+    if fine:
+        print(f"NOTHING TO RE-CUT: {', '.join(fine)}")
+    if waiting:
+        print("NO ANSWER YET: " + ", ".join(f"{c} (round {n}: answers.r{n}.json)" for n, c in waiting))
+    missing = sorted(set(hl) - set(latest) - {c for _, c in waiting})
+    if missing:
+        print(f"never briefed: {', '.join(missing)}")
+    return recut, user
 
 
 def _lines_numbers(W):
@@ -2203,17 +3078,84 @@ def _reads_label(txt, shared, cache):
     return cache[txt]
 
 
+def _surname_key(s):
+    """A surname reduced to what survives transliteration, for telling the sheet's spelling of a name from another
+    name: Goroh and Horokh, Chernih and Chernykh come out the same."""
+    from lada_ids import fold
+    s = re.sub(r"[^a-z]", "", fold(s))
+    for a_, b_ in (("yo", "e"), ("jo", "e"), ("ye", "e"), ("je", "e"), ("x", "ks"), ("tz", "ts"), ("kh", "h"),
+                   ("ch", "c"), ("sh", "s"),
+                   ("zh", "z"), ("ts", "c"), ("ph", "f"), ("y", "i"), ("j", "i"), ("w", "v"), ("h", "g")):
+        s = s.replace(a_, b_)
+    return re.sub(r"(.)\1+", r"\1", s)
+
+
+def _same_surname(a_, b_):
+    """Whether two spellings are one surname (the sheet's and roster.json's). 0.85 of the transliterated letters:
+    Semenov and Semyonov are one, Paplinski and Polyanskiy (0.78) two."""
+    import difflib
+    x, y = _surname_key(a_), _surname_key(b_)
+    return bool(x and y) and (x == y or difflib.SequenceMatcher(None, x, y).ratio() >= 0.85)
+
+
+def _ocr_table(W):
+    """full/ocr_*.csv as (every read, the confident digits with num, the nameplates of 3+ letters): load_reads'
+    thresholds, with 3 letters for BER."""
+    o = pd.concat([pd.read_csv(f, header=None, names=["file", "text", "score"], dtype={"text": str})
+                   for f in glob.glob(f"{W}/full/ocr_*.csv")]).dropna().drop_duplicates(["file", "text"])
+    o["text"] = o.text.str.strip()
+    dig = o[o.text.str.fullmatch(r"\d{1,2}") & (o.score >= 0.9)]
+    return o, dig.assign(num=dig.text.astype(int)), o[o.text.str.fullmatch(r"[A-Z]{3,}") & (o.score >= 0.7)]
+
+
+def _plate_counts(texts, shared, cache):
+    """Nameplate reads counted, the spellings of one plate together under the commonest (PIZAND x22, PIZANO x14 and
+    PIZANG x3 make PIZAND x39, the opponent who wore #54 on Beerteam's Nov 14 game), each named as _reads_label
+    does ("EGIAZAROV #27") where it is close to that name. A loose match keeps its text: with #76 Panov and #70
+    Shikhanov marked absent, name_to_num gave PIZANO (0.67 against EGIAZAROV) to #27 until reads.RIVALS."""
+    import difflib
+    heads = {}
+    for txt, k in texts.value_counts().items():
+        h = next((h for h in heads if difflib.SequenceMatcher(None, txt, h).ratio() >= 0.75), None)
+        heads[h or txt] = heads.get(h or txt, 0) + int(k)
+    out = {}
+    for h, k in heads.items():
+        lab = _reads_label(h, shared, cache)
+        if lab != h and _name_ratio(h, lab.split(" #")[0]) < 0.8:
+            lab = h
+        out[lab] = out.get(lab, 0) + k
+    return sorted(out.items(), key=lambda x: -x[1])
+
+
+def _plates_say(pc, name):
+    """Whether a number's plates (_plate_counts) are someone else's: (True, top) when none of 5+ is the player's
+    own, (False, top) when another plate outnumbers his own two to one (5+ reads), else (False, None). His own
+    counts misreads (HURUKH for HOROKH): OCR's score against the name, as name_to_num's."""
+    nm_ = name.upper()
+    mine = lambda t: _same_surname(t, nm_) or _name_ratio(t, nm_) >= 0.6
+    own = sum(k for lab_, k in pc if mine(lab_.split(" #")[0]))
+    top, k_top = pc[0] if pc else (None, 0)
+    if own == 0 and sum(k for _, k in pc) >= 5:
+        return True, top
+    return False, (top if top and not mine(top.split(" #")[0]) and k_top >= max(5, 2 * own) else None)
+
+
+def _crop_sheet(W, files, out, n=12):
+    """Up to n of these crops, spread out, as one sheet (sheet.py) to look at; False when the crops are gone."""
+    files = sorted(f for f in set(files) if os.path.exists(f"{W}/full/crops/{f}"))
+    if not files:
+        return False
+    subprocess.run([PY, f"{HERE}/sheet.py", out, "110", "180", "12"] +
+                   [f"{W}/full/crops/{f}::" for f in files[::max(1, len(files) // n)][:n]], stderr=subprocess.DEVNULL)
+    return os.path.exists(out)
+
+
 def _read_with(W, numbers):
     """A function (files, n) -> lines: what else OCR read on one player's crops and on the tracks they belong to
     (after prepare; before it, on the crops of the same spot within half a second), the surnames by player and the
     numbers, most first, so another player's or an opponent's crops show. The sessions used to script this by hand
     from full/ocr_*.csv. numbers: number -> name to show."""
-    o = pd.concat([pd.read_csv(f, header=None, names=["file", "text", "score"], dtype={"text": str})
-                   for f in glob.glob(f"{W}/full/ocr_*.csv")]).dropna().drop_duplicates(["file", "text"])
-    o["text"] = o.text.str.strip()
-    dig = o[o.text.str.fullmatch(r"\d{1,2}") & (o.score >= 0.9)]   # load_reads' thresholds; 3 letters for BER
-    dig = dig.assign(num=dig.text.astype(int))
-    alpha = o[o.text.str.fullmatch(r"[A-Z]{3,}") & (o.score >= 0.7)]
+    o, dig, alpha = _ocr_table(W)
     tr = [pd.read_csv(p, usecols=["frame", "i", "tid"]).assign(per=p) for p in sorted(glob.glob(f"{W}/p[0-9]*/tracks_v1.csv"))]
     dd = None
     if tr:
@@ -2255,11 +3197,22 @@ def suggest_absent(W):
     prepare). A table to decide from, not a verdict: the sheet is the scorekeeper's, the lines are a plan, and a
     covered number reads like absence. Where the reads and the sheet (or the cards) disagree, it lists what else was
     read on the same crops and tracks: on four of the last 14 games "reads say he played" meant opponents wearing
-    the number, partial reads of teammates' numbers, or pieces of a surname two players share."""
+    the number, partial reads of teammates' numbers, or pieces of a surname two players share.
+    Names as well as numbers: a number the sheet marks playing under another surname than roster.json's is a
+    "check" with both names (Beerteam's Nov 14: the sheet's #54 Pfeifer, roster.json's Semenov, while the 80 reads of
+    "54" were an opponent's), and a roster player the sheet lists under another number says so. For every number it
+    calls played or check it prints the nameplates read on that number's crops (BERRY on #12's that night, an
+    opponent's), and for each check a sheet of its crops, W/check_<N>.jpg, while the crops are there."""
     from roster import ALL_SKATERS, GOALIE_NAMES, SUBS
     from reads import load_reads
     sheet_ = json.load(open(f"{W}/sheet.json", encoding="utf-8")) if os.path.exists(f"{W}/sheet.json") else None
     played = set(sheet_["played"]) if sheet_ else None
+    snames = {}   # the sheet's surnames per number it marks playing (two can share one: #29 Albantov and #29 Wheeler)
+    for x in (sheet_ or {}).get("played_names", []):
+        mm = re.match(r"#(\d+)\s+(.*)", x)
+        if mm:
+            snames.setdefault(int(mm.group(1)), []).append(mm.group(2).strip())
+    everyone = {**ALL_SKATERS, **GOALIE_NAMES}
     lines = _lines_numbers(W)
     reads, names = load_reads(f"{W}/full")
     # a name read that is a piece of a surname two players share counts for nobody (references/lada.md, "shared")
@@ -2276,8 +3229,8 @@ def suggest_absent(W):
         if os.path.exists(p):
             cards[P["label"]] = set(json.load(open(p)))
     print(f"{'num':>4} {'name':<14} {'sheet':<8} {'lines':<6} {'digits':>6} {'names':>5} {'card rows':<12} suggestion")
-    out, conflicts = [], []
-    for n, name in sorted({**ALL_SKATERS, **GOALIE_NAMES}.items()):
+    out, conflicts, renamed = [], [], []
+    for n, name in sorted(everyone.items()):
         on_sheet = None if played is None else (n in played)
         in_lines = None if lines is None else (n in lines)
         d, m_ = int(dig.get(n, 0)), int(nm.get(n, 0))
@@ -2299,6 +3252,16 @@ def suggest_absent(W):
             why = "played"
         if n in SUBS and why == "played" and evidence < 30:
             why = "sub, nothing read: absent?"
+        theirs = snames.get(n, []) if on_sheet else []
+        if theirs and not any(_same_surname(s, name) for s in theirs):   # the sheet's player in this number isn't ours
+            says = f"the sheet's #{n} is {' and '.join(theirs)}, roster.json's {name}"
+            why = f"goalie; {says}: a sub goalie?" if n in GOALIE_NAMES else f"check: {says}"
+            renamed.append(n)
+        elif on_sheet is False:   # the sheet has him under another number that isn't his namesake's on our roster
+            other = [m for m, ss in sorted(snames.items()) if m != n and any(_same_surname(s, name) for s in ss)
+                     and not _same_surname(everyone.get(m, ""), name)]
+            if other:
+                why += f" (the sheet has a {name} as " + " and ".join(f"#{m}" for m in other) + ")"
         out.append((n, why))
         # the reads against the sheet: strong reads where the sheet (or the table) says no, or the sheet's yes with
         # next to nothing read
@@ -2313,13 +3276,37 @@ def suggest_absent(W):
         print(f"#{n} {ALL_SKATERS.get(n, '?')}: {len(g)} name read(s) not counted, pieces of a surname two roster "
               f"numbers share: {', '.join(f'{k} ({v})' for k, v in g.shared.value_counts().items())}, e.g. "
               f"{', '.join(g.text.value_counts().index[:4])}")
+    if any(n not in GOALIE_NAMES for n in renamed):
+        print("A number the sheet gives another surname is a sub of ours in that number (solve him as the number and "
+              "mark nobody absent for it: references/lada.md, \"guests\"), a scorekeeper's slip, or, with the plates "
+              "below, an opponent in that number while ours was untracked: look at its crops before deciding.")
+    _, odig, oalpha = _ocr_table(W)
+    crops_of = lambda n: set(odig[odig.num == n].file) | set(names[names.num == n].file)
+    plates = []
+    for n, w in out:
+        if n in GOALIE_NAMES or not (w == "played" or w.startswith("check")):
+            continue
+        pc = _plate_counts(oalpha[oalpha.file.isin(crops_of(n))].text, shared, cache)
+        if pc:
+            nm_, (none, top) = everyone[n].upper(), _plates_say(pc, everyone[n])
+            mark = (f"   <- none is {nm_}" if none else f"   <- mostly {top.split(' #')[0]}, not {nm_}" if top else "")
+            plates.append(f"  #{n} {everyone[n]}: " + ", ".join(f"{lab_} x{k}" for lab_, k in pc[:4]) +
+                          (f", {len(pc) - 4} more" if len(pc) > 4 else "") + mark)
+    if plates:
+        print("Nameplates read on the crops of each number called played or check (a plate that isn't the roster's "
+              "name is someone else in that number: an opponent whose jersey passes ours, a sub, or a misread):")
+        print("\n".join(plates))
     if conflicts:
-        around = _read_with(W, {**ALL_SKATERS, **GOALIE_NAMES})
+        around = _read_with(W, everyone)
         print("Where the reads and the sheet disagree, what else was read with that number (a name without a number "
               "is nobody on our roster: an opponent's nameplate, or a misread):")
         for n, name, on_sheet, d, m_ in conflicts:
-            sheet_says = "marked playing" if on_sheet else "not marked playing" if on_sheet is False else "no sheet"
-            print(f"  #{n} {name} ({sheet_says}; {d} digit and {m_} name reads)")
+            sheet_says = ("marked playing" + (" as " + " and ".join(snames[n]) if n in renamed else "") if on_sheet
+                          else "not marked playing" if on_sheet is False else "no sheet")
+            sheet_jpg = f"{W}/check_{n}.jpg"
+            made = dict(out)[n].startswith("check") and _crop_sheet(W, crops_of(n), sheet_jpg)
+            print(f"  #{n} {name} ({sheet_says}; {d} digit and {m_} name reads)" +
+                  (f"; its crops: {sheet_jpg}" if made else ""))
             files = set(reads[reads.num == n].file)
             for line in (around(files, n) if files else ["nothing read at all"]):
                 print(f"      {line}")
@@ -2368,7 +3355,8 @@ def cmd_span(a):
     {start, end} (our goalie pulled), ps {start, end} (a penalty shot against us), appended as a hand edit would
     append it; and a line in W/hand_spans.txt (when, what, why), which archive keeps. Sessions used to write these
     with inline Python or sed and no record of why (Y's Nov 9 game was solved three more times from such spans).
-    Penalty kills have their own command. --list prints the log."""
+    The newest span wins: an on/off span cuts its seconds out of the player's spans of the other kind, a checker's or
+    a hand-made one (put_span), and says what it cut. Penalty kills have their own command. --list prints the log."""
     W = os.path.abspath(a.W); logf = f"{W}/hand_spans.txt"
     if a.list:
         print(open(logf, encoding="utf-8").read().rstrip() if os.path.exists(logf) else f"no hand-made spans in {logf}")
@@ -2384,30 +3372,165 @@ def cmd_span(a):
         sys.exit(f"span: not numbers: {' '.join(a.vals)}")
     vals = [int(v) if v.is_integer() else v for v in vals]
     player, (t0, t1) = (int(vals[0]) if want == 3 else None), vals[-2:]
+    Ps = periods(W)
+    try:
+        P, trims = put_span(W, Ps, a.kind, t0, t1, player)
+    except ValueError as x:
+        sys.exit(f"span: {x}")
+    save_periods(W, Ps)
+    line = log_span(W, P, a.kind, t0, t1, player, a.note)
+    print(f"+ {line}\n  added to {W}/periods.json (logged in {logf}); solve again")
+    log_trims(W, P, a.kind, player, trims, f"the hand-made {a.kind} #{player} {t0}-{t1}")
+
+
+def put_span(W, Ps, kind, t0, t1, player):
+    """`span`'s checks and placing of one hand-made span (also `trace --apply`'s): the player on this game's roster
+    (or solved), the span inside one period and not there yet. An on or off span wins over the player's spans of the
+    other kind over its seconds, whoever made them (trim_opposite: the newest entry wins, a checker's or a hand-made
+    one); one of the same kind that overlaps it is only noted. Returns (its period, the trims for log_trims) once it
+    is in Ps (the caller saves); raises ValueError, with why, for a span it can't take."""
     if t1 <= t0:
-        sys.exit(f"span: it ends ({t1}) before it starts ({t0})")
+        raise ValueError(f"it ends ({t1}) before it starts ({t0})")
     if player is not None:
         from roster import SKATERS, ABSENT
         solved = set(pd.read_csv(f"{W}/shifts_all.csv").player) if os.path.exists(f"{W}/shifts_all.csv") else set()
         if player not in SKATERS and player not in solved:
-            sys.exit(f"span: #{player} is {'marked absent' if player in ABSENT else 'not on the roster'} this game")
-    p = f"{W}/periods.json"
-    Ps = periods(W)
+            raise ValueError(f"#{player} is {'marked absent' if player in ABSENT else 'not on the roster'} this game")
     P = next((P for P in Ps if P["start"] <= t0 < P["end"]), None)
     if P is None:
-        sys.exit(f"span: {t0} is in no period (" + ", ".join(f"{Q['label']} {Q['start']}-{Q['end']}" for Q in Ps) + ")")
+        raise ValueError(f"{t0} is in no period (" + ", ".join(f"{Q['label']} {Q['start']}-{Q['end']}" for Q in Ps) + ")")
     if t1 > P["end"]:
-        sys.exit(f"span: {t0}-{t1} crosses the end of {P['label']} at {P['end']}: one span per period")
-    if any(same_span(e, t0, t1, player) for e in P.get(a.kind, [])):
-        sys.exit(f"span: {P['label']} already has {a.kind} {f'#{player} ' if player is not None else ''}{t0}-{t1}")
-    for k in ("on", "off") if player is not None else ():
-        for e in P.get(k, []):
-            if e.get("player") == player and e["start"] < t1 and t0 < e["end"]:
-                print(f"  note: it overlaps #{player}'s {k} span {e['start']}-{e['end']} in {P['label']}")
-    add_span(P, a.kind, t0, t1, player)
-    save_periods(W, Ps)
-    line = log_span(W, P, a.kind, t0, t1, player, a.note)
-    print(f"+ {line}\n  added to {p} (logged in {logf}); solve again")
+        raise ValueError(f"{t0}-{t1} crosses the end of {P['label']} at {P['end']}: one span per period")
+    if any(same_span(e, t0, t1, player) for e in P.get(kind, [])):
+        raise ValueError(f"{P['label']} already has {kind} {f'#{player} ' if player is not None else ''}{t0}-{t1}")
+    for e in P.get(kind, []) if kind in ("on", "off") and player is not None else ():
+        if e.get("player") == player and e["start"] < t1 and t0 < e["end"]:
+            print(f"  note: it overlaps #{player}'s {kind} span {e['start']}-{e['end']} in {P['label']}")
+    if _kill_note(P, kind, t0, t1, player):
+        print(f"  {_kill_note(P, kind, t0, t1, player)}")
+    trims = trim_opposite(P, kind, t0, t1, player)
+    add_span(P, kind, t0, t1, player)
+    return P, trims
+
+
+def _kill_note(P, kind, t0, t1, player):
+    """A line when an `on` span overlaps a kill of the same player in P: the kill holds him off there (run2.py's
+    boxed) and the `on` keeps him on, so the solve leaves those seconds to the tracks, as two opposite spans did
+    before the newest-wins rule; an `on` doesn't cut a kill, which also sets one skater fewer. None otherwise."""
+    if kind != "on" or player is None:
+        return None
+    ks = ", ".join("{:g}-{:g}".format(k["start"], k["end"]) for k in P.get("pk", [])
+                   if k.get("player") == player and k["start"] < t1 and t0 < k["end"])
+    return (f"note: #{player} is in a kill there ({ks} in {P['label']}), which holds him off; both stay, so the solve "
+            f"leaves those seconds to the tracks. If he was on the ice, the kill is wrong there: cut it in "
+            f"periods.json, or ask the penalty checker") if ks else None
+
+
+def log_trims(W, P, kind, player, trims, by):
+    """After a hand-made span is saved: print what it cut of the player's other spans, and keep their records in step
+    (note_trims: answers.json for a checker's, hand_spans.txt for any other)."""
+    if not trims:
+        return
+    gdir = f"{W}/scratch/gaps"; answers = _gap_answers(gdir)
+    logs, changed = note_trims(W, P, kind, player, trims, by, answers)
+    if changed:
+        json.dump(answers, open(f"{gdir}/answers.json", "w", encoding="utf-8"), indent=1, ensure_ascii=False)
+    for x in logs:
+        log_span(W, *x)
+
+
+TRACE_PART, TRACE_SEAM = 600, 5   # s of video per tracer at most, and the overlap at each seam: Beerteam's Nov 14
+# tracers had 460-545 s each (halves of the 1st and 2nd, thirds of the 3rd, 5 s shared) and took 12 to 17 minutes
+
+
+def cmd_trace(a):
+    """One of ours traced by eye, for a skater the tracker can't follow (Beerteam's Nov 14: #54 in a dark green
+    jersey had no track at all, and seven tracers on a hand-written brief listed his 15 shifts). Writes one brief per
+    part of each period, at most --part s each (W/scratch/trace/prompt_<part>.md from pipeline/trace_prompt.md, and
+    trace.json naming the parts), each one subagent's whole job. `trace W PLAYER --apply` joins the parts' stretches
+    at the seams and adds each shift as an `on` span through put_span, as `span` does; the solve then holds him off
+    everywhere else (run2.py), so it applies nothing until every part has answered."""
+    from roster import SKATERS
+    W = os.path.abspath(a.W).replace("\\", "/"); tdir = f"{W}/scratch/trace"; Ps = periods(W)
+    num = lambda v: int(v) if float(v).is_integer() else float(v)
+    if a.apply:
+        return _trace_apply(W, tdir, Ps, a.player, num)
+    if a.player not in SKATERS:
+        sys.exit(f"trace: #{a.player} is not a skater on this game's roster (roster.json; `absent` takes players out)")
+    if not a.look:
+        sys.exit("trace: --look \"how to recognise him\" is needed (jersey, helmet, socks, number, where he sits)")
+    tmpl = open(f"{HERE}/trace_prompt.md", encoding="utf-8").read()
+    os.makedirs(tdir, exist_ok=True)
+    parts = []
+    for P in Ps:
+        n = max(1, int(np.ceil((P["end"] - P["start"]) / a.part)))
+        edges = [P["start"]] + [round(P["start"] + (P["end"] - P["start"]) * k / n) for k in range(1, n)] + [P["end"]]
+        ctx = _brief_context(W, P)
+        for k in range(n):   # each part but the last runs TRACE_SEAM s into the next, so a change at a seam is seen whole
+            name = P["label"].lower() + (chr(97 + k) if n > 1 else "")
+            t0, t1 = num(edges[k]), num(min(edges[k + 1] + TRACE_SEAM, P["end"]))
+            open(f"{tdir}/prompt_{name}.md", "w", encoding="utf-8").write(tmpl.format(
+                **ctx, scratch=f"{tdir}/{name}", out_file=f"{tdir}/{name}/shifts.json", period=P["label"], t0=t0, t1=t1,
+                ex=[int(t0 + f * (t1 - t0)) for f in (0.1, 0.3, 0.5, 0.7)],   # the answer's example seconds, in the part
+                player=a.player, name=_player_name(W, a.player).split(" (")[0], look=a.look.strip().rstrip(".") + "."))
+            parts.append(dict(name=name, period=P["label"], t0=t0, t1=t1))
+    json.dump(dict(player=a.player, look=a.look, parts=parts), open(f"{tdir}/trace.json", "w"), indent=1)
+    print("\n".join(f"{q['period']} {q['t0']}-{q['t1']} -> {tdir}/prompt_{q['name']}.md" for q in parts))
+    print(f"{len(parts)} prompt(s): for each, one general-purpose subagent (model opus, effort high), all in one message, "
+          f"whose whole prompt is\n  'Read <prompt file> and do exactly what it says. Reply with one line per shift.'\n"
+          f"  Then `run_game.py trace {a.W} {a.player} --apply` adds his shifts as `on` spans; solve again.")
+
+
+def _trace_apply(W, tdir, Ps, player, num):
+    """trace --apply: every part's shifts.json, a stretch that overlaps the next one or ends 1 s or less before it
+    (one shift cut at a seam) joined to it, each shift an `on` span (put_span) logged with the look."""
+    if not os.path.exists(f"{tdir}/trace.json"):
+        sys.exit(f"trace: no {tdir}/trace.json: `run_game.py trace W {player} --look ...` writes the briefs first")
+    cfg = json.load(open(f"{tdir}/trace.json"))
+    if cfg["player"] != player:
+        sys.exit(f"trace: the briefs in {tdir} are for #{cfg['player']}, not #{player}")
+    got, bad = [], []
+    for q in cfg["parts"]:
+        try:
+            got += [(float(s["on"]), float(s["off"]), str(s.get("sure", "?")))
+                    for s in json.load(open(f"{tdir}/{q['name']}/shifts.json", encoding="utf-8"))["shifts"]]
+        except (OSError, ValueError, KeyError, TypeError) as x:
+            bad.append(f"{q['name']} ({type(x).__name__}: {x})")
+    if bad:
+        sys.exit("trace: no usable answer from " + "; ".join(bad) + ". Nothing applied: outside his `on` spans the "
+                 "solve holds him off, so every part must be in (relaunch those briefs)")
+    shifts = []
+    for on, off, sure in sorted(got):
+        if shifts and on <= shifts[-1][1] + 1:
+            shifts[-1][1] = max(shifts[-1][1], off); shifts[-1][2] += f"+{sure}"
+        else:
+            shifts.append([on, off, sure])
+    added, done, again = [], [list(s) for s in cfg.get("applied", [])], 0
+    for on, off, sure in shifts:
+        if [num(on), num(off)] in done:   # an earlier --apply put it in: a later span may have cut it since, and
+            again += 1                    # putting it back would undo that
+            continue
+        P = next((P for P in Ps if P["start"] <= on < P["end"]), None) or \
+            next((P for P in Ps if on < P["start"] < off), None)   # one seen stepping on just before the period starts
+        a_, b_ = (max(on, P["start"]), min(off, P["end"])) if P else (on, off)
+        if P and (a_, b_) != (on, off):
+            print(f"  {on:g}-{off:g} runs past {P['label']} ({P['start']}-{P['end']}): taken as {a_:g}-{b_:g}")
+        try:
+            added.append((*put_span(W, Ps, "on", num(a_), num(b_), player), num(a_), num(b_), sure))
+            done.append([num(on), num(off)])
+        except ValueError as x:
+            print(f"  skipped {on:g}-{off:g}: {x}")
+    if again:
+        print(f"  {again} shift(s) applied by an earlier `trace --apply` left as periods.json has them")
+    if added:
+        save_periods(W, Ps)
+        cfg["applied"] = done
+        json.dump(cfg, open(f"{tdir}/trace.json", "w"), indent=1)
+    for P, trims, on, off, sure in added:
+        print("+ " + log_span(W, P, "on", on, off, player, f"traced by eye (scratch/trace, sure {sure}): {cfg['look']}"))
+        log_trims(W, P, "on", player, trims, f"the traced on #{player} {on}-{off}")
+    print(f"{len(added)} `on` span(s) for #{player}, {sum(x[3] - x[2] for x in added):g} s" + (
+        "; solve again (outside them the solve holds him off)" if added else ": nothing new"))
 
 
 def _review_options(W, a=None):
@@ -2493,6 +3616,16 @@ def _review_numbers(cov):
     return lines
 
 
+def _scratch_written(W, lab, cid):
+    """When the reviewer of one chunk last wrote into its scratch folder (W/scratch/p1_c00: zoom.py's crops), 0 if
+    never: a reviewer still looking, for `check --wait`, even before it writes its first answer."""
+    d = f"{W}/scratch/{lab.lower()}_{cid}"
+    try:
+        return max([os.path.getmtime(d)] + [e.stat().st_mtime for e in os.scandir(d)])
+    except OSError:
+        return 0
+
+
 def _review_prompts(W, opt):
     """Fill pipeline/review_prompt.md once per chunk of sheets and write it to W/rev_pN/prompt_cNN.md, with the
     roster (minus absent players), our jersey, the goalie, empty roster-card rows (point at another period's card,
@@ -2507,7 +3640,7 @@ def _review_prompts(W, opt):
     jersey_desc = "white jerseys with blue numbers and blue trim" if jersey.startswith("white") else "light-blue jerseys"
     opp_desc = _opp_look(jersey, opt)
     tmpl = open(f"{HERE}/review_prompt.md", encoding="utf-8").read()
-    roster = ", ".join(f"#{n} {v.upper()}" for n, v in sorted(SKATERS.items()))
+    roster = ", ".join(f"#{n} {_player_name(W, n)}" for n in sorted(SKATERS))   # as the checkers' briefs name them
     # "G" for either goalie: apply_review drops a "G" row, which is right for theirs too (reviewers marked the other
     # goalie "G" in ~50 rows of BT's Oct 25 game; "N" would keep his track as an unlabeled segment)
     ours = (f"Ours is #{GOALIES[0]} {GOALIE_NAMES.get(GOALIES[0], '').upper()}, in a {jersey.split(' vs ')[0]} "
@@ -2519,15 +3652,31 @@ def _review_prompts(W, opt):
     for P in Ps:
         p = f"{W}/rev_{P['label'].lower()}/card_empty.json"
         empty[P["label"]] = set(json.load(open(p))) if os.path.exists(p) else set()
-    reads, _ = load_reads(f"{W}/full")
+    reads, names = load_reads(f"{W}/full")
     nreads = reads.num.value_counts()
     notes = "".join(f" {n.rstrip('.')}." for n in opt.get("notes", []))
-    chunks, cards = [], {}
+    chunks, cards, ocr_ = [], {}, []
+
+    def his(n):
+        """Whose plate is his: roster.json's surname, and the sheet's for that number where it has another (a sub of
+        ours in that number, as _player_name names him in the briefs)."""
+        return [SKATERS[n].upper()] + [t for t in _sheet_names(W, n) if not _same_surname(t, SKATERS[n])]
+
+    def plates_of(n):
+        """Whose nameplates were read with the number: (whether none is his, the top plate) or (False, None)."""
+        if not ocr_:   # once, and only for a number with no card row and many reads
+            ocr_.extend(_ocr_table(W)[1:] + (_shared_names(), {}))
+        dg, al, shared, cache = ocr_
+        files = set(dg[dg.num == n].file) | set(names[names.num == n].file)
+        pc = _plate_counts(al[al.file.isin(files)].text, shared, cache)
+        says = [_plates_say(pc, nm) for nm in his(n)]
+        return all(s[0] for s in says), (says[0][1] if all(s[1] for s in says) else None)
+
     for P in Ps:
         lab = P["label"]; rv = f"{W}/rev_{lab.lower()}"
         if not os.path.exists(f"{rv}/manifest.csv"):
             log(f"{lab}: not prepared yet"); continue
-        card_notes = ""; out, maybe = [], []
+        card_notes = ""; out, maybe, theirs = [], [], []
         for n in sorted(empty[lab]):
             if n not in SKATERS:
                 continue
@@ -2538,13 +3687,27 @@ def _review_prompts(W, opt):
             elif nreads.get(n, 0) < 30:
                 out.append(f"#{n}")
             else:
-                maybe.append(f"#{n} ({int(nreads.get(n, 0))} reads)")
+                # the reads' nameplates say whose they are: on Beerteam's Nov 14 game the reads of "54" (44, 80 once
+                # reads.RIVALS stopped PIZANO going to #27) carried PIZANO, an opponent's, while the line told every
+                # reviewer #54 may have played
+                none, top = plates_of(n)
+                if top:
+                    ours_ = " #" in top   # a teammate's plate (EGIAZAROV #27), else a name not on our roster
+                    whose = f"{top.split(' #')[0]}'s (our #{top.split(' #')[1]})" if ours_ else f"{top}'s"
+                    theirs.append(f" #{n} ({int(nreads.get(n, 0))} reads): no row on any period's card, and the "
+                                  f"nameplates read with that number are {'' if none else 'mostly '}{whose}, not "
+                                  + " or ".join(f"{x}'s" for x in his(n)) + ", so " + ("the reads are probably his" if ours_ else
+                                                                   f"they are probably an opponent's #{n}") +
+                                  f"; give {n} only if you clearly see it on one of ours.")
+                else:
+                    maybe.append(f"#{n} ({int(nreads.get(n, 0))} reads)")
         if out:
             card_notes += (f" {', '.join(out)} probably did not play this game (no row on any period's card and almost no "
                            f"reads); give one of these numbers only if you clearly read it.")
         if maybe:
             card_notes += (f" {', '.join(maybe)}: no row on any period's card, but the number was read often, so the "
                            f"player may have played; report the number if you see it.")
+        card_notes += "".join(theirs)
         cards[lab] = card_notes.strip()
         man, info, _ = _review_coverage(W, P)
         for cid, cs in _chunk_ids(info, chunk):
@@ -2562,13 +3725,29 @@ def _review_prompts(W, opt):
     return chunks, dict(goalie_line=goalie_line, cards=cards)
 
 
+# Reviewers listed per launch. The harness runs at most 20 subagents at once, and the goal and penalty checkers (up
+# to four: one per period with goals, one for the penalties) run beside the review: on Beerteam's Nov 14 game a batch
+# of 20 came on top of 3 running checkers and 3 reviewers were refused ("Concurrent subagent limit reached").
+REVIEW_BATCH, HARNESS_SUBAGENTS = 16, 20
+# check --wait returns once no new answer has come for this long (from its start while none has come). The subagent
+# transcripts of Oct 20 to Nov 19 hold 1,355 reviewers in 153 launches: 1,301 on Opus 5.5 (129 s median, 438 max;
+# Beerteam's Nov 14 at medium effort 33-117 s), 51 on the session's Fable 5.1 at high effort (TK's Nov 1: 267 s
+# median, 599 max). The longest stretch in a launch without a new review file was 258 s (72 median); the four over
+# 180 s were all on TK's Nov 1, in launches of one, two and six reviewers, and on Opus the longest was 168 s (a
+# reviewer launched alone). Counting a file written in a reviewer's scratch folder (zoom crops) as a sign of life,
+# the longest stretch in any launch was 102 s, and 175 s for any one Opus reviewer.
+REVIEW_QUIET = 180
+
+
 def cmd_review(a):
     """Write the reviewer prompts (_review_prompts) and print the next launch: the prompts of the first --batch
-    chunks (20) with rows still to answer, one per line (also in W/review_todo.txt, which `check --wait` waits on;
-    W/review_plan.txt has every chunk), then what the prompts say beyond the template, for a look before launching:
-    the goalie line, empty card rows, --opp and --note. A batch bounds how many reviewers run at once (17 is the most
-    seen to work); a chunk launched before and still open comes first in the next batch, marked."""
-    from roster import ABSENT, ALL_SKATERS
+    chunks (REVIEW_BATCH, 16) with rows still to answer, one per line (also in W/review_todo.txt, which `check --wait`
+    waits on; W/review_plan.txt has every chunk), then what the prompts say beyond the template, for a look before
+    launching: the goalie line, empty card rows, --opp and --note. A batch bounds how many reviewers run at once:
+    16 leaves room under the harness's 20 for the goal and penalty checkers. A chunk launched before and still open
+    comes first in the next batch, marked; one `check --wait` found unanswered after its quiet period
+    (W/review_dead.txt) is marked to launch again."""
+    from roster import ABSENT, ALL_SKATERS, GOALIE_NAMES
     W = os.path.abspath(a.W).replace("\\", "/")
     opt = _review_options(W, a)
     chunks, said = _review_prompts(W, opt)
@@ -2578,16 +3757,32 @@ def cmd_review(a):
     ready = [c for c in chunks if c["left"] and c["ready"]]
     gone = [c for c in chunks if c["left"] and not c["ready"]]
     done = sum(not c["left"] for c in chunks)
-    todo = ready[:int(opt.get("batch", 20))]; more = len(ready) - len(todo)
-    tf = f"{W}/review_todo.txt"
-    before = set(open(tf, encoding="utf-8").read().split()) if os.path.exists(tf) else set()
+    batch = int(opt.get("batch") or REVIEW_BATCH)
+    todo = ready[:batch]; more = len(ready) - len(todo)
+    tf, df = f"{W}/review_todo.txt", f"{W}/review_dead.txt"
+    lines = lambda p: {x.strip() for x in open(p, encoding="utf-8").read().splitlines() if x.strip()} \
+        if os.path.exists(p) else set()   # one path a line: a work folder's name may hold a space
+    before, dead = lines(tf), lines(df)
+    if dead:   # a chunk whose reviewer wrote since `check --wait` called it dead answered late, or is at work
+        dt = os.path.getmtime(df)
+        stirred = lambda c: max([os.path.getmtime(p) for p in (f"{W}/rev_{c['lab'].lower()}/review_s{s[6:9]}.txt"
+                                                               for s in c["sheets"]) if os.path.exists(p)]
+                                + [_scratch_written(W, c["lab"], c["cid"])]) > dt
+        dead -= {c["prompt"] for c in chunks if c["prompt"] in dead and stirred(c)}
     open(tf, "w", encoding="utf-8").write("".join(c["prompt"] + "\n" for c in todo))
+    if os.path.exists(df):   # read once: the next `review` treats them like any other chunk listed before
+        os.remove(df)
+    why = (f"{batch} at a time: the harness runs at most {HARNESS_SUBAGENTS} subagents at once, and up to four goal "
+           f"and penalty checkers run beside the review (with none still running, --batch {HARNESS_SUBAGENTS})"
+           if batch == REVIEW_BATCH else f"{batch} at a time (--batch {batch}, kept in review.json)")
     print((f"{len(todo)} of {len(ready)} chunks to launch now; {more} more after these: run `review` again when "
-           f"`check --wait` returns" if more else f"{len(todo)} chunk(s) to launch") +
+           f"`check --wait` returns. {why}" if more else f"{len(todo)} chunk(s) to launch") +
           (f" ({done} of {len(chunks)} done already)" if done else "") +
           (f". The prompts, also in {W}/review_todo.txt:" if todo else ""))
     for c in todo:
-        print(c["prompt"] + ("   (listed before: if its reviewer hasn't reported back, leave it out)"
+        print(c["prompt"] + ("   (no answer in the last launch: not launched or dead, launch it again)"
+                             if c["prompt"] in dead else
+                             "   (listed before: if its reviewer hasn't reported back, leave it out)"
                              if c["prompt"] in before else ""))
     if gone:   # an archived folder keeps manifests and reviews but not the images
         print(f"{len(gone)} chunk(s) with rows to answer have no sheet images or roster card (archived? prepare makes "
@@ -2601,12 +3796,15 @@ def cmd_review(a):
     for n in opt.get("notes", []):
         print("Note (--note):", n)
     if ABSENT:
-        print("Absent (left out of the prompts' roster):", ", ".join(f"#{n} {ALL_SKATERS.get(n, '?')}" for n in sorted(ABSENT)))
+        print("Absent (left out of the prompts' roster):", ", ".join(f"#{n} {ALL_SKATERS.get(n) or GOALIE_NAMES.get(n, '?')}"
+                                                                    for n in sorted(ABSENT)))
     if todo:
         print(f"Launch all {len(todo)} in one message (but none whose earlier reviewer is still working), one "
               f"general-purpose subagent each, whose whole prompt is \"Read <prompt file> and do exactly what it says. "
               f"Reply with one line: how many rows you wrote.\"; then run `run_game.py check {a.W} --wait` once, in the "
-              f"foreground with the Bash tool's timeout set to 600000 ms (it waits up to 540 s).")
+              f"foreground with the Bash tool's timeout set to 600000 ms (it returns when the batch is answered, after "
+              f"{REVIEW_QUIET} s without a new answer, or at 540 s). A reviewer the harness refused: leave it, `check "
+              f"--wait` names it and the next `review` lists it again.")
     else:
         print("Nothing to launch." + ("" if gone else f" `run_game.py check {a.W}` confirms every row is answered."))
 
@@ -2615,19 +3813,26 @@ def cmd_check(a):
     """Review coverage: every manifest row needs an answer in some review_*.txt (apply_review.parse_review, as solve
     reads them). Lists missing rows per sheet, files whose notes mention failed image reads, and the numbers reviewers
     gave that aren't on this game's roster or are marked absent.
-    --wait [SECONDS] first blocks until the chunks of the last launch (W/review_todo.txt, from `review`) are answered
-    or the time is up (540 s fits one 10-minute foreground command), so that reviewers launched together hand back
-    together instead of each waking the session; then it prints the rows answered per period, that launch's chunks
-    still open, the sheets to redo, the numbers, and whether `review` has a next batch. Exit status 0 when every row
-    of the game is answered, 1 otherwise."""
+    --wait [SECONDS] first blocks until the chunks of the last launch (W/review_todo.txt, from `review`) are answered,
+    until no new answer has come for --quiet seconds (REVIEW_QUIET, 180; counted from the start while none has come),
+    or until the time is up (540 s fits one 10-minute foreground command), so that reviewers launched together hand
+    back together instead of each waking the session; then it prints the rows answered per period, that launch's
+    chunks still open, the sheets to redo, the numbers, and whether `review` has a next batch. A new answer is a
+    review file of the launch written, or a file written in an open chunk's scratch folder (zoom crops: a reviewer
+    still looking). After the quiet period, the launch's chunks with neither since the launch are named "not launched
+    or dead" and kept in W/review_dead.txt, so that the next `review` lists them to launch again rather than as
+    "listed before": on Beerteam's Nov 14 game three reviewers the harness refused kept the wait at its full 9
+    minutes, 7 after the 17 others had answered. Exit status 0 when every row of the game is answered, 1 otherwise."""
     W = os.path.abspath(a.W).replace("\\", "/")
-    wait, t0 = a.wait, time.time()
+    wait, quiet, t0 = a.wait, a.quiet, time.time()
     if wait is not None and not glob.glob(f"{W}/rev_p*/prompt_c*.md"):
         print(f"no reviewer prompts yet: `run_game.py review {a.W}` writes them"); sys.exit(1)
     chunk = int(_review_options(W).get("chunk", 3))
     tf = f"{W}/review_todo.txt"   # the last launch; without the file, the whole game
-    launch = ({tuple(m.groups()) for m in (re.search(r"/rev_([^/]+)/prompt_(c\d+)\.md$", l) for l in
-               open(tf, encoding="utf-8").read().split()) if m} if os.path.exists(tf) else None)
+    launch = ({tuple(m.groups()) for m in (re.search(r"/rev_([^/]+)/prompt_(c\d+)\.md$", l.strip()) for l in
+               open(tf, encoding="utf-8").read().splitlines()) if m} if os.path.exists(tf) else None)
+    since = os.path.getmtime(tf) if os.path.exists(tf) else t0   # when `review` listed the launch
+    heard, ended = t0, None   # the last new answer (the start while none has come); why the wait ended
     while True:
         cov = [(P, *_review_coverage(W, P)) for P in periods(W)
                if os.path.exists(f"{W}/rev_{P['label'].lower()}/manifest.csv")]
@@ -2638,14 +3843,24 @@ def cmd_check(a):
                  for P, _, info, _ in cov for cid, cs in _chunk_ids(info, chunk) if any(info[s]["missing"] for s in cs)]
         waited = [i for P, _, info, _ in cov for cid, cs in _chunk_ids(info, chunk)
                   if launch is None or (P["label"].lower(), cid) in launch for i in (info[s] for s in cs)]
-        if wait is None or time.time() - t0 >= wait:
+        if wait is None:
             break
-        if not any(c[3] for c in open_) and time.time() - max((i["mtime"] or 0 for i in waited), default=0) > 3:
-            break   # the launch is answered, and no file written in the last seconds (one may still be growing)
+        heard = max([heard] + [i["mtime"] for i in waited if i["mtime"]] +
+                    [_scratch_written(W, lab, cid) for lab, cid, _, mine in open_ if mine])
+        now = time.time()
+        if not any(c[3] for c in open_) and now - max((i["mtime"] or 0 for i in waited), default=0) > 3:
+            ended = "answered"; break   # the launch is answered, and no file written in the last seconds
+        if now - t0 >= wait:
+            ended = "time"; break
+        if quiet and now - heard >= quiet:
+            ended = "quiet"; break
         time.sleep(5)
     mmss = _mm
+    if wait is not None and os.path.exists(f"{W}/review_dead.txt"):   # every wait says afresh which are dead (below)
+        os.remove(f"{W}/review_dead.txt")
     if wait is not None:
-        print(f"waited {mmss(time.time() - t0)}")
+        print(f"waited {mmss(time.time() - t0)}" + (
+            f": no new answer for {mmss(time.time() - heard)} (--quiet {quiet})" if ended == "quiet" else ""))
     for P, man, info, ans in cov:
         lab = P["label"]
         miss = {s: i["missing"] for s, i in info.items() if i["missing"]}
@@ -2666,20 +3881,39 @@ def cmd_check(a):
     if missing_total and wait is not None:
         late = [c for c in open_ if c[3]]; rest = len(open_) - len(late)
         rows = lambda m, n: f"all {n} rows" if len(m) == n else " ".join(m[:4]) + (" ..." if len(m) > 4 else "")
-        if late:
-            print(f"time is up with {len(late)} chunk(s) of the last launch still open:")
-        for lab, cid, info, _ in late:
-            last = max((i["mtime"] or 0 for i in info.values()), default=0)
+        # chunks of the launch with no review file and no scratch file written since `review` listed them, at least
+        # the quiet period ago: their reviewer never started (refused by the harness, or left out) or died before
+        # its first answer
+        old = time.time() - since >= (quiet or REVIEW_QUIET)
+        silent = [c for c in late if launch is not None and old and max([i["mtime"] or 0 for i in c[2].values()] +
+                                                                       [_scratch_written(W, c[0], c[1])]) < since]
+        working = [c for c in late if c not in silent]
+        prompt = lambda lab, cid: f"{W}/rev_{lab.lower()}/prompt_{cid}.md"
+        if silent:
+            print(f"{len(silent)} chunk(s) of the last launch never answered (no review file and no zoom crop since "
+                  f"`review` listed them, {mmss(time.time() - since)} ago): not launched or dead: launch them again:")
+            for lab, cid, info, _ in silent:
+                print(f"  {prompt(lab, cid)}   ({lab} {cid}: " +
+                      ", ".join(f"{s[:-4]}" for s, i in info.items() if i["missing"]) + ")")
+            open(f"{W}/review_dead.txt", "w", encoding="utf-8").write(
+                "".join(prompt(lab, cid) + "\n" for lab, cid, _, _ in silent))
+        if working:
+            print(f"{'no new answer for ' + mmss(time.time() - heard) if ended == 'quiet' else 'time is up'} with "
+                  f"{len(working)} chunk(s) of the last launch answered in part or still at work:")
+        for lab, cid, info, _ in working:
+            last = max([i["mtime"] or 0 for i in info.values()] + [_scratch_written(W, lab, cid)])
             print(f"  {lab} {cid}: " + ", ".join(f"{s[:-4]} ({rows(i['missing'], i['rows'])})" for s, i in info.items()
                                                  if i["missing"]) +
-                  (f"; last answer {mmss(time.time() - last)} ago" if last else "; no answer yet"))
+                  (f"; last answer or zoom crop {mmss(time.time() - last)} ago" if last else "; no answer yet"))
         print(("The last launch is answered" if not late else "Next") +
               (f"; {rest} chunk(s) not launched yet" if rest else "") +
               f": `run_game.py review {a.W}` lists " + ("the next batch" if not late else
-              "these again first (with only their missing sheets)" + (", then the next" if rest else "") +
-              "; relaunch one only if its reviewer has reported back (a recent answer means it is still writing: "
-              "leave it out, `check --wait` waits for it)") + ". Run each `check --wait` with the Bash tool's timeout "
-              "set to 600000 ms.")
+              ("the ones never answered again, marked to launch" if silent else "") +
+              (", and " if silent and working else "") +
+              ("those answered in part again (with only their missing sheets); relaunch one of these only if its "
+               "reviewer has reported back (a recent answer means it is still writing: leave it out, `check --wait` "
+               "waits for it)" if working else "") + (", then the next" if rest else "")) +
+              ". Run each `check --wait` with the Bash tool's timeout set to 600000 ms.")
         sys.exit(1)
     if missing_total:
         print(f"{missing_total} rows still missing: `run_game.py review {a.W}` lists the chunks to launch")
@@ -2724,16 +3958,24 @@ def cmd_solve(a):
     # live play vs stoppages -> "play" column in shifts_all.csv + stoppages.json
     sh(PY, f"{HERE}/stoppages.py", f"{W}/full", f"{W}/periods.json", f"{W}/shifts_all.csv")
     A = pd.read_csv(f"{W}/shifts_all.csv")
-    for P in periods(W):   # shift seconds vs 5 skaters for the whole period (4 inside penalty kills, 6 with the goalie pulled)
-        length = P["end"] - P["start"]; pk = sum(k["end"] - k["start"] for k in P.get("pk", []))
-        ex = sum(k["end"] - k["start"] for k in P.get("extra", []))
-        ps = sum(k["end"] - k["start"] for k in P.get("ps", []))
-        want = 5 * (length - ps) - pk + ex; have = int(A[A.period == P["label"]].dur.sum())
+    for P, have, want, length, pk, ex, ps in _fills(periods(W), A):
         print(f"{P['label']}: {have} s of shifts; 5 x {length - ps} s - {pk} s of penalty kill"
               + (f" + {ex} s of extra attacker" if ex else "") + f" = {want} s ({have / want:.0%})")
     lineup_check(W)   # with the ice time collapses, which no window shows: the solver keeps five on with the others
     log(f"gantt charts: {W}/gantt_*.png (the bottom panel should sit at 5, 4 during a penalty kill); look at them "
         f"when the lineup check lists something")
+
+
+def _fills(Ps, A):
+    """Per period, its shift seconds (A: shifts_all.csv) against 5 skaters for the whole of it (4 inside penalty
+    kills, 6 with the goalie pulled, none in a penalty shot): [(P, have, want, length, pk, extra, ps)]."""
+    out = []
+    for P in Ps:
+        length = P["end"] - P["start"]; pk = sum(k["end"] - k["start"] for k in P.get("pk", []))
+        ex = sum(k["end"] - k["start"] for k in P.get("extra", []))
+        ps = sum(k["end"] - k["start"] for k in P.get("ps", []))
+        out.append((P, int(A[A.period == P["label"]].dur.sum()), 5 * (length - ps) - pk + ex, length, pk, ex, ps))
+    return out
 
 
 def live_spans(P):
@@ -2929,16 +4171,73 @@ def _window_line(w):
     return s
 
 
+def _missing_skaters(W, A):
+    """Skaters on this game's roster whom the game sheet marks playing (sheet.json "played") and the solve (A, the
+    shifts) gives no shift: no labeled track and no `on` span. Beerteam's Nov 14 #54 skated in a dark green jersey
+    the tracker can't see; the first solve still filled 95-97% of each period by stretching the other ten over his
+    minutes, and only a third of his time showed as short-handed windows, so nothing else named him."""
+    from roster import SKATERS, GOALIES
+    p = f"{W}/sheet.json"
+    played = (json.load(open(p, encoding="utf-8")).get("played") or []) if os.path.exists(p) else []
+    have = {int(x) for x in A.player}
+    return [n for n in sorted(played) if n in SKATERS and n not in GOALIES and n not in have]
+
+
+SHORT_SHARE, SHORT_FILL = 0.15, 0.98   # a skater missing all game without a sheet to say so: one of ours short in
+# 15+ s windows over this share of the game, with the periods filled under this. On the 48 archived games solved
+# without their on/off spans (their first solves, Nov 19) only Beerteam's Nov 14 passed both: #54 untracked in dark
+# green, 816 s of 3545 (23%), filled 96.8%. Next came DF's Nov 8 (12.2%, 97.5%) and BT's Nov 7 (10.7%, 98.4%), each
+# a player lost for one period (the collapse windows'), then 7.7% and under, and every other game filled 98.9%+.
+
+
+def _player_name(W, n):
+    """A player's surname for a line or a brief (the lineup check's, and every brief's roster: _brief_context): the
+    game sheet's when it has another (BT's Nov 14 #54 was Pfeifer, roster.json's #54 the sub Semenov), as "PFEIFER
+    (roster.json: SEMENOV)", else roster.json's. "Another" as `absent --suggest` judges it (_same_surname: Semyonov
+    is Semenov), and a number the sheet gives two players (#29 Albantov and #29 Wheeler) is ours if either is."""
+    from roster import ALL_SKATERS, GOALIE_NAMES
+    mine, theirs = (ALL_SKATERS.get(n) or GOALIE_NAMES.get(n) or "").upper(), _sheet_names(W, n)
+    if not theirs or (mine and any(_same_surname(t, mine) for t in theirs)):
+        return mine or " and ".join(theirs)
+    return " and ".join(theirs) + (f" (roster.json: {mine})" if mine else "")
+
+
+def _sheet_names(W, n):
+    """The surnames the game sheet marks playing in number n (sheet.json "played_names"), upper case: [] without one."""
+    p = f"{W}/sheet.json"
+    names = (json.load(open(p, encoding="utf-8")).get("played_names") or []) if os.path.exists(p) else []
+    return [m.group(1).strip().upper() for m in (re.match(rf"#{n} (.+)$", x) for x in names) if m]
+
+
 def lineup_check(W, min_len=15):
-    """Print the lineup check (see lineup_windows), with the players whose ice time collapses in a period
+    """Print the lineup check (see lineup_windows), first any skater the game sheet has playing and the solve has
+    no shift for (_missing_skaters), else a game one skater short throughout (SHORT_SHARE), with the players whose ice
+    time collapses in a period
     (_collapses), which no window can show, and last the windows settled by hand. Each window is a missed player, an
     unlisted penalty, a bad label or a slow line change during a stoppage; `run_game.py gaps` writes the briefs for
     checking them by eye (solve and publish print this)."""
     windows, notes, extra = lineup_windows(W, min_len)
     settled = [_window_line(w) for w in windows if w.get("settled")]
     windows = [w for w in windows if not w.get("settled")]
-    collapses = _collapses(W, periods(W), pd.read_csv(f"{W}/shifts_all.csv"))
-    bad = [_window_line(w) for w in windows] + notes   # goals: count, credited, seen on the ice
+    A = pd.read_csv(f"{W}/shifts_all.csv")
+    collapses = _collapses(W, periods(W), A)
+    fill = "/".join(f"{have / want:.0%}"[:-1] for _P, have, want, *_x in _fills(periods(W), A)) + "%"
+    bad = [f"  #{n} {_player_name(W, n)} has no shift, though the game sheet marks him playing: nothing of his was "
+           f"labeled, and the others fill {fill} of the periods without him (BT's Nov 14 first solve, #54 missing: "
+           f"95-97%; BW's Oct 11, where #55 hadn't played: 102%). One of ours in another colour? Look for a skater of "
+           f"ours not in our jersey on {W}/frame600_small.jpg or `frames --view rink` (references/review.md, \"A "
+           f"skater of ours in another colour\"), then `run_game.py trace {W} {n} --look \"...\"`; if he didn't play, "
+           f"`run_game.py absent {W} {n}`" for n in _missing_skaters(W, A)]
+    short = sum(w["t1"] - w["t0"] for w in windows if w["n_on"] == w["expected"] - 1)
+    game = sum(P["end"] - P["start"] for P in periods(W))
+    have, want = (sum(x[k] for x in _fills(periods(W), A)) for k in (1, 2))
+    if not bad and short >= SHORT_SHARE * game and have < SHORT_FILL * want:   # no sheet to name him (SHORT_SHARE)
+        bad.append(f"  {short} s of the game ({short / game:.0%}) are windows with one of ours short, and the periods "
+                   f"are filled {fill}: a skater of ours the tracker can't see, all game? (In another colour, or a sub "
+                   f"not on roster.json: BT's Nov 14 solved without spans had 23% at 97%, #54 in dark green.) Count our "
+                   f"skaters on {W}/frame600_small.jpg or `frames --view rink`; for one of ours in another colour "
+                   f"(references/review.md), `run_game.py trace {W} <number> --look \"...\"`")
+    bad += [_window_line(w) for w in windows] + notes   # goals: count, credited, seen on the ice
     bad += [f"  {w['period']} {w['t0']}-{w['t1']}: #{w['player']} on for {w['t1'] - w['t0']} s in one shift" for w in extra if "player" in w]
     bad += [f"  ice time collapse, {c['period']} {c['t0']}-{c['t1']}: {c['line']}" for c in collapses]
     log("lineup check: " + ("OK" if not bad else f"{len(bad)} to look at")
@@ -2996,9 +4295,10 @@ def _gap_answers(gdir):
     return json.load(open(p, encoding="utf-8")) if os.path.exists(p) else []
 
 
-def _collapse_why(c, A, notes, first, last):
+def _collapse_why(c, A, notes, first, last, W=None):
     """A collapse window's text (_collapses), carrying what the hand-made ones did: his look, his usual linemates'
-    shifts in the stretch, and an "off" span for whoever the solver had on in his place."""
+    shifts in the stretch, and an "off" span for whoever the solver had on in his place. He is named as the briefs'
+    roster names him (_player_name: the sheet's surname where it has another)."""
     from roster import SKATERS
     pl, lab, a, b = c["player"], c["period"], c["t0"], c["t1"]
     m = _mm
@@ -3017,7 +4317,7 @@ def _collapse_why(c, A, notes, first, last):
     else:
         cause = "His tracks may carry no number or someone else's; he may also have sat the stretch out."
     look = " ".join(n for n in notes if re.search(rf"#{pl}\b", n))
-    return (f"#{pl} {SKATERS.get(pl, '').upper()} has {m(c['toi'])} of ice time in {lab} against "
+    return (f"#{pl} {_player_name(W, pl) if W else SKATERS.get(pl, '').upper()} has {m(c['toi'])} of ice time in {lab} against "
             + " and ".join(f"{m(v)} in {o}" for o, v in c["others"].items()) + f", and no shift from {a} to {b}. {cause} "
             f"His look: his row on the roster card{'; ' + look if look else ''}. "
             + ("His usual linemates' shifts in the stretch: " + "; ".join(f"#{q} {shifts(q)}" for q in mates) + ". " if mates else "")
@@ -3072,7 +4372,10 @@ def cmd_gaps(a):
             m = pd.read_csv(mp); man[P["label"]] = dict(zip(m.tid, m.row_id))
     on = lambda t: sorted(int(x) for x in A[(A.t0 <= t) & (A.t1 > t)].player)
     whys = _logged_whys(W)   # spans added by `span` or `highlights --write`, with the reason logged for each
-    whys.update({(e.get("P"), e.get("kind"), int(e["player"]), *e["span"]): e.get("why", "") for e in answers if e.get("span")})
+    # a checker's span under its why, or what newer spans left of it ("now", note_trims)
+    whys.update({(e.get("P"), e.get("kind"), int(e["player"]), float(s), float(t)):
+                 e.get("why", "") + (f" (trimmed: {'; '.join(e['trimmed'])} is newer)" if e.get("trimmed") else "")
+                 for e in answers if e.get("span") for s, t in e.get("now", [e["span"]])})
 
     same_secs = lambda e, w: e.get("t0") is not None and abs(e["t0"] - w["t0"]) <= 5 and abs(e["t1"] - w["t1"]) <= 5
 
@@ -3121,7 +4424,7 @@ def cmd_gaps(a):
         for c in collapses:
             if c["period"] == lab:
                 ws.append(dict(c, what="collapse", mid=None, live=None,
-                               why=_collapse_why(c, A, opt.get("notes", []), Ps[0]["start"], Ps[-1]["end"])))
+                               why=_collapse_why(c, A, opt.get("notes", []), Ps[0]["start"], Ps[-1]["end"], W)))
         for e in leads:
             if e.get("P") == lab and e.get("t0") is not None:
                 t0, t1 = int(e["t0"]), int(max(e["t1"], e["t0"] + 10))
@@ -3225,6 +4528,7 @@ def cmd_gaps(a):
         print(f"{skipped} item(s) settled in an earlier round, not briefed again (`{gdir}/answers.json`)")
     if not plan:
         print("lineup check: OK; nothing to brief" + (f"; {len(notes)} goal note(s) above" if notes else ""))
+        _missing_line(W, A, a.W)
         return
     print(f"round {rnd}:\n" + "\n".join(plan))
     print(f"{len(plan)} prompt(s): for each, one general-purpose subagent whose whole prompt is\n"
@@ -3232,6 +4536,16 @@ def cmd_gaps(a):
           f"  Then `run_game.py gaps {a.W} --apply` merges their fixes.json files into periods.json, and solve again.")
     if ABSENT:
         print("absent (not on the roster above):", ", ".join(f"#{n}" for n in sorted(ABSENT)))
+    _missing_line(W, A, a.W)
+
+
+def _missing_line(W, A, Warg):
+    """`gaps`' line for the lineup check's first one (_missing_skaters): settle such a player before any brief."""
+    for n in _missing_skaters(W, A):
+        print(f"!! settle #{n} {_player_name(W, n)} before briefing: the sheet has him playing and the solve has no "
+              f"shift for him (on Beerteam's Nov 14 18 of the first solve's 20 short-handed windows touched such a "
+              f"player's shifts). He didn't play: `run_game.py absent {Warg} {n}`; one of ours in another colour: "
+              f"`run_game.py trace {Warg} {n} --look \"...\"`. Then solve, and `gaps` again")
 
 
 def _match_item(items, e):
@@ -3268,7 +4582,7 @@ def apply_fixes(W, files):
     gdir = f"{W}/scratch/gaps"
     Ps = periods(W)
     answers = _gap_answers(gdir)
-    added, loud, new, done = 0, [], [], []
+    added, loud, new, done, logs = 0, [], [], [], []
     if not files:
         print("no fixes.json to apply (checkers write W/scratch/gaps/<period>/fixes.json)")
         return
@@ -3296,7 +4610,7 @@ def apply_fixes(W, files):
                                player_item=i.get("player"), n_on=i.get("n_on"), expected=i.get("expected"))
                     if i.get("lead_id"):
                         rec["closes"] = i["lead_id"]
-                added += _fix_entry(W, e, rec, it, Ps, loud, answers + new)
+                added += _fix_entry(W, e, rec, it, Ps, loud, answers + new, logs)
             except (KeyError, TypeError, ValueError, AttributeError, IndexError) as x:
                 print(f"  can't read this entry, so its item counts as unanswered: {json.dumps(e, ensure_ascii=False)[:200]} "
                       f"({type(x).__name__}: {x})")
@@ -3315,6 +4629,8 @@ def apply_fixes(W, files):
         json.dump(answers + new, open(f"{gdir}/answers.json", "w", encoding="utf-8"), indent=1, ensure_ascii=False)
     if added:
         save_periods(W, Ps, sort=("on", "off"))
+    for x in logs:   # what the round left of hand-made spans it contradicted (note_trims)
+        log_span(W, *x)
     for f, g in done:   # last: a run that failed before this point leaves every fixes.json to be applied again
         os.replace(f, g)
     print(f"{added} span(s) added to {W}/periods.json" + ("; solve again" if added else ""))
@@ -3326,10 +4642,13 @@ def apply_fixes(W, files):
         print(s)
 
 
-def _fix_entry(W, e, rec, it, Ps, loud, earlier):
+def _fix_entry(W, e, rec, it, Ps, loud, earlier, logs):
     """One gap checker's entry (apply_fixes): a pk played 5 on 5 is reported, a lead numbered, an ok / unsure /
-    bench answer printed, an on/off span added to its period (add_span). Returns the spans added (0 or 1); raises
-    ValueError for an entry that can't be read."""
+    bench answer printed, an on/off span added to its period (add_span). A span contradicting an older one of the
+    player's (on against off over the same seconds: an earlier round's, or one made by hand) wins over it
+    (trim_opposite, note_trims; the lines for hand_spans.txt go to `logs`); one contradicting a span of its own round
+    is added beside it with a `!!` line. Returns the spans added (0 or 1); raises ValueError for an entry that can't
+    be read."""
     if e.get("pk") is not None or e.get("even"):
         k = next((k for P in Ps for k in P.get("pk", []) if f"{k['start']}-{k['end']}" == str(e.get("pk")).replace(" ", "")), None)
         pl = k.get("player") if k else None
@@ -3368,10 +4687,25 @@ def _fix_entry(W, e, rec, it, Ps, loud, earlier):
         raise ValueError(f"{t0}-{t1} is in no period")
     t0, t1 = max(t0, P["start"]), min(t1, P["end"])
     rec.update(P=P["label"], span=[float(t0), float(t1)])
-    if add_span(P, e["kind"], t0, t1, player) is None:
-        print(f"  already in periods.json: {P['label']} {e['kind']} #{player} {t0}-{t1}")
+    kind, lab = e["kind"], P["label"]
+    if any(same_span(x, t0, t1, player) for x in P.get(kind, [])):
+        print(f"  already in periods.json: {lab} {kind} #{player} {t0}-{t1}")
         return 0
-    print(f"  + {P['label']} {e['kind']:3s} #{player} {t0}-{t1}: {e.get('why') or e.get('note', '')}")
+    other = "off" if kind == "on" else "on"
+    mates = lambda x: any(r.get("round") == rec["round"] for r in _span_records(earlier, lab, other, player, x["start"], x["end"]))
+    for x in P.get(other, []):   # two checkers of one round who disagree: neither is newer
+        if x.get("player") == player and x["start"] < t1 and t0 < x["end"] and mates(x):
+            loud.append(f"!! {lab} {kind} #{player} {t0:g}-{t1:g} ({rec.get('brief')}) contradicts {other} #{player} "
+                        f"{x['start']:g}-{x['end']:g} from the same round: both kept, so the tracks decide "
+                        f"{max(t0, x['start']):g}-{min(t1, x['end']):g}; settle it with `run_game.py span` (the newest "
+                        f"span wins)")
+            print(f"  {loud[-1]}")
+    trims = trim_opposite(P, kind, t0, t1, player, spare=mates)
+    add_span(P, kind, t0, t1, player)
+    print(f"  + {lab} {kind:3s} #{player} {t0}-{t1}: {e.get('why') or e.get('note', '')}")
+    if _kill_note(P, kind, t0, t1, player):
+        print(f"    {_kill_note(P, kind, t0, t1, player)}")
+    logs += note_trims(W, P, kind, player, trims, f"round {rec['round']}'s {kind} #{player} {t0:g}-{t1:g}", earlier)[0]
     return 1
 
 
@@ -3974,26 +5308,60 @@ def _size(path):
     return n
 
 
-SCRATCH_KEEP = ("goals", "gaps", "clips")   # scratch/ folders whose text archive keeps (_scratch_text)
+SCRATCH_TEXT, SCRATCH_TEXT_MAX = (".md", ".json", ".csv", ".txt"), 10_000_000   # what archive keeps under scratch/
+
+
+def _scratch_keeps(p):
+    """Whether archive keeps this file under W/scratch: a text file (SCRATCH_TEXT) of 10 MB or less. A period's
+    tracks_v1.csv is about 4 MB, so a stretch tracked again for a clip stays; a copy of dets.csv (70 MB) doesn't."""
+    return p.lower().endswith(SCRATCH_TEXT) and os.lstat(p).st_size <= SCRATCH_TEXT_MAX
 
 
 def _scratch_text(W):
-    """The .md and .json files under W/scratch/goals, gaps and clips: the generated briefs and the checkers' answers
-    (goals.json, pens.json, fixes.rN.json, answers.json, prompt_pN.json, generated.json, the clip checker's prompt and
-    answers). A few hundred kB a game: `highlights` tells hand edits from generated fields by generated.json, `gaps`
-    goes on from answers.json, and a pipeline review reads what the checkers said without the session transcripts."""
+    """Every file under W/scratch, each (its path, its path under scratch/ with '/', whether archive keeps it:
+    _scratch_keeps), from one walk, so the kept and the dropped can't disagree on a separator (a first keep-list on
+    Nov 18 compared '/' with os.sep and deleted the kept files). Kept: the generated briefs and the checkers' answers
+    wherever they are (goals/, gaps/, clips/, trace/, a hand-named folder: goals.json, pens.json, fixes.rN.json,
+    answers.json, shifts.json, generated.json, the clip checker's rounds), a hand trace's t,x,y rows and notes.
+    `highlights` tells hand edits from generated fields by generated.json, `gaps` goes on from answers.json, and a
+    pipeline review reads what the checkers said without the session transcripts. Beerteam's Nov 7 goal-1 trace,
+    kept in scratch/, was lost when archive kept only goals/, gaps/ and clips/."""
     S = os.path.normpath(f"{W}/scratch")
-    return {os.path.relpath(os.path.join(d, f), S) for k in SCRATCH_KEEP for d, _, fs in os.walk(os.path.join(S, k))
-            for f in fs if f.lower().endswith((".md", ".json"))}   # paths under scratch/, os.sep-separated
+    out = []
+    for d, _, fs in _scratch_walk(W):
+        for f in fs:
+            p = os.path.join(d, f)
+            out.append((p, os.path.relpath(p, S).replace(os.sep, "/"), _scratch_keeps(p)))
+    return out
+
+
+def _in_scratch(W, p):
+    """Whether p, resolved (links, Windows junctions), lies inside W/scratch, also resolved: archive removes nothing
+    else (a junction in scratch/ to the repo would otherwise have had archive walk into it and delete there)."""
+    root = os.path.normcase(os.path.join(os.path.realpath(W), "scratch"))
+    q = os.path.normcase(os.path.realpath(p))
+    return q == root or q.startswith(root + os.sep)
+
+
+_isjunction = getattr(os.path, "isjunction", lambda p: False)   # Python 3.12+; elsewhere no junctions to mind
+
+
+def _scratch_walk(W):
+    """os.walk over W/scratch that doesn't go into a linked folder (a symlink or a Windows junction, which os.walk
+    follows) or any folder that resolves outside W/scratch."""
+    for d, dirs, fs in os.walk(os.path.normpath(f"{W}/scratch"), topdown=True):
+        dirs[:] = [x for x in dirs if not os.path.islink(os.path.join(d, x)) and not _isjunction(os.path.join(d, x))
+                   and _in_scratch(W, os.path.join(d, x))]
+        yield d, dirs, fs
 
 
 def cmd_archive(a):
     """Keep a finished game's data so it can be re-solved later (as ~/hockey-work/2026-09-27-vs-rr): detections, OCR
     reads, tracks, segments, reviews, periods, results, rink, what a clip is cut again from (clip_args.json,
-    clips_check.json, hand traces outside scratch/), why a span is there (hand_spans.txt), and the checkers' briefs
-    and answers in scratch/ (_scratch_text). Drop what is big and can be downloaded or regenerated: the video and
-    audio, crops, overview frames, the scoreboard frames, contact sheets and charts, and the rest of scratch/ (the
-    reviewers' folders, the checkers' frames and zooms)."""
+    clips_check.json, hand traces), why a span is there (hand_spans.txt), and the text files anywhere in scratch/
+    (_scratch_text: the checkers' briefs and answers, traces, notes). Drop what is big and can be downloaded or
+    regenerated: the video and audio, crops, overview frames, the scoreboard frames, contact sheets and charts, and
+    the rest of scratch/ (the checkers' frames and zooms, scripts, text files over 10 MB)."""
     W = os.path.abspath(a.W)
     if not os.path.exists(f"{W}/shifts_all.csv"):
         sys.exit(f"{W} has no shifts_all.csv: archive a game only after solve and publish")
@@ -4006,27 +5374,41 @@ def cmd_archive(a):
     drop += glob.glob(f"{W}/full/ocr_done_*.txt") + glob.glob(f"{W}/p*/crops")
     drop += glob.glob(f"{W}/video_*.webm")   # the download as it came, kept by fit_size when it scaled the video
     S = os.path.normpath(f"{W}/scratch")
-    keep = _scratch_text(W)
-    kept = {k: [os.path.getsize(os.path.join(S, f)) for f in keep if f.split(os.sep)[0] == k] for k in SCRATCH_KEEP}
-    drop += [os.path.join(d, f) for d, _, fs in os.walk(S) for f in fs
-             if os.path.relpath(os.path.join(d, f), S) not in keep]
-    for p in drop:
+    files = _scratch_text(W)
+    kept, big = {}, []
+    for p, rel, keep in files:
+        if keep:   # by scratch/'s top folder ("." for a file in scratch/ itself)
+            kept.setdefault(rel.split("/")[0] if "/" in rel else ".", []).append(os.lstat(p).st_size)
+        elif rel.lower().endswith(SCRATCH_TEXT):
+            big.append(f"{rel} ({os.lstat(p).st_size / 1e6:.1f} MB)")
+    for p in drop:   # the big files outside scratch/, as before
         if os.path.islink(p) or os.path.isfile(p):
             os.remove(p)
         elif os.path.isdir(p):
             shutil.rmtree(p)
-    for d, _, _ in sorted(os.walk(S), key=lambda x: -len(x[0])):   # folders left empty go too
-        if not os.listdir(d):
+    refused = []
+    for p, rel, keep in files:   # scratch/'s, each checked to be inside it (a link itself goes; its target stays)
+        if keep:
+            continue
+        if not _in_scratch(W, os.path.dirname(p) if os.path.islink(p) else p):
+            refused.append(rel); continue
+        os.remove(p)
+    for d, _, _ in sorted(_scratch_walk(W), key=lambda x: -len(x[0])):   # folders left empty go too
+        if not os.listdir(d) and _in_scratch(W, d) and not _isjunction(d):
             os.rmdir(d)
+    if refused:
+        print(f"not removed, resolving outside {S}: " + ", ".join(refused))
     log(f"archived {W}: {before / 1e9:.1f} GB -> {_size(W) / 1e6:.0f} MB")
-    print("kept from scratch/, the checkers' briefs and answers: " + (", ".join(
-        f"{k}/ {len(v)} file(s), {sum(v) / 1e3:.0f} kB" for k, v in kept.items() if v) or "nothing (no checker wrote there)")
-        + "; the rest of scratch/ dropped")
+    print("kept from scratch/, its text (briefs, answers, traces, notes): " + (", ".join(
+        f"{k}/ {len(v)} file(s), {sum(v) / 1e3:.0f} kB" for k, v in sorted(kept.items())) or "nothing (no checker wrote there)")
+        + "; the rest of scratch/ dropped" + (f", with text files over {SCRATCH_TEXT_MAX / 1e6:.0f} MB: " + ", ".join(big)
+                                              if big else ""))
 
 
 if __name__ == "__main__":
     ap = argparse.ArgumentParser(description=__doc__, formatter_class=argparse.RawDescriptionHelpFormatter)
     sub = ap.add_subparsers(dest="cmd", required=True)
+    sub.add_parser("title").add_argument("url")
     dl = sub.add_parser("download"); dl.add_argument("url"); dl.add_argument("W")
     dl.add_argument("--cookies", metavar="BROWSER", help="yt-dlp's --cookies-from-browser, e.g. firefox (the user runs this)")
     f = sub.add_parser("fetch"); f.add_argument("url"); f.add_argument("W"); f.add_argument("--limit", type=float)
@@ -4043,6 +5425,8 @@ if __name__ == "__main__":
     # goals, kills and highlights: the checkers' briefs, the kills from the sheet, highlights.json from the answers
     go = sub.add_parser("goals"); go.add_argument("W")
     go.add_argument("--brief", action="store_true", help="write the goal and penalty checkers' briefs (W/scratch/goals/prompt_*.md)")
+    go.add_argument("--only", type=int, metavar="N", help="with --brief, one goal's brief only (N: its number on the game sheet), "
+                    "W/scratch/goals/prompt_gN.md answered in gN/goals.json, which `highlights` takes over the period's answer for it")
     pk_ = sub.add_parser("pk"); pk_.add_argument("W")
     pk_.add_argument("--write", action="store_true", help="merge the kills into periods.json")
     pk_.add_argument("--rough", action="store_true", help="with --write, also the kills in periods without a board "
@@ -4065,11 +5449,17 @@ if __name__ == "__main__":
     rv.add_argument("--opp", help="the opponents' look, e.g. 'white jerseys; they also wear #11 and #43'")
     rv.add_argument("--note", action="append", help="a sentence for every reviewer, e.g. a player's look (repeatable)")
     rv.add_argument("--chunk", type=int, help="sheets per reviewer (3)")
-    rv.add_argument("--batch", type=int, help="chunks listed per launch (20), so that many reviewers run at once")
+    rv.add_argument("--batch", type=int, help=f"chunks listed per launch ({REVIEW_BATCH}: the harness's "
+                    f"{HARNESS_SUBAGENTS} subagents at once less up to four goal and penalty checkers), so that many "
+                    f"reviewers run at once; kept in W/review.json")
     ck = sub.add_parser("check"); ck.add_argument("W")
     ck.add_argument("--wait", type=int, nargs="?", const=540, metavar="SECONDS",
-                    help="block until the last launch (W/review_todo.txt) is answered or SECONDS pass (540: one "
-                         "10-minute foreground command), then print what is still open")
+                    help="block until the last launch (W/review_todo.txt) is answered, until no new answer has come "
+                         "for --quiet seconds, or until SECONDS pass (540: one 10-minute foreground command), then "
+                         "print what is still open and name the prompts never answered")
+    ck.add_argument("--quiet", type=int, default=REVIEW_QUIET, metavar="S",
+                    help=f"with --wait, return once no new answer has come for S seconds, counted from the start while "
+                         f"none has come ({REVIEW_QUIET}; 0: wait the full SECONDS)")
     fr = sub.add_parser("frames"); fr.add_argument("W"); fr.add_argument("out")
     fr.add_argument("--view", help="rink, left-net or right-net (rink.py views) instead of X0 X1 Y0 Y1 TILE_W COLS")
     fr.add_argument("--tile", type=int, help="tile width in px (1000 for the rink, 660 for a net)")
@@ -4079,14 +5469,17 @@ if __name__ == "__main__":
     c = sub.add_parser("clip"); c.add_argument("W"); c.add_argument("game_id"); c.add_argument("name")
     c.add_argument("t0"); c.add_argument("t1"); c.add_argument("poster"); c.add_argument("focus", nargs="?")
     c.add_argument("--net", choices=("for", "against"), help="a goal clip: close in on the net it went into at POSTER")
-    c.add_argument("--replay-from", help="a goal clip's replay starts this many seconds before POSTER (4, or 1.5 s before --shot)")
-    c.add_argument("--shot", metavar="T,X,Y", help="a goal clip: when the puck left the scorer's stick and where his skates were (source px), from the goal check")
+    c.add_argument("--replay-from", help="a goal clip's replay starts this many seconds before POSTER (4, or 1.5 s before --start or --shot, 2 s before --pass)")
+    c.add_argument("--shot", metavar="T,X,Y", help="a goal clip: the scorer's last touch (shot, deflection or jam) and where his skates were (source px), from the goal check; the track there is his, whatever its label")
+    c.add_argument("--start", metavar="T,X,Y", help="a goal clip: where the scoring play began, when before the last touch (his drive or rush, the pass that sprang him); the replay starts 1.5 s before it")
     c.add_argument("--pass", dest="pass_", metavar="T,X,Y", help="a goal clip: when the puck left the passer's stick and where his skates were; the passer stays in the frame until then and the replay starts 2 s before it")
+    c.add_argument("--spot", metavar="T,X,Y", help="a penalty clip: the penalized player's skates at the infraction, from the penalty check; the track there is his, whatever its label")
     c.add_argument("--tracks", metavar="TIDS|CSV[:TIDS]", help="follow these tracks instead of the labeled ones: 'TID,TID;TID' in the period's tracks_v1.csv (each player's, scorer first), or a tracks file of its own (run_period.py into a scratch folder, or t,x,y rows traced by hand)")
     c.add_argument("--dry-run", action="store_true", help="compute and check the camera's path and print it; cut nothing (no video needed)")
     cl = sub.add_parser("clips"); cl.add_argument("W"); cl.add_argument("game_id")
-    cl.add_argument("--only", metavar="NAME,...", help="re-cut just these clips (highlights.json's names; penalty-97 takes every penalty-97-*)")
+    cl.add_argument("--only", nargs="+", metavar="NAME", help="re-cut just these clips (highlights.json's names, comma- or space-separated; penalty-97 takes every penalty-97-*)")
     cl.add_argument("--dry-run", action="store_true", help="compute and check every clip's camera path; cut nothing (no video needed)")
+    cl.add_argument("--answers", action="store_true", help="read the clip checkers' answers (scratch/clips/answers.rN.json): what to re-cut, with the --only line, and what goes to the user; cut nothing")
     cs = sub.add_parser("clipsheet"); cs.add_argument("mp4"); cs.add_argument("out")
     cs.add_argument("--W", help="a work folder: mark the shot, goal and pass from its clips_check.json entry for this clip")
     cs.add_argument("--mark", action="append", metavar="LABEL=SEC", help="frame the tile nearest this clip second (repeatable)")
@@ -4120,6 +5513,10 @@ if __name__ == "__main__":
     spn.add_argument("vals", nargs="*", help="PLAYER T0 T1 for on/off, T0 T1 for extra/ps (seconds of video)")
     spn.add_argument("--note", help="why: the line kept in W/hand_spans.txt")
     spn.add_argument("--list", action="store_true", help="print W/hand_spans.txt")
+    tc = sub.add_parser("trace"); tc.add_argument("W"); tc.add_argument("player", type=int)
+    tc.add_argument("--look", help="how to recognise him, for the tracers: jersey, helmet, socks, number, where he sits")
+    tc.add_argument("--part", type=int, default=TRACE_PART, help=f"the longest stretch per tracer, in s ({TRACE_PART})")
+    tc.add_argument("--apply", action="store_true", help="the tracers' shifts.json files into periods.json as `on` spans")
     a = ap.parse_args()
     # Git Bash sessions pass /c/Users/... and quoted ~ paths, which Windows Python can't open
     for k in PATH_ARGS:
@@ -4151,4 +5548,4 @@ if __name__ == "__main__":
      "archive": cmd_archive, "jersey": cmd_jersey, "absent": cmd_absent, "review": cmd_review, "check": cmd_check,
      "schedule": cmd_schedule, "sheet": cmd_sheet, "scores": cmd_scores, "gaps": cmd_gaps, "download": cmd_download,
      "span": cmd_span, "follow": cmd_follow, "pk": cmd_pk, "highlights": cmd_highlights, "clips": cmd_clips,
-     "clipsheet": cmd_clipsheet}[a.cmd](a)
+     "clipsheet": cmd_clipsheet, "title": cmd_title, "trace": cmd_trace}[a.cmd](a)

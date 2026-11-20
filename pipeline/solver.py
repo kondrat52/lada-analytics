@@ -34,8 +34,10 @@ def solve(S, players, T, bench_events, target=None, iters=300, active=None, boxe
     T: number of 1s bins.
     bench_events: array of times (s) of light-blue track starts/ends at the bench.
     target: (T,) desired skaters on ice (default 5). active: (T,) bool, bins where the game is live.
-    boxed: [(player, t0, t1)], players in the penalty box then. The box isn't our bench, so without this a shift
-    runs on through the penalty. kept: [(player, t0, t1)], players seen on the ice then whose tracks were lost."""
+    boxed: [(player, t0, t1)], players held off the ice then: in the penalty box (the box isn't our bench, so without
+    this a shift runs on through the penalty), seen off by hand (`off` spans), or outside the `on` spans of a player
+    known only from those (run2.py). It changes no target: a kill's one skater fewer is the caller's target.
+    kept: [(player, t0, t1)], players seen on the ice then whose tracks were lost (`on` spans)."""
     P = len(players); idx = {p: k for k, p in enumerate(players)}
     on_c = np.zeros((P, T)); off_c = np.zeros((P, T))
     for _, s in S[S.plabel.isin(players)].iterrows():

@@ -34,12 +34,21 @@ S2 = SH.link(S2, rk)
 S2.to_csv(f"{out}/segs_final.csv", index=False)
 w = S2[S2.plabel >= 0].groupby("plabel").apply(lambda g: (g.t1 - g.t0).sum(), include_groups=False)
 # a player a hand `on` span names plays even without 20 s of labeled track: the solver used to leave him out and drop
-# his spans without a word (Beerteam's Nov 14: #54 Pfeifer in a dark green jersey that fails the jersey test)
+# his spans without a word (Beerteam's Nov 14: #54 Pfeifer in a dark green jersey that fails the jersey test). The
+# spans of a player still left out are named below, with what they still do
 span_on = {int(p[0]) for _a, _b, _n, *p in target_spans if len(p) > 1 and p[1] == "on" and p[0] is not None}
 players = sorted(p for p in SH.ROSTER if w.get(p, 0) >= 20 or p in span_on)
+span_only = [p for p in players if w.get(p, 0) < 20]   # known from his `on` spans alone: held off outside them (below)
 span_lost = sorted({int(p[0]) for _a, _b, _n, *p in target_spans if p and p[0] is not None} - set(players))
-if span_lost:   # off the roster, absent, a goalie, or (an off span or a kill) a player with no labeled track
-    print("WARNING spans name players this solve leaves out: their on and off spans do nothing (a kill still takes a skater off):", ", ".join(f"#{p}" for p in span_lost))
+for pl in span_lost:   # off the roster, absent, a goalie, or (only off spans or a kill) a player with no labeled track
+    why = ("marked absent" if pl in ABSENT else "a goalie" if pl in SH.GOALIES else "not on the roster" if pl not in SH.ROSTER
+           else f"{w.get(pl, 0):.0f} s of labeled track, 20 needed, and no `on` span")
+    mine = [(a, b, n, q) for a, b, n, *q in target_spans if q and q[0] is not None and int(q[0]) == pl]
+    onoff = [f"{'on' if len(q) > 1 and q[1] == 'on' else 'off'} {a:g}-{b:g}" for a, b, n, q in mine if n == 5]
+    kills = [f"{a:g}-{b:g}" for a, b, n, q in mine if n != 5]
+    print(f"WARNING #{pl} is left out of this solve ({why}): "
+          + "; ".join(([f"his spans are ignored, so nobody's shifts follow them: {', '.join(onoff)}"] if onoff else [])
+                      + ([f"the kill {', '.join(kills)} still sets one skater fewer on the ice"] if kills else [])))
 print("players:", players)
 S2["d0"] = np.asarray(rk.bench_depth(S2.x0, S2.r0)); S2["d1"] = np.asarray(rk.bench_depth(S2.x1, S2.r1))
 ev = np.r_[S2[S2.bench0 & (S2.d0 > -10)].t0.values, S2[S2.bench1 & (S2.d1 > -10)].t1.values]
@@ -54,6 +63,24 @@ for a, b, n, *p in target_spans:
         target[int(a):int(b)] -= 5 - n
     if p and p[0] is not None:
         (kept if len(p) > 1 and p[1] == "on" else boxed).append((int(p[0]), int(a), int(b)))
+# a player known only from his `on` spans is off wherever none covers him. With no labeled segments he costs nothing on
+# or off, the multipliers make him the cheapest filler wherever fewer than five are on, and ties keep his state: on
+# Beerteam's Nov 14 #54 came out 96 s over his 15 traced shifts (a 6-on stretch among them) until 17 hand-made `off`
+# spans held him off. `boxed` just holds a player off the ice, as an `off` span does: the count is the target's alone
+# (only a kill lowers it, above), so he is simply off, not in a box. Not where a labeled piece of his is either: a
+# few seconds of track under the 20 s are his own evidence, which the hold would contradict.
+for pl in span_only:
+    cover, mine = np.zeros(T, bool), np.zeros(T, bool)
+    for a, b, _n, *p in target_spans:
+        if len(p) > 1 and p[1] == "on" and p[0] is not None and int(p[0]) == pl:
+            cover[int(a):int(b)] = True
+    for s in S2[S2.plabel == pl].itertuples():
+        mine[max(0, int(np.floor(s.t0))):min(T, int(np.ceil(s.t1)) + 1)] = True
+    held = ~(cover | mine)
+    d = np.diff(np.r_[0, held.astype(np.int8), 0])
+    boxed += [(pl, int(a), int(b)) for a, b in zip(np.flatnonzero(d == 1), np.flatnonzero(d == -1))]
+    print(f"#{pl} has {w.get(pl, 0):.0f} s of labeled track: on in his `on` spans ({int(cover.sum())} s), off everywhere "
+          f"else" + (f" but his labeled pieces ({int((mine & ~cover).sum())} s outside the spans)" if (mine & ~cover).any() else ""))
 target = np.maximum(target, 3)
 st, viol = solve(S2, players, T, ev, target=target, active=active, boxed=boxed, kept=kept)
 Rsh = to_shifts(st, players)

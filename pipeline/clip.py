@@ -1,4 +1,4 @@
-"""clip.py FULLDIR VIDEO AUDIO OUT.mp4 T0 T1 [POSTER_T [FOCUS [NET [REPLAY_FROM [SHOT [PASS]]]]]]
+"""clip.py FULLDIR VIDEO AUDIO OUT.mp4 T0 T1 [POSTER_T [FOCUS [NET [REPLAY_FROM [SHOT [PASS [START]]]]]]]
 Cut a zoomed highlight clip: a virtual camera follows the main cluster of players (from FULLDIR/dets.csv),
 crops the 4K wide cut to 16:9 and encodes 1280x720 H.264 with the game audio. Writes OUT.jpg as a poster
 frame (at POSTER_T, default the middle of the clip). FOCUS keeps the camera on part of the rink when players are
@@ -7,10 +7,15 @@ spread out: a source x in px (rink.py nets, e.g. 540 = Renton's left net), or "t
 (one ;-separated list of tracks per player in priority order, the scorer first, then the assists), or "-" for none. NET "X,Y" (the
 scoring net, Y a fallback for its height) makes it a goal clip: the camera closes in on that net around POSTER_T,
 the goal (`goal_path`), and the clip ends with a zoomed half-speed replay of the goal, from REPLAY_FROM seconds
-before it ("-" for the default: 4, or from 1.5 s before SHOT). SHOT "T,X,Y" is when the puck left the scorer's
-stick and where his skates were: the camera then follows the play through the shot (`goal_path`); "-" for none.
-PASS "T,X,Y" is the same for the pass that set it up: the passer (FOCUS's second player) stays in the frame until
-it, and the replay starts PASS_LEAD (2 s) before it. The audio is left out when the recording's audio is silent.
+before it ("-" for the default: 4, or from 1.5 s before SHOT, 2 s before PASS, 1.5 s before START, whichever is
+earliest). SHOT "T,X,Y" is the scorer's last touch (his release, deflection or jam) and where his skates were then:
+the camera follows him up to it and the puck from it to the net (`goal_path`); "-" for none. PASS "T,X,Y" is the
+same for the pass that set it up: the passer (FOCUS's second player) stays in the frame until it, and the replay
+starts PASS_LEAD (2 s) before it; "-" for none. START "T,X,Y" is where the scoring sequence begins when that is
+before the last touch (his drive or rush, the pass or rebound that sprang him: whoever has the puck then): the
+replay starts START_LEAD (1.5 s) before it. Highlights written before Nov 20, 2026 have no START and their SHOT is
+often that start (the goal brief's old rule), which the replay still runs from. The audio is left out when the
+recording's audio is silent.
 A TRACKS.csv can also be a skater's positions traced by hand (columns t, x, y), which become track 0 (`read_tracks`).
 
 Every cut first computes the camera's path and checks it (`check`): the warnings are printed and saved with the
@@ -41,7 +46,8 @@ LEAD_W = 1300                        # the width used when following one player
 # before it: the camera path is smoothed over about 1 s either way, so at 0.5 and 1 s the replay of LADA Y's Nov 2
 # 6th goal had left Lisitsyn's corner battle 0.4 s after his last touch, with him at the frame's bottom edge until then
 PASS_HOLD, PASS_LEAD = 1.0, 2.0
-TRACE_SNAP = 120                     # a hand-traced skater snaps to a detection this close (BT's Nov 7 1st goal)
+START_LEAD = 1.5                     # the replay starts this long before START, as it did before the old-rule SHOT
+TRACE_SNAP = 120                    # a hand-traced skater snaps to a detection this close (BT's Nov 7 1st goal)
 
 # The self-checks on a goal clip's path (`check`), in one place
 IN_EDGE = 0.25       # in the frame: skates this many body heights inside the crop's sides, the body's middle inside
@@ -64,8 +70,17 @@ SHOT_LATE_S = 1.0
 # started the pile), and Belousenko's on TK's Oct 25 7 s (a scramble after it); much longer is another play
 SHOT_LONG_S = 8.0
 PASS_LONG_S = 8.0    # a pass this long before the shot is another play (the accepted ones: 0.5-5.3 s)
-REPLAY_LEAD_S = 0.5  # the replay starts at least this long before the shot and the pass, and ends this long after the
-                     # goal second (its defaults: 1.5 s before the shot, 2 s before the pass, 1.5 s after the goal)
+START_LONG_S = 12.0  # a start this long before the goal is another play: the goal brief asks for at most about 10 s
+REPLAY_LEAD_S = 0.5  # the replay starts at least this long before the start, the shot and the pass, and ends this long
+                     # after the goal second (its defaults: 1.5 s before the start and the shot, 2 s before the pass,
+                     # 1.5 s after the goal)
+# the shooter well inside the replay at his last touch: his skates (the --shot spot) this many body heights (of whoever
+# stands there: `body_h`) from the crop's sides. Beerteam's Nov 14 1st goal, the first cut: Kleiman's spot 40 px (0.52
+# of 76) inside the replay's left edge, "partly cut off", while IN_EDGE (0.25) passed it. Of the 221 accepted clips
+# (Nov 20 dry run) 2 fall under 0.55 (TK's Nov 15 5th goal 0.41, and Beerteam's Nov 14 1st at 0.22 of a spot moved 52 px
+# off his skates by hand to shift the camera) and a third under 0.75 (that game's 2nd, 0.59)
+EDGE_H = 0.55
+JUMPS_N = 2          # the scorer's path jumping between two bodies this often inside the replay (`check`)
 
 _DETS = {}
 
@@ -117,7 +132,7 @@ def camera_path(full, t0, t1, focus=None, max_w=MAX_W):
 
 
 def goal_path(full, P, t0, t1, tg, net, players, frame_w, max_w, zoom=(NET_W, NET_HI), lock=LOCK, shot=None,
-              keep_w=None, pas=None, trace=None):
+              keep_w=None, pas=None, trace=None, start=None):
     """A goal clip's camera. It frames everyone credited with the goal (`players`: a track table per player,
     scorer first, empty where untracked) whenever one of them is tracked, and from 6 s before the goal (tg) to 2 s
     after, the scoring net (`net`, x and y) and the slot in front of it too; where neither applies, the main group
@@ -140,6 +155,8 @@ def goal_path(full, P, t0, t1, tg, net, players, frame_w, max_w, zoom=(NET_W, NE
     PASS_HOLD (1 s) after the pass, ahead of the net (at the pass spot itself for the PASS_LEAD s before it where his track is
     lost). The tight crop dropped LADA Y's passers on Nov 2 vs Best Vibes: Akulov at the point and Lisitsyn
     feeding from the half-wall were out of the frame when they passed, and out of the replay altogether.
+    `start` (time, x, y: where the scoring sequence begins, when before the shot) does for an untracked scorer
+    what a pass does: from it to the shot he is the puck carrier walked back from the shot (`carrier_path`).
     `trace` (a dict) gets what the checks need: the net's spot and the walked paths, and per frame which players
     and whether the net the frame kept (`check`)."""
     if net:
@@ -160,12 +177,16 @@ def goal_path(full, P, t0, t1, tg, net, players, frame_w, max_w, zoom=(NET_W, NE
         dp = dp[((dp.t - pas[0]).abs() <= 0.5) & (dp.conf >= 0.3) & ((dp.fx - pas[1]).abs() < 150)
                 & ((dp.fy - pas[2]).abs() < 150)]
         ph = float(dp.h.median()) if len(dp) else (nh if net else 80.0)
-        carrier = carrier_path(full, pas, shot, nh if net else 80.0) if shot else None
         passer = walk_back(full, pas[0] - PASS_LEAD - 1.0, pas, ph, False)
+    # the puck carrier from the earlier of the pass and the start to the shot, for a scorer without a track there:
+    # with the pass alone, from 1.5 s before an earlier start to the pass the replay had nobody to follow and sat on
+    # the net's crop
+    lead_in = min((v for v in (pas, start) if v and shot and v[0] < shot[0]), key=lambda v: v[0], default=None)
+    carrier = carrier_path(full, lead_in, shot, nh if net else 80.0) if lead_in else None
     keep_w = keep_w or max_w
     if trace is not None:
         trace.update(net=(nx, ny, nh) if net else None, lock=lock, frames=[],
-                     carrier=carrier if pas else None, passer=passer if pas else None, pass_h=ph if pas else None)
+                     carrier=carrier, passer=passer if pas else None, pass_h=ph if pas else None)
 
     def box(S):
         left = min(x - h for x, y, h, _ in S); right = max(x + h for x, y, h, _ in S)
@@ -187,10 +208,10 @@ def goal_path(full, P, t0, t1, tg, net, players, frame_w, max_w, zoom=(NET_W, NE
             # an untracked passer: walked back from the pass along the detections, then the pass spot
             pts.append(tuple(float(np.interp(t, passer.index.values, passer[c].values)) for c in ("fx", "fy", "h"))
                        + (1,) if t <= pas[0] and len(passer) > 1 else (pas[1], pas[2], ph, 1))
-        if pas and shot and pas[0] < t < shot[0] and not any(q[3] == 0 for q in pts):
+        if lead_in and lead_in[0] < t < shot[0] and not any(q[3] == 0 for q in pts):
             # an untracked scorer (theirs, always: tracks_v1 holds only ours) is the puck carrier between the pass
-            # and the shot (`carrier_path`); with nobody to follow, the camera of Best Vibes' breakaway on LADA Y's
-            # Nov 2 game sat on our empty-looking net while their #49 skated the length of the ice
+            # (or the start) and the shot (`carrier_path`); with nobody to follow, the camera of Best Vibes'
+            # breakaway on LADA Y's Nov 2 game sat on our empty-looking net while their #49 skated the length of the ice
             pts.append(tuple(float(np.interp(t, carrier.index.values, carrier[c].values)) for c in ("fx", "fy", "h"))
                        + (0,))
         at_net = net is not None and tg + lock[0] <= t <= tg + lock[1]
@@ -302,15 +323,16 @@ def player_path(tr, tids, anchor=None):
     empty-netter a figure on our bench labeled with the scorer's number took over 2 s after the goal, 2000 px from
     him, and the camera swung to the bench. The walk starts at `anchor`, the shot, where the goal check saw him;
     without one there is no telling which of two far-apart tracks is him (BW's Oct 25 5th goal had a read #54 at
-    one end and another #54 at the other), so all of them stand."""
+    one end and another #54 at the other), so all of them stand, and the path can jump between them (`check`'s
+    scorer-jump). The path keeps each sample's tid."""
     drop = set()
     while True:
         parts = [tr[tr.tid == x] for x in tids if x not in drop]
         if not parts:
-            return tr.iloc[:0].groupby("t")[["fx", "fy", "h"]].first()
+            return tr.iloc[:0].groupby("t")[["fx", "fy", "h", "tid"]].first()
         p = pd.concat(parts).groupby("t")[["fx", "fy", "h", "tid"]].first()
         if anchor is None:
-            return p[["fx", "fy", "h"]]
+            return p
         t, x, y, k = p.index.values, p.fx.values, p.fy.values, p.tid.values
         # start on the first track (the one at the shot or pass) when it is there within 1 s: on the Doofers' Nov 15
         # 5th goal Babkin's track had no box at the shot's frame, Fedotov's (in the group by a later #26 piece) had
@@ -329,7 +351,7 @@ def player_path(tr, tids, anchor=None):
             if bad is not None:
                 break
         if bad is None or bad == k[i0]:
-            return p[["fx", "fy", "h"]]
+            return p
         drop.add(bad)
 
 
@@ -382,7 +404,7 @@ def plan(argv, size):
             # the walk along each player's tracks starts where the goal check saw him: the scorer at the shot,
             # the passer at the pass
             anchors = [float(argv[k].split(",")[0]) if len(argv) > k and argv[k] != "-" else None
-                       for k in (11, 12)]
+                       for k in (11, 12)]   # the scorer at the shot, the passer at the pass
             players = [player_path(tr, [int(x) for x in g.split(",") if x], anchors[i] if i < 2 else None)
                        for i, g in enumerate(tids.split(";"))]
         elif argv[8].startswith("track:"):
@@ -402,26 +424,30 @@ def plan(argv, size):
     max_w = min(MAX_W, H * OUT_W / OUT_H)            # a 16:9 crop must fit the frame
     P0 = camera_path(full, t0, t1, focus, max_w)
     net = tuple(float(v) for v in argv[9].split(",")) if len(argv) > 9 else None
-    shot = tuple(float(v) for v in argv[11].split(",")) if len(argv) > 11 and argv[11] != "-" else None
-    pas = tuple(float(v) for v in argv[12].split(",")) if len(argv) > 12 else None
+    spot = lambda k: tuple(float(v) for v in argv[k].split(",")) if len(argv) > k and argv[k] != "-" else None
+    shot, pas, start = spot(11), spot(12), spot(13)
     if len(argv) > 10 and argv[10] != "-":
         replay = (-float(argv[10]), REPLAY[1])
     else:
         replay = (min(REPLAY[0], shot[0] - tp - 1.5), REPLAY[1]) if shot else REPLAY
         if pas:
             replay = (min(replay[0], pas[0] - tp - PASS_LEAD), replay[1])
+        if start:
+            replay = (min(replay[0], start[0] - tp - START_LEAD), replay[1])
     trace = {}
-    P = goal_path(full, P0, t0, t1, tp, net, players, W, max_w, shot=shot, pas=pas, trace=trace) if net or players else P0
+    P = goal_path(full, P0, t0, t1, tp, net, players, W, max_w, shot=shot, pas=pas, trace=trace,
+                  start=start) if net or players else P0
     R = None
     if net:
         # the net and the scorer, the net in the frame for the whole replay; with a pass, the passer until it (after
         # it he only widened the close-up at the net)
         rp = players[:1] + ([players[1][players[1].index <= pas[0] + PASS_HOLD]] if pas and len(players) > 1 else [])
         R = goal_path(full, P0, t0, t1, tp, net, rp, W, max_w, REPLAY_ZOOM,
-                      (min(replay[0], LOCK[0]), LOCK[1]), shot, REPLAY_ZOOM[1] * W, pas)
+                      (min(replay[0], LOCK[0]), LOCK[1]), shot, REPLAY_ZOOM[1] * W, pas, start=start)
     return dict(argv=argv, full=full, out=argv[4], name=os.path.splitext(os.path.basename(argv[4]))[0],
-                t0=t0, t1=t1, tp=tp, focus=focus, players=players, net=net, shot=shot, pas=pas, replay=replay,
-                ra=tp + replay[0], rb=tp + replay[1], W=W, H=H, max_w=max_w, P0=P0, P=P, R=R, trace=trace)
+                t0=t0, t1=t1, tp=tp, focus=focus, players=players, net=net, shot=shot, pas=pas, start=start,
+                replay=replay, ra=tp + replay[0], rb=tp + replay[1], W=W, H=H, max_w=max_w, P0=P0, P=P, R=R,
+                trace=trace)
 
 
 # ---------------------------------------------------------------- the checks on a path
@@ -457,10 +483,54 @@ def clip_s(pl, t, replay=False):
     return round(t - pl["t0"] if not replay else pl["t1"] - pl["t0"] + 2 * (t - pl["ra"]), 2)
 
 
+def body_h(pl, spot, fallback):
+    """The height (px) of whoever stands at a [t, x, y] spot: the median box within 150 px and 0.5 s of it (the
+    scorer's own track can be a partial box: Beerteam's Nov 14 1st goal had one 58 px tall where he was 63-90)."""
+    d = _dets(pl["full"])
+    d = d[((d.t - spot[0]).abs() <= 0.5) & (d.conf >= 0.3) & ((d.fx - spot[1]).abs() < 150) & ((d.fy - spot[2]).abs() < 150)]
+    return float(d.h.median()) if len(d) else fallback
+
+
+def side_margin(box, x):
+    """How far (px) x is inside the crop's nearer side (negative outside)."""
+    return min(x - box[0], box[0] + box[2] - x)
+
+
+def early_net(pl, X, frames, ts):
+    """The frames of path X (from goal_path's trace `frames`) before ts that show the net all but empty while the
+    play is elsewhere: (t, who is out of the frame, how far), and the frame step."""
+    tg, shot, tr = pl["tp"], pl["shot"], pl["trace"]
+    nh = tr["net"][2]
+    early = [(t, pt) for t, kept, net_in, at_net, pt in frames if at_net and t < ts and net_in and 0 not in kept]
+    dt = float(np.median(np.diff(pl["P"].index.values))) if len(pl["P"]) > 1 else 0.125
+    if not early:
+        return [], dt
+    walk = walk_back(pl["full"], tg + tr["lock"][0] - 1, shot, nh, True) if shot else None
+    d = _dets(pl["full"])
+    d = d[(d.t >= early[0][0] - 0.01) & (d.t <= early[-1][0] + 0.01) & (d.conf >= 0.3) & d.onice]
+    byt = {t: g for t, g in d.groupby("t")}
+    away = []
+    for t, pt in early:
+        if pt is None and walk is not None and len(walk) > 1 and walk.index.min() <= t:
+            pt = tuple(float(np.interp(t, walk.index.values, walk[c].values)) for c in ("fx", "fy", "h"))
+        who = "the scorer" if pt else "the main group"
+        if pt is None:
+            pt = (float(np.interp(t, pl["P0"].index.values, pl["P0"].cx.values)),
+                  float(np.interp(t, pl["P0"].index.values, pl["P0"].cy.values)), nh)
+        box = crop_at(pl, X, t)
+        g = byt.get(t)
+        n_in = 0 if g is None else sum(inside(box, x, y, h) for x, y, h in zip(g.fx, g.fy, g.h))
+        if not inside(box, *pt) and n_in <= EMPTY_N:
+            away.append((t, who, off_by(box, pt[0], pt[1])))
+    return away, dt
+
+
 def check(pl):
     """Warnings on a goal clip from its camera path alone, each {"check", "t", "at" (clip s), "msg"}: what the user
-    caught on the 14 games to Nov 15 where the path shows it. A goal or shot time off by seconds (the replay ends
-    before the puck is in, or opens on the pile a drive started) doesn't show here; the contact sheet shows it."""
+    caught on the 14 games to Nov 15 where the path shows it, and on Nov 14-19 the replay without the player who put
+    the puck in. A goal or shot time off by seconds (the replay ends before the puck is in, or opens after the drive
+    that started a pile) doesn't show here; the contact sheet shows it. The labels on the tracks (whose number the
+    followed track carries) are run_game.py's (cmd_clip), which knows the solver's pieces."""
     if not pl["net"]:
         return []
     out = []
@@ -468,6 +538,7 @@ def check(pl):
     def warn(code, t, msg, replay=False):
         out.append(dict(check=code, t=round(float(t), 2), at=clip_s(pl, t, replay), msg=msg))
     tg, shot, pas, ra, rb, tr = pl["tp"], pl["shot"], pl["pas"], pl["ra"], pl["rb"], pl["trace"]
+    start = pl.get("start")
     nx, ny, nh = tr["net"]
     sc = pl["players"][0] if pl["players"] else None
     ps = pl["players"][1] if len(pl["players"]) > 1 else None
@@ -475,13 +546,25 @@ def check(pl):
     if shot and shot[0] > tg + SHOT_LATE_S:
         warn("shot-time", shot[0], f"the shot ({shot[0]:g}) is after the goal ({tg:g}): one of the two times is wrong")
     elif shot and tg - shot[0] > SHOT_LONG_S:
-        warn("shot-time", shot[0], f"the shot is {tg - shot[0]:.1f} s before the goal: a shot that led to a scramble "
-             "is fine (the replay runs from it), a goal time that is seconds early is not; sheet the crease")
+        warn("shot-time", shot[0], f"the shot is {tg - shot[0]:.1f} s before the goal: `shot` is the scorer's last "
+             "touch and `start` the drive or pass that began the play; a goal time that is seconds early is wrong; "
+             "sheet the crease")
     if shot and not pl["t0"] <= shot[0] <= pl["t1"]:
         warn("shot-time", shot[0], f"the shot ({shot[0]:g}) is outside the clip ({pl['t0']:g}-{pl['t1']:g})")
     if pas and shot and not 0 <= shot[0] - pas[0] <= PASS_LONG_S:
-        warn("pass-time", pas[0], f"the pass ({pas[0]:g}) is {shot[0] - pas[0]:.1f} s before the shot ({shot[0]:g})")
+        warn("pass-time", pas[0], f"the pass ({pas[0]:g}) is {shot[0] - pas[0]:.1f} s before the shot ({shot[0]:g})"
+             + (": `shot` is the scorer's last touch, after the pass; a drive that came first is `start`"
+                if pas[0] > shot[0] else ""))
+    if start and shot and start[0] > shot[0]:
+        warn("start-time", start[0], f"the start ({start[0]:g}) is after the shot ({shot[0]:g}): `start` is where the "
+             "scoring play begins, `shot` the scorer's last touch")
+    elif start and tg - start[0] > START_LONG_S:
+        warn("start-time", start[0], f"the start is {tg - start[0]:.1f} s before the goal: another play?")
+    if start and not pl["t0"] <= start[0] <= pl["t1"]:
+        warn("start-time", start[0], f"the start ({start[0]:g}) is outside the clip ({pl['t0']:g}-{pl['t1']:g})")
     # the replay's window
+    if start and ra > start[0] - REPLAY_LEAD_S:
+        warn("replay-window", ra, f"the replay starts at {ra:g}, after the start ({start[0]:g})", True)
     if shot and ra > shot[0] - REPLAY_LEAD_S:
         warn("replay-window", ra, f"the replay starts at {ra:g} and the shot is at {shot[0]:g}: give --replay-from "
              "back to before the shot", True)
@@ -503,8 +586,29 @@ def check(pl):
         warn("scorer-track", ts, f"the scorer's track is {np.hypot(q[0] - shot[1], q[1] - shot[2]):.0f} px from the "
              "--shot spot at the shot: the group follows someone else (a track that carries his number but isn't "
              "him?); check the track on a crop, then --tracks")
+    # the scorer's path jumping between two bodies in the replay: without --shot every track carrying his number
+    # stands (player_path), and where two are boxed by turns far apart the camera swings between them, or sits
+    # between them after the smoothing. BW's Nov 7 6th goal (Charnysh's, cut from his labels): track 1062 went from
+    # him to Disco's #91 while 1071 had him on the far boards, 6 jumps in the replay, which showed neither him nor his
+    # shot. Over the whole clip 11 of the 221 accepted clips (Nov 20 dry run) jumped, mostly once or after the goal; 3
+    # jump JUMPS_N or more times inside the replay
+    if sc is not None and len(sc) > 1 and "tid" in sc:
+        w = sc[(sc.index >= ra) & (sc.index <= rb)]
+        tt, xx, yy, kk = w.index.values, w.fx.values, w.fy.values, w.tid.values
+        jumps = [(tt[i], kk[i - 1], kk[i], float(np.hypot(xx[i] - xx[i - 1], yy[i] - yy[i - 1])))
+                 for i in range(1, len(w)) if kk[i] != kk[i - 1]
+                 and np.hypot(xx[i] - xx[i - 1], yy[i] - yy[i - 1]) > 200 + 700 * (tt[i] - tt[i - 1])]
+        if len(jumps) >= JUMPS_N:
+            t_, a_, b_, d_ = max(jumps, key=lambda j: j[3])
+            pairs = sorted({tuple(sorted((int(a), int(b)))) for _, a, b, _ in jumps})
+            warn("scorer-jump", jumps[0][0], f"in the replay the scorer's path jumps between tracks "
+                 f"{', '.join(f'{a} and {b}' for a, b in pairs)} {len(jumps)} times from {jumps[0][0]:g} to "
+                 f"{jumps[-1][0]:g} (up to {d_:.0f} px at {t_:g}): two bodies carry his number and the camera swings "
+                 "between them; give --shot at his last touch (the track there is then followed and the other dropped) "
+                 "or --tracks", True)
     # the shooter at the shot, the net at the goal, the passer at the pass: in the live part and the replay
     shooter_h = q[2] if q and shot and np.hypot(q[0] - shot[1], q[1] - shot[2]) <= SPOT_PX else nh
+    edge_h = body_h(pl, shot, shooter_h) if shot else None
     qp = at(ps, pas[0]) if pas else None
     passer = (qp if qp and np.hypot(qp[0] - pas[1], qp[1] - pas[2]) <= SPOT_PX else
               (pas[1], pas[2], tr["pass_h"])) if pas else None
@@ -514,50 +618,42 @@ def check(pl):
         if shot and shown(ts) and not inside(crop_at(pl, X, ts), shot[1], shot[2], shooter_h):
             warn("shooter-out", ts, f"the shooter's spot is outside {part}'s frame at the shot "
                  f"({off_by(crop_at(pl, X, ts), shot[1], shot[2]):.0f} px off)", replay)
+        elif replay and shot and shown(ts) and side_margin(crop_at(pl, X, ts), shot[1]) < EDGE_H * edge_h:
+            m = side_margin(crop_at(pl, X, ts), shot[1])
+            warn("shooter-edge", ts, f"the shooter's skates are {m:.0f} px ({m / edge_h:.2f} of his {edge_h:.0f} px "
+                 f"height) inside the replay's side at the shot: he is at the edge, partly cut off; check --shot's "
+                 "spot is his skates (the camera follows the track at it), or --tracks with his trace", replay)
         if shown(tg) and not inside(crop_at(pl, X, tg), nx, ny, nh):
             warn("net-out", tg, f"the net is outside {part}'s frame at the goal second", replay)
         if pas and shown(pas[0]) and not inside(crop_at(pl, X, pas[0]), *passer):
             warn("passer-out", pas[0], f"the passer is outside {part}'s frame at the pass "
                  f"({off_by(crop_at(pl, X, pas[0]), passer[0], passer[1]):.0f} px off)", replay)
+        # where the scoring play began: the replay opens on it, so whoever has the puck there must be in the frame
+        if start and shown(start[0]) and not inside(crop_at(pl, X, start[0]), start[1], start[2], nh):
+            warn("start-out", start[0], f"the start's spot is outside {part}'s frame at the start "
+                 f"({off_by(crop_at(pl, X, start[0]), start[1], start[2]):.0f} px off): check --start is the puck "
+                 "carrier's skates then, or --tracks", replay)
     # the camera on the net before the play is there. goal_path frames the net from tg + lock[0] (6 s before the
     # goal, or 1 s before an earlier shot). With --shot the scorer leads and the net joins only within LEAD_W; without
     # it the net leads and the scorer stays only within the close-up's width. So the net is framed without the scorer
     # where he has no point (untracked, or a goal against with no --pass for carrier_path; the shot spot leads only
     # from 1.5 s before the shot) or doesn't fit. That is wrong only while the play is elsewhere: where the scorer is
     # (his point; else walked back from the shot along his team's detections), else where the main group is (P0); and
-    # it shows as wrong while the frame is all but empty (a goalie alone)
-    lock = tr["lock"]
-    early = [(t, pt) for t, kept, net_in, at_net, pt in tr["frames"] if at_net and t < ts and net_in and 0 not in kept]
-    if early:
-        walk = walk_back(pl["full"], tg + lock[0] - 1, shot, nh, True) if shot else None
-        d = _dets(pl["full"])
-        d = d[(d.t >= early[0][0] - 0.01) & (d.t <= early[-1][0] + 0.01) & (d.conf >= 0.3) & d.onice]
-        byt = {t: g for t, g in d.groupby("t")}
-        dt = float(np.median(np.diff(pl["P"].index.values))) if len(pl["P"]) > 1 else 0.125
-        away = []
-        for t, pt in early:
-            if pt is None and walk is not None and len(walk) > 1 and walk.index.min() <= t:
-                pt = tuple(float(np.interp(t, walk.index.values, walk[c].values)) for c in ("fx", "fy", "h"))
-            who = "the scorer" if pt else "the main group"
-            if pt is None:
-                pt = (float(np.interp(t, pl["P0"].index.values, pl["P0"].cx.values)),
-                      float(np.interp(t, pl["P0"].index.values, pl["P0"].cy.values)), nh)
-            box = crop_at(pl, pl["P"], t)
-            g = byt.get(t)
-            n_in = 0 if g is None else sum(inside(box, x, y, h) for x, y, h in zip(g.fx, g.fy, g.h))
-            if not inside(box, *pt) and n_in <= EMPTY_N:
-                away.append((t, who, off_by(box, pt[0], pt[1])))
-        if len(away) * dt >= EARLY_NET_S:
-            a0, a1 = away[0][0], away[-1][0]
-            whos = sorted({w for _, w, _ in away})
-            fix = ("no --shot, so the net leads and the scorer stays only while he fits the close-up; give --shot (the "
-                   "scorer then leads, and the net joins him only within 1300 px), and --pass or --tracks if he has no "
-                   "track there" if not shot else
-                   "the scorer has no point to follow there; give --pass at the pass or pickup that sprang the rush (the "
-                   "carrier is then walked from it to the shot), or --tracks with the rusher's track or a hand trace")
-            warn("early-net", a0, f"the camera shows the net all but empty for {len(away) * dt:.1f} s between {a0:g} "
-                 f"and {a1:g} (the {'shot' if shot else 'goal'} {ts:g}), while {' / '.join(whos)} is up to "
-                 f"{max(o for _, _, o in away):.0f} px out of the frame: {fix}")
+    # it shows as wrong while the frame is all but empty (a goalie alone). It runs without --shot too (up to the goal
+    # second then, the play where the main group is). Not on the replay: its tight crop holds the net throughout, and
+    # 22 of the 221 accepted clips (Nov 20 dry run) showed 1-3.6 s of it there, against BW's Nov 7 6th goal's 0.8
+    fix = ("no --shot, so the net leads and the scorer stays only while he fits the close-up; give --shot (the "
+           "scorer then leads, and the net joins him only within 1300 px), and --start, --pass or --tracks if he has "
+           "no track there" if not shot else
+           "the scorer has no point to follow there; give --start or --pass at the pickup or pass that sprang the "
+           "rush (the carrier is then walked from it to the shot), or --tracks with the rusher's track or a hand trace")
+    away, dt = early_net(pl, pl["P"], tr["frames"], ts)
+    if len(away) * dt >= EARLY_NET_S:
+        a0, a1 = away[0][0], away[-1][0]
+        whos = sorted({w for _, w, _ in away})
+        warn("early-net", a0, f"the camera shows the net all but empty for {len(away) * dt:.1f} s between {a0:g} and "
+             f"{a1:g} (the {'shot' if shot else 'goal'} {ts:g}), while {' / '.join(whos)} is up to "
+             f"{max(o for _, _, o in away):.0f} px out of the frame: {fix}")
     return out
 
 
@@ -567,11 +663,13 @@ def record(pl, warns, dry):
     marks = {"poster": [clip_s(pl, pl["tp"])]}
     if pl["net"]:
         marks = {k: [clip_s(pl, t), clip_s(pl, t, True) if pl["ra"] <= t <= pl["rb"] else None]
-                 for k, t in (("goal", pl["tp"]), ("shot", (pl["shot"] or [None])[0]), ("pass", (pl["pas"] or [None])[0]))
+                 for k, t in (("goal", pl["tp"]), ("shot", (pl["shot"] or [None])[0]), ("pass", (pl["pas"] or [None])[0]),
+                              ("start", (pl.get("start") or [None])[0]))
                  if t is not None}
     rec = dict(args=pl["argv"][5:], dry_run=dry, t0=pl["t0"], t1=pl["t1"], poster=pl["tp"],
                net=list(pl["net"]) if pl["net"] else None, shot=list(pl["shot"]) if pl["shot"] else None,
-               pas=list(pl["pas"]) if pl["pas"] else None, replay=[round(pl["ra"], 3), round(pl["rb"], 3)] if pl["net"] else None,
+               pas=list(pl["pas"]) if pl["pas"] else None, start=list(pl["start"]) if pl.get("start") else None,
+               replay=[round(pl["ra"], 3), round(pl["rb"], 3)] if pl["net"] else None,
                live_s=pl["t1"] - pl["t0"], length_s=pl["t1"] - pl["t0"] + (2 * (pl["rb"] - pl["ra"]) if pl["net"] else 0),
                marks=marks, warnings=warns)
     p = os.path.join(os.path.dirname(os.path.abspath(pl["full"])), "clips_check.json")
@@ -595,14 +693,16 @@ def summary(pl, warns):
             x0, y0, w, h = crop_at(pl, pl["P"], t)
             L.append(f"{t:8.2f} {clip_s(pl, t):6.2f}  {x0 + w / 2:5.0f},{y0 + FEET_AT * h:<5.0f} {w:5.0f}")
         return "\n".join(L)
-    tg, shot, pas, ra, rb = pl["tp"], pl["shot"], pl["pas"], pl["ra"], pl["rb"]
+    tg, shot, pas, ra, rb, start = pl["tp"], pl["shot"], pl["pas"], pl["ra"], pl["rb"], pl.get("start")
     nx, ny, nh = pl["trace"]["net"]
     sc = pl["players"][0] if pl["players"] else None
     ps = pl["players"][1] if len(pl["players"]) > 1 else None
     why = ("--replay-from" if len(pl["argv"]) > 10 and pl["argv"][10] != "-" else
+           f"{START_LEAD:g} s before the start" if start and abs(ra - (start[0] - START_LEAD)) < 1e-6 else
            f"{PASS_LEAD:g} s before the pass" if pas and abs(ra - (pas[0] - PASS_LEAD)) < 1e-6 else
            "1.5 s before the shot" if shot and abs(ra - (shot[0] - 1.5)) < 1e-6 else f"{-REPLAY[0]:g} s before the goal")
     L.append(f"{pl['name']}: live {f(pl['t0'])}-{f(pl['t1'])} s (clip 0-{clip_s(pl, pl['t1'])} s), goal {f(tg)} at the net at x {nx:.0f}"
+             + (f", start {f(start[0])} at {start[1]:.0f},{start[2]:.0f}" if start else "")
              + (f", shot {f(shot[0])} at {shot[1]:.0f},{shot[2]:.0f}" if shot else ", no --shot")
              + (f", pass {f(pas[0])} at {pas[1]:.0f},{pas[2]:.0f}" if pas else "")
              + f"; {len(pl['players'])} credited player(s) tracked" * bool(pl["players"]))
@@ -612,10 +712,10 @@ def summary(pl, warns):
         L.append(f"  the live camera takes in the net from {first:g} (clip {clip_s(pl, first)} s)")
     marks = {}
     for t, label in ((tg, "goal"), (ra, "replay starts"), (rb, "replay ends"), (shot and shot[0], "shot"),
-                     (pas and pas[0], "pass")):
+                     (pas and pas[0], "pass"), (start and start[0], "start")):
         if t:
             marks.setdefault(round(float(t), 3), []).append(label)
-    lo = min([ra, tg] + ([shot[0] - 2.5] if shot else [tg - 2.5]))
+    lo = min([ra, tg] + ([shot[0] - 2.5] if shot else [tg - 2.5]) + ([start[0]] if start else []))
     times = sorted(set(np.round(np.arange(np.ceil(lo * 2) / 2, tg + 1.51, 0.5), 3)) | set(marks))
 
     def cell(X, t, replay):
@@ -636,7 +736,8 @@ def summary(pl, warns):
 
 # ---------------------------------------------------------------- the contact sheet
 
-MARK_COLORS = {"shot": (40, 40, 230), "goal": (0, 200, 255), "pass": (230, 170, 0), "poster": (200, 60, 200)}
+MARK_COLORS = {"shot": (40, 40, 230), "goal": (0, 200, 255), "pass": (230, 170, 0), "poster": (200, 60, 200),
+               "start": (60, 200, 60)}
 
 
 def contact_sheet(mp4, out, marks=(), step=1.0, span=None, cols=6, tile_w=320, title="", live_s=None):

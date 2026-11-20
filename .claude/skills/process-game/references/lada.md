@@ -83,11 +83,13 @@ while #4 is also skater Sokolov's number on our roster. Mark both #4 (Sokolov di
 sub goalie out of `roster.json`, and tell the reviewers with `--note` that the #4 in goalie pads is our goalie. An
 opponent's number can also pass our jersey test: Roadrunners' #4 ORR wears grey-white with light-blue stripes, and
 his crops were most of the 88 reads of "4".
-`absent --suggest` can say "played" for a roster number whose reads are all an opponent's: on Beerteam's Nov 14 game
-the 170 reads of "12" and the 80 of "54" were Cluster Pucks' BERRY and PIZANO, whose white with navy and yellow trim
-passes the light-blue crop test, while our own #54 that night was Pfeifer (the sheet's name; `roster.json` has Semenov
-there) in a dark green jersey the test can't see (`references/review.md`). `unknown` sheets only numbers off the
-roster, so sheet a roster number yourself when the sheet's name for it isn't `roster.json`'s.
+A roster number's reads can all be an opponent's: on Beerteam's Nov 14 game the 170 reads of "12" and the 80 of "54"
+were Cluster Pucks' BERRY and PIZANO, whose white with navy and yellow trim passes the light-blue crop test, while our
+own #54 that night was Pfeifer (the sheet's name; `roster.json` has Semenov there) in a dark green jersey the test
+can't see (`references/review.md`). `absent --suggest` compares the sheet's names with roster.json's: there it calls
+#54 a check (Pfeifer against Semenov), prints the plates on each played or check number's crops (BERRY x50 on #12's,
+PIZAND x39 on #54's) and sheets each check's crops as `W/check_<N>.jpg`. Marking players absent no longer hands a
+near-namesake's plate to someone else (`reads.RIVALS`): on that game PIZANO had become 70 name reads of #27.
 A goalie can come as a skater: on Y's Nov 9 game TK's goalie Fisenko #58 (DF's spare goalie too) played forward for
 Y and scored three of our four goals; he went under `subs` with his LADA id from TK's `roster.json`. Bronnikov #74,
 the same night, has two LADA ids in our rosters (BW's `subs` 20353, TK's `skaters` 20411); Y took TK's.
@@ -125,7 +127,9 @@ A sub can wear a roster player's number: on Doofers' Oct 18 game Vasyliev (Turbo
 VASYLIEV on the nameplate and the game sheet naming him. Solve him as that number (mark nobody absent for it; tell
 the reviewers with `review --note`), and after publish add `"guests": {"31": "Vasyliev"}` to the game's
 `game.json` (publish keeps it) and rebuild with `pipeline/build_site.py`. The game page and game file show #31
-Vasyliev, tagged sub; the season table, trends and feed give him his own row, off Sourov's totals. The sheet can
+Vasyliev, tagged sub; the season table, trends and feed give him his own row, off Sourov's totals. A guest carries a
+name only: Beerteam's Nov 14 `"guests": {"54": "Pfeifer"}` left his row's `lada_player_id` null, though LADA has him
+as 20433 (README's TODO). The sheet can
 also list a goalie under LADA's number with a digit added (#290 for Wheeler, roster #0 with LADA number 29), which
 `absent --suggest` then proposes as absent: keep him.
 

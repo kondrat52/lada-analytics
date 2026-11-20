@@ -17,7 +17,7 @@ template in `pipeline/*_prompt.md`: edit the template, never a generated brief. 
 | `references/highlights.md` | penalty-kill exceptions, `highlights.json`, clip situations and their flags |
 | `references/lada.md` | LADA's API, SportNinja game sheets, player ids, `roster.json`, a game between two LADA teams |
 | `references/ice.md` | the ice maps publish adds; calibrating a camera that has none |
-| `RUNBOOK.md` | the same pipeline step by step, for running pieces by hand |
+| `RUNBOOK.md` (repo root) | the same pipeline step by step, for running pieces by hand |
 
 Teams: `tk` LADA Turbo Kings (LADA team 24), `bw` Blue Wings (10), `bt` Beerteam (5), `df` Doofers (17), `y` LADA Y
 (20), `r` LADA R (2). Each has `teams/<slug>/` with `roster.json`, `opponents.json`, `games/` and `lada_games.json`,
@@ -51,19 +51,19 @@ assumption written down for the summary. Don't stop to ask about a new player, a
 
 Keep the main session small. A median game is 142 M tokens: lineup checkers 28%, reviewers 27%, the main session
 26%, goal and penalty checkers 16%. Every subagent's hand-back wakes the main session (reviewers did it 22 to 132
-times a game, 39% of its tokens), so launch a whole batch in one message, then wait with one blocking command
-(`check --wait`) or Yield, with no status lines in between. Every frames job has a generated brief; delegate it. Read
-an image you need yourself once, cropped tight, and the Gantt charts only when the lineup check lists something.
+times a game, 39% of its tokens; 4.6% on Beerteam's Nov 14, in two batches), so launch a whole batch in one
+message, then wait with one blocking command (`check --wait`) or Yield, with no status lines in between. Every
+frames job has a generated brief; delegate it. Read an image you need yourself once, cropped tight, and the Gantt
+charts only when the lineup check lists something.
 
 **Subagent models (a trial since Nov 18, 2026).** Launch every reviewer (step 5) with `model: "opus"` and
 `effort: "medium"`, and every checker (the goal and penalty checkers of step 2, the lineup checkers of step 6, the clip
 checker of step 7) with `model: "opus"` and `effort: "high"`. Subagents were about 70% of a game's tokens on the
 session's own model. Reviewers have "?" to fall back on and the lineup check catches what they miss; a checker's
-answer goes into the sheet or a clip without a second look, hence the higher effort. Measured once, on Beerteam's Nov 14
-game: Opus at medium left 9.7% of 619 rows "?" (README's TODO 13 has 15.8% at high effort and 7.2% at xhigh on the
-session's model), and on three chunks reviewed twice (72 rows) it left 7 "?" against the session's model's 6, with no
-number differing on the 60 rows where both were confident; it reported a switch on 12 rows against 21, at roughly half
-the tokens a chunk (README's TODO 13 has both measures). The user decides whether reviewers move to `effort: "high"`.
+answer goes into the sheet or a clip without a second look, hence the higher effort. Measured once, on Beerteam's
+Nov 14 game (README's TODO 13 has the rest): Opus at medium left 9.7% of 619 rows "?"; on three chunks reviewed
+twice it left 7 "?" against the session's model's 6, no confident number differing, at 0.62-0.74 M tokens a chunk
+against 1.04-1.62 M. The user decides whether reviewers move to `effort: "high"`.
 
 **One game per session.** In the two sessions that processed several games, the fourth and fifth games ran at 432 k
 and 521 k tokens of context per call, against 195 k for a median game. Compaction (7 of 14 games) came each time
@@ -72,6 +72,7 @@ while idle, waiting on the user after "ready to publish": write the notes file a
 ## 0. Inputs (one message, then start)
 
 ```sh
+$PY pipeline/run_game.py title "<url>"              # the video's title: date, team, opponent's code, W's name, LADA game
 $PY pipeline/run_game.py schedule --team <slug>     # LADA's view: date, time, opponent, home/away, rink, id, planned lines
 $PY pipeline/run_game.py sheet $W                   # the game sheet: score, shots, goals with scorers, penalties, who played
 ```
@@ -100,10 +101,12 @@ jersey at Renton and Snoqualmie (Renton: light blue left, white right; Snoqualmi
 archived game) and keeps Kirkland's usual right bench with a line to check it; `--bench` overrides.
 
 Start it with Bash `run_in_background` (you are told when it exits) and one Monitor on
-`tail -F $W.fetch.log | grep -E --line-buffered "bench:|jersey and bench|framing|WARNING|Traceback|Error|fetch done"`
+`tail -F $W.fetch.log | grep -E --line-buffered "bench:|jersey and bench|framing|OCR: the|WARNING|Traceback|Error|fetch done"`
 at its longest timeout (30 minutes), armed again if it expires and stopped when fetch exits; no foreground polling or
-`sleep` (sessions lost 24 minutes that way). Fetch resumes after an interruption: run it again (a `periods.json` you
-have edited stays; its new proposal goes to `periods.proposed.json`). Nothing heavy meanwhile.
+`sleep` (sessions lost 24 minutes that way). The `OCR: the last of 6 workers ended ...` line (on the Mac `OCR: the 4
+workers done ...`) gives OCR's end; no need to read `full/ocr_log_*.txt`. Fetch resumes after an interruption: run
+it again (a `periods.json` you have edited stays; its new proposal goes to `periods.proposed.json`). Nothing heavy
+meanwhile.
 
 As soon as the log names `frame600_small.jpg`, `bench_left.jpg` and `bench_right.jpg`, look: our jerseys sit at our
 bench. A wrong jersey seen that early is cheapest fixed by stopping fetch, moving `$W/full` aside and running the
@@ -115,9 +118,11 @@ is shifted into place; at Renton the `framing` line names the class that fits (s
 (`references/rinks.md`, "A camera that moved", has both). A "new framing" exit, or a rink not in `rink.py`: stop
 before detection (`references/rinks.md`).
 
-If YouTube answers "Sign in to confirm you're not a bot" (last on Nov 1), the user runs this line with `!` (written
-with forward slashes and `~`, since `!` runs bash), then fetch skips the downloads. Reading the browser's cookies is
-theirs to run, not the session's; RUNBOOK §1 has the wait-it-out loop.
+If YouTube answers "Sign in to confirm you're not a bot" (last on Nov 19, on Beerteam's Nov 14 video), give the user
+this line at once and don't wait it out; they run it with `!` (written with forward slashes and `~`, since `!` runs
+bash). It took 1.6 minutes on Nov 19. Reading the browser's cookies is theirs to run, not the session's. `title` and
+`sheet` work meanwhile; `download` prints what `title` does (and says so if the folder's name disagrees), and fetch
+skips the downloads afterwards.
 
 ```sh
 ~/.venvs/hockey/Scripts/python.exe pipeline/run_game.py download "<url>" ~/hockey-work/<folder> --cookies firefox
@@ -144,8 +149,8 @@ back; `references/rinks.md`).
   `$PY pipeline/scoreboard.py $W $W/sb2.jpg $(seq <t0> 2 <t1>)`.
 
 `net` is where our goalie plays each period. Fetch proposes it by three reads (our bench's end in the 1st, then
-switching, held on 47 of 47 games; the half our skaters line up in at the opening faceoff; our jersey in each crease)
-and warns where they disagree. Where all three agree, leave the nets: on TK's Nov 8 fetch had them right and a
+switching, held on 48 of 48 archived games; the half our skaters line up in at the opening faceoff; our jersey in
+each crease) and warns where they disagree. Where all three agree, leave the nets: on TK's Nov 8 fetch had them right and a
 misread frame reversed them. Where they disagree, look by play, not by jersey (a sub goalie can wear anything): where
 our skaters crowd during our kill, the net where our score went up, a crease zoom with pads and a mask (`frames $W
 out.jpg --view left-net <t> ...`). Fix the bench first if that is what's wrong; prepare stops on a net that goes
@@ -153,15 +158,18 @@ against both the rule and the faceoff (`--force` once you have seen it is right)
 
 As soon as the periods and nets are set, brief the goal and penalty checkers and launch them all in one message;
 they need no tracks and run beside prepare and the review (a median 28 minutes: run after the review, they left the
-session idle 12 to 26 minutes in 11 of 14 games):
+session idle 12 to 26 minutes in 11 of 14 games; beside it on Beerteam's Nov 14, idle 1 minute):
 
 ```sh
 $PY pipeline/run_game.py goals $W --brief           # W/scratch/goals/prompt_pN.md per period with goals, prompt_pens.md
 ```
 
 One general-purpose subagent per brief (`model: "opus"`, `effort: "high"`), whose whole prompt is "Read <brief> and
-do exactly what it says. Reply with one line per goal or penalty." Each writes a JSON answer that step 6 reads; don't wait for them, go on with step 3.
+do exactly what it says. Reply with one line per goal or penalty." Each writes a JSON answer that step 6 reads; don't
+wait for them, go on with step 3.
 The briefs name the players the sheet marks playing who aren't in `roster.json` yet, so they needn't wait for step 4.
+A goal added to a finished game (`sheet $W` first, for the corrected sheet), or one whose scorer must be found again:
+`goals $W --brief --only <n>`, n the sheet's goal number (`references/highlights.md`).
 
 The score and shots come from the game sheet: publish copies its final score (`sheet_score`, what the site shows) and
 its shots per period. Scorekeepers correct sheets later: `$PY pipeline/run_game.py scores`, then `build_site.py`.
@@ -204,7 +212,11 @@ changes only the site (a number of ours missing from `roster.json` isn't always 
 mark absent everyone on the roster who didn't play, subs and goalies included: a number that didn't play soaks up
 partial reads of others. Keep anyone LADA's lines list unless every period's card and the
 reads are empty for them: a late arrival or a covered number looks like absence, and the sheet is the scorekeeper's.
-A surname two players share counts for neither, so if only one played, mark the other absent.
+A surname two players share counts for neither, so if only one played, mark the other absent. A "check: the sheet's
+#N is X, roster.json's Y" is a sub of ours in that number (solve him as N, mark nobody absent, `--note`, and
+"guests" after publish: `references/lada.md`), a scorekeeper's slip, an opponent in our number while ours went
+untracked (step 6), or several at once (Beerteam's Nov 14 #54: an untracked sub and an opponent's reads). Look at
+`$W/check_<N>.jpg` and the nameplates line ("<- none is Y").
 
 ```sh
 $PY pipeline/run_game.py prepare $W                 # bench and nets checks, then per period: tracks, review sheets, roster card
@@ -220,17 +232,21 @@ picks the change up (an absent player gets no shifts; the pieces prepare labeled
 
 ```sh
 $PY pipeline/run_game.py review $W [--opp "white jerseys; they also wear #11 and #43"] [--note "#55 LISENKO: a ponytail hides her number"]
-$PY pipeline/run_game.py check $W --wait            # Bash timeout 600000: blocks until the batch is answered
+$PY pipeline/run_game.py check $W --wait            # Bash timeout 600000: until answered, 180 s without an answer, or 540 s
 ```
 
-`review` writes one prompt per chunk of three sheets, lists up to 20 to launch now and prints what they say beyond
-the template: the goalie line, each period's empty card rows, `--opp` and `--note`. Read those first; a note that
-contradicts them misleads every reviewer (change the note, kept in `$W/review.json`, or the absent list, and run
-`review` again). `--opp` gives the opponents' look and any of our numbers they wear. Launch every listed prompt in one
-message, one general-purpose subagent each (`model: "opus"`, `effort: "medium"`), whose whole prompt is "Read
-<prompt file> and do exactly what it says.
-Reply with one line: how many rows you wrote." Then `check --wait` once; repeat `review` and `check --wait` until
-`review` lists nothing, leaving out a prompt it marks "listed before" while that reviewer hasn't reported back.
+`review` writes one prompt per chunk of three sheets, lists up to 16 to launch now and prints what they say beyond
+the template: the goalie line, each period's empty card rows, `--opp` and `--note`. 16 leaves room under the
+harness's 20 subagents for up to four goal and penalty checkers; with another number running, `--batch` 20 less that
+number (`review.json` keeps it). Read those first; a note that contradicts
+them misleads every reviewer (change the note, kept in `$W/review.json`, or the absent list, and run `review` again).
+`--opp` gives the opponents' look and any of our numbers they wear. Launch every listed prompt in one message, one
+general-purpose subagent each (`model: "opus"`, `effort: "medium"`), whose whole prompt is "Read <prompt file> and do
+exactly what it says. Reply with one line: how many rows you wrote." Then `check --wait` once: it returns when the
+batch is answered, after 180 s with no new answer (`--quiet`), or at 540 s. A reviewer the harness refused
+("Concurrent subagent limit reached"): don't retry it; `check --wait` names it "not launched or dead" and the next
+`review` lists it marked to launch again. Repeat `review` and `check --wait` until `review` lists nothing, leaving out
+a prompt it marks "listed before" while that reviewer hasn't reported back.
 
 `check` also lists numbers reviewers gave that are off the roster (solve would take each as a new player of ours) or
 belong to absent players. Settle each: a sub to add to `roster.json`, a player who did play, or a misread kept out by
@@ -259,6 +275,12 @@ $PY pipeline/run_game.py gaps $W                    # after every solve: the che
 $PY pipeline/run_game.py gaps $W --apply            # the checkers' fixes.json into periods.json; then solve again
 ```
 
+A skater the lineup check's first line names (the sheet has him playing, the solve has no shift) is settled before
+the first `gaps`: his minutes make most of the windows (18 of 20 on Beerteam's Nov 14). He didn't play: `absent $W
+<n>`, solve. One of ours in another colour: `trace $W <n> --look "<jersey, helmet, socks, where he sits>"`, a
+subagent per brief (`model: "opus"`, `effort: "high"`), `trace $W <n> --apply`, solve; no `off` spans are needed
+(`references/review.md`).
+
 Solve applies the reviews, infers who is on the ice every second, estimates stoppages from player motion, and prints
 the stats table, each period's shift seconds against 5 × its length (minus kills; about 100%) and the lineup check:
 stretches of 15+ s without 5 of us on (4 in a kill, 6 with the goalie pulled), goals with the wrong count or a
@@ -266,42 +288,45 @@ credited or seen player off the ice, shifts of 5+ minutes, ice-time collapses, a
 `gaps` briefs those with our long pieces in the bench zone (seated players counted as on, most at Snoqualmie) and the
 leads earlier checkers left; later rounds show the spans already merged and skip what was settled. Launch one
 general-purpose subagent per brief (`model: "opus"`, `effort: "high"`), all in one message, whose whole prompt is
-"Read <file> and do exactly what it says. Reply with one line per window and bench piece.", then Yield until all are back. `--apply` prints each span it
-merges and names every item left unanswered (the next `gaps` lists it again). A `!!` line is a listed kill a checker
-saw played 5 on 5: do the two things it says (take that `pk` out of `periods.json` or cut it to the part that was
-short, and run the `span ... off` line it prints for our boxed player). Repeat solve, `gaps`, the checkers and
-`--apply` until `gaps` has nothing to brief (a median two rounds); after a round that merges no span and opens no
-lead, stop and put what it left unsure in the notes and the summary. A window a checker calls a slow change in a stoppage stays as it is.
+"Read <file> and do exactly what it says. Reply with one line per window and bench piece.", then Yield until all are
+back. `--apply` prints each span it merges and names every item left unanswered (the next `gaps` lists it again). A
+`!!` line is either a listed kill a checker saw played 5 on 5 (do the two things it says: take that `pk` out of
+`periods.json` or cut it to the part that was short, and run the `span ... off` line it prints for our boxed player)
+or two checkers of one round who disagree (both spans stay: settle it with `span`). Repeat solve, `gaps`, the
+checkers and `--apply` until `gaps` has nothing to brief (a median two rounds); after a round that merges no span and
+opens no lead, stop and put what it left unsure in the notes and the summary. A window a checker calls a slow change
+in a stoppage stays as it is.
 
-Hand-made spans go in only through `span`, with a note: `span $W on|off <player> <t0> <t1> --note "why"`, and
-`span $W --list` shows them. A wrong label on a review row is a `review_zfix.txt` line (`references/review.md`).
-Tell the user how many spans the checkers added and what you decided by hand.
+The newest span wins: an `on` or `off` cuts its seconds out of the player's opposite spans, and a kill or a boxed
+player's `off` out of his `on` spans, whoever made them; every command that adds spans prints what it cut.
+Hand-made spans go in only through `span`, with a note: `span $W on|off <player> <t0> <t1> --note "why"` (a traced
+skater's through `trace --apply`), and `span $W --list` shows them. A wrong label on a review row is a
+`review_zfix.txt` line (`references/review.md`). Tell the user how many spans the checkers added and what you decided
+by hand.
 
 ## 7. Clips, after the last solve
 
 ```sh
 $PY pipeline/run_game.py clips $W <game-id> --dry-run   # every camera path in highlights.json, checked; nothing cut
 $PY pipeline/run_game.py clips $W <game-id>             # cut, a contact sheet each, and the clip checker's brief
+$PY pipeline/run_game.py clips $W <game-id> --answers   # the checker's answers: what to re-cut, what goes to the user
 ```
 
 The clips frame the solver's tracks, so they come after the last solve; `<game-id>` is publish's,
-`<YYYY-MM-DD>-vs-<opp>`. Fix what the dry run warns about first: the times in `highlights.json`, or a clip's own
-arguments in `$W/clip_args.json` (`references/highlights.md` has the situations and flags). After the cut, one
-general-purpose subagent on the brief it names (`model: "opus"`, `effort: "high"`), whose whole prompt is "Read
-<brief> and do exactly what it says.
-Reply with one line per clip." It writes
-`$W/scratch/clips/answers.json`: for each clip not ok, fix what it points at (`t`, `shot` or `pass` in
-`highlights.json`, or `clip_args.json`), re-cut with `clips --only <name,name>` (one argument, comma-separated) and give the
-new brief to a fresh checker, after copying `answers.json` aside: the fresh one overwrites it. The replay must show the
-player who put the puck in, and for a goal against that is the sheet's scorer: when the checker says the shooter on the
-SHOT tiles is someone else, send a goal checker to find the scorer, re-cut on him (`shot`, `pass`, a trace as `tracks`)
-and take any credit question to the user. Beerteam's Nov 14: the checker said exactly that about their goal, the
-session filed it as a credit question, and the user complained about that clip. Only an unreadable number, or a SHOT
-tile that shows the drive before a jam (the goal brief's rule makes `shot` the drive), has nothing to re-cut.
+`<YYYY-MM-DD>-vs-<opp>`. The replay must show the player who put the puck in, taking his shot. That is the credited
+scorer, ours or theirs, unless he was positively seen somewhere else. Look at every dry-run warning before cutting
+and fix it or note why it stands (20 of the 221 approved clips warn): the times in `highlights.json`, or a clip's own
+arguments in `$W/clip_args.json` (`references/highlights.md` has the situations and flags). `clip note:` lines are
+not counted; they go to the clip checker. After the cut, one general-purpose subagent on the brief it names,
+`prompt.rN.md` (`model: "opus"`, `effort: "high"`), whose whole prompt is "Read <brief> and do exactly what it says.
+Reply with one line per clip." It writes `answers.rN.json`, so rounds don't overwrite each other. Then `clips $W
+<game-id> --answers`: re-cut what it lists under camera and time, using its `--only` line and a fresh checker, and
+put credit and can't-tell items in the summary; repeat until `--answers` lists nothing to re-cut. Sort by hand only
+what it lists under NO KIND (an answer without a kind). `--only` takes commas or spaces.
 A clip that fails doesn't stop the others: `clips` exits 1 and prints the `--only` line that retries those.
-Show the user nothing until it has answered: the user complained about a clip in 7 of 14 games, and each time the
-session's own look had passed it. That is "ready to publish": write `$W/notes.txt` (step 8) and the summary, then
-tell the user the score and the highlights and ask them to confirm.
+Show the user nothing until it has answered: the user complained about a clip in 8 of 15 games (the session's own
+look had passed it; on Nov 14 the checker had caught it, filed as credit). That is "ready to publish": write
+`$W/notes.txt` (step 8) and the summary, then tell the user the score and the highlights and ask them to confirm.
 
 ## 8. Publish
 
@@ -337,9 +362,10 @@ $PY pipeline/run_game.py archive $W                 # drops the video, crops and
 ```
 
 Offer it once the user is happy. It keeps what a re-solve or a re-cut needs, `hand_spans.txt`, `clip_args.json`,
-`clips_check.json` and the briefs and answers under `scratch/` (a hand trace for a clip belongs outside `scratch/`).
+`clips_check.json` and the text files anywhere under `scratch/` (`.md`, `.json`, `.csv` and `.txt` up to 10 MB: the
+briefs and answers, traces, a hand-named folder's notes), and prints what it kept.
 Never `rm -rf` a work folder: `$PY pipeline/regress.py` re-solves every archived game and diffs each against its
-published `shifts.csv` (45 of 47 identical on Nov 18; Blue Wings' Sep 20 and Sep 27 predate the Oct 15 solver
+published `shifts.csv` (46 of 48 identical on Nov 19; Blue Wings' Sep 20 and Sep 27 predate the Oct 15 solver
 fixes). Run it after any change to `shifts.py`, `apply_review.py`, `solver.py`, `run2.py`, `final_stats.py` or
 `stoppages.py`, before rebuilding a site, and say in the commit what moved; `--strip-spans --keep` weighs a solver
 change against the checkers' spans. README's TODO lists what was measured. Anything this game taught about a rink,

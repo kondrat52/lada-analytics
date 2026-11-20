@@ -74,8 +74,9 @@ right once each in light blue; Doofers were LADA's away team there on Sep 27 and
   frame of each second (`$W/scoreboard.npy`, `$W/sb.jpg`; archive keeps `scoreboard_jpg.npz`). The camera isn't framed
   the same every game, so `clock.py` moves `clock_box` to where the board changes most before reading.
 - **Sound.** The original wide cuts were silent; LiveBarn recordings (3438x1374, a score panel top-left and a timeline
-  bar along the bottom, both outside the ice), Renton's new camera and TK's Nov 1 cut at Snoqualmie A have audio: the
-  whistles (about 2.4 kHz) pin goals and calls, and the clips keep the sound. Check each recording.
+  bar along the bottom, both outside the ice), Renton's new camera (not every upload: Beerteam's Nov 14 was silent)
+  and TK's Nov 1 cut at Snoqualmie A have audio: the whistles (about 2.4 kHz) pin goals and calls, and the clips keep
+  the sound. Check each recording.
 - **Frame sizes and framing.** Fetch scales a smaller video of the same view up to the class's `size` (keeping
   `video_<W>x<H>.webm`) and measures the far-boards curve against `ref_boards` first. At Kirkland and Snoqualmie B
   (`reframe`) an offset over 20 px is shifted into place in the same encode (late LiveBarn uploads under a black band
@@ -119,7 +120,8 @@ off when it ends, with his number readable on the way.
   is a box: `in_crease`). The scorekeeper's window is at center; he wore light blue and passes our test, but sits
   outside the bench zone. A player at the far boards is ~75 px tall, near the camera ~500 px. Bench sitters show only
   their heads; line changes are tracks ending at the boards. The board is small and tilted in the right corner
-  (readable on `sb.jpg`, not by `shots.py`). The video has real audio (not always: Beerteam's Nov 14 upload was silent, -91 dB throughout). The board was often dark for stretches (Blue
+  (readable on `sb.jpg`, not by `shots.py`). The video usually has real audio, not always: Beerteam's Nov 14 upload
+  was silent (a mean of -91 dB at 300 s and at 1240 s). The board was often dark for stretches (Blue
   Wings' Nov 7 at four of six period edges; Blue Wings' Nov 15 across one goal each way): where it is blank across a
   penalty call, take the call's time from the frames (Doofers' Nov 15: the sheet-implied time was 20 s late). TK's
   Nov 8 video stopped at 3970 with 20 s or more on the clock: the 3rd ends at the video's end (`--video-ends-early`).
