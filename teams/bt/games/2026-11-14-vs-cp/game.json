@@ -53,7 +53,7 @@
   "video_ends_early": false,
   "fun": {
     "name_reads": {
-      "27": 546,
+      "27": 476,
       "34": 330,
       "37": 328,
       "69": 264,
@@ -65,7 +65,7 @@
   "pipeline": {
     "detections": 836069,
     "crops": 116087,
-    "reads": 7941,
+    "reads": 7914,
     "reviewed": 619
   },
   "highlights": [
