@@ -61,7 +61,9 @@
     "Disallowed goal (a moment, at the team's request): P3 1:53, video 3692.25. A scramble at the Hosers' crease ends with the puck in; waved off, likely goaltender interference (our skater standing in the crease on the goalie); no penalty called. The board showed 3-0 from 3705 and was put back to 2-0 at 3751; the faceoff after it was at the left end-zone dot. The team says Unuchek #49 put it in, from Kondratenko #12: a point shot by #49 (track 1350, read by eye) at 3691.2 off #12's pass from the near-side boards at 3689.6, through the crowd at the crease. The first look had taken the skater in the crease (track 1370, also labeled #49, probably Sokolov #4) for the shooter. Radutskiy #14 swung at the puck's path about 3691.85, so a tip can't be ruled out. Its clip is cut as a goal (clip_args \"net\": \"for\"), with the replay on #49's shot.",
     "Penalty kills from the penalty checker; the Hosers scored no power-play goal, so every kill ran its full length. Bronnikov #74's minor at P3 0:19 was 4 on 4 to the end, with their #44 still in the box; kept as a 4-man span.",
     "Lineup loop: three rounds of gap checkers, 39 spans in all (mostly tracks that switched onto a referee or an opponent, and #4/#13/#14/#49 mislabels). Decided by hand: Ivanov #90's kill at P3 5:38 starts at 3419, when he reached the box, not at the whistle (3396): a checker saw him skate the length of the ice during the stoppage, and from the whistle the page listed him on his own kill (the team asked for the change). Sokolov #4's kill (P1) stays at the whistle (359), though he reached the box about 368; one lead on it was left unbriefed.",
-    "The penalty-4 clip's spot was moved by hand onto Sokolov's track (339) at the infraction; the checker's spot had landed on the next body in the collision. goal-1 was re-cut with Nizamutdinov's two tracks (643 up the far boards, 684 into the crease; 684 is labeled #12 in the solve) and his rush's start at 1791.25, after the first cut sat on their goalie while he picked the puck up past center."
+    "goal-1 was re-cut with Nizamutdinov's two tracks (643 up the far boards, 684 into the crease; 684 is labeled #12 in the solve) and his rush's start at 1791.25, after the first cut sat on their goalie while he picked the puck up past center.",
+    "Redone Nov 23 on the team's feedback, the solve untouched (shifts.csv identical). Sokolov #4's interference (P1 11:40) was entered at 329, a slot collision that was most likely Radutskiy #14's and drew no call; the team said the infraction was at a faceoff the clip didn't show. A second checker found it at the faceoff at our near-side dot at 352.5 (after the goalie froze the puck about 331): Sokolov, our center, holds up their #12 right after the draw (352.75-353.75), the referee at the dot raises his arm 353.75-354, whistle about 359. The penalty is now at 353 and its clip runs 341-363; the kill (359-564) stands.",
+    "The Hosers' five penalties are on the page too, at the team's request, each with a clip that follows the penalized player from the detections at a spot a checker gave: #12 Schmidt hooking (P1 16:40, video 41.75), #15 Moroney interference (P2 6:18), the bench minor for too many players served by #24 (P2 2:14, six skaters from about 2097, shown at 2116), #24 Lau tripping (P3 2:52, video 3593.25) and #44 Smejkal hooking (P3 1:44, video 3732). #15's infraction isn't clear on camera: play stops about 1866.5 after he and Sokolov tangle on the far boards at 1862.5-1864 (a best guess), and the referee signals the call beside him at 1881; the first checker's whistle (1882) was that signal. For the bench minor the extra skater is a best guess (the one late getting off at their door, 2112-2118). #24's body at the trip was not followed to the box; his number was read only in part."
   ],
   "video_ends_early": false,
   "fun": {
@@ -90,11 +92,19 @@
   "highlights": [
     {
       "type": "penalty",
+      "team": "theirs",
+      "t": 41.75,
+      "clip": "clips/penalty-opp-12.mp4",
+      "poster": "clips/penalty-opp-12.jpg",
+      "note": "1st period, clock 16:40: Hosers D's #12 Schmidt, hooking near their net, a white skater down; 3 minutes on the board (the sheet says 2), our power play"
+    },
+    {
+      "type": "penalty",
       "player": 4,
-      "t": 329,
+      "t": 353,
       "clip": "clips/penalty-4.mp4",
       "poster": "clips/penalty-4.jpg",
-      "note": "1st period, clock 11:40: interference in front of our net, 3 minutes on the board (the sheet says 2); killed off"
+      "note": "1st period, clock 11:40: interference off a faceoff in our end: he holds up their center after the draw; 3 minutes on the board (the sheet says 2); killed off"
     },
     {
       "type": "penalty",
@@ -115,6 +125,22 @@
       "note": "2nd period, clock 8:03: Nizamutdinov #33 carries it down the far boards past their defenseman, cuts across the crease and jams it past the sprawling goalie, 1-0"
     },
     {
+      "type": "penalty",
+      "team": "theirs",
+      "t": 1866.5,
+      "clip": "clips/penalty-opp-15.mp4",
+      "poster": "clips/penalty-opp-15.jpg",
+      "note": "2nd period, clock 6:18: Hosers D's #15 Moroney, interference along the far boards in their zone, tangled with Sokolov (not clear on camera); 3 minutes on the board (the sheet says 2), our power play"
+    },
+    {
+      "type": "penalty",
+      "team": "theirs",
+      "t": 2116,
+      "clip": "clips/penalty-opp-bench.mp4",
+      "poster": "clips/penalty-opp-bench.jpg",
+      "note": "2nd period, clock 2:14: Hosers D's bench, too many players, served by their #24, 3 minutes on the board (the sheet says 2); Olyanich scored on the power play with 16 seconds left in the period"
+    },
+    {
       "type": "goal",
       "team": "for",
       "t": 2261.75,
@@ -133,12 +159,28 @@
       "note": "3rd period, clock 5:38: tripping in their end, 2 minutes; killed off"
     },
     {
+      "type": "penalty",
+      "team": "theirs",
+      "t": 3593.25,
+      "clip": "clips/penalty-opp-24.mp4",
+      "poster": "clips/penalty-opp-24.jpg",
+      "note": "3rd period, clock 2:52: Hosers D's #24 Lau, tripping in our end along the near boards, 2 minutes, our power play (5 on 3 from 1:44 with their #44 also in the box)"
+    },
+    {
       "type": "moment",
       "title": "Disallowed goal",
       "t": 3692.25,
       "clip": "clips/moment-1.mp4",
       "poster": "clips/moment-1.jpg",
       "note": "3rd period, clock 1:53: Kondratenko #12 feeds Unuchek #49 from the near-side boards, and Unuchek's shot from the point goes in through the crowd at the crease, but it's waved off, likely for goaltender interference with one of ours standing in the crease on the goalie; the board showed 3-0 for 45 s before it was taken off"
+    },
+    {
+      "type": "penalty",
+      "team": "theirs",
+      "t": 3732,
+      "clip": "clips/penalty-opp-44.mp4",
+      "poster": "clips/penalty-opp-44.jpg",
+      "note": "3rd period, clock 1:44: Hosers D's #44 Smejkal, hooking at their crease, 2 minutes; ran to the end of the game (5 on 3 for 1:04 while #24 was also in the box)"
     },
     {
       "type": "penalty",
