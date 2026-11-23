@@ -108,6 +108,11 @@ and what the answer then holds:
   skaters stand at the bench while their shooter skates in. No kill: a `ps` span (`span $W ps ...`), the infraction
   clipped as the penalty and the shot as a `"moment"` titled "Penalty shot" with the net's x as its focus. A penalty
   shot for us leaves our shooter on the ice, which `ps` doesn't model yet.
+- **A long skate to the box in a stoppage** (TK's Nov 22: Ivanov from the far end, 23 s after the whistle): a gap
+  checker's `on` for him until he reaches the box stays beside the kill (`gaps --apply` notes it), and the page's
+  kill list then names him on his own kill (0:21), with whoever changed during the stoppage. The user had the kill
+  start moved to his arrival in the box (`pk` start in `periods.json`, then solve): it costs nothing live, since the
+  whole stretch is stoppage. Where nobody adds such an `on`, the whistle start stands (Sokolov's, the same game).
 
 ## `highlights.json`
 

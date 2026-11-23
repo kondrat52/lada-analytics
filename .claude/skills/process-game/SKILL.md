@@ -168,6 +168,10 @@ One general-purpose subagent per brief (`model: "opus"`, `effort: "high"`), whos
 do exactly what it says. Reply with one line per goal or penalty." Each writes a JSON answer that step 6 reads; don't
 wait for them, go on with step 3.
 The briefs name the players the sheet marks playing who aren't in `roster.json` yet, so they needn't wait for step 4.
+They do take the goalie and the roster line from the absent list: run step 4's `absent --suggest` and `absent` first
+(a minute; TK's Nov 22 briefs named Mayorov #1, the roster's first goalie, while Fisenko #58 played).
+A disallowed goal the team wants shown has no brief: hand-write one from `prompt_pN.md`, and look for a shot from the
+point before the skater in the crease (`references/highlights.md` has its clip).
 A goal added to a finished game (`sheet $W` first, for the corrected sheet), or one whose scorer must be found again:
 `goals $W --brief --only <n>`, n the sheet's goal number (`references/highlights.md`).
 
