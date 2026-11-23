@@ -2578,11 +2578,13 @@ def clip_line(h, over):
     from the track at the penalty checker's spot; a moment on the main group. The clip starts at least 8 s before the
     start, the pass or the shot, as LADA Y's Nov 2 clips did for the build-up. `over` (the clip's entry in
     W/clip_args.json) replaces any of it: t0, t1, focus ("-" for none), shot, pass, start, spot (null: leave it out),
-    replay_from, tracks."""
+    replay_from, tracks. A moment given "net" ("for" or "against") there is cut as a goal, with its shot, pass, start
+    and replay (TK's Nov 22 disallowed goal, where the user wanted the shooter's shot shown, not only the crease)."""
     name = os.path.splitext(os.path.basename(h["clip"]))[0]
     o = {"shot": h.get("shot"), "pass": h.get("pass"), "start": h.get("start"), "spot": h.get("spot"), **over}
     t, kind = float(h["t"]), h.get("type")
-    shot, pas, start = (o["shot"], o["pass"], o["start"]) if kind == "goal" else (None, None, None)
+    goal_like = kind == "goal" or (kind == "moment" and o.get("net") in ("for", "against"))
+    shot, pas, start = (o["shot"], o["pass"], o["start"]) if goal_like else (None, None, None)
     spot = o["spot"] if kind == "penalty" else None
     first = min([float(v[0]) for v in (shot, pas, start) if v] + [t])
     focus = o.get("focus")
@@ -2593,10 +2595,11 @@ def clip_line(h, over):
     g = lambda v: f"{float(v):.3f}".rstrip("0").rstrip(".")   # :g keeps 6 digits, and 2719.625 lost its last
     before, after = CLIP_WINDOW.get(kind, CLIP_WINDOW["goal"])
     args = dict(t0=g(o.get("t0", min(t - before, np.floor(first - 8)))), t1=g(o.get("t1", t + after)), poster=g(t),
-                focus=None if focus in (None, "", "-") else str(focus), net=h.get("team", "for") if kind == "goal" else None,
+                focus=None if focus in (None, "", "-") else str(focus),
+                net=h.get("team", "for") if kind == "goal" else o["net"] if goal_like else None,
                 shot=",".join(g(v) for v in shot) if shot else None, pass_=",".join(g(v) for v in pas) if pas else None,
                 start=",".join(g(v) for v in start) if start else None, spot=",".join(g(v) for v in spot) if spot else None,
-                replay_from=g(o["replay_from"]) if o.get("replay_from") is not None and kind == "goal" else None,
+                replay_from=g(o["replay_from"]) if o.get("replay_from") is not None and goal_like else None,
                 tracks=str(o["tracks"]) if o.get("tracks") else None)
     return name, args
 
@@ -2851,7 +2854,19 @@ def clip_brief(W, game_id, names, checks):
                      f"is {rec.get('t0', float(h['t']) - 12):g} + s s of video.")
         else:
             L.append(f"{h.get('title', 'A moment')}, {when}: {note}")
-            L.append(f"Must be visible: what the title says, around clip {mk.get('poster', [0])[0]:g} s (tile POSTER).")
+            pk = "poster" if mk.get("poster") else "goal" if mk.get("goal") else "poster"   # a goal cut marks "goal"
+            must = [f"what the title says, around clip {mk.get(pk, [0])[0]:g} s (tile {pk.upper()})"]
+            if rec.get("net"):   # a moment cut as a goal (clip_args "net"): the shooter the note names, in the replay
+                must.append(f"the shooter the note names at his last touch ({cs('shot')}, tiles SHOT)" if rec.get("shot")
+                            else "the shooter the note names as he shoots (no shot time was given)")
+                if rec.get("pas"):
+                    must.append(f"the passer the note names as he passes ({cs('pass')}, tiles PASS)")
+            L.append("Must be visible: " + "; ".join(must) + "."
+                     + (" The replay must show the shooter taking his shot." if rec.get("net") else ""))
+            if rec.get("net") and rec.get("replay"):
+                L.append(f"Live clip second s is {rec['t0']:g} + s s of video; the replay is clip {rec['live_s']:g}-"
+                         f"{rec['length_s']:g} s, play {rec['replay'][0]:g}-{rec['replay'][1]:g} s at half speed (replay "
+                         f"clip second s is {rec['replay'][0]:g} + (s - {rec['live_s']:g}) / 2 s of video).")
         ws = rec.get("warnings", [])
         L.append("The camera-path check warned: " + "; ".join(
             w["msg"] + (f" (clip {w['at']:g} s)" if w.get("at") is not None else "") for w in ws)
