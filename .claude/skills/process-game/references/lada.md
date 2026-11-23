@@ -154,7 +154,9 @@ serves both:
    66-minute video, so start it the moment fetch is done.
 3. Shared: the periods (each team's own `net`, so swapped), the scoreboard, the shots (pairs reversed, `us`
    flipped), the goals and their clips (cut once, copied into the other site's `games/<id>/clips/`; `for`/`against`
-   swapped, `scorer` and `assists` only on the team's own goals). Each team's `pk` and penalty clips are its own.
+   swapped, `scorer` and `assists` only on the team's own goals). Each team's `pk` is its own; a penalty is
+   on both pages, as ours on one (`penalty-<n>`, following the labeled player) and as theirs on the other
+   (`penalty-opp-<n>`, following the detections at the checker's `spot`).
 
 The jerseys are one LADA design in two colours, and each passes part of the other's test. R's white with blue numbers
 passed Y's light-blue crop test (Y's `unknown` listed #84, #66, #36, #10, #64 with R's nameplates; tracking was fine).

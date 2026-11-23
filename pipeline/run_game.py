@@ -1654,6 +1654,13 @@ def _their_scorer(g, opp):
     return f"{poss} {who(g['scorer'], g['scorer_name'])}" + (f" from {ast}" if ast else "")
 
 
+def _their_player(x, opp):
+    """An opponents' penalty's player as the sheet gives him, for its note: "Hosers' #12 Schmidt", or "Hosers' bench"
+    for a bench minor (their numbers stay out of `player`, which holds ours)."""
+    poss = opp + ("'" if opp.endswith("s") else "'s")
+    return f"{poss} " + (f"#{x['player']} {x.get('name') or ''}".rstrip() if x["player"] is not None else "bench")
+
+
 GOAL_MATCH_S = 30   # a goal checker's clock (the board's) within this of the sheet's, in the same period: that goal
 
 
@@ -1762,11 +1769,12 @@ def _build_highlights(W, Ps, sheet_, clk, items, gseen, pseen, say):
     for k, h in enumerate(gl, 1):   # key order as the hand-written files have it
         rest = {x: h.pop(x) for x in ("note",) + HL_WORK if x in h}
         h.update(clip=f"clips/goal-{k}.mp4", poster=f"clips/goal-{k}.jpg", **rest)
-    pl = []
-    mine = [x for x in items if x["team"] == "ours"]
-    for x in mine:
+    pl, stems = [], []
+    for x in items:
+        ours = x["team"] == "ours"
         e = pseen.get(x["n"]) or {}
-        what = f"penalty {x['n']} ({x['period']} {x['clock']}, #{x['player']} {x['name']})"
+        tag = f"#{x['player']} {x['name']}" if x["player"] is not None else x["name"]
+        what = f"penalty {x['n']} ({x['period']} {x['clock']}, {tag if ours else 'their ' + tag})"
         if not e:
             say.append(f"{what}: no entry from the penalty checker; entered from the sheet at its clock's second")
         player = x["player"] if x["player"] is not None else e.get("sat")
@@ -1778,22 +1786,34 @@ def _build_highlights(W, Ps, sheet_, clk, items, gseen, pseen, say):
         desc = e.get("desc") or f"{x['type'].lower()}, {x['minutes']} minutes"
         spot = _spot(e.get("spot"))
         if e and not spot:
-            say.append(f"{what}: no `spot` from the penalty checker: the clip follows #{player}'s labeled tracks, "
-                       f"whoever they are on at the infraction (Beerteam's Nov 14: #24's was #27's from 2100)")
+            say.append(f"{what}: no `spot` from the penalty checker: the clip follows " + (
+                f"#{player}'s labeled tracks, whoever they are on at the infraction (Beerteam's Nov 14: #24's was "
+                f"#27's from 2100)" if ours else "the main group, wherever the infraction was"))
         elif spot and abs(spot[0] - float(t)) > 15:
             say.append(f"{what}: spot at {spot[0]} is {spot[0] - float(t):+.1f} s from the infraction's t {_num(t)}")
-        pl.append(dict(type="penalty", player=player, t=_num(t), sheet_n=x["n"],
-                       note=_note(e.get("period") or x["period"], e.get("clock") or x["clock"], desc), spot=spot))
+        if ours:
+            h = dict(type="penalty", player=player, t=_num(t), sheet_n=x["n"])
+            stems.append(f"penalty-{player if player is not None else 'bench'}")
+        else:
+            # theirs: no `player` (that key holds our numbers, as a goal's `scorer` does); the note names him as the
+            # sheet does ("Hosers' #12 Schmidt"), and the clip's name carries his number
+            h = dict(type="penalty", team="theirs", t=_num(t), sheet_n=x["n"])
+            stems.append(f"penalty-opp-{x['player'] if x['player'] is not None else 'bench'}")
+            if x["player"] is None or f"#{x['player']}" not in desc:
+                desc = ", ".join((_their_player(x, opp), desc))
+        h.update(note=_note(e.get("period") or x["period"], e.get("clock") or x["clock"], desc), spot=spot)
+        pl.append(h)
+        if not ours:
+            continue
         if e and _kill_answer(e)[0] == "none":   # the unsure ones: _apply_kills says what stays
             say.append(f"{what}: no kill: {_kill_answer(e)[1]}")
         if e.get("ps"):
             say.append(f"{what}: a penalty shot against us at {e['ps']}: add it as a `ps` span in periods.json (solve "
                        f"puts nobody on), and clip the shot as a moment")
-    pl.sort(key=lambda h: h["t"])
-    for h in pl:
-        many = sum(q["player"] == h["player"] for q in pl) > 1
-        name = f"penalty-{h['player'] if h['player'] is not None else 'bench'}" + (f"-{int(h['t'])}" if many else "")
+    for h, stem in sorted(zip(pl, stems), key=lambda hs: hs[0]["t"]):
+        name = stem + (f"-{int(h['t'])}" if stems.count(stem) > 1 else "")
         h.update(clip=f"clips/{name}.mp4", poster=f"clips/{name}.jpg", note=h.pop("note"), spot=h.pop("spot"))
+    pl.sort(key=lambda h: h["t"])
     return gl + pl
 
 
@@ -1832,7 +1852,8 @@ def _merge_highlights(old, new, gen, say, renum=None):
                     and abs(float(old[i]["t"]) - float(h["t"])) <= 60]
             near = [i for i in cands if old[i].get("team") == h["team"] and abs(float(old[i]["t"]) - float(h["t"])) <= 30]
         else:
-            same, near = [], [i for i in cands if old[i].get("player") == h["player"] and abs(float(old[i]["t"]) - float(h["t"])) <= 90]
+            same, near = [], [i for i in cands if old[i].get("player") == h.get("player") and old[i].get("team") == h.get("team")
+                              and abs(float(old[i]["t"]) - float(h["t"])) <= 90]
         i = (same or sorted(near, key=lambda i: abs(float(old[i]["t"]) - float(h["t"]))) or [None])[0]
         return i, (next((x for x in gen if x.get("clip") == old[i].get("clip")), None) if i is not None else None)
     # a deleted entry's clip name stays its record's, so that no new entry takes it
@@ -1984,8 +2005,8 @@ def cmd_highlights(a):
     """highlights.json from the goal and penalty checkers' answers (W/scratch/goals/pN/goals.json, pens/pens.json)
     and sheet.json, in the format the page reads: per goal the checker's t, for ours the sheet's scorer and assists
     (always; theirs are named in the note only, since those keys hold our numbers), a note '1st period, clock 16:52:
-    <desc>, 1-0' with the running score, clips/goal-K; per penalty of ours its
-    infraction, note and clip. Each goal also carries the checker's shot, pass and on_ice for the clips and the
+    <desc>, 1-0' with the running score, clips/goal-K; per penalty, ours and
+    theirs, its infraction, note and clip (theirs with `team` "theirs" and no `player`, named in the note). Each goal also carries the checker's shot, pass and on_ice for the clips and the
     lineup check (publish leaves them out of game.json). It prints what doesn't add up. An existing
     highlights.json is updated entry by entry (_merge_highlights). With --write it writes the file and replaces our
     kills in periods.json with the checker's (_apply_kills: a new kill or a boxed player's off cuts his on spans);
@@ -2059,7 +2080,8 @@ def cmd_highlights(a):
     kills, offs, cuts = _apply_kills(Ps, items, pseen, say, applied["pens"])
     for h in hl:
         who = (f" #{h['scorer']}" + (f" (A {', '.join(f'#{x}' for x in h.get('assists') or [])})" if h.get("assists") else "")
-               if h.get("scorer") is not None and h["type"] == "goal" else f" #{h['player']}" if h["type"] == "penalty" else "")
+               if h.get("scorer") is not None and h["type"] == "goal" else
+               f" #{h['player']}" if h["type"] == "penalty" and h.get("player") is not None else "")
         work = "".join(f" {k} {h[k]}" for k in HL_WORK if h.get(k))
         print(f"  {h.get('clip', '?')[6:-4]:<18} {h['t']:>7} {h.get('team', '')}{who}{work}: {h.get('note', h.get('title', ''))}")
     for s in say:
@@ -2411,12 +2433,38 @@ def _add_clip_warnings(W, name, warns, notes=()):
     json.dump(allc, open(p, "w"), indent=1)
 
 
+def _opp_track(W, name, spot, t0, t1, warns):
+    """clip.py's focus for an opponents' penalty: the penalized player's track through the penalty checker's spot
+    ("T,X,Y"). tracks_v1.csv holds only ours, so the clip's window is tracked again over every on-ice detection
+    (track.track, the tracker ours get) and the track at the spot (within 200 px, as cmd_clip's at_spot) is written
+    to W/scratch/clips/NAME.track.csv, which archive keeps. Where no detection is near the spot, the spot's x: the
+    main group, weighted there."""
+    import track as track_
+    ts, sx, sy = (float(v) for v in spot.split(","))
+    d = track_.load(f"{W}/full/dets.csv")
+    d = d[(d.t >= t0 - 3) & (d.t <= t1 + 3) & (d.conf >= 0.3) & d.onice]
+    tr = track_.track(d) if len(d) else d.assign(tid=-1)
+    for dt in (0.25, 0.5):
+        near = tr[(tr.t - ts).abs() <= dt]
+        dist = np.hypot(near.fx - sx, near.fy - sy)
+        if len(near) and dist.min() < 200:
+            tid = int(near.tid.iat[int(dist.values.argmin())])
+            out = f"{W}/{CLIPS_DIR}/{name}.track.csv".replace(chr(92), "/")
+            os.makedirs(os.path.dirname(out), exist_ok=True)
+            tr[tr.tid == tid][["t", "tid", "fx", "fy", "h"]].to_csv(out, index=False)
+            return f"track:{out}:{tid}"
+    warns.append(dict(check="spot-track", t=ts, msg=f"no detection within 200 px of the penalty's spot at {spot}: the "
+                      f"camera follows the main group, weighted to x {sx:g}"))
+    return f"{sx:g}"
+
+
 def cmd_clip(a):
     """One clip (clip.py) with the camera on the credited players' tracks: the scorer and assists (a goal, focus
     "#N,#N") or the penalized player (a penalty, "#N"), from their labeled tracks in the window, the scorer's from
     the track at the goal check's `shot` spot (`at_spot`, whatever its label), a penalty's from the track at its
-    `spot`. What the labels say against the followed body (_clip_label_warnings) and anything else that goes wrong
-    here is printed as a clip check and added to clips_check.json (_add_clip_warnings). Returns those warnings."""
+    `spot`; an opponents' penalty (--opp) from the detections at its spot (_opp_track), else on the main group. What
+    the labels say against the followed body (_clip_label_warnings) and anything else that goes wrong here is printed
+    as a clip check and added to clips_check.json (_add_clip_warnings). Returns those warnings."""
     from roster import SITE_DIR
     W = os.path.abspath(a.W)
     out = f"{SITE_DIR}/games/{a.game_id}/clips/{a.name}.mp4"
@@ -2456,6 +2504,8 @@ def cmd_clip(a):
                           "--tracks with a trace"))
         return None
 
+    if getattr(a, "opp", False) and spot and not focus and not tracks:
+        focus = _opp_track(W, a.name, spot, t0, t1, warns)
     # a goal against has no players to name: tracks_v1 holds only ours, so a track at their shot or pass is one of
     # our defenders; clip.py frames the pass spot itself for the 1.5 s before the pass
     if (focus and focus.startswith("#")) or tracks:
@@ -2575,7 +2625,8 @@ def clip_line(h, over):
     """One highlights.json entry's `clip` arguments as (name, {argument: value}), as the sessions wrote them in each
     game's clips.sh: CLIP_WINDOW around the poster at t (t-12 .. t+10 for every kind); a goal with --net and the goal
     check's shot, pass and start, ours framing the scorer and assists; a penalty following the player who took it,
-    from the track at the penalty checker's spot; a moment on the main group. The clip starts at least 8 s before the
+    from the track at the penalty checker's spot (an opponents' one, `team` "theirs", from the detections at its spot:
+    cmd_clip's --opp); a moment on the main group. The clip starts at least 8 s before the
     start, the pass or the shot, as LADA Y's Nov 2 clips did for the build-up. `over` (the clip's entry in
     W/clip_args.json) replaces any of it: t0, t1, focus ("-" for none), shot, pass, start, spot (null: leave it out),
     replay_from, tracks. A moment given "net" ("for" or "against") there is cut as a goal, with its shot, pass, start
@@ -2590,7 +2641,7 @@ def clip_line(h, over):
     focus = o.get("focus")
     if focus is None and kind == "goal" and h.get("team", "for") == "for" and h.get("scorer") is not None:
         focus = ",".join(f"#{n}" for n in [h["scorer"]] + list(h.get("assists") or []))
-    elif focus is None and kind == "penalty" and h.get("player") is not None:
+    elif focus is None and kind == "penalty" and h.get("player") is not None and h.get("team") != "theirs":
         focus = f"#{h['player']}"
     g = lambda v: f"{float(v):.3f}".rstrip("0").rstrip(".")   # :g keeps 6 digits, and 2719.625 lost its last
     before, after = CLIP_WINDOW.get(kind, CLIP_WINDOW["goal"])
@@ -2600,7 +2651,8 @@ def clip_line(h, over):
                 shot=",".join(g(v) for v in shot) if shot else None, pass_=",".join(g(v) for v in pas) if pas else None,
                 start=",".join(g(v) for v in start) if start else None, spot=",".join(g(v) for v in spot) if spot else None,
                 replay_from=g(o["replay_from"]) if o.get("replay_from") is not None and goal_like else None,
-                tracks=str(o["tracks"]) if o.get("tracks") else None)
+                tracks=str(o["tracks"]) if o.get("tracks") else None,
+                opp=kind == "penalty" and h.get("team") == "theirs")
     return name, args
 
 
@@ -2610,7 +2662,8 @@ def _clip_cmd(name, c):
     opts = [(f"--{k.rstrip('_').replace('_', '-')}", c.get(k))
             for k in ("net", "start", "shot", "pass_", "spot", "replay_from", "tracks")]
     return " ".join(["$PY pipeline/run_game.py clip $W $G", name, c["t0"], c["t1"], c["poster"]]
-                    + ([shlex.quote(c["focus"])] if c["focus"] else []) + [f"{k} {shlex.quote(v)}" for k, v in opts if v])
+                    + ([shlex.quote(c["focus"])] if c["focus"] else []) + [f"{k} {shlex.quote(v)}" for k, v in opts if v]
+                    + (["--opp"] if c.get("opp") else []))
 
 
 def _only_names(only):
@@ -2847,8 +2900,12 @@ def clip_brief(W, game_id, names, checks):
                          f"{rec['length_s']:g} s, play {rec['replay'][0]:g}-{rec['replay'][1]:g} s at half speed (replay "
                          f"clip second s is {rec['replay'][0]:g} + (s - {rec['live_s']:g}) / 2 s of video).")
         elif h["type"] == "penalty":
-            L.append(f"Our {who(h['player'])}'s penalty, {when}: {note}")
-            L.append(f"Must be visible: {who(h['player'])} and the infraction in the seconds before the call "
+            theirs = h.get("team") == "theirs"   # no `player`: the note names him as the sheet does
+            pen = ("the penalized opponent (the note names him)" if theirs else
+                   who(h["player"]) if h.get("player") is not None else "our penalized player")
+            L.append((f"The opponents' penalty ({ctx['opp_desc']})" if theirs else f"Our {pen}'s penalty")
+                     + f", {when}: {note}")
+            L.append(f"Must be visible: {pen} and the infraction in the seconds before the call "
                      f"(clip {mk.get('poster', [0])[0]:g} s, tile POSTER), not the main group elsewhere. If the note says "
                      "the infraction isn't on camera, say whether the clip shows the player and the call. Clip second s "
                      f"is {rec.get('t0', float(h['t']) - 12):g} + s s of video.")
@@ -5489,6 +5546,7 @@ if __name__ == "__main__":
     c.add_argument("--start", metavar="T,X,Y", help="a goal clip: where the scoring play began, when before the last touch (his drive or rush, the pass that sprang him); the replay starts 1.5 s before it")
     c.add_argument("--pass", dest="pass_", metavar="T,X,Y", help="a goal clip: when the puck left the passer's stick and where his skates were; the passer stays in the frame until then and the replay starts 2 s before it")
     c.add_argument("--spot", metavar="T,X,Y", help="a penalty clip: the penalized player's skates at the infraction, from the penalty check; the track there is his, whatever its label")
+    c.add_argument("--opp", action="store_true", help="an opponents' penalty: with --spot and no FOCUS the camera follows the detections' track at the spot (tracks_v1.csv holds only ours); without, the main group")
     c.add_argument("--tracks", metavar="TIDS|CSV[:TIDS]", help="follow these tracks instead of the labeled ones: 'TID,TID;TID' in the period's tracks_v1.csv (each player's, scorer first), or a tracks file of its own (run_period.py into a scratch folder, or t,x,y rows traced by hand)")
     c.add_argument("--dry-run", action="store_true", help="compute and check the camera's path and print it; cut nothing (no video needed)")
     cl = sub.add_parser("clips"); cl.add_argument("W"); cl.add_argument("game_id")

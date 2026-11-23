@@ -267,7 +267,9 @@ $PY pipeline/run_game.py highlights $W              # the entries, and a "!" lin
 $PY pipeline/run_game.py highlights $W --write      # highlights.json, and the checker's kills in place of pk's
 ```
 
-Our goals always take the sheet's scorer and assists; theirs name the sheet's scorer in the note. Act on each `!`:
+Our goals always take the sheet's scorer and assists; theirs name the sheet's scorer in the note. Penalties are
+entered for both teams, theirs with the sheet's player in the note and a `penalty-opp-<n>` clip
+(`references/highlights.md`). Act on each `!`:
 a scorer the checker saw differently, or a goal the board counts and the sheet doesn't, goes to the user in the
 summary (the sheet stands until the team says otherwise); a penalty shot becomes a `ps` span and a goalie the checker
 saw pulled an `extra` one (step 3); a missing answer means relaunching that checker. A play worth a clip that is

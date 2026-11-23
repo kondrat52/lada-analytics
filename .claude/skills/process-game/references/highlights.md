@@ -114,6 +114,22 @@ and what the answer then holds:
   start moved to his arrival in the box (`pk` start in `periods.json`, then solve): it costs nothing live, since the
   whole stretch is stoppage. Where nobody adds such an `on`, the whistle start stands (Sokolov's, the same game).
 
+**The opponents' penalties are on the page too** (the team asked for them after TK's Nov 22 game). `highlights`
+enters each as a penalty with `"team": "theirs"` and no `player` (that key holds our numbers, as a goal's `scorer`
+does): the note opens with the sheet's player ("Hosers D's #12 Schmidt, hooking ..."; "Hosers D's bench" for a bench
+minor), the page titles it "<opponent> penalty", and its clip is `penalty-opp-<their number>` (`penalty-opp-bench`;
+with the second as a suffix when one player has two). It takes no kill and no span. Its `t` is the checker's
+infraction, else the whistle, else the second the clock showed the sheet's time. The penalty brief asks for `spot`
+on theirs as well; an answer from before Nov 23 has none, and `highlights` says so per penalty.
+
+**A penalty the team says is the wrong play** (TK's Nov 22, Sokolov's: the clip showed a slot collision at 329, the
+infraction was off a faceoff at 353): a second checker on a hand-written brief from `prompt_pens.md`'s context lines,
+given the team's claim, the first answer and what the detections say (when everyone stands still, where his track
+goes), told to trust neither and to find every faceoff, the first arm straight up and the whistle. Put its `t`,
+`spot`, `whistle`, `kill` and `desc` into that penalty's entry in `pens/pens.json`, take any hand `spot` for the clip
+out of `clip_args.json`, then `highlights --write`, `clips --only penalty-<n>` and the clip checker. The solve is
+untouched unless the kill moved. The team's "before the clip" was after it: look both ways.
+
 ## `highlights.json`
 
 ```json
@@ -122,6 +138,8 @@ and what the answer then holds:
   "shot": [3827.5, 3010, 655], "start": [3824.0, 2400, 610], "pass": null, "on_ice": [54, 36, 12]},
  {"type": "penalty", "player": 4, "t": 3580, "clip": "clips/penalty-4.mp4", "poster": "clips/penalty-4.jpg",
   "note": "1st period, clock 3:40: 3 minutes, ended by their power-play goal at 0:38", "spot": [3580, 1720, 690]},
+ {"type": "penalty", "team": "theirs", "t": 42, "clip": "clips/penalty-opp-12.mp4", "poster": "clips/penalty-opp-12.jpg",
+  "note": "1st period, clock 16:40: Hosers D's #12 Schmidt, hooking near their net, our power play", "spot": [42, 640, 730]},
  {"type": "moment", "title": "3 on 0, no goal", "t": 1234, "clip": "clips/moment-1.mp4", "poster": "clips/moment-1.jpg",
   "note": "..."}]
 ```
@@ -139,7 +157,9 @@ usually the clock (3:11 left, video 898), not 3:00 into the video: try both.
 from 12 s before `t` (for a goal, 8 s before its start, pass or shot if that is earlier) to 10 s after, the poster at
 `t`. A goal closes in on the net it went into and ends with a zoomed half-speed replay, framing our credited scorer
 and assists and following the checker's `shot`, `start` and `pass`; a penalty follows the track at the checker's
-`spot`, else the player's labeled tracks; a moment follows the main group. The replay starts at the earliest of 4 s
+`spot`, else the player's labeled tracks; an opponents' penalty follows the detections' track at its `spot`
+(`tracks_v1.csv` holds only ours, so `clip --opp` tracks every on-ice detection of the clip's window and writes the
+one at the spot to `scratch/clips/<name>.track.csv`), else the main group; a moment follows the main group. The replay starts at the earliest of 4 s
 before `t`, 1.5 s before `shot` or `start`, and 2 s before `pass`; a scorer with no track there is followed as the
 puck carrier from the earlier of `start` and `pass` to the shot. Every cut and `--dry-run` first checks the camera's
 path and saves the warnings in `$W/clips_check.json` (`clip`'s own among them): a shot, start or pass at an odd
@@ -187,5 +207,6 @@ A clip's own arguments go in `$W/clip_args.json`, keyed by clip name, and win ov
 | A solo rush the length of the ice | a subagent traces his skates every 0.5 s by eye into a t, x, y CSV (archive keeps it, in `traces/` or under `scratch/`), then `"tracks": "<csv>"` (Beerteam's Nov 7: Lee from his own zone) |
 | A goal after the period's tracks end (a period cut short) | track the stretch into a folder of its own, `run_period.py $W/full $W/p3tail <t0> <t1> <our net x>`, then `"tracks": "<W>/p3tail/tracks_v1.csv:<tid>"` with the folder's full path, since `clip_args.json` expands no `$W` (LADA R's Nov 2) |
 | A penalty | the penalty checker's `spot`, else `#player`; a focus x can lock onto someone right by the camera (at Kirkland a referee in the near corner) |
+| An opponents' penalty | the penalty checker's `spot` (their player's skates at the infraction); without one, a `"focus"` x near the infraction, or the main group. A `"focus"` or `"tracks"` in `clip_args.json` wins over the spot's track |
 | A moment or a penalty shot | `"focus"`: the net's x (`rink.py` nets) or a corner (about 500 left, 3300 right); a focus x only weights where the players are, so it can't bring an empty net into the frame |
 | A disallowed goal (a moment whose shooter must be seen) | `"net": "for"` (or `"against"`) with `shot`, `pass`, `start`, `focus` ("#N,#M") and `tracks`: the moment is cut as a goal, closing in on the net with the zoomed replay, and its brief asks for the shooter. TK's Nov 22: the moment cut on the main group showed the crease, and the user wanted #49's shot from the slot |

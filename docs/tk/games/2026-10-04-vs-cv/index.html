@@ -221,7 +221,7 @@ document.getElementById("facts").innerHTML = [
   const gf = H.filter(h => h.type === "goal" && h.team === "for").length, ga = H.filter(h => h.type === "goal" && h.team === "against").length;
   document.getElementById("score").textContent = `Goals on video: ${DATA.team} ${gf} · ${DATA.opponent} ${ga}`;
   document.getElementById("hls").innerHTML = H.map(h => {
-    const kind = h.type === "goal" ? (h.team === "for" ? `${DATA.team} goal` : `${DATA.opponent} goal`) : h.type === "moment" ? (h.title || "Moment") : `Penalty${h.player ? ` · #${h.player} ${name(h.player)}` : ""}`;
+    const kind = h.type === "goal" ? (h.team === "for" ? `${DATA.team} goal` : `${DATA.opponent} goal`) : h.type === "moment" ? (h.title || "Moment") : h.team === "theirs" ? `${DATA.opponent} penalty` : `Penalty${h.player ? ` · #${h.player} ${name(h.player)}` : ""}`;
     const cls = h.type === "goal" ? h.team : h.type === "moment" ? "moment" : "penalty";
     const on = h.on_ice && h.on_ice.length ? `<div class="on">On the ice: ${h.on_ice.map(n => `<b>#${n}</b> ${name(n)}`).join(", ")}</div>` : "";
     return `<div class="hl"><video controls playsinline preload="none" poster="${h.poster}"><source src="${h.clip}" type="video/mp4"></video>
