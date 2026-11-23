@@ -1,4 +1,42 @@
 {
+  "32943": {
+    "teamGoals": 3,
+    "opponentGoals": 0,
+    "boxscoreLink": "https://app.sportninja.com/public/game/GpLeG39us4ymtNNT",
+    "playHome": false,
+    "rinkId": 2084,
+    "lines": "{\"offence\":[[\"19315\",\"11133\",\"11144\"],[\"11140\",\"12165\",\"19314\"],[\"14210\",\"14208\",\"11145\"]],\"defence\":[[\"14209\",\"12161\"],[\"20412\",\"20411\"],[null,\"11136\"]],\"goalie\":[[\"17285\"]],\"beer\":[\"20412\"]}",
+    "date": "2026-09-13T17:55:00"
+  },
+  "32944": {
+    "teamGoals": 3,
+    "opponentGoals": 1,
+    "boxscoreLink": "https://app.sportninja.com/public/game/70z4Hkh8aoWxJ7mH",
+    "playHome": true,
+    "rinkId": 2083,
+    "lines": "{\"offence\":[[\"11140\",\"14208\",\"11144\"],[\"12165\",\"19315\",\"11145\"],[null,\"11133\",null]],\"defence\":[[\"20412\",\"20411\"],[\"11138\",\"14209\"]],\"goalie\":[[\"17285\"]],\"beer\":[\"19315\"]}",
+    "rinkName": "Renton",
+    "date": "2026-09-20T21:15:00"
+  },
+  "32969": {
+    "teamGoals": 1,
+    "opponentGoals": 2,
+    "boxscoreLink": "https://app.sportninja.com/public/game/WkcXUN2Ma1SFIvHN",
+    "playHome": false,
+    "rinkId": 2083,
+    "lines": "{\"offence\":[[\"11140\",\"14208\",\"20394\"],[\"12165\",\"19315\",\"19314\"],[\"14210\",\"11133\",\"11144\"]],\"defence\":[[\"14209\",\"12161\"],[\"11138\",\"20412\"],[\"20411\",null]],\"goalie\":[[\"17285\"]],\"beer\":[\"11138\"]}",
+    "rinkName": "Renton",
+    "date": "2026-09-27T19:50:00"
+  },
+  "32970": {
+    "teamGoals": 2,
+    "opponentGoals": 1,
+    "boxscoreLink": "https://app.sportninja.com/public/game/7A4ov61Lla6F7PTh",
+    "playHome": true,
+    "rinkId": 3090,
+    "lines": "{\"offence\":[[\"12165\",\"19315\",\"11145\"],[null,\"20394\",\"11144\"]],\"defence\":[[\"11138\",\"12161\"],[\"14209\",\"11136\"]],\"goalie\":[[\"17285\"]],\"beer\":[]}",
+    "date": "2026-10-04T15:00:00"
+  },
   "32971": {
     "date": "2026-10-10T20:45:00",
     "opponentName": "Tic-Tac-Toes",
@@ -66,26 +104,7 @@
     "opponentName": "Hosers",
     "playHome": true,
     "rinkId": 2083,
-    "rinkName": "Renton"
-  },
-  "32943": {
-    "teamGoals": 3,
-    "opponentGoals": 0,
-    "boxscoreLink": "https://app.sportninja.com/public/game/GpLeG39us4ymtNNT"
-  },
-  "32944": {
-    "teamGoals": 3,
-    "opponentGoals": 1,
-    "boxscoreLink": "https://app.sportninja.com/public/game/70z4Hkh8aoWxJ7mH"
-  },
-  "32969": {
-    "teamGoals": 1,
-    "opponentGoals": 2,
-    "boxscoreLink": "https://app.sportninja.com/public/game/WkcXUN2Ma1SFIvHN"
-  },
-  "32970": {
-    "teamGoals": 2,
-    "opponentGoals": 1,
-    "boxscoreLink": "https://app.sportninja.com/public/game/7A4ov61Lla6F7PTh"
+    "rinkName": "Renton",
+    "boxscoreLink": "https://app.sportninja.com/public/game/vqiLlZ6DX9o3qk51"
   }
 }
