@@ -1,0 +1,371 @@
+{
+  "id": "2026-11-23-vs-tm",
+  "date": "2026-11-23",
+  "title": "LADA Y vs Teamy McTeamface, Nov 23",
+  "eyebrow": "Mon Nov 23, 2026 · 8:45 PM · Snoqualmie A",
+  "opponent": "TM",
+  "video": "https://youtu.be/b08ZMfcKYXQ",
+  "periods": [
+    {
+      "label": "P1",
+      "start": 3,
+      "end": 1085
+    },
+    {
+      "label": "P2",
+      "start": 1181,
+      "end": 2264
+    },
+    {
+      "label": "P3",
+      "start": 2368,
+      "end": 3746
+    }
+  ],
+  "nets": {
+    "P1": 3260,
+    "P2": 630,
+    "P3": 3260
+  },
+  "penalty_kills": [
+    {
+      "period": "P3",
+      "start": 3027,
+      "end": 3178,
+      "player": 70
+    }
+  ],
+  "notes": [
+    "Snoqualmie A, the usual camera. We wore light blue as visitors, bench on the right; nets by the rule, the opening faceoffs and the creases, all agreeing. Teamy McTeamface wore white with light blue shoulders, sleeves and socks, which passes our colour test: their #17, #19, #22, #24, #27, #77 and #94 were read hundreds of times and left out.",
+    "Played (the sheet's 11 skaters and Hilfer #31 in goal): Kondratenko #12, Ber #14, Yafunyaev #29, Lisitsyn #32, Akulov #37, Unuchek #49, Lisitsyn #70, Podkorytov #82, Lisitsyn #83, Olyanich #89, Barkov #97. Absent: Sokolov #4, Belousenko #11, Belousenko #13, Petrov #18, Fisenko #58, Beregovoy #67 and #87, Mischenko #72, Bronnikov #74, Shakhov #78. No subs. The 298 reads of \"4\" were Ber's 14.",
+    "Periods from the board's clock (all three ran out; the board was dark for 13 of the last 21 s of the 3rd, so that edge is an estimate, checked on the board at 62:26). The clock ran through stoppages in the 1st and 2nd (their minor 3:00 on the board) and stopped at whistles in the 3rd.",
+    "Goal times from the goal checkers, scorers from the sheet: Akulov #37 at P1 9:04, unassisted, off a loose puck in the neutral zone; Lisitsyn #70 at P3 2:14 from Yafunyaev #29, an end-to-end carry. Neither puck was seen inside the net. Their goal at P2 7:59: the sheet credits #6 Kavalec from #94; on video the player who carried it in and jammed it at the post wears #24, read several times, and no #6 was seen on the ice. The sheet stands; the note names its scorer.",
+    "Penalties: theirs, #19 Zejdlik hooking Olyanich at P2 6:10, 3:00 on the board though the sheet says 2, no goal on our power play. Ours, Lisitsyn #70 tripping their goalie beside his net at P3 9:10, 2:00, killed off (kill 50:27-52:58 of the video, the whistle to his climbing out of the box).",
+    "The lineup was checked by eye at every window the solver flagged, in two rounds: 90 on/off spans (51 in the 1st, 23 in the 2nd, 16 in the 3rd), most for players seated on our bench whom the tracker had on the ice, and for pieces that swapped between players at the bench door. Barkov #97's 5:04 shift in the 2nd (30:46-35:50) is real: two checkers followed him on the ice through it, never seated. Akulov #37's 5:17 shift in the 1st was two shifts with a sit between them. None was set by hand."
+  ],
+  "video_ends_early": false,
+  "fun": {
+    "name_reads": {
+      "29": 929,
+      "82": 743,
+      "97": 526,
+      "89": 512,
+      "37": 414,
+      "12": 349,
+      "49": 243,
+      "14": 1
+    }
+  },
+  "pipeline": {
+    "detections": 755718,
+    "crops": 235224,
+    "reads": 20543,
+    "reviewed": 1220
+  },
+  "lada_game_id": 32999,
+  "stoppages": [
+    [
+      3,
+      38
+    ],
+    [
+      105,
+      151
+    ],
+    [
+      348,
+      376
+    ],
+    [
+      539,
+      567
+    ],
+    [
+      654,
+      677
+    ],
+    [
+      828,
+      849
+    ],
+    [
+      869,
+      891
+    ],
+    [
+      929,
+      966
+    ],
+    [
+      996,
+      1017
+    ],
+    [
+      1231,
+      1289
+    ],
+    [
+      1289,
+      1306
+    ],
+    [
+      1480,
+      1520
+    ],
+    [
+      1578,
+      1610
+    ],
+    [
+      1610,
+      1631
+    ],
+    [
+      1650,
+      1672
+    ],
+    [
+      1672,
+      1728
+    ],
+    [
+      1780,
+      1814
+    ],
+    [
+      1863,
+      1892
+    ],
+    [
+      1913,
+      1935
+    ],
+    [
+      2120,
+      2161
+    ],
+    [
+      2187,
+      2231
+    ],
+    [
+      2368,
+      2370
+    ],
+    [
+      2560,
+      2639
+    ],
+    [
+      2723,
+      2783
+    ],
+    [
+      2839,
+      2880
+    ],
+    [
+      3019,
+      3057
+    ],
+    [
+      3177,
+      3203
+    ],
+    [
+      3383,
+      3404
+    ],
+    [
+      3619,
+      3665
+    ]
+  ],
+  "highlights": [
+    {
+      "type": "goal",
+      "team": "for",
+      "t": 538.25,
+      "scorer": 37,
+      "assists": [],
+      "clip": "clips/goal-1.mp4",
+      "poster": "clips/goal-1.jpg",
+      "note": "1st period, clock 9:04: Akulov #37 picks up a loose puck in the neutral zone, carries it in alone down the middle and beats the goalie from in close at the right post, 1-0"
+    },
+    {
+      "type": "goal",
+      "team": "against",
+      "t": 1780.75,
+      "clip": "clips/goal-2.mp4",
+      "poster": "clips/goal-2.jpg",
+      "note": "2nd period, clock 7:59: Teamy McTeamface's #6 Kavalec from #94 Slevinsky, carries it in off the far boards past our defense and jams it in at our left post, our goalie going down, 1-1"
+    },
+    {
+      "type": "goal",
+      "team": "for",
+      "t": 3531.5,
+      "scorer": 70,
+      "assists": [
+        29
+      ],
+      "clip": "clips/goal-3.mp4",
+      "poster": "clips/goal-3.jpg",
+      "note": "3rd period, clock 2:14: Lisitsyn #70 from Yafunyaev #29, takes the outlet in our zone, carries it up ice and shoots from the far-side circle past Ber #14's screen, 2-1"
+    },
+    {
+      "type": "penalty",
+      "team": "theirs",
+      "t": 1859,
+      "clip": "clips/penalty-opp-19.mp4",
+      "poster": "clips/penalty-opp-19.jpg",
+      "note": "2nd period, clock 6:10: Teamy McTeamface's #19 Zejdlik, hooking Olyanich (#89) from behind as he carried the puck through the neutral zone, 3 minutes on the board (the sheet says 2), our power play, no goal"
+    },
+    {
+      "type": "penalty",
+      "player": 70,
+      "t": 3019.5,
+      "clip": "clips/penalty-70.mp4",
+      "poster": "clips/penalty-70.jpg",
+      "note": "3rd period, clock 9:10: tripping their goalie beside his net as they went for the puck, 2 minutes, killed off"
+    }
+  ],
+  "shots": {
+    "P1": [
+      16,
+      5
+    ],
+    "P2": [
+      5,
+      13
+    ],
+    "P3": [
+      7,
+      7
+    ]
+  },
+  "shots_source": "sheet",
+  "sheet_score": {
+    "for": 2,
+    "against": 1
+  },
+  "sportninja_id": "IszXR6ddZ7tIZmFl",
+  "zones": {
+    "offence": 0.3666,
+    "defence": 0.3764
+  },
+  "ice": {
+    "cell": 2,
+    "cols": 42,
+    "rows": 100,
+    "team": {
+      "sec": 13632.4,
+      "zones": [
+        0.292,
+        0.334,
+        0.374
+      ],
+      "grid": "000001122345677765321112223445554321000000000011223456778765311112233456654321100000000122345567899865311112344567776432110000001134566789aba9753111124578899876542110000112457899bcdeda8531112468abbbba98764311000123578aabdfhhgd953112369ceffedcbba86431101124689bcdgillkgb6322359dhjkjhfeddcb964211123468acdfilopnid843358dimoomjhfffedb85321123579bdfhknpqokea6558djortspmjhgggfca753222468acegjloqpnkfb889ejpuwwuroljhhgfdb965423579bdfilnppoljgdccfkrwzAywtqnljhgfeca97623579cehknppomjihghimtzDECzxuspnligfedcb983468adfimpqqnkihijmpvBGJHDzwusrpmjhfeedcba3479cehknqrpmighjnrwCILLIDyutssqolifeedcba357adfiloqqolighkqwCIMNLGAvsrrrrpmigfedca9458begiloqqoljijntAGMONJEytqpqrrpnjhfecb97468begjlopqomllnrxEKOPMHBvroopqrqnligeca86569cehjloqrqqpqswBHMPPLGAvrpoprrqoligec97657acfhjmorsttuvxBFKNPOLGAvsqqqrrqomjgeca7668adfhkmpsuvxyACFILNPOMHCxusssrrqoljgeca8678begiknqtvxzBDFHJLNOPNKFAxvutsrqoljgeca8689cfhjmoruwzBDEGHJLNPQPMIDAywutrqomjheca868adgjlnqtvyACEFGIJLNPRROKGCAywusqomjhfca879cfilnqsvxzBDEGHIJLOQSSQMIFCAyvtrpmkhfda87behloqsvxABDEGHIJKMPRSSQNKHECAxuspnkigdb98egkortvyACEFGHIJKLNQSSRPNKIGEBzwtqnligeca9hkosvxzBDFHIJKKKLMOQSRQOLJIHFDAwtqoljhfdbalotwzACEGIKLMLLLLMOQRQOMJIHHFDAxuromkhfdbaoswADEFGIKMOONMLLMOQQPMJHGGGECzwurpnkigdcbruzDGHIJKMOQQPNLLMOPPNKHFEEEDBzwuspnligdcbsvBGJKKKLNPRSRPNLMNOOMIFDCCCBAywusqnligecbswBHLNNMMNQTUUSPMMMNMKGDBAAAAzxwurpnligecbswCINPPNNOQUXXVRNMMMLIFCzyyyyyxvtrpmkigedcuyEJOQQONORVYZWSOLLLJHEBzxxxxxwvtromkigfddxAFKOQQPOPRVYZWSOLLKJHEByxwwwwvutqomkihfedADHLOPQQPQSVXWUQNMLLJHFCzxwvvvvutromkihfedDFILMOPQQRTUUTRPNMMLKIFCAywvvvvvtrpmkjhfedEFHJKMNPQSSTSQONMMMLJHFCAyxwwwwvusqnljhfdcDEGHHJLNPQRQPNMLLLKJIGECAyxwwwwwvtromjhfcbBCDDEFHKMNONLKJJJJJHFECBzyxxwwwwvuspmkhecayzAABDFHJKKJIGGGHHHFECBAzyxxxwwwwvtqnkhebavwxyzBDFGHGGEDDEFGFEDBAzyxxxxxxxxwurnkhebatuwxzCEFGFFEDCBCDEEEDBAyxwwxxxxxxwurokhebastvyBDFGGGFEDCBBCDEEDBzxwvvwxxxyxwurokhebaqsvzCFGHIIHGFDCBCDEEDBzwvuuvwxyyywvspliebaprwADFHIJJKJIFDCDEFFECzwuttvwxyyyxvtqmjfcanrvADFHIJLMMKHFEEFGGFDAwtstuwyzzyxvtrokgdbmpuyCEGHJLMNLJGFEFGHGEBxustvxyzzyxwuspmhebknsxACEHJKMMLJHFEEFGGFCyuttvxyzzyxwvtqniecjmrvzBDGIJKLKIFEDDDEFECyvttuwxyyyxwvtrnjfcilpuxACFHIJJIGECBBBCCCByvtstvwxxxwwvurokfcikptwzBEGIIIGECAzzzzAAzwusrstvvwwwvuuspkgdilosvxACFHHGFCAzyyxxyyxvtrqrstuuvvuuusqmifjlpsuwyBDFGFEBAzyxxwxxwvtrqqrsttttttutrokilnprtvxADEFEDBAzyxxwxxwvtrqqrsstssstuutrolnoqrsuwzCEFEDBAzzxxxxxxwutsrrsssssssuvvurpppqrsuwzDEFECCBAzyxxxxxxwutsssssssssuwxwutqrrssuwADFFECCBAzyxxxyyyxwvttsssssstuwxxwusssttuxADEEDCBBAzxxxxyzzzywuttsstttuvxyxwuttuuvwyBDEDCBBAzyxxxyzAAzyxvuttttuuvwyyxvuuvwwxyABCCBAAzzzyxyzABBBAzxwuttttuvxyzzyvtuvxyzABCBBzyyyyyyzABCDDCBzywvttttuwyABBzwtsuxzBCCBAzxwwwxyzACEFGEDBAzxvutttuwzBDCAwupsvzBCCBzxwvuvwyADFIJIGECAzxvutttuwzBDDAxumptyBCDBzxvutuvyBFIKLKIFCAyxvuttuuwyACBzvsjmrwACDCAxvtttvyBGJMMLIEBywvuuutuuvxzzywsphkpuzBDDBzwutsuxBFJLLJGDzwuttttttuvwxxvsolfinsxACDCAxusstvzDHJIHEByusssstttuvwwvsokhehlqvzCDDByusrrtxADFEDBywtrqrrssstuvutplheegkpuyBDDAxurpqruxzAAyxwusqppqqrrsttsqnjfcegkptxABByvspooqsuvwvvutsqpoooppqqrrqokgdbehmquxyzywtqonopqsttssrrqpnmmmnnooppolieb9finruwwwvtrpnnnopqrrqqqponmlkkllmmnnljgda8finrtuuttrqonnnoppqqppponmlkjjjjklllkifc97fimpqrrrrqponooooppppponmlkiihiijjkkjheb97fhkmnoopppoooopppppppponmljihhhhiijiigeb87egiklmnnooooopqrrrrrqqponljihgghhhiihfda86eghjkllmnnnopqstuvutsrqpnmkihhghhhhhgfda86fgijkklmmnnopruxzAzxvtrqpnlkiiiiiihhgfda86hijkkllmnnoopsvADFDBxvtsqpnlkkkkkjihgfdb86jklllllmnoopqswBFHGDzwutsqomlmnnnljhgfdb87klmmlllnopppqsvAFHHEAxwvtrpnmopqpnjhfedb87jkllkkkmnppppruyCEECAyxwurpnnorsrnjgedca86hijjiijkmnnnopruyABAzxwvtqommnprqmifdca975defggghikllmmnpsuxyyywvtrpmlklmnmjgdba9754abcdeefghijklmoqtvxxxwuspnljiijjigda987543789abcdefghijlnpsuwxwvtqolkihgffedb97654325678abcddefhikmpruwwwvsqnljhfedcca97654321345789abcdefhilnqtuvvuspnkigedbba9876432112345789abcdefhjmorstutrpmkhfdba9987654321112345789abcdegikmoqqrrqoljgeca988776543211112356789abcdegiklmnnnnmkhfdb98777665322111123456789abcdfhijjiiijihfdb9877666543211001123456789abdefggfeeeeeedba87766654432110011233456789acdeddcbaaabba9877665544321100001123345789abccba9877788887666554432211000001123356789aaa98765555666665554432111000000011234567889987554334455555443321110000000001123456778776543333344444333211000000000000112345677765443322333333322111000000"
+    },
+    "players": {
+      "12": {
+        "sec": 1352.9,
+        "zones": [
+          0.252,
+          0.248,
+          0.5
+        ],
+        "grid": "00011233322223566532100000000000000000000000113455543334566532100000000000011000000000135799875555666431100011111111111110000001258cefdb988887643110112333222122211100001136bfjjhfdcccb9742111124566543222221100001247chlmkihhhhfc8531113579aa864333322110001248chkmlkkmnmjfa6321258cfgfc86433322110001358cgjkklnqsroic742358dilmkgb7533322110002358begijlorutqke95458djorsojd8543322110002368bdfhilortspkfa768djpuxvrke9643322110003468bcegilnpqpmjfb99djrxBAxrke9643222110003479bdehjlnnmkigdbbejrzFGDwpid9643221110003579cdfikmnmjgedccejrAHLKEvmgb854321110000457acegjmnnlhecbbeipyHNPLDtke9753221110000458adfhkmoolhecbdgnvDLPPJAqhc8643221100000358adgikmoomjgedgkrAHMOMFvmfa7543221100000357adgikmnonmjiilqxEJMLGzqic86433221100000347adfhjlopqqpoorwCHKJGAslfa754322111000002469cfhjmprtuuuvxBGJJGAtngc8643321110000002358behknruwyyzzCFIKICvoida7543221110000002358behlpswyABBCEGJJGzskfb87543221110000002357adhlpuxzBCCDEGIHExpida87543322110000003468adhlquxABDDDEGHGCwohda87654332211000004578bdhlpuxACEEEFFGFBvohda8766543221100000678acehlpuxBEGGGGGGFBvoida987654332110000089abdgjnruyCGIIIHGGFCwqjeb9887643221100000abcegimptwAEHJJIHHHGDxrlgca887543211100000cdfhjmpsvyBEHJJIIIIGDysmgc9876532211100000egilnpsuwzBDGHHHHIHGDyslgb8655432221110000gilnqstvwyzBDEFFGHGFBwqkea7544332222111000gimpstuvvvwyzBCDEFECzuoic85433222222211000fimqtuuutttvwyACDDCzwrlgb74322222222211000fhlptvvtsrrsuxzABBzxtpje964222222222211000egkosvvusrqruwyAAzyvsnid953221111222111000dfimruwvusssuxzAAzxuqmhc853221111111110000bdgkquxxwvuvwyAAAywtqlgc8532111111111100009adiotxzzyxyzAAAzywtplgc85321110111111000067bgmsxzAAzzAAAzywvspkgb853211111111110000458djpvyzzzzzzyxwutrokgb853221111111110000236agmrvwwwwwwvutsrqnkfb7532221111111110001248djorttttttsrrqqpnjfa7433222111111110001247cimpqqppqqqpoppomjfa7543332211111110001247cimooonnooonnnoomjfb8544333211111111001248dimnnmmmnnnmlmmnljfb8654443221112211001248chlmmlllmmmlkkllkifc9765443221122221102247bfjlllkllmlkkjkkjhfca8654432211222211023469dgijjjklllkkjjjigeca8654332212233221133468adghiijklllkkjihgeca86543322122333211445579befghjklmmlkjihfdba87544322222333211455678acefgiklmmlkjhgedb987654332223343321566778abcefhjlmmlkihfeca976654433233444322667789aabcegikmmljhgedb9876555443334555543667899aaabdfhjllkjhfdcb97655554444456776545678999aabcegjklkigedba876544444444578887656789999abcegikkkifecba875444444344679a99845678999abdfhjkkjifdcba875444443334579aaaa45678889acegijllkigedba975444433334578aabb45678889acfhjlllkigedcb9764444333345679aab45678899bdgjlmmmkigfedba865444443344567899456789abcfhkmnnmkihgfeca8654444444444556675679accefhjlnoonlkiihgeb97544455444433344467acfghijklnopppomllkigda8655555543332222279dhlnppooopqrrrqqppomjfc986665544322221119chnswxwutsssttttttsrqnjfc9876554322221111aekryDFEByvuuuuvvvvvutrojfb987543332222111bfmuCILLIEzwuuuuvvwwxxwtoida87544333332211aeluCKPROJDxusrssuvwyAAyslea876544555432119djrBKSWUOGyspooprsvyBCAumfb876556666543218bhpzJTZYRHxqmllmnpsvzBzumgb876667777643217afnxITZYQFvnkiijkmoruwvrlfb9777778876432168elvGQVTLBrkhgghiikmprrojeb8767788876432147cktDJMJDumhfeffffghjmmkhd97666788875431136biqxBBytnhedddeddddfhihea765567887654211359flqsrokgdcbbccbaaabcdca8544456777643211247bgijigeca9999988778898753333567765432112358bccba987777776655555543222346666543221234688876655555554443333221112345665443322234566554433444444433221111011245665433322234455433322233344432211100001245665433332234444332222223344433211000001245654433333233433322221122344443211000001245654433333223332222211112234443211000001245655443332122222111111111234443211000001245665443322111111111110001123444321100001245666543322011100000000000112344322100011246776533211000000000000000012234332110011346776432111000000000000000011234443211112346775432100000000000000000001234444321112346775432100000000000000000001123454322112346766432110000000000000000000123454322112245665543211000000000000000000123444321111234455443211000000000000000000112333211111122334443211000000000000000000012222211000111222333211000000000000000000011111110000001111222111000000000000000000001111100000000001111110000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000"
+      },
+      "14": {
+        "sec": 1233.4,
+        "zones": [
+          0.431,
+          0.323,
+          0.245
+        ],
+        "grid": "0000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000111110000000000000000000000000000000000001112211000000000000000000000000000000000011223221100000000000000000000000000000001112333332110000000000000000000000000000011123344432211000000000000000000000000000011233444433211000000000000000000000000000011233444433221100000000000000000000000000011223344433321100001111000000000000000000011122344444322111111221100000000000000000111122345554432211223332210000000000000001111222356765433223344443211000000000000001222233467775444455566654211000000000000002233444578875455789988754210000000000000002345556778765568acddca86421000000000000000234566788876667aehihfda7421000000000000000235677899987779cgklkifc852100000000000000033567789999999beilmmkhd963100000000000000034566789aaaabcdfikmlkhea63210000000000000034566789abbcdefhiklkjhea7421000000000000003456679abcdefghijkkkjhea642100000000000000345678abdefghijjkkkjigd963210000000000000034568acegghijkklkkjjhfc85321000000000000003457acfijkllmmnmlkjigea75321000000000000003469cgjmopppqqpomkihfda7432110000000000000358bfjnqstuuutroljhgec97421111110000000000469dinqtuwxzywtpligfec9743211111111000000047afkpsvwyABByupkigfeda753211111111100000057bgmquwxzBDCzupljhhgeb853221111111110000057chnruwyzBCCzvqnkjiheb853221111111110000058ciosvxyzABBzvsomkjheb853221111111111000058djotvxxyyzzywspmkigda753211111111111000068djpsvvvvwxxxvsoligdb8643221111112211000068dinrttttuvwwurnjgdb97543221111222211000068chloqrrsstuusplheb986543322112223221100078bfilnpqrrsttrokgdb976544332212233321100078adgjlnoqrrssqnkgdb97655433222223332111009abdfhkmnopqrrpnkheb9876544332223333211100ccddfhjlnoppqqpolieca876544433323332211100ggffgikmnopppponlifca976555443332222211100lkjiikmoppppoonmkifca987655544332222111100onmllmoqrrqpnmlkjheca987666554322221111100qpoonoqrsrqonlkjhfeca987776543222221111100pppppqrssrqonljhgfdca988776543211111111000nnpqrrrssrqpnljhgfdcb988776532211111110000klnqrssssssrqnkhgfedba98765432111111111111gimprsttttuuspligfedca98754432211111111111egknrsttuuvvtqligfedca98654332222211111111ceimqstuuvvusokhfedcba97654333222211111111acglpstuuutrplifedcbaa976543333322111111119bfkortuutroligedcbaa9976433333322211111118aeinqtuutqnjgeddcbaa9986433333322211111118adhlpsuutqnjgeddcbbaaa875433332211111111189cgkortutrokhfeddcbbbba86543332111111111179cfjmqtuutpmjgfedcccccba8654432111111111179cfimptvwurokhfedcbbcccba87653211111111118adgjmqtwxxuqmjgecbbbbcccba986532111111111acfilosvyAzxtpkhecbaabccccba98643211122211egkoqtwyACBzvrmigecbabbbbbbba9864322233322jmruxyABCCBAwsokhfecbbaaaaaaba975433445544oswABCCCBAzyvrolihfecbaa999abba87555567765quyBCCBAzxvurpmkihgecba9889abba97666778887oswyzzyxvtrpnljihgfdca98889aba987777789987knqtuuutsqoljhgffedca987789bba987777888877fhknopqqpnljhfeddcba987678abba987777777766bdgjlmnoomligedcbaa98766789bba9877776655559bdgjlnonnligdcba9887766789bbba987765544449acfilnoonligdba9877777788abbbba98765444449acfilnppomifdb98776677889abccbb98765444449bdgiloqqpmifca9876667789aabcccba876544444acfikmprrpmieca9877667789abbcccba875544433behkmoqrrqmieba9877777789aabcccb9865554432dfjmopqrrpmifca9888888899aabbbba9765555432dgjnpqrrrpmjfdb9999999aaaaaaaaa98765555422egknpqrrqomjgecaaaaabbbbbba998877666665432fhloqrrrqoljhfdcbbbbccddcba877666666666532jloqrssrpnkihgfedccddeeeeca876555566676543rtvvutsqomkihhggfeeefghhgdb976555555666654DEFDzvsqnljihhhhggghijlljgda76544445566654PRQLExspmkihiiiiiiikmpsspkfb86544344456655YZXQGxrnkihhiijjjklosxAAwpid96433333445554YZXQFvplihgghijjkmosxEIICtke97532223334443OQOIArmjhgfghiikmorwBIMKEulea7532222233322zBBxsnjhgfffghiknquyDIKHAskfb8532222222221lmnnljhgfeeefgikosxBEGFBvoieb8532212222111bcefgggffeddefhkouzDFEBvpkgca7532211111110568acdeeddccdegjouzEFCxrlhda8643222211110023579bcccbbbcdfinsyDDAuoieb8643222211110001235789aaa9abcehlqvzAxrlgc9643211111111000112456788889abdgjnruvsnida75321111111100000113456667789bdfhkmoomiea753211011110000000112344556678abdfhhhhfca754211000000000000001123344556789bdddcb9865421100000000000000011223334445679aa986554332110000000000000000112233333345677654333221100000000000000000011222222223455443222211100000000000000000011122222122334432221111100000000000000000001111221112233332211111000000000000000000000111111112233332211110000000000000000"
+      },
+      "29": {
+        "sec": 1326.2,
+        "zones": [
+          0.148,
+          0.338,
+          0.514
+        ],
+        "grid": "000000001122233322110000111222211100000000000000011223333332210000111222211100000000000000011234555543210000111222221110000000000000112346777754210000111222222111000000000011123468abba7531000111122222221110000000011123468behhfa63110111111222222211100000011223467aeimnje84211112221122222221110000012234679chmqrng9421123332222222222211000011234679beinrrmf942234554322223332222110001123568aceimonjd843356876433233333222110011234579acehjjiea644579aa8643333333222211011234679acdfffda865579cdc9643333333332211011235689abcddca866679bdeca7543343333322110123457899abbba976679bdeeca75444443333221101234678899aaa987779bdefec9765555443332210012346678889aaa9888aceffdb9765555544332110022345667789abbbaaabdefeca8655566554432210023455666789bcddccccdeedb9765556665443221102345566678acefgfedccddca8654556665543321113455666679begiiigedcccba764445565544332211445677778adgiklkifdbbbba864445555444332211557888889behklmljfcbbccb965444444433332211679aaa9abdgjlmmlifcabccb97544443333332211189bcdcccdfiklmlkhebabccca75443333333222111aceggfeefhjkllkigdbaabcb975433333333221100cfijjihhijkllkjhfcaaabba975433333333211000filmmkjjjklmlkjhecaaaaa9865433333332211000iknonmkklmnnnljhecbaaa99765433333332110000jmoponmmnopqqolifdbaa998764433333322110000kmoqqpopqrtvvtqlhecbaa98754433333322110000jloqrsrrsuyBDBwqkgecba98754433333221100000hknruvvuvxCIMLFxpjgedca9754444333221100000gjnswyxwwzFOUUOEtmigedb9765444433221100000fhmrwzzxxAHQYZTIxokhgeca865555443211100000dglqvyyxxAGPWXRHxpljhfdb976555543211100000cfjosvwwwzEKPPJCupmjhfdb986666543211100000bdhlpsuvvxBEGEAvqnlkigeca87666543211100000acfimpstvwyzywspmmlkifdba876665432111000009bdgjmpsuvvvtqnlkkkjhfdb98665543221111000089cfhknqtttspmkiijjigeca87655433221111000068bdgjmprrqomkihiiihfdb976554332221111000067adgjmoppnljihhhiigec9865543322211111100057adgkmoomkigggghhhgeb8654433222111111100057aeiloonligfffghihgda7544332221111111100068cgjmopnkgeeeghiiifc97533222221111111110079dhknoomifeefgijjifc86432222221111111110079dhkmmmkhfeefhijjheb85432222221111111110069cgjklkigfeeghijigd975322222221111111111068bfhjjihgfffghiiheb864332222221111111111057aeghiihhgghhiihfca7543322332211111111111469cfhhiiiiiiiihgeb86543333333211111122111458beghiijkkkkihfca86544333332211011122111458bdfghiklmmljgeb976544333322211001122211457acefhiklnnljgda876544433222110001112222458acefghjlmmlifca876554433221111000112222468acdefhikllkhec9876655433221111000112223468acdefghijjigeba887766543211111111112233568acdefghhhhgfdba998876543211111111111223569bcdefggffeeedcba99876532211111111111122679bdefggfedddddcbaa987643221111111111111168acefggfecbbcdddcba987542211121112211111168bdfggfedbaabcdddba986532111111111221110078begggfdcaaabcdddca986532111111111111100079cfghgfdcaaaabdeedb987532111111111111100079dghhgfdcbaaabdeedba9864211011110111100008aehiihgeddcbabcdedcaa875311000000000000008aehjihggffdcbabccbaa9875311000000000000008aehiihhhhgfdba9a99888764210000000000000008adghhggghhgeb98776655543210000000000000008adgggfffggfda86654433332110000000000000009bfhigedddedb87554332222211000000000000000beikkhecbbaa875544332222211000000000000000cfkmlida9887655443333333221100000000000000cfjlkgc87666554443333333321100000000000000acghgc96555555443333344433210000000000000079bca8644445554433333444332100000000000000567765433344554433333343321100000000000000344443222334454433333333221100000000000000333322212223444333333332211000000000000000222221111122333333343332111000000000000000222211111112233334443322110000000000000000111111100011233344333221110000000000000000111111000011223333332211100000000000000000000111000001123333222111000000000000000000000011100001122332221110000000000000000000000001100001122332211000000000000000000000000001100000112222211000000000000000000000000000100000112222211000000000000000000000000000000000112222211000000000000000000000000000000000112223221000000000000000000000000000000000111223221000000000000000000000000000011001111222221000000000000000000000000000001111111122211000000000000000000000000000001111111111110000000000000000000000000000000111111111100000000000000000000000000000000001110000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000"
+      },
+      "32": {
+        "sec": 945.8,
+        "zones": [
+          0.329,
+          0.434,
+          0.237
+        ],
+        "grid": "00000000000000000000000000000111111000000000000000000000000000000000011122211100000000000000000000000000000000112333322110000000000000000000000000000001134555443211100000000011111100000000000001246787654432110000001111111111000000000012469aa987665431100011223322222111000000001258bddca9999742100012344443322211100000112359cffedcddc96311012357764332222111001122347aeghgfffgeb742101257887532222221111235668adgijiggggfc84211135899753222222211258bcdefikmljhgggeb8521013578864211122222359fknnmmnppnkhgfedb853201245665421111222348fnvyxusrrqnkhfeedb96430112455432111112346bkuDGEAvtrpmjgfffedb8540011234432111112358fnyGJHBwromjhgghhgec965000123343322112246bhpyFIGBvpljhghijihfc975000112344443322348ciqxDGEAtnjggghjjigeb965000113456666543358ciouADDysmhffghiigeb9754001123568999864457bfkqwzAwqkgeeeggfdb87543111124689bcba754579dhmrvvsniedcdeedb86543311223569bcdca865568bejnrrokgdcccccb976543312234579bccba865568adhlnnkhecccccba987655522345689aaa98765679behklkifdccccccba998888223467888887765579bdfhjjigfeddddddccbbbbcd23456777777666668adfghhhggffeeffeeeedeefgh34567777777766679ceghhggggggggggggfffgghij5678887667787778adfghgggghiiiijjiihhhhhhhi89abb98777898889bdfhhggghjkkkllllkjihggfffcdefeca88899999aceghhhhhijkllmmnnmkjhfedccfgiihfcaaaaaa9abdeghhhhghhiklmnoonligdcbaaghjkjifdcbbbaabcdeghhhgfefgijlmnnmkhecaaabfhjkkjigfedccbccdeghhgedcdegiklmmkifda9abcefhijkkjigfeddddefhihgdbabdfhijkkigeba9acedefhjlmnmkiggffffhjkjhebabdfhiiiihfdb99bdeggghjmoppnljiiiijlnonkgcbceghihhhgfda99abclkjklnprrpnlllmoprstrnjfeeghiiihhhfda98889qponnoqrrqpoopsvxzyxvrnjhhijjjjjjjheb97666utrpooppqqppqtxCFFDAxtqnlkkkkklmnmjgda7644wusqonnnoopqsvBGIIEBxurpnmlllmorsrojfb8643wvspnlllmnnorvAFIHEAwusqponmmoswyxtojea753ywtpnlkkllmnoswBEECzwtrqppooprwADDztnid964zxuqomllllllmorvyAzywtrqqqqrsuyDGGCxrlgb86yxvsponmmlkkklnruwxxwusqqrsuwyBEHGEAvpje97vuutrqponmkjjkmpruwxwusqqruxACEFGGFCytnhc8qrsttsqpnmlkklmprtvwwurppquzDGHHGGFFCysmfblortutrpnmlklmoqstuvuspnnpuAFIJIHHHIHEzslgjmqtusqonnmllnoqrsssspnlmpvBHKKIHIKMMLGzrmilpssqommnmmmmoopppppomlmqwCHJIHHILPQQLExshlprromllmmmmmmmmmmmnnmnosxCFGFFFIMPSRNHAwhkoqpmkkklmmmllllkklmnopruxABBBBDGKOQQMGAwgjnonljjjklllmmmmlllnprttuvwxxxzBEHLNMJDyvgilmkjiiijjklmoqqpooqsuvvutttuvxADGJKJFAurhijjihhhiiijknruvvutuwxywusrrtwyBEHJJIDwrnlkjhfffghgghjnsxAAzyyzAzxvsrsuxBEHJLLIDwplrplhedefgfffhmsyCEEDCCBAywuuvxBEHJLNNKFyrnxtnhdccdeeddfjpwCFFFDCAzzyyzABEGILNOONKFzvyungcaaccdccdhntzDEDCAyyzBDEEFFHIKMOPQQOKHtpjea88abbbbcfkqwABAywvwzDGIIHGGHJLNPRUVUTliea8778abbbbdinsvwwutuvzEIJJHFFGILNPSWZZYcb9766689abbbdfjnqsssstwAEIJIFDDFILOQSVXWV877666779aabbbdgjmoprsuwAEGHFDBBDHLORSTSPN7777777889aaaabcfiknprtvzCEECAzACGKPSSRNIE99aaa99888899889cfikmoruxACBAyyzBEJORSPJCxbcdddca977777778acfiklorvyAzyxxyACHLQROHytdefggeca877776679beghjlptwyyyxyzACFJNPMEvpcefghgeb876666678acefhjmquwyyyzABDFILMJBrlbcdfggec987666678acdefhkoruwxyACDEGHJJFxnh89bceeeca87666679acdefgilpruwyADFGHHHGBtke6789bcdca98766789acdefghjmprtwADFGGGFDyqid55679bcba98777789bdfghhiikmoruxBDEEDCAvohc455679bbba998889acehjkkjijkmoruxzzzzywtnhd4455789aaaaa999abdgknonljiijmpruvvvvvurnjf45556799aabbbbbbcfinrsrnkhhikmprssssssrplj455567889abcddddegkosusokhfgiloqrrrrrrsrom4456677899bcefffghkostrojgefhloqrrqpqrssqo3456777889acfhiiijloqrpmigfgiloqrrqoooqqom3457888888acfikklmnpqqoliggiloqrsrpnllmmki34689aa9889cfikmoqstsqnljijlorstsrolihhgfd357abcba999behknrvyywsolkkmpsuvvtrnkgedca9357acdcba9abdgjouBFFAupmlloruwxwtqmieca9763479bccbbaabdfjpyHMKEwpmlmpsvxywtpkgca876523579abbaabbcfjqAKPNFwpllmpsvwwurmida86543123568899aabceiqAKPMEvollnqstutrnjeb75433211234567899abeioxFKIBuomnprssrqnkgc8542211001223456789bdhnuAEDzuqpqtutrpmkhd96421111000112345678adhmqvzAyvttuwwuqnkheb75311000000011234568adgkosvxyyxxyzyvqlhec9642100000000011235679bfilosvzBBCCBzvpjfca7532100000000011234568acfhkotyCEFEBytnhca8643210000000000112345689begkpvBFGEAwqkea765432100000000001122345678acglszEGDysmhc865443211000000000111223455689chovBEBwpjea754443211000000000111123445568aekryBztmgb86433332110000000001111223455668chntwvqkea754333221100000000001112234556679dinqqnhc8643222211000000000000111245666667adhkkiea753321111000000000000011234677765668bdeda75322111000000000000000012357898654456898753221110000000000000000012358998643334455432111000000000000000000012368aa86432223333211100000000000"
+      },
+      "37": {
+        "sec": 1261.6,
+        "zones": [
+          0.303,
+          0.309,
+          0.388
+        ],
+        "grid": "000000123444332211000000001235554321000000000000123444433211000000001245654321000000000000112344443211000000011245665421100000000000112345543321000000012346666432211000000000112355654321000000112356776654321100000000112456665321000001123456777777543211000000123467765321000001123456789aaa86532100000112356776532100000123455679bcddb975430000011235677643211000112345678acegfeca8650000012245666542211001112346679bdghhgfedb9000011234566543211111122345678aceghhhhiigf000011223556543211111223456789bdfghghilmlj00001122345543211112234556789aceghgfgilnnl0000011234454321122234567789acehiihfegjllj0000011233443221223346788899behjlkhedeghgf000001122333322223346789aaabcfjmmlheccddcb0000011222332222334578abcccdehknnlieccbb980000011222222333456789bdfffghjlnnlifdccb98000011112222334556789bdghiijklmnmkhfeddca900001111112234567899acfiklmmnnnmljhfeeedca00011111122345689aaabehkmoppppomkigfeeeecb0011122222335689abbbcfilopqrqqomkigfeeeedc001122333344679abcccdfilopqrqpomkihgffeecb01122344555678abcddddfiknopqqpnmkjhggffecb01123456667789acdddddfhjlnppponlkjihggfecb11123456778889bcdddddegiknopponmkjihhgfecb1112345678889abcdddddefhkmopqpomlkjihhfecb1122345677889abccdcccdfhkmoqqqponmkjihgfdc1223445667789aabcccccdfhjmoqrrqqpnmkjihged223345566678899aabbccdegilnpqrrrqomkjiigfe3345566666778899aabccdefhjmopqrqpnljiihhgf45567777667788899bccdddegikmopponljhhhhggg6778888777778889abcdedeefhjkmnnmkigfffgggg89aaa9887778899abcdeffeefgijklkjhgeeeefgggbcccba98888899abcefgggfffghijjihfedddefgggdeedba9988999abceghiihhggghhihgfedddeghhhgffedba9999999abeghiiiihggghhhgfeeeeeghiihhgfedba99999889begiiihhggggggggfffffghijjhggfeca999998888adfgggffffffggggffgghhhijigffedb98889987779bdedddddddeeffgghhiiiiihgfeedca887788877789abbaabbccddefghijjjihhgfdcccb9876677777778999899abbccdegijklkjhgedcbbaa9876666777777888889aabbcdegiklmljhfdbaa9999876566777777888889abbbcdehjlmmljgeca99788887666667777888889aabbccdfiklmmkifdba9966788766666666788999abcccddfhjlmmljhecb998456777777776667899abcdeddefhjlmmlkigeca9883456777888766789abcefhhfeegilmnmkjhgeca8773345677899877789acegjkkigfgikmmkjihgeca8652345567899887789bcfilnmjgffgijjihggfeca7542234556788887789acfilnmjgeeefgggffffeca75422334456777777789behjlkigeccdeeeeeeeeca86422333345566777889bdfhihgedcbbccddddedcb8762222233455677889abcdeffedcbbbbccccddedca8822222233456789abccdddddddcbbbccccccdeedcba2222223345689bcdeeddccddddcccddccccdeeeddc222222345678aceffedccccdeeeeeeedccccdeeeed222223445678adfgfedcbbcefggggffedcbcdeeedd222223455678acefedbbbbceghiihgfedbbbcdedcc222233455678acddcbaaabdfhijjihfecbbbcdddba111233455678abcba99abcefhjkjigedbbaabccba91112234456789aba9999bdegijkjhfdcbaaaabba980111233456789aaa999abdfgijjihfdbbaa9aa99870011223445679aaa999abdfhijjigedcbaa998876600112233456789aa9999bdegiiihfeddcba9987655000112223456799a9999aceghhhgfeeddcba98764400011122234578999989acefggffeeeedcba98754300001111234578999889abdeffeeeeeedcba98653300000111223568999889abcdeeddddddcbaa98653200000111223568999999abccdddccdddcba9986532000000112235689aaaaabbbcccccccccba99987533000000112235689abbbbbbbbbbbbcccba999987543000000112234689bccddccbbaabbbbba9999998643000000112234579acddeddcbbabbbaa98899aa9753000000112234578acdefffedcbbbba98889abba753000001112334579bdfghhhgfedccb987779acca85400000112234468beikllkkjigfecb987779acca8540000111223457aflrtsqomljhgfdb987678abca8541111111233569emwDGDxrnkihfedba87678abba864111111123457ahsGQTNDunjgeedcb9877789bbb975111111223457bjwLXZRFulgdcbbaa9877789bcca86111111223468cjvJUWPDsjeba99998887789bccb98111111123468bhqBKMGxpida988888888889abcb98111111123468bflsyzxsmhda9877788887779aba87111111123479ceilpqqnkgda98777888776678886500011112357acegiklmljgeb97767787765556665400001112358bdfghijkkjheb97666777654445543200001112358befghhiiiigeb97666666543334432200000112369ceffffggggfdb97655665433333322100000112469bddddddddddca87655554433333221100000012358abbbaaaaaaaa9765544443333322111000000112467888777777787655444433333322111000000012345555555445555554443333333322110000000011223333333333344444433333333322110000000011122223322222223333333333333322110000000001112222222111112223333332222221100000000001111122211111111222222222211111000000000000111111111111111122222221111110000000000000011111111111111111111111100000000000000000001111100000111111111111000000000"
+      },
+      "49": {
+        "sec": 1131.0,
+        "zones": [
+          0.224,
+          0.296,
+          0.479
+        ],
+        "grid": "00000000111112222211111223455665321100000000000000111122222111111233456665432110000000000011111223332110011234567776543211000000000111122334432110012356899988765421100000001111123455442110112479bccbaa9976421100000011112345565432111247adfgfedccbb964210000011112234566543211136afikkigeeeedb85311000011112234555543222359ejnpnkhfefffda642100001111223444444433347ciorsqmifeeffda74210000111122333344555567aflruurnjfededc9642110001111122333346799abeinsutrnjgedcba8642110001111122223357adeffhlorsrpmjgedba97532110001111222223469dhjkklmoppomkigfdba8754211000111222223347aejmnnnnnnmljihgfdca8754211000112222233457aeimoppomkjhgffeedcb97643210001122233345679cgkoppnkigeddddeedba8643210001122333455678beimoomjfdbbbbdefedb8643220011122334566789adhlnnlheba9abdfgfeb9653220011122344567899bdhkmmkhdba9abdfggeb965322001112234567889acehklljgebaaabdfgfdb865322001112334567899bdfiklljhecbbbcdeffdb865322001122345667889bdgjlmlkifddccdeefeda864322011123455677789adgjlnmligfeeeefffeca764321111234456666678adgkmonmjhgfffggggec97543211223445666665679cgknponkigggghhhgeb86432212344566666554468bfknppnlihghhhihgda76432214567777665443457afjnpqoljhhhhihgfc975433216789987665433346aejnppolihhhhhhfeb976543229abbba8765433346aeimopnlihghhggedb98765432acdddb9875443457aeimoonkiggggffecba9876543bceeecb987655568bfjmopnligffffedcbbaa97643abdeedca9877678adgknppomjgfeeeeddcbba9865489bcddcba999899beimpqrpmjgfeeeeedccbb98654678abcccbbaaaabcfjnqrrqnjgedeeeedccba9764445689bccccbbbbcdfjnqrsqmifdddeeedccba87543234679abcccccccdfimprrplhdccdeeedcba9865431234578abccdcccdehknppnkfcbbceeedcba97643311223579bcddddccegjmnnmiebabceeeddba97543201122457abddddccdfikmmkhecbbdeeeedba875432011123469bcdddccdfhjkkjhfdccdeeeedca865322011122357acddcbbdegijjjhfeddeeeeedca8643211111123469bccbabcefhhiihgedddeeeedca8643211111112468abba9abdegghhgfeddddeeedca7542111111112358abba99bcefgggfedccccdeedb975321101111112479bba99acdffgffedcbbcdeedb975321100000112469bbaa9acdefffedcbbbcdddca975421100000012368bbbaaabdeffedcbbbccdddca976432100000011358abbbaabcdeeecbbbccccccba9764321000000012469abbbbbccdedcbabcccccbaa98653210000000113579aaaaabcdddcbabccccbaa98875432000000001235789aaabbcddcbbbcdcbaa98877643200000000112356799aabcdddcbcddcba9877666544000000000112346789abceeedcddddba8766666655000000000011235689abdeffeedeedb98665567777000000000011234679acdfgggfeeedb97655678888000000000001123579aceghihgffedb97655689999000000000001123579bdfhjjjihfedb98666799aa9000000000001123579begjklmljhfdca87789aaa98000000000011123579behkmoonljgedba999aba987000000001111234579cfjmpqrqoljgedbaabccb97600001111112223468aeimpstttromjgedcccddba8700011122222233569djosvwwvvtroligfedeeeca980011233333333458cjqxBCBzxwvtrnkigfffffdba9001234554333357bhpzHLKFAxvvtroljhhhhgfdcba001245665433358emxJRTPHAusrqpmkjiiiihfdcba00134676532236ahsEQXXQFwqnmlkjiiiiiihfdbaa00124565432236bkvJUZWMAqkhggfffghijjigeba900123444321236bkwISVQFukfcbbbcdfhjkkjheca9000122222111259hsEMNHxmfb98889bdgjlmlifca8000011111111137dmvBCwogb8776789cfjmnljfc970000000000001259fmrrmgb76655568aehlmkieb860000000000001135aehhfa7554444468bfijifc975000000000000011368bb9754444333468cfgfda7540000000000000012356765443333222469cdca864300000000000000012344444333322112469a986432000000000000000112233333332211112467654322000000000000000111223333322111111234432211000000000000001111222222222110001122221111000000000000011111112222221110000011111111000000000000011111111111111100000000011111000000000000111221111111111100000000011111000000000000111221111111111000000000011110000000000000112221111111111000000000011110000000000000111221111111110000000000011100000000000000111111111111100000000000010000000000000000011111111111000000000000000000000000000000001111111110000000000000000000000000000000000111111100000000000000000000000000000000000001111100000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000"
+      },
+      "70": {
+        "sec": 1463.0,
+        "zones": [
+          0.384,
+          0.36,
+          0.256
+        ],
+        "grid": "000000000124566543211234443211000000000000000000000124566543211223443221100000000000000000000124566543211122333322110000000000000111101124566532111112233333211000000000001111111123555432110011234554321100000000011111111123444321100011235666532111000000011111111123343321100112346787643211110000111121111223343221111123457899764322211000111222222334443321112344568abb975332221100111222234555554332234677789bddb85433322110111223456788765443468abbaaaceec96433322111111234579bba9765557adghgecbdefda75333222111123468acddca87667aeillkgecdeedb8543222211112457aceffdb97779dimoolhedddddb8643222211123579ceghgeb9889bfjnonkheddddcb974322222123469bdfijigdbaabdgjmmkifddddddca8543222222357acegjlkigedeefhjkkifedddeeedb9643333222468acegjlmljhhiiijkkjhfdddefffec9754433223468abdfilmmllllmmmmmkigedefggfeca8654433223579bcegjlmmmnooooonmkhfffghgfdb98654432223579abdfiklmnnopppppolihghhhgeca97654432223468abcehjklmmnnooppomjhhhiiheca97654432123468abdehikkkkkllmnoomkihhiihfdb97654322123578abdfhijjjiiijklmnljhgghiigec97654322134578abdfhjjjihhhhijllkigffhiihec976543322346789bdgikkkjhhhhijkkigfefghigeb976544433456789behkmnmkjiiijjkjhfedeghhfda876555555566789bfilopomkjjjklljhfddeghgec987666666667778acfjmpqqnljjlmmmkheddeghgeb987777777777889bdgjmpqpnkjklnnmkhfddefgfdba9988888778899bdfhkmnonlkjkmnonkhfddeffedbbaaaa99887aabcefhjklmlkjjjkmnnmkhfedeeeedcbbbbbaa987defhijklmmlkjiijklmmljhfeeeeeddccccbbbba98iklnoopoonlkiiijklllkigfeeeeeedddccbbbba99oqsuuutsrpnlkjjkkkkjihgfffffffeeedcbbcbba9suxzyxvutrpnlkkkllkjihgggghhhggffedccccba9tvyzzywvusqomlklllkjhgggghiiiihggfeeddcba9qsvwxwuttsqomlkkllkjhgggghijjjihhhhggfeca9moqrssrrqqpnmkkklmljhgffghijjjjiijjjjhfda9jklmnnnnonnmlkklnnnljhgggghijjjjjklmljgda8ghijkklllllllllnoqpomkihghhijkkklmnnmkhda8ffhijjjkkkkkllmoqstsqomkiiijkllmmnnnmjgda8efhjkkkkkkkkllnpsvxxwtqnlkkklnoppponlifc97fhjmnnmllllllmnquyCDCzvrnmlmnoqssrpnkifc97hjnpqqponmmllmorvBGIIEzuqnmmnpsuutrolifc97jmqstsrqponnmnorwDJOOLEyspnnoqsvwuspmjgc97knqtuttsrqponnpsxEMTVSKCvronopsuvuspmkhda8jlorsttttsqpoopswENVZXQGytqooprtutspnliea8fhknprtuuusqonorvCLUZYRJAurpopqstsrqomjfb9cdgjmpsvwvtqomnptzGOTTPHAurpoopqrrrqomjfb99adgjosvwwtqnllmpuAGKLJDxtqonnnopqppomkgc978beinsvwwtqmkijmpuyBDByuronmllmnnoonmkgc978aeimruwvtqmihhilosuwwuronlkkjkkllmmmkhda78behmqtvvuqmigfgilnqrrrpnmlkjjijjklmmkhdb89bdhlquwxvsnjgffhjlnopponmlkjjijjklmmkiec89adglqvzAyupkhffghjlnpppomlkjjjjklmmmkifd89acglrxBCBwrmifffhjlnpqqpnljiijklmnnmkifd89acgmszDECxrmhfefgiknpqqpmjhhhijlnonmkifd9abdhntzDDAvpkheeegiknpqpnkhfefgjlnponkhedbcdfjotyAAwrmifeefgikmnoomjfdcdfiloppnkheceefhkotwxvrnjgfeefgijlmmljhecbbehlprqolhdbhhijlorttrnjgfeffghijkkkjigdbbbdhlpssplhdbkkkkkmoqqoligffgghhijjjjihfdcbcehlpssqnifdmllkjklmmljhgfghhiijjkkjigfeccdehkorsqokhfmlkjiijjjjihgghiijkkllljihfedcdegjloppoljhkjihhhhhihhggghiklmnnnmljigedddefgilnonmkihhhggghhhhhhgghjlnopqponljgedddeefgikmmlkifffghhiiiihhhhhjmoqssrqpmkifeddeeefgiklkjidefgijkkkjiihhiknqstutsqomjhfeeeeefghijjihcdegjlmmlkkjjjkmortuuutrpnkigfffefffghhhgfbcehkmoonnmlllmoqstuutsrpnkigffffeeeeefeed9behknpqqqpooopqrsttssqpnkihfeeeeedddcccba8adhlortuutsrrssssssrpomkigedcccccccbba9878acglptxzzxvuuuuuttsqomjhfdcbaaabbbbaa97659adgkqvADDByvvvvvutsqoljhedbaa99aaaaa98654abdgkpvBEFCywvwwvutsqomkhfdcaa999aaaa98654cdegkouzDDAxvuvvuttsqomlkhfdbaa9aaaaa97644deegjnsxAAyvttttsrrqponnmkigdcaaaaaaa87543ddefinswzzxusrrrqppoonnoonlifdbaaaaa987543bbceimsxAAyusqpoonnnnnnoppolhecbaaa998653289bdhmsyCDBxtqonmmmnnnnopqomiecaaa99876432779cgmtAFGEzurpnmmnnnnnoppnlheba9999876432679bflszFGEAvsqonnoopoooonmjgdb99889886432568bejpwBDByvsrpoopqqqppomkheca98889986432578adhmrvwwvtsrqqqrsssrqomjfdba99889987532578acfimoqrrrrrrrrstuutrpmieca9999999975325689bdgiklnopqqqrrtuvutsplheba9999999975324578acegijkmnnopprstttsrolheba99999998753234579bdfhijkkllnopqqrrqpnkheba99999987642223457aceghiijjklmnnnnnnmkifdba999998764321123468bdfghhijklmllkjjjjigeca99999986532111123469bdfghjkmnmljhgfgffdcba999998754211001123579cegiknppolhedcccccbaa99aa98643211000112358adfimqsspkgdbaaaaaaaaabbba86421100000113479cfjnsutpkfb988899abbcddca85321000000012368beinrtsojeb876779abceffdb75211000000011357adglprrnjeb8655679bdegfda742100000000012468beiloolieb8655568acefec95311000000000113468beikljgdb86545679bccb9742100000000000123579cfiihfdb97544578aaaa8532100000"
+      },
+      "82": {
+        "sec": 977.2,
+        "zones": [
+          0.318,
+          0.354,
+          0.328
+        ],
+        "grid": "0000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000001110000000000011111110000000001111100000011111100000000111111111110000011122111000112222110000001111211111111000112222221111123332110000011122222222211100112344432211234443210000112222222222221111123455554322345554220001122222222233332211123467776543345665430011222223333333444322234568999865456777660111223333333334566543334568abba865578aaaa1112333344443345788765444567acdca7667aceee112334444554434589a9876554579cddb8667aeghh12234455555443458abba98754458acca8667adfgg123445566655444579bbbba8654568aa976679bcdc123456666665555679bcdcba764456787666689999234567777766667789bceedb96545566666667776623578899877788999abdeeec97555555667777665434689abaa999abcbbbcdefec9765555678999875443468abcccbbcdeeedcddeedb976666679abbb976443468abcddddefggfedddddca87667789bdeeda865434579bceffgghhhgedccdcb9877788abdfggec975434579bdeghhhiihgedcccba977789abceghgfca75434579bdfhiiiiihgedcbbba88789aabdefgfeca8654468aceghijjiiihfdcbba98889abbccddeedcb9764579befhiijjjjihgecbaa9889abccbbbbccccb987457adfhhijjjjjjihfdcb9989abccbbaaabbcbba87568bfhiijjkklllkjhfdba989abcbaa99aabbba98757adhjjjjklmmmnmkigeca989abaa9889abbbba98779cgjllkklmnnooomjheca88899987789abbba9887acfjlnmlklmnopqpmjgdb97788876678abcba99877egjmopomlklnoppoliec976677765568abcba88877lmprssqnlllmnoomifca876666655568abba987777tuwxxvsomllmnnljgdb9876566554568aaa9877777CEFEBxtqnllllljgecba9766655545689998877777NONKFzuqnlkkkjhfdccba987665555678998877777WWUPHAupmkjiihfedcdccb98766555678888888888ZZXQHysnkihhgfedccddcca9876666778888889988VVSMDvqmjhffedccbccccbba98777778899999aaa9KKJExsnkigedcbbaaaaaaaaa988888888999aabbbbyyxvromjhfdcbaa999988899999999988899abcdddooonmlkjhfdba99998776778899aa9988899abcdddiiijjjjigfdba98888765667889aaa98889aabbcccffghiiihgfeca9888876556678abba9999aabbbbaaefghhhhggffeb9888876656678abccbbbbcbbaa998eghiihgfgggfda988987766679acdeeddddcbaa987egijihggghihec999998877789bdfghgffedcaa987egijjihghiiifca999a998889acehiihggedcba987dfikkjihiiihfda999a999999acehiihffedcba987cehjkjjiiihgeca9899999999abdfgfedcccbba987cehjkkjjihgfeca98999988899abcccbaabbbba987cehklkkjigfedca9889998888899aa9989aabbba88dfikllkjhgedcba99899988777888888889abbba99egikllkjhfedccba999999877677788889abbbbbbafhikkkkigfdddccba99aa987666678899abbbbcccchijkkkjhgeeddddcbaaaaa876556789abbccccccddjkkkkjihgfeeffeedcbbba97655578abcddccccdddlmmlkjhggfffggffeddccb98654568acdedccccdddmnnmkjhgfffffgffeeeddca8654568adeedccbcdddlmmmkjhgfeeeeeeeeedddcb9754568aceedcbbcdddjjkkkihfedddddccccccdcba8655679cdddcbbcdeefghiiigfdccccbbbbbbbccca8655579bcccbbbceeeddfghgfedcbbbaabbbabbccb97555689bbbaaacdeebcdfffedccbbaaaaaaaabbbb975455789a9999abbbbcdeeeedccbbaaaaabbbbbaa865445678888778888cddeeddccbbaa99aabbbba98754344567777666555ddeeddcccbba9999abbbba87543334556676554433dddddcccbbaa9889abccb986433334455666543222cddcccbbbbaa9999abccb975432334455665542211ccccbbbbaaaa999aabccb865332233455565432111bccbbaaaaa999aaabccca864333333445555432100bbbbaa999999aabbcddca864333333445555432100abbba9999999abbcdddca8654444334455554321009aaa998899aabbcddddca87655544444455543210099aa99899aabbccdddccb987766544444566542110899a9999abbccddddddccbba987654444566643211899a9999abcddeeeeedddeeeeca86544567776432189aaa999abcdefffffeefgjkkhea765556888764329aaba9999acdfggggfffgjnrroid97556789a98643aabbb9989abdfghhggffhlrvxtmfa765678abb9864abccba9889bdfghhggfgilrwyungb765578abbb975bccdcb9889acefgggggghkosurlfa7655689bcb976bbcdcba989abdeffgghhhiknnmida7655678abb975abcccba999abcdefghhhggghhgeb9766667899986589abbaa99aabbcdfghhhgeddccb98777777778765367899999aaabbcefhiigfdba9987777777666654324566778899abbdehijihfdba87655566776544332133455677899abcehjkjigedb975444566654322111123445677889abdgijjihgfdb8643345555321110011234566777789adfhiihhhfda74333455432100001123566666555679cegghhhhfc853333443211000011245666554444468bcefghhfc96433333321100001124566554332234579bcdeedb8543333322100000112345543322212235689aaaa86433333221100000011233332222111223456776654322222211000000001122221111111122334443322211111111000000000111111111111111122222111111111100000000000000000011111111111111000000000000000000000000000000111111111100000000000000000000"
+      },
+      "83": {
+        "sec": 1463.6,
+        "zones": [
+          0.161,
+          0.305,
+          0.534
+        ],
+        "grid": "0000000000123466542100000011233332110000000000000001123456532100000112234432110000000000000111123445432100001123344443210000000000011111223344321100012334555543211000000000011111223333221000123566666544321000000000111111223333211001235799876544321100000000111111223333221112358bcca8654332110000000011111223333332212358befeb965432211100000011111123344444332358bfhhfc97543322110000011111123344555554458cfijigda754333321100001111122345556677678cgjkljheb8654444321100011112234556667889acfjlmljhfc97655554321000111223345566679acdgjmnmkigeca8665554321001111223445555679cehjlnmkifedca876665532110111122345555557adhkmnnlifdcbb9876666542111111123456655557bfjnopnkhecbba9876777643211111123467765568chlpqqokhedcba988788875321111112357887657aejnqrrpmjgfedcb98899875421111112357887667bfjnqstsqnkjhgecb9999976422111122357876567aeimqtwxwtqnljgecaaa9875422111222346665557adhlpvADDBxtpmjfcba998753221122223455544579cgkqxEKLJEytplhdba99765321122233344444457adhmsAJPSQKEytojfdba9765321223334444444468bfjovDMUXVQJDxrmifdba87542233445555444457adhmszHPVZYTNHBvqmjgdba8653345566666666679cfjouBIPUXXUPJEzuqmjgeca8654678999999889abdhlpvCINQTTROKGBwspmjgeb976589abcccccccccdfhkpuAFJLNONMKGCxtqnkifda876bbddeeeefffeeefgjnsxBEGHJKKJGCyuqoljgda866cdeeffffggggfeefhkpuyACDFIJJHDyuqnljgda755cdeeeeeffggfeedefimquxyADGIJHEAvrnligc9644bccccccdeeeedcccegjnrtvxADGIHFCxsolifc9643aaaaaaabbcdccbbbcehknqsvyBEGGFDyuplifc9643889887889abbaaaabdfiknqtwzBDEECzvqmjgda7547777655678999aaabcehkmpsvxzABCCAxsokhfc96566655444567899aabdfhkmpsvwxyzBCBytplifda8666544333456789aacdfhjmpsuwxyzBCCzuplifda86544432234567899abdegiloruwyzACCCzupkhfca76333322234567889abcdegjmqtwyABCCBytokheb9652222222345677789aabcehkptwyABBAywsnkgeb864222222234456666789abdgjosvyzzzywtqnkgda7541111222334455556789bcfjnqtvxxxvuspnkgda7541111122333333334578acfilnqsuvvusrpnkhda8641111122333332223467acegikmprttsrqonkheb86511111223333222223469bdefgilnpqqpponkifc975001112233332222224579bccdehkmoooonmkifca76000111233333222223578aaaacehjlnnnnmkigdb870000112333332222235688889acfikmooonljhec9700001123333222222346777778behloqrqomkifca800001122332222222345666668adhmqtutromkhea800001122222222222334555567adinswxwuromjfb900000112222222222233445567adiotxzywtqolhda00000111111222222223344567aeinswyywusqniec00000001111112222222345567adimruvvutsrokgd00000000001111222222345568adhloqrsrrrrpmig00000000000111122112345678acfilnooooprqoli000000000000111111123456789begiklmmmoqrpmk000000000000011111123456789acegijkklnprqom0000000000000111111234567889bcegijklnqrrpn00000000000001111122345678889bdfgijlorttrp00000000000000111123456788889acdfhjmqtvvtr000000000000001112345678998889bcegkotxzzwu00000000000000111245789aaa9889acegkpvBDCzw0000000000000011134679abbba99abcehlqxDGFBx0000000000000001124679aabbbabcdefilrxDFDzw000000000000000112346789aabcdefghilqvzByur00000000000000001123457789bcegghhikosuusnk00000001100000000112345678acfgggghilopolhe000000111000000001112234679ceffeeegikkjfca000000000000000001111223568acddcccdfggec970000000000000000111111234578aaaaabcdddb975000000000000000111111112346789999abbba9754000000000000001111111112345677899aaaa97643000000000000111111111111234567899aaa986543000000000011111111111111234556789aa997643200000000111111111111111123345678999998653200000000111222221111111122345677899a98754300000000112222221111111122345667889aa986430000000011222222111111112234556678abba975400000000111222221111111112334566789bbb975400000000111122111111111112234566789abb9854000000001111111111111111122345566789aa9754000000001111111111001111222345566778888643000000001111100000000112223345555666776543000000001111100000000112233445554444554432000000001111100000000112334455443333333321000000011111100000000112344555443222222211000000011111110000000112455665433222222111000000011121110000000123466766533222221110000000111221110000000123577876533222211110000000111221110000000124678876433222111100000001112221110000001124678875432211111000000001112221110000001124577764322111111000000001111221110000011123566654321111110000000000111111110000011123455543211111110000000000001111111100111123455433211111100000000000000111111110011112344432211111100000000000000001111110000112334332211111000000000000000000111100000011233322111110000000000000000000001000000011233322111100000000"
+      },
+      "89": {
+        "sec": 1002.4,
+        "zones": [
+          0.359,
+          0.419,
+          0.223
+        ],
+        "grid": "000000000000000000000000000000000000000000000000000000111000000000000000000000000000000000000001111100000000000000000000000000000000000011111110000000000000000000000000000000000112222110000000000000000000000000000000111122232211000000000000000000000000000111112233333211000000000111100000000000011111223344444321000000000111110000000000111122233455554321100000001111110000000000112233334566654321100000011111110000000000122333344566664322110011111111110000000000123444444566654322111111222111100000000000223455555566654332222222222221100000000000224566655555544433333333333221100000000000234677766554444444555444333322110000000000345788876544334456777654333222110000000000456789987654334567999864322222110000000000567899998765445789abba75322222110000000000789aaaaaa9876778abcccb853222221100000000009abbbbcccba999aabbcddc96422222110000000000acdddddeedcbbbbbcccddc97432222110000000000bdeffefggfedccccccccdca7532222110000000000cdfgggghhhfedddccccccba8643322111000000000bdfhhhhiihgfeeddcccccba8754432211100000000bdghiiiiihgfffeedcccbba9866543221111000000adgiiiiiihggggffeeddcba9876554322111100000bdgijiihhhggghhhggfedba9876655433221100000behjjihgggggghiiihgfecba876655443321110000cehjihgfffffghiiiihgfdba876555544321111000cehihgfedddefghhhhhgfdb9876555544321111000deghgfddcccdefffffffedb9876555443321111100deggfedcbbbcdddccddddca9776655443321111100efggfdcbaaabbba99abccba8776655443321111000ghhgfdcbaaaaa987789bba98776654433221111000jjjigecbbaaa9876678aaa98766544333221111000mmmkhfecbba987655689aa98765433333211110000ppomkhfecba9876556789a99865433333221110000rrqpmkhfdba9877666789aa9875322333321110000ssrqoljgecba988777789aaa875322333321110000qqrqomjgecbba998877899a9864322233322110000nnooomkhfedccba988788998754222234332110000jklmnmljhggfedcb98778888653222234432110000ghikmnnmlllljhfca9888887643211234443211000dehjmopqrtuusnieb9888887643211234554321100cegjmqsvyDGGCvnhda989987653211235665432110dehknrvAFMRSNDskeb999998753212245676543211efilptyDKRYZTIwmgca9aaa9753222345787654211fhjmptyDKRWYTJyohdaaaaa9754322345788764311hiknqtxBGKPQNFxpjecbbbb9864333345677764321ijlnpruxzCEFDzuojgdcbbba865433334566664321jkmnoprtuuvutspmjhfdccba876544444556655321kmnnnoopqqponmlkjhgfecba976655444556655432mnnnnmnnoonlkjjjiihgfdba877665545555665543nnoomllmoonmkjjjiihhfeba877666555555666655nooomllmopqonmlkjihhfeb9776666555555677877pppomllmprsrqpomkihgfdb9766666655555679998tsrpnllnqsttssqomjhgfdb9765565555555689aaayxvsommoqtttttsqnkigfdb976555554444578abbbGEAvqooprttssssqoligfec986555443344578abbbMJEytqqrssrqqqrqolihfeca97655433334579abbbOLGAvsrssrponooonlihgedba8765433334679abbbLJEzvsssrpmkklmmljigfedca9876543345679aaaaDByvtsrqpmjhhhjjjigfeddcba987554567789aaaarrrqqqpomjgedefggfeddccbba987666678999aabbhiklnnnmkhecbcdeedccbbbbba99876789aaaabbbbacfikmmljgdbaabbcbbaaabbaa9987778abccbbbbb79cgjklkifca99aaaaa9aabbbaa987778abcdccbaa57bfijjjhfca999aa9999abccba9876779acccba9857aehijihfca999aa9889acddcb98766679bbba87646aegiihgeca999aa9888aceeeca87655689a9865446adghhgfeca99aa98778adffeca8765556888654356adfggfedcbaaaa98778adfffda8655556666543257acefffedcbaaa987668adffeca8655555655432168bdeeeedccbaaa987678adeedc97555555554321189bdeeeddcbbaaa987779bceedb8654455554321119acdddddcbbbaaa998889bcddca764445555432110abcddddccbbaaaaa9999abccca97544455554321009abccdcccbbaaaaaaa9aabbbba865444555443210089abcdddccbbbaaaaaaaabbaa98655555554332100779bceeeddccbbbbbbbbbbbaa98765555544332100678adfggfeddcccbbbbbbbbaaa9876665544322100568adghhgfeddcccccccbbaabba987665543321100568begiihgedddcccbbbbaaabcba97766543221100568begiihgedccccbbbaa99abccb98766543221100579bdfhhgfdccccccba9999abccba876654321100068acdeffedcbbbcccba9999abbbba876554321100078abcddccbaaabccdcbaaaaaabba98765432210000679abcbba9999acdeeedcccbaaaa987654321100005579aaa998889acefhhhgfecbaa9987543321100003456899887788acfhjkkkigdb999886543321100002235678887789bdhjmnnmjgda98887654332210000112356777888acfjlnonlifc97666655443321100001124567889abehknnnlifc97555544444332110000112346789abcehkmmkheb86433333344433211000001234679abccegijigda753222222333332211000001124579bcccddeedb96432111112233322110000000123579bcccbbaa9754321111111222211100000000112468abcba98654322111001111221110000000000113479bbb986532222111000111111100000000000012468aba98643211211100001111100000000"
+      },
+      "97": {
+        "sec": 1475.2,
+        "zones": [
+          0.339,
+          0.337,
+          0.324
+        ],
+        "grid": "000000111234454432110000011111111110000000000000112334554432100000111112222111000000000001123345554422100001122222233221100000000011234455654321100011233333444432110000000112344566654321100112345555556553211000001123445667665321100123467777777765321000011234456677765432111124689aa99998864311001122345678888865422112468accccbaaa97532100112345789aaaa98654322468acdeeedcba986421002234578abdddcb976544468acdefffeedba8642110234568acfhihfca8765568acefffggggeca8643210235679bfjmnmieb987779bdeffgghiijheb865321134568adhmrspkfb88889bdfgggghijlmkgda76532134578adioturlfa8789bdeggggghilnomieb98643234579adinrspjd9778abdefffffgiloomjfca9753223579adgloomhc9778abddddddefhknomifcba864223579acfikkifb98789bcccbbccdgjmnmifcba864323578abdfggfdba989aaaaaaabcdfilnmjfcba8643234689bcdeedcbaa99aaa99aabcdfilnmjfcba8643234689abbcccbbaaaaaa999abcdegimnnkgdba86432356899aaaaaaaaaaaa9999acdefhjlnmjgdba86432356899999999aaabaaa99abdefgijllkifdba86432356899988999aabbbaaaaacdfhhijkjigedba75432356889988899aabccbbaabdegiijjjigfdcb975332346788888899abbcccbbbcefhijjjihfedcb975332345778888899aabccccccdegijjjihgedcba9753323456777888889aabccdddefgijjjigfdccba865333345667778888899abcdddefgiiiigfdcbba9864333445666777788889abccdddefghhgfdcbbaa9764334456777777888889abccccddefffedcbaaa98754434567888888899999abbcccccdeedcbbaaaa98765445678999899aaaaaaabbcbbbbcddcbaa9aaaa9865555689aa99aabbccbaabbbbbbbccccba999aaa987766679abbaabbddedcbbbbbaaabcccba9889aaa99888778abbbbccefgggedccbbbabbcccba87789aa99988899bcccdefhjkjigfdccbbbccddcba87789999888889abcdefhjmnnnligfddccccdeddb98778999888777aabcdfhknpqqomkhgfeddddeeedca8778998877665aabdegiloqrqomkihgfeedeeffeca8888998766554bbcdegikmopomkjihggfeeeeffecb9889998765544cddeffghjklkjihhhhgfeeefffedba999988765543fffffffffghhggghhhgfeeeffffecbaa9987765543hhggfedddeffffgghhhgfeeffgfedcbaa987665443iihgfedccdefffghhhhgfeeffggfedcba977665433iihgfedccdefgghiiihgffeffggffedba876665433ggggfedddeffghijjjihhgffffffffdca876665433eefgffeeeffghhijkkjjihgfffffffeca877665432bceffffffgghhijkkkkkjihgggffffeca987765432abdffggghijjjjjjkkkkkjiihggfeedca9887654229bdegghikmnomljjjjkkkjjihhgfedcba9987654229bdfghiknruurnkiiiijjjiihhgfdccbaa98765422acefghilqvzzvplihhhhhhhhhgfedcbbaa98765332cdfghhilrxBBwqlihgggggggggfedcbbaa98654332efghihilqvyxtokiggffffffffedccbbba97644332hhiiihikortsokihgffffffffeedcbbbbb97643333kkkjihikmoomjhgffffffffffeedcbcccba8654333llkjihiklmligeeeefffffffffedcccdddb9765444llkihghjlljgeddeeeeffffgggfeedeefedb976655kjigfffhjjigedddddeefffgghggfffgggeca98766hggedcdfhhgfeddddddeeffghhhgggghhhgecba987eedcaabceffeedddccddeeffghhhgghhihgfdcba98bba9889acddeeddcccdddeeffghhgghhihgfeddba998887789abcddddccccddddeffgggghhhgfeeedcba777766789abcdddccccccccdefgggghhgfeddddcba566666678abcdddccccccccdeffgggggfdcbbbbba9556666678abddedccbcccccdeeffgggfecbaaaa988555666678acdeeedcccccddeeeefgggfdba9999876455566789acdefeedcccddeeeddefggfdcaa998866445566789abdeffeedddeeeeeddefggfecbba98765445567789abcdeffeedeefffeddefggfedcba987555556677889abcdefeeeeffffeedefffeddcba9765466667778899abdeeeefffffffeeefffedccba8754478887888899abcdeeeffeeeefffffffedcba9765439999888899aabcdeefffeedeffggggfedba9875443aaaa98899aabcdefffffedddefggggfecb98765433aaaa9999aabdefgggggfedccdefgggfeca9765543399a9999abcdeghiiiiihfedccdeffgffdb976543327888899acdfgijkkllkjhfdcbcdefgggeca86543226677889bdfhijklmnoonkhecbbcdfhjkjfc9653221445678acfhjjkklnoqrqnjfdbbdfimqsrmga753211334568adhjklkklmorsrpkgdccehmuBFCvld853211233467aeilmlkjjknprrokgeddfjrBMSPEqf842110233457aejmnljiiiknoomjgeddgktFSZWJuh842110234457adillkigfgiklljhfdcdfjrDPWTHtg8421103344568cfhihfddeghihgfdcbbdgmvEKIzod73210033445579ceedbbbdefffedbbaabcglrvupha531100334445679aaa99abdeedcba9999acehjifb7421100334444567887789bdddca99888999abbb975311000233344566776679bcdca9888889998887653211000223344456666679abba987788999887655432110001223344555566789aa987778999987665443211000112334444555667888766778999887655443321100112233334445556666655678888876655444321100111223333344445544444566777765544444321100011122222333444333333344566654433333321100001111112233333322222233445443222222221100000011111223333221111122334332211111111000000000011122332211111112233321111111110000000000001112222211111111222221100000000000000000000112222211111111122211000000000000"
+      }
+    }
+  }
+}
