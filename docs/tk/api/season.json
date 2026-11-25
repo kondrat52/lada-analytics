@@ -28,11 +28,27 @@
    "shifts": 114,
    "toi": 15976,
    "toi_per_game": 1997,
-   "play": 11132,
+   "play": 11305,
    "avg_shift": 140.1,
    "longest_shift": 307,
    "shortest_shift": 20,
    "plus_minus": 9,
+   "role": "D",
+   "role_share": 0.862,
+   "role_games": {
+    "D": 5,
+    "F": 0
+   },
+   "positioning": {
+    "D": {
+     "games": 5,
+     "left": 0.505,
+     "left_sec": 731.5,
+     "inside": 0.555,
+     "inside_sec": 1932.9
+    },
+    "F": null
+   },
    "games": [
     {
      "id": "2026-11-22-vs-h",
@@ -44,7 +60,7 @@
      "toi": 2056,
      "shifts": 17,
      "avg_shift": 120.9,
-     "play": 1458,
+     "play": 1464,
      "plus_minus": 2
     },
     {
@@ -70,7 +86,7 @@
      "toi": 1505,
      "shifts": 13,
      "avg_shift": 115.8,
-     "play": 1032,
+     "play": 1045,
      "plus_minus": 2
     },
     {
@@ -83,7 +99,7 @@
      "toi": 2193,
      "shifts": 15,
      "avg_shift": 146.2,
-     "play": 1501,
+     "play": 1521,
      "plus_minus": 2
     },
     {
@@ -96,7 +112,7 @@
      "toi": 1882,
      "shifts": 15,
      "avg_shift": 125.5,
-     "play": 1208,
+     "play": 1250,
      "plus_minus": 3
     },
     {
@@ -109,7 +125,7 @@
      "toi": 1849,
      "shifts": 12,
      "avg_shift": 154.1,
-     "play": 1399,
+     "play": 1405,
      "plus_minus": -1
     },
     {
@@ -122,7 +138,7 @@
      "toi": 2192,
      "shifts": 14,
      "avg_shift": 156.6,
-     "play": 1529,
+     "play": 1557,
      "plus_minus": 0
     },
     {
@@ -135,7 +151,7 @@
      "toi": 2081,
      "shifts": 13,
      "avg_shift": 160.1,
-     "play": 1519,
+     "play": 1577,
      "plus_minus": 3
     }
    ]
@@ -149,11 +165,15 @@
    "shifts": 18,
    "toi": 1971,
    "toi_per_game": 1971,
-   "play": 1477,
+   "play": 1485,
    "avg_shift": 109.5,
    "longest_shift": 224,
    "shortest_shift": 39,
    "plus_minus": 2,
+   "role": null,
+   "role_share": null,
+   "role_games": null,
+   "positioning": null,
    "games": [
     {
      "id": "2026-10-04-vs-cv",
@@ -165,7 +185,7 @@
      "toi": 1971,
      "shifts": 18,
      "avg_shift": 109.5,
-     "play": 1477,
+     "play": 1485,
      "plus_minus": 2
     }
    ]
@@ -178,11 +198,27 @@
    "shifts": 153,
    "toi": 17375,
    "toi_per_game": 1737.5,
-   "play": 12454,
+   "play": 12539,
    "avg_shift": 113.6,
    "longest_shift": 254,
    "shortest_shift": 22,
    "plus_minus": 8,
+   "role": "D",
+   "role_share": 0.864,
+   "role_games": {
+    "D": 6,
+    "F": 0
+   },
+   "positioning": {
+    "D": {
+     "games": 6,
+     "left": 0.704,
+     "left_sec": 828.5,
+     "inside": 0.496,
+     "inside_sec": 2086.4
+    },
+    "F": null
+   },
    "games": [
     {
      "id": "2026-11-22-vs-h",
@@ -194,7 +230,7 @@
      "toi": 2130,
      "shifts": 16,
      "avg_shift": 133.1,
-     "play": 1444,
+     "play": 1450,
      "plus_minus": 1
     },
     {
@@ -207,7 +243,7 @@
      "toi": 2001,
      "shifts": 17,
      "avg_shift": 117.7,
-     "play": 1437,
+     "play": 1448,
      "plus_minus": -1
     },
     {
@@ -246,7 +282,7 @@
      "toi": 2057,
      "shifts": 18,
      "avg_shift": 114.3,
-     "play": 1387,
+     "play": 1407,
      "plus_minus": 2
     },
     {
@@ -259,7 +295,7 @@
      "toi": 1870,
      "shifts": 18,
      "avg_shift": 103.9,
-     "play": 1272,
+     "play": 1294,
      "plus_minus": 3
     },
     {
@@ -285,7 +321,7 @@
      "toi": 2043,
      "shifts": 17,
      "avg_shift": 120.2,
-     "play": 1633,
+     "play": 1641,
      "plus_minus": 2
     },
     {
@@ -298,7 +334,7 @@
      "toi": 1235,
      "shifts": 11,
      "avg_shift": 112.3,
-     "play": 908,
+     "play": 914,
      "plus_minus": -1
     },
     {
@@ -311,7 +347,7 @@
      "toi": 1921,
      "shifts": 14,
      "avg_shift": 137.2,
-     "play": 1461,
+     "play": 1473,
      "plus_minus": 2
     }
    ]
@@ -324,11 +360,27 @@
    "shifts": 115,
    "toi": 13322,
    "toi_per_game": 1665.2,
-   "play": 9566,
+   "play": 9650,
    "avg_shift": 115.8,
    "longest_shift": 259,
    "shortest_shift": 25,
    "plus_minus": 6,
+   "role": "D",
+   "role_share": 0.839,
+   "role_games": {
+    "D": 4,
+    "F": 0
+   },
+   "positioning": {
+    "D": {
+     "games": 4,
+     "left": 0.414,
+     "left_sec": 705.9,
+     "inside": 0.625,
+     "inside_sec": 1245.6
+    },
+    "F": null
+   },
    "games": [
     {
      "id": "2026-11-15-vs-so",
@@ -340,7 +392,7 @@
      "toi": 1632,
      "shifts": 15,
      "avg_shift": 108.8,
-     "play": 1122,
+     "play": 1146,
      "plus_minus": -2
     },
     {
@@ -353,7 +405,7 @@
      "toi": 1705,
      "shifts": 13,
      "avg_shift": 131.2,
-     "play": 1317,
+     "play": 1319,
      "plus_minus": 1
     },
     {
@@ -366,7 +418,7 @@
      "toi": 1337,
      "shifts": 13,
      "avg_shift": 102.8,
-     "play": 949,
+     "play": 964,
      "plus_minus": 3
     },
     {
@@ -392,7 +444,7 @@
      "toi": 1893,
      "shifts": 16,
      "avg_shift": 118.3,
-     "play": 1260,
+     "play": 1281,
      "plus_minus": 3
     },
     {
@@ -405,7 +457,7 @@
      "toi": 1964,
      "shifts": 17,
      "avg_shift": 115.5,
-     "play": 1447,
+     "play": 1456,
      "plus_minus": 1
     },
     {
@@ -418,7 +470,7 @@
      "toi": 1595,
      "shifts": 13,
      "avg_shift": 122.7,
-     "play": 1093,
+     "play": 1106,
      "plus_minus": 0
     },
     {
@@ -444,11 +496,18 @@
    "shifts": 50,
    "toi": 4862,
    "toi_per_game": 1620.7,
-   "play": 3622,
+   "play": 3626,
    "avg_shift": 97.2,
    "longest_shift": 188,
    "shortest_shift": 20,
    "plus_minus": 0,
+   "role": "D",
+   "role_share": 0.9,
+   "role_games": {
+    "D": 2,
+    "F": 0
+   },
+   "positioning": null,
    "games": [
     {
      "id": "2026-11-22-vs-h",
@@ -486,7 +545,7 @@
      "toi": 1778,
      "shifts": 16,
      "avg_shift": 111.1,
-     "play": 1408,
+     "play": 1412,
      "plus_minus": 0
     }
    ]
@@ -499,11 +558,27 @@
    "shifts": 148,
    "toi": 15686,
    "toi_per_game": 1568.6,
-   "play": 11539,
+   "play": 11639,
    "avg_shift": 106.0,
    "longest_shift": 240,
    "shortest_shift": 30,
    "plus_minus": 3,
+   "role": "D",
+   "role_share": 0.878,
+   "role_games": {
+    "D": 5,
+    "F": 0
+   },
+   "positioning": {
+    "D": {
+     "games": 5,
+     "left": 0.726,
+     "left_sec": 756.2,
+     "inside": 0.484,
+     "inside_sec": 1618.2
+    },
+    "F": null
+   },
    "games": [
     {
      "id": "2026-11-22-vs-h",
@@ -528,7 +603,7 @@
      "toi": 1642,
      "shifts": 15,
      "avg_shift": 109.5,
-     "play": 1096,
+     "play": 1118,
      "plus_minus": -2
     },
     {
@@ -541,7 +616,7 @@
      "toi": 1217,
      "shifts": 13,
      "avg_shift": 93.6,
-     "play": 973,
+     "play": 975,
      "plus_minus": 1
     },
     {
@@ -567,7 +642,7 @@
      "toi": 1629,
      "shifts": 16,
      "avg_shift": 101.8,
-     "play": 1274,
+     "play": 1302,
      "plus_minus": -1
     },
     {
@@ -580,7 +655,7 @@
      "toi": 1897,
      "shifts": 17,
      "avg_shift": 111.6,
-     "play": 1302,
+     "play": 1323,
      "plus_minus": 3
     },
     {
@@ -593,7 +668,7 @@
      "toi": 1663,
      "shifts": 17,
      "avg_shift": 97.8,
-     "play": 1192,
+     "play": 1194,
      "plus_minus": -1
     },
     {
@@ -606,7 +681,7 @@
      "toi": 1553,
      "shifts": 12,
      "avg_shift": 129.4,
-     "play": 1161,
+     "play": 1174,
      "plus_minus": 0
     },
     {
@@ -619,7 +694,7 @@
      "toi": 1619,
      "shifts": 13,
      "avg_shift": 124.5,
-     "play": 1229,
+     "play": 1241,
      "plus_minus": 2
     },
     {
@@ -645,11 +720,18 @@
    "shifts": 111,
    "toi": 13812,
    "toi_per_game": 1534.7,
-   "play": 9894,
+   "play": 9976,
    "avg_shift": 124.4,
    "longest_shift": 289,
    "shortest_shift": 26,
    "plus_minus": 1,
+   "role": "F",
+   "role_share": 0.37,
+   "role_games": {
+    "D": 1,
+    "F": 3
+   },
+   "positioning": null,
    "games": [
     {
      "id": "2026-11-22-vs-h",
@@ -674,7 +756,7 @@
      "toi": 2011,
      "shifts": 16,
      "avg_shift": 125.7,
-     "play": 1486,
+     "play": 1490,
      "plus_minus": -1
     },
     {
@@ -687,7 +769,7 @@
      "toi": 1969,
      "shifts": 13,
      "avg_shift": 151.5,
-     "play": 1478,
+     "play": 1480,
      "plus_minus": 1
     },
     {
@@ -700,7 +782,7 @@
      "toi": 1306,
      "shifts": 12,
      "avg_shift": 108.8,
-     "play": 773,
+     "play": 814,
      "plus_minus": -1
     },
     {
@@ -726,7 +808,7 @@
      "toi": 1768,
      "shifts": 15,
      "avg_shift": 117.9,
-     "play": 1287,
+     "play": 1289,
      "plus_minus": -1
     },
     {
@@ -752,7 +834,7 @@
      "toi": 1464,
      "shifts": 12,
      "avg_shift": 122,
-     "play": 1070,
+     "play": 1103,
      "plus_minus": 1
     },
     {
@@ -784,6 +866,13 @@
    "longest_shift": 237,
    "shortest_shift": 69,
    "plus_minus": 0,
+   "role": "F",
+   "role_share": 0.17,
+   "role_games": {
+    "D": 0,
+    "F": 1
+   },
+   "positioning": null,
    "games": [
     {
      "id": "2026-11-15-vs-so",
@@ -808,11 +897,18 @@
    "shifts": 129,
    "toi": 15328,
    "toi_per_game": 1532.8,
-   "play": 11500,
+   "play": 11555,
    "avg_shift": 118.8,
    "longest_shift": 206,
    "shortest_shift": 25,
    "plus_minus": -5,
+   "role": "F",
+   "role_share": 0.498,
+   "role_games": {
+    "D": 2,
+    "F": 3
+   },
+   "positioning": null,
    "games": [
     {
      "id": "2026-11-15-vs-so",
@@ -824,7 +920,7 @@
      "toi": 1992,
      "shifts": 17,
      "avg_shift": 117.2,
-     "play": 1440,
+     "play": 1449,
      "plus_minus": -1
     },
     {
@@ -850,7 +946,7 @@
      "toi": 1020,
      "shifts": 8,
      "avg_shift": 127.5,
-     "play": 790,
+     "play": 798,
      "plus_minus": 1
     },
     {
@@ -863,7 +959,7 @@
      "toi": 1753,
      "shifts": 16,
      "avg_shift": 109.6,
-     "play": 1163,
+     "play": 1172,
      "plus_minus": 0
     },
     {
@@ -876,7 +972,7 @@
      "toi": 1820,
      "shifts": 15,
      "avg_shift": 121.3,
-     "play": 1386,
+     "play": 1394,
      "plus_minus": -1
     },
     {
@@ -902,7 +998,7 @@
      "toi": 1707,
      "shifts": 14,
      "avg_shift": 121.9,
-     "play": 1403,
+     "play": 1405,
      "plus_minus": -1
     },
     {
@@ -915,7 +1011,7 @@
      "toi": 1184,
      "shifts": 10,
      "avg_shift": 118.4,
-     "play": 926,
+     "play": 932,
      "plus_minus": -2
     },
     {
@@ -928,7 +1024,7 @@
      "toi": 1235,
      "shifts": 10,
      "avg_shift": 123.5,
-     "play": 986,
+     "play": 988,
      "plus_minus": -1
     },
     {
@@ -941,7 +1037,7 @@
      "toi": 1207,
      "shifts": 11,
      "avg_shift": 109.7,
-     "play": 977,
+     "play": 988,
      "plus_minus": 2
     }
    ]
@@ -954,11 +1050,29 @@
    "shifts": 86,
    "toi": 10651,
    "toi_per_game": 1521.6,
-   "play": 7459,
+   "play": 7559,
    "avg_shift": 123.8,
    "longest_shift": 237,
    "shortest_shift": 20,
    "plus_minus": 4,
+   "role": "F",
+   "role_share": 0.168,
+   "role_games": {
+    "D": 0,
+    "F": 4
+   },
+   "positioning": {
+    "D": null,
+    "F": {
+     "games": 4,
+     "depth": 48.0,
+     "depth_sec": 658.2,
+     "high": 0.277,
+     "high_sec": 366.8,
+     "goal_side": 0.472,
+     "goal_side_sec": 63.5
+    }
+   },
    "games": [
     {
      "id": "2026-11-22-vs-h",
@@ -1009,7 +1123,7 @@
      "toi": 1341,
      "shifts": 13,
      "avg_shift": 103.2,
-     "play": 853,
+     "play": 862,
      "plus_minus": 1
     },
     {
@@ -1035,7 +1149,7 @@
      "toi": 2214,
      "shifts": 15,
      "avg_shift": 147.6,
-     "play": 1536,
+     "play": 1569,
      "plus_minus": 1
     },
     {
@@ -1048,7 +1162,7 @@
      "toi": 1881,
      "shifts": 14,
      "avg_shift": 134.4,
-     "play": 1459,
+     "play": 1517,
      "plus_minus": 3
     }
    ]
@@ -1061,11 +1175,29 @@
    "shifts": 134,
    "toi": 16351,
    "toi_per_game": 1486.5,
-   "play": 11490,
+   "play": 11603,
    "avg_shift": 122.0,
    "longest_shift": 250,
    "shortest_shift": 21,
    "plus_minus": 4,
+   "role": "F",
+   "role_share": 0.137,
+   "role_games": {
+    "D": 0,
+    "F": 6
+   },
+   "positioning": {
+    "D": null,
+    "F": {
+     "games": 6,
+     "depth": 53.2,
+     "depth_sec": 1135.1,
+     "high": 0.415,
+     "high_sec": 815.0,
+     "goal_side": 0.208,
+     "goal_side_sec": 154.9
+    }
+   },
    "games": [
     {
      "id": "2026-11-22-vs-h",
@@ -1077,7 +1209,7 @@
      "toi": 1087,
      "shifts": 11,
      "avg_shift": 98.8,
-     "play": 653,
+     "play": 659,
      "plus_minus": 1
     },
     {
@@ -1090,7 +1222,7 @@
      "toi": 1025,
      "shifts": 10,
      "avg_shift": 102.5,
-     "play": 690,
+     "play": 712,
      "plus_minus": -2
     },
     {
@@ -1103,7 +1235,7 @@
      "toi": 1852,
      "shifts": 14,
      "avg_shift": 132.3,
-     "play": 1261,
+     "play": 1263,
      "plus_minus": 0
     },
     {
@@ -1116,7 +1248,7 @@
      "toi": 1126,
      "shifts": 10,
      "avg_shift": 112.6,
-     "play": 880,
+     "play": 888,
      "plus_minus": 1
     },
     {
@@ -1142,7 +1274,7 @@
      "toi": 2058,
      "shifts": 14,
      "avg_shift": 147,
-     "play": 1503,
+     "play": 1520,
      "plus_minus": 0
     },
     {
@@ -1155,7 +1287,7 @@
      "toi": 1412,
      "shifts": 11,
      "avg_shift": 128.4,
-     "play": 903,
+     "play": 913,
      "plus_minus": 0
     },
     {
@@ -1168,7 +1300,7 @@
      "toi": 1970,
      "shifts": 15,
      "avg_shift": 131.3,
-     "play": 1464,
+     "play": 1466,
      "plus_minus": 0
     },
     {
@@ -1181,7 +1313,7 @@
      "toi": 1398,
      "shifts": 12,
      "avg_shift": 116.5,
-     "play": 957,
+     "play": 970,
      "plus_minus": 1
     },
     {
@@ -1194,7 +1326,7 @@
      "toi": 1992,
      "shifts": 15,
      "avg_shift": 132.8,
-     "play": 1373,
+     "play": 1406,
      "plus_minus": 2
     },
     {
@@ -1220,11 +1352,29 @@
    "shifts": 113,
    "toi": 12877,
    "toi_per_game": 1430.8,
-   "play": 9379,
+   "play": 9460,
    "avg_shift": 114.0,
    "longest_shift": 217,
    "shortest_shift": 32,
    "plus_minus": 6,
+   "role": "F",
+   "role_share": 0.134,
+   "role_games": {
+    "D": 0,
+    "F": 5
+   },
+   "positioning": {
+    "D": null,
+    "F": {
+     "games": 5,
+     "depth": 51.1,
+     "depth_sec": 1212.9,
+     "high": 0.47,
+     "high_sec": 715.4,
+     "goal_side": 0.211,
+     "goal_side_sec": 147.1
+    }
+   },
    "games": [
     {
      "id": "2026-11-22-vs-h",
@@ -1275,7 +1425,7 @@
      "toi": 1167,
      "shifts": 12,
      "avg_shift": 97.2,
-     "play": 822,
+     "play": 833,
      "plus_minus": 2
     },
     {
@@ -1288,7 +1438,7 @@
      "toi": 1666,
      "shifts": 15,
      "avg_shift": 111.1,
-     "play": 1040,
+     "play": 1073,
      "plus_minus": 2
     },
     {
@@ -1301,7 +1451,7 @@
      "toi": 1266,
      "shifts": 12,
      "avg_shift": 105.5,
-     "play": 876,
+     "play": 887,
      "plus_minus": 2
     },
     {
@@ -1314,7 +1464,7 @@
      "toi": 1963,
      "shifts": 15,
      "avg_shift": 130.9,
-     "play": 1497,
+     "play": 1505,
      "plus_minus": 1
     },
     {
@@ -1327,7 +1477,7 @@
      "toi": 1717,
      "shifts": 14,
      "avg_shift": 122.6,
-     "play": 1280,
+     "play": 1287,
      "plus_minus": 0
     },
     {
@@ -1340,7 +1490,7 @@
      "toi": 1098,
      "shifts": 10,
      "avg_shift": 109.8,
-     "play": 840,
+     "play": 851,
      "plus_minus": 1
     }
    ]
@@ -1353,11 +1503,29 @@
    "shifts": 110,
    "toi": 12771,
    "toi_per_game": 1419,
-   "play": 9330,
+   "play": 9513,
    "avg_shift": 116.1,
    "longest_shift": 261,
    "shortest_shift": 23,
    "plus_minus": 14,
+   "role": "F",
+   "role_share": 0.135,
+   "role_games": {
+    "D": 0,
+    "F": 5
+   },
+   "positioning": {
+    "D": null,
+    "F": {
+     "games": 5,
+     "depth": 56.3,
+     "depth_sec": 801.1,
+     "high": 0.33,
+     "high_sec": 764.8,
+     "goal_side": 0.171,
+     "goal_side_sec": 97.0
+    }
+   },
    "games": [
     {
      "id": "2026-11-22-vs-h",
@@ -1369,7 +1537,7 @@
      "toi": 1287,
      "shifts": 9,
      "avg_shift": 143,
-     "play": 1018,
+     "play": 1024,
      "plus_minus": 2
     },
     {
@@ -1382,7 +1550,7 @@
      "toi": 1659,
      "shifts": 13,
      "avg_shift": 127.6,
-     "play": 1184,
+     "play": 1215,
      "plus_minus": -2
     },
     {
@@ -1395,7 +1563,7 @@
      "toi": 1008,
      "shifts": 10,
      "avg_shift": 100.8,
-     "play": 783,
+     "play": 790,
      "plus_minus": 2
     },
     {
@@ -1408,7 +1576,7 @@
      "toi": 1716,
      "shifts": 19,
      "avg_shift": 90.3,
-     "play": 1297,
+     "play": 1308,
      "plus_minus": 2
     },
     {
@@ -1421,7 +1589,7 @@
      "toi": 1757,
      "shifts": 12,
      "avg_shift": 146.4,
-     "play": 1208,
+     "play": 1239,
      "plus_minus": 3
     },
     {
@@ -1434,7 +1602,7 @@
      "toi": 1837,
      "shifts": 15,
      "avg_shift": 122.5,
-     "play": 1359,
+     "play": 1380,
      "plus_minus": 3
     },
     {
@@ -1447,7 +1615,7 @@
      "toi": 1336,
      "shifts": 11,
      "avg_shift": 121.5,
-     "play": 968,
+     "play": 981,
      "plus_minus": 1
     },
     {
@@ -1460,7 +1628,7 @@
      "toi": 1120,
      "shifts": 11,
      "avg_shift": 101.8,
-     "play": 802,
+     "play": 807,
      "plus_minus": 1
     },
     {
@@ -1473,7 +1641,7 @@
      "toi": 1051,
      "shifts": 10,
      "avg_shift": 105.1,
-     "play": 711,
+     "play": 769,
      "plus_minus": 2
     }
    ]
@@ -1486,11 +1654,29 @@
    "shifts": 87,
    "toi": 11061,
    "toi_per_game": 1382.6,
-   "play": 8020,
+   "play": 8055,
    "avg_shift": 127.1,
    "longest_shift": 251,
    "shortest_shift": 36,
    "plus_minus": 1,
+   "role": "F",
+   "role_share": 0.199,
+   "role_games": {
+    "D": 0,
+    "F": 4
+   },
+   "positioning": {
+    "D": null,
+    "F": {
+     "games": 4,
+     "depth": 46.8,
+     "depth_sec": 588.0,
+     "high": 0.44,
+     "high_sec": 454.1,
+     "goal_side": 0.413,
+     "goal_side_sec": 64.6
+    }
+   },
    "games": [
     {
      "id": "2026-11-22-vs-h",
@@ -1515,7 +1701,7 @@
      "toi": 1811,
      "shifts": 13,
      "avg_shift": 139.3,
-     "play": 1272,
+     "play": 1274,
      "plus_minus": -1
     },
     {
@@ -1580,7 +1766,7 @@
      "toi": 1432,
      "shifts": 11,
      "avg_shift": 130.2,
-     "play": 1035,
+     "play": 1068,
      "plus_minus": 2
     },
     {
@@ -1606,11 +1792,18 @@
    "shifts": 77,
    "toi": 8206,
    "toi_per_game": 1367.7,
-   "play": 5767,
+   "play": 5810,
    "avg_shift": 106.6,
    "longest_shift": 261,
    "shortest_shift": 25,
    "plus_minus": -2,
+   "role": "F",
+   "role_share": 0.253,
+   "role_games": {
+    "D": 0,
+    "F": 3
+   },
+   "positioning": null,
    "games": [
     {
      "id": "2026-11-22-vs-h",
@@ -1622,7 +1815,7 @@
      "toi": 1420,
      "shifts": 12,
      "avg_shift": 118.3,
-     "play": 987,
+     "play": 993,
      "plus_minus": 1
     },
     {
@@ -1635,7 +1828,7 @@
      "toi": 1490,
      "shifts": 17,
      "avg_shift": 87.6,
-     "play": 955,
+     "play": 984,
      "plus_minus": -2
     },
     {
@@ -1648,7 +1841,7 @@
      "toi": 1335,
      "shifts": 12,
      "avg_shift": 111.2,
-     "play": 927,
+     "play": 929,
      "plus_minus": 0
     },
     {
@@ -1661,7 +1854,7 @@
      "toi": 1148,
      "shifts": 13,
      "avg_shift": 88.3,
-     "play": 827,
+     "play": 833,
      "plus_minus": -1
     },
     {
@@ -1700,11 +1893,29 @@
    "shifts": 98,
    "toi": 10698,
    "toi_per_game": 1337.2,
-   "play": 7819,
+   "play": 7848,
    "avg_shift": 109.2,
    "longest_shift": 238,
    "shortest_shift": 38,
    "plus_minus": 8,
+   "role": "F",
+   "role_share": 0.254,
+   "role_games": {
+    "D": 0,
+    "F": 5
+   },
+   "positioning": {
+    "D": null,
+    "F": {
+     "games": 5,
+     "depth": 48.8,
+     "depth_sec": 687.0,
+     "high": 0.5,
+     "high_sec": 787.9,
+     "goal_side": 0.504,
+     "goal_side_sec": 120.9
+    }
+   },
    "games": [
     {
      "id": "2026-11-22-vs-h",
@@ -1729,7 +1940,7 @@
      "toi": 1210,
      "shifts": 12,
      "avg_shift": 100.8,
-     "play": 760,
+     "play": 762,
      "plus_minus": 1
     },
     {
@@ -1755,7 +1966,7 @@
      "toi": 1327,
      "shifts": 13,
      "avg_shift": 102.1,
-     "play": 1024,
+     "play": 1027,
      "plus_minus": 0
     },
     {
@@ -1768,7 +1979,7 @@
      "toi": 1175,
      "shifts": 11,
      "avg_shift": 106.8,
-     "play": 921,
+     "play": 930,
      "plus_minus": 3
     },
     {
@@ -1781,7 +1992,7 @@
      "toi": 1431,
      "shifts": 12,
      "avg_shift": 119.2,
-     "play": 1028,
+     "play": 1035,
      "plus_minus": 1
     },
     {
@@ -1794,7 +2005,7 @@
      "toi": 1799,
      "shifts": 16,
      "avg_shift": 112.4,
-     "play": 1407,
+     "play": 1415,
      "plus_minus": 2
     },
     {
@@ -1820,11 +2031,18 @@
    "shifts": 69,
    "toi": 8001,
    "toi_per_game": 1333.5,
-   "play": 5723,
+   "play": 5803,
    "avg_shift": 116.0,
    "longest_shift": 218,
    "shortest_shift": 23,
    "plus_minus": 1,
+   "role": "F",
+   "role_share": 0.153,
+   "role_games": {
+    "D": 0,
+    "F": 3
+   },
+   "positioning": null,
    "games": [
     {
      "id": "2026-11-01-vs-cv",
@@ -1836,7 +2054,7 @@
      "toi": 1339,
      "shifts": 11,
      "avg_shift": 121.7,
-     "play": 939,
+     "play": 946,
      "plus_minus": 2
     },
     {
@@ -1849,7 +2067,7 @@
      "toi": 1155,
      "shifts": 13,
      "avg_shift": 88.8,
-     "play": 766,
+     "play": 775,
      "plus_minus": 0
     },
     {
@@ -1862,7 +2080,7 @@
      "toi": 1658,
      "shifts": 13,
      "avg_shift": 127.5,
-     "play": 1172,
+     "play": 1183,
      "plus_minus": -1
     },
     {
@@ -1888,7 +2106,7 @@
      "toi": 1264,
      "shifts": 13,
      "avg_shift": 97.2,
-     "play": 942,
+     "play": 948,
      "plus_minus": -2
     },
     {
@@ -1901,7 +2119,7 @@
      "toi": 1239,
      "shifts": 11,
      "avg_shift": 112.6,
-     "play": 911,
+     "play": 958,
      "plus_minus": 1
     }
    ]
@@ -1915,11 +2133,18 @@
    "shifts": 10,
    "toi": 1269,
    "toi_per_game": 1269,
-   "play": 915,
+   "play": 926,
    "avg_shift": 126.9,
    "longest_shift": 271,
    "shortest_shift": 75,
    "plus_minus": -1,
+   "role": "F",
+   "role_share": 0.198,
+   "role_games": {
+    "D": 0,
+    "F": 1
+   },
+   "positioning": null,
    "games": [
     {
      "id": "2026-11-15-vs-so",
@@ -1931,7 +2156,7 @@
      "toi": 1269,
      "shifts": 10,
      "avg_shift": 126.9,
-     "play": 915,
+     "play": 926,
      "plus_minus": -1
     }
    ]
@@ -1944,11 +2169,29 @@
    "shifts": 107,
    "toi": 9957,
    "toi_per_game": 1106.3,
-   "play": 7025,
+   "play": 7129,
    "avg_shift": 93.1,
    "longest_shift": 162,
    "shortest_shift": 20,
    "plus_minus": 7,
+   "role": "F",
+   "role_share": 0.193,
+   "role_games": {
+    "D": 0,
+    "F": 5
+   },
+   "positioning": {
+    "D": null,
+    "F": {
+     "games": 5,
+     "depth": 48.4,
+     "depth_sec": 575.4,
+     "high": 0.314,
+     "high_sec": 414.4,
+     "goal_side": 0.277,
+     "goal_side_sec": 65.8
+    }
+   },
    "games": [
     {
      "id": "2026-11-22-vs-h",
@@ -1986,7 +2229,7 @@
      "toi": 970,
      "shifts": 12,
      "avg_shift": 80.8,
-     "play": 763,
+     "play": 778,
      "plus_minus": 3
     },
     {
@@ -1999,7 +2242,7 @@
      "toi": 1079,
      "shifts": 13,
      "avg_shift": 83,
-     "play": 768,
+     "play": 776,
      "plus_minus": 1
     },
     {
@@ -2025,7 +2268,7 @@
      "toi": 1220,
      "shifts": 13,
      "avg_shift": 93.8,
-     "play": 783,
+     "play": 797,
      "plus_minus": 1
     },
     {
@@ -2038,7 +2281,7 @@
      "toi": 1243,
      "shifts": 11,
      "avg_shift": 113,
-     "play": 919,
+     "play": 932,
      "plus_minus": 0
     },
     {
@@ -2051,7 +2294,7 @@
      "toi": 930,
      "shifts": 10,
      "avg_shift": 93,
-     "play": 664,
+     "play": 671,
      "plus_minus": 1
     },
     {
@@ -2064,7 +2307,7 @@
      "toi": 1141,
      "shifts": 11,
      "avg_shift": 103.7,
-     "play": 747,
+     "play": 794,
      "plus_minus": 1
     }
    ]

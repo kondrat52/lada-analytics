@@ -16,7 +16,7 @@ template in `pipeline/*_prompt.md`: edit the template, never a generated brief. 
 | `references/review.md` | reviewers and gap checkers: relaunches, re-checks, `review_zfix.txt`, what went wrong before |
 | `references/highlights.md` | penalty-kill exceptions, `highlights.json`, clip situations and their flags |
 | `references/lada.md` | LADA's API, SportNinja game sheets, player ids, `roster.json`, a game between two LADA teams |
-| `references/ice.md` | the ice maps publish adds; calibrating a camera that has none |
+| `references/ice.md` | the ice maps, time in offence and defence, roles and positioning publish adds; calibrating a camera that has none |
 | `RUNBOOK.md` (repo root) | the same pipeline step by step, for running pieces by hand |
 
 Teams: `tk` LADA Turbo Kings (LADA team 24), `bw` Blue Wings (10), `bt` Beerteam (5), `df` Doofers (17), `y` LADA Y
@@ -127,6 +127,11 @@ skips the downloads afterwards.
 ```sh
 ~/.venvs/hockey/Scripts/python.exe pipeline/run_game.py download "<url>" ~/hockey-work/<folder> --cookies firefox
 ```
+
+With the cookies the download can still fail on `n challenge solving failed` and `Only images are available`: yt-dlp
+is older than YouTube's player (on Nov 24 the Oct 26 build was). Update it, `uv pip install --python
+~/.venvs/hockey/Scripts/python.exe -U "yt-dlp[default]"`, and have the user run the same line again; the update alone
+doesn't get past the bot check.
 
 ## 2. Periods and nets, then the goal and penalty checkers
 
@@ -341,13 +346,19 @@ $PY pipeline/run_game.py publish $W <YYYY-MM-DD>-vs-<opp> --opponent <OPP> --not
 ```
 
 It writes `teams/<slug>/games/<id>/game.json` and `shifts.csv` (play time, stoppages, highlights, the sheet's score
-and shots, time in offence and defence, and the ice maps where the camera is calibrated, every rink so far:
-`references/ice.md`), finds the LADA id, builds the page's header line (the time from the video's title, else LADA's
+and shots, time in offence and defence, and where the camera is calibrated, every rink so far, the ice maps and each
+skater's role and positioning parts: `references/ice.md`), finds the LADA id, builds the page's header line (the time from the video's title, else LADA's
 schedule; the rink from LADA's schedule, the title or the sheet; it prints where they differ; `--eyebrow` overrides),
 adds a new opponent to `opponents.json` in LADA's spelling (the user's spelling wins: change it there, then
 `build_site.py`), rebuilds every site and the feed, prints the player table, the fun stats and `The page:
 file:///...`, and opens the page on a game's first publish (`--open` on a republish, `--no-open` never). Show the
 user the table and the notable stats.
+
+A goal inside an estimated stoppage moves that stoppage's start to just after the goal (`stoppages.after_goals`):
+publish does it from the highlights' goals, so fix a goal's time in `highlights.json` and publish again rather than
+editing play time by hand. The player table's D or F after a name is the skater's role that game (`references/ice.md`).
+Skaters do switch (Y's #12, a defenseman in 6 games, played forward on Oct 26), so a surprise is worth a question to
+the user, not a fix; no tag on most of the team means the positions are missing (no calibration, few labels).
 
 `$W/notes.txt` holds the notes, a blank line between them: the rink if new, who sat and when, the subs and absent
 players, where the goal times came from, anything decided by hand, and what the sheet credits that the video shows

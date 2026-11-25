@@ -22,6 +22,40 @@ Read the zone shares once per game: defencemen at 45–60% in our zone and cente
 held on the first two calibrated games. A map with a hot spot in their crease, or everyone's share far off what the play
 looked like, means a bad label or a calibration that no longer fits (a camera moved or re-aimed).
 
+## Where the play is, roles and positioning
+
+The calibration also gives where the play is each second (`zones.play_position`: the median position in feet of
+everyone detected on the ice, 6 or more, our net at V = -89), and publish makes three things from it:
+
+- `zones` in `game.json`, time in offence and defence for the trends page: live play with the play past their blue
+  line (V > 25) or behind ours (V < -25), `"basis": "ft"`. A rink without a calibration falls back to the picture's
+  thirds (`"px"`), which count 4 to 8 points more time in both ends; the trends page draws those games as rings and
+  leaves them out of its tiles. Six early games (TK's five to Oct 10, Blue Wings' Sep 13) have no work folder left
+  and stay `"px"` (TK's Sep 13 has no zones at all).
+- each skater's role that game, `positions.players[n].role` (`pipeline/positioning.py`): over live play outside
+  our penalty kills (our power plays included: the opponents' penalties are timed only in games published from Nov
+  23) with 4+ of ours labeled, the share of frames in which he was one of our two deepest; D at 0.6+, F at 0.4 and
+  under, null in between or under 10 s. The game page tags D or F after the name.
+- the parts of the season positioning numbers, in seconds, which no game page shows (a single game's don't repeat):
+  a D's `left` ([seconds on the left, seconds] with the play in our end, once with our net at the picture's left and
+  once at its right) and `inside` (inside their blue line with the play in their end); an F's `depth` ([median V,
+  seconds] in our end), `high` (our highest forward in their end, 2+ forwards labeled) and `goal_side` (on rushes
+  against). The trends page's Positioning tables show the average of his games in a role (each game's value from
+  its parts, counting once), for a skater with 4+ games in it.
+
+To redo them for one game, or for every published game that still has its work folder (and, for every game, the
+stoppages moved after the goals, which needs no work folder), without republishing:
+
+```sh
+$PY pipeline/positioning.py $W teams/<slug>/games/<id>/game.json   # prints each skater's role and game values, writes "positions"
+$PY pipeline/backfill.py [--team <slug>] [--only <id>] [--dry-run]  # every published game, then build_site.py
+```
+
+`positioning.py` alone doesn't move the stoppages or rewrite `zones`; `backfill.py` does all of it, one game at a
+time (each loads its 80 MB `dets.csv`, about 7 s). Both start the goal correction from the motion estimate,
+`game.json`'s `stoppages_raw` (backfill takes the work folder's `stoppages.json` where there is one). A game whose work folder is
+missing a file is reported and left as it was; the rest go on and the sites are still rebuilt.
+
 ## Calibrated rinks
 
 | Rink (`rink.py`) | Model | Fitted on | Fit |

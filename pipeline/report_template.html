@@ -61,6 +61,7 @@ td { font: 500 16px/1.2 var(--data); }
 td.num { font: 800 20px/1 var(--display); color: var(--team); width: 3.2em; }
 td.name { font: 500 16px/1.2 var(--body); }
 span.sub { font: 600 11px/1 var(--data); letter-spacing: .1em; text-transform: uppercase; color: var(--muted); margin-left: 6px; }
+span.sub.role { cursor: help; }
 td.per { color: var(--muted); }
 td .bar-in { display: inline-block; height: 8px; background: var(--team); border-radius: 2px; vertical-align: middle; margin-left: 8px; }
 tr.sel td { background: var(--team-soft); }
@@ -265,6 +266,9 @@ const maxToi = Math.max(...DATA.players.map(p => p.toi));
 const hasPlay = DATA.players.some(p => p.play != null);
 const t_ = s => (s == null ? "–" : fmt(s));
 const signed = x => (x > 0 ? "+" : x < 0 ? "−" : "±") + Math.abs(x);
+// D or F: where he played this game, from the tracking (game.json's positions); no tag where it was unclear
+const ROLE = { D: "Defence", F: "Forward" };
+const roleTag = p => p.role ? `<span class="sub role" title="${ROLE[p.role]} this game: one of our two deepest skaters ${Math.round(p.role_share * 100)}% of the time">${p.role}</span>` : "";
 const COLS = {
   game: [
     { k: "shifts", l: "Shifts", f: p => p.shifts },
@@ -307,7 +311,7 @@ function renderTable() {
     return (typeof x === "string" ? x.localeCompare(y) : x - y) * sortDir;
   });
   rowsEl.innerHTML = rows.map(p => `<tr data-n="${p.num}" class="${selected === p.num ? "sel" : ""}">
-    <td class="l num">${p.num}</td><td class="l name">${p.name || "<span style='color:var(--muted)'>(name?)</span>"}${p.sub ? "<span class='sub'>sub</span>" : ""}</td>` +
+    <td class="l num">${p.num}</td><td class="l name">${p.name || "<span style='color:var(--muted)'>(name?)</span>"}${p.sub ? "<span class='sub'>sub</span>" : ""}${roleTag(p)}</td>` +
     COLS[view].map(c => `<td class="${c.first ? "gs" : ""}">${c.f(p)}</td>`).join("") + "</tr>").join("");
   tbl.querySelectorAll("th[data-k]").forEach(th => th.setAttribute("aria-sort", th.dataset.k === sortKey ? (sortDir < 0 ? "descending" : "ascending") : "none"));
 }

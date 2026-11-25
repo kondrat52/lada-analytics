@@ -21,7 +21,7 @@ Game analytics for LADA's rec hockey teams: scores, shifts, ice time and average
 | `teams/<slug>/roster.json` | Jersey number → surname, LADA player ids, team name, LADA team id and where its site goes. Add new players here. |
 | `teams/<slug>/opponents.json` | Opponent code → full name. |
 | `teams/<slug>/lada_games.json` | The team's games as LADA's API has shown them (ids, home/away, rink, lines, scores); the pipeline keeps it current and takes each game's LADA id from it. |
-| `pipeline/` | The scripts that turn a game video into `shifts.csv`, and `build_site.py`, which renders `docs/`. They work on one team at a time, picked by `TEAM` (`tk` unless set). `regress.py` re-solves every archived game and diffs the published sheets, for checking a pipeline change. |
+| `pipeline/` | The scripts that turn a game video into `shifts.csv`, and `build_site.py`, which renders `docs/`. They work on one team at a time, picked by `TEAM` (`tk` unless set). `regress.py` re-solves every archived game and diffs the published sheets, for checking a pipeline change; `backfill.py` brings every published game up to what publish now writes (stoppages after goals, time in offence and defence, roles and positioning) from its archived work folder, and rebuilds the sites. |
 | `RUNBOOK.md` | The manual steps behind the skill, for debugging or running by hand. |
 | `WINDOWS.md`, `setup_windows.ps1` | Setting up a Windows PC with an NVIDIA GPU to run the pipeline (one command). |
 | `.claude/skills/process-game/` | The Claude Code skill for the weekly run. |
@@ -106,7 +106,24 @@ python pipeline/build_site.py
 5. Clean up: gaps under 15 s are merged, and hops under 20 s don't count as shifts.
 6. Estimate stoppages from player motion (a still faceoff setup, then the puck-drop burst) for live play time.
 7. Find goals and penalties from the game sheet and the board's period clock, pin each down by eye, and cut zoomed
-   highlight clips with a virtual camera that follows the play or a chosen player.
+   highlight clips with a virtual camera that follows the play or a chosen player. A goal inside an estimated
+   stoppage moves that stoppage's start to just after the goal: the players slow down before the whistle, so the
+   motion estimate starts it too early (209 of 304 goals on the 49 archived games fell inside one, a median 7 s after
+   its start).
+8. Map every detection onto the ice in feet through the rink's camera calibration (`pipeline/rinkcam.py`). Where the
+   play is each second is the median position of everyone detected on the ice (6 or more): time in offence is live
+   play with it past their blue line, time in defence behind ours (`pipeline/zones.py`). A rink without a calibration
+   falls back to thirds of the camera picture, which reach past the blue lines and count 4 to 8 points more time in
+   both ends; the trends page draws those games as rings.
+9. Each skater's role in a game, from his tracked positions (`pipeline/positioning.py`): over live play outside our
+   penalty kills (our power plays included) with 4 or more of ours tracked, the share of the time he was one of our
+   two deepest. D at 0.6 and up, F at 0.4 and under, no role in between. The game page tags it.
+10. Positioning, season numbers only (a single game doesn't repeat well enough): for defensemen the share of their
+    time on the left side with the play in our end (worked out for each end of the camera picture and averaged, since
+    the camera puts a skater on one side more at one end) and inside their blue line with the play in their end; for
+    forwards their depth with the play in our end, the share as our highest forward in their end, and goal side of
+    the play on rushes against. Each game keeps the seconds they rest on; the trends page shows the average of his
+    games in a role, for a skater with 4 or more games in it.
 
 Ice time is real elapsed time on the ice, including stoppages; live play time comes from the stoppage estimate.
 
@@ -336,3 +353,67 @@ logs that line).
     the by-eye briefs for such a player (`pipeline/trace_prompt.md`, parts of at most 600 s) and `trace --apply` adds
     his shifts as `on` spans: the seven Nov 14 tracer answers give the same 15 shifts (2,026 s) and the published
     solve.
+21. **Skating pace and distance per skater: measured Nov 24, tabled (the user's call).** From the ice maps'
+    positions (`ice.positions`, feet on the ice), smoothed over about a second, live play only, on the six archived
+    TK games: a skater's rank within the team repeats from game to game for the median pace (correlation 0.84) and
+    the distance per minute (0.73), and #12's median came out 9.8 to 10.3 ft/s on four cameras (`renton2`,
+    `snoqualmie2`, `snoqualmie`, `renton2nov`). Top speed does not: the 99th percentile ran 23 to 90 ft/s (0.06),
+    track switches and box jumps reading as bursts, so no top speed, bursts or acceleration before those are
+    cleaned out. Speed was usable on 55 to 69% of #12's ice time (labeled track in runs of 2+ s). No drop in pace
+    late in a shift showed, for him or pooled. Before any figure in feet or mph is published: hand-time skates
+    between the blue lines (50 ft) on each camera and compare, and compare within a role (defensemen with
+    defensemen). Not wanted (the user, Nov 24): usage splits (5 on 5, kill and power-play minutes, how a shift
+    starts). Measured the same day and too noisy per game: where the play is with a skater on the ice against
+    off it (game-to-game correlation about 0; #12 pooled -0.04, 95% -0.14 to +0.06 over 68 shifts).
+22. **What repeats from game to game: measured Nov 24, the reliable part made Nov 24.** The owner's rule is that
+    nothing unreliable gets published, so a pass over the 49 archived games measured which candidate numbers repeat
+    (a skater's game against his other games, split halves, a season mean's reliability) and which the camera or
+    the tracking bends. Made, in publish and for every published game with `backfill.py`:
+    - *Stoppages after goals.* 209 of the 304 goals fell inside an estimated stoppage, a median 7 s after its start:
+      the players slow down before the whistle. A goal inside one now moves its start to just after the goal
+      (`stoppages.after_goals`). On the 55 published games 224 stoppages moved; live play grew in 52 games, a median
+      41 s (0 to 153), and 1,146 shifts' `play` changed; nothing else in any `shifts.csv` did. It is exact without a
+      work folder (`play` comes out identical from `game.json` and `shifts.csv`), so the six early games got it too.
+      `regress.py` before the change and after the backfill: 47 of 49 archived games identical both times (the same
+      two Blue Wings games differ), and the re-solved sheets differ only in `play`, on 46 games. `game.json` keeps
+      the motion estimate as `stoppages_raw` (the six early games' from their files before the change) and the
+      correction always starts from it, so a goal's time changed later can move a start back. Its costs: a stoppage
+      moves to after its latest goal, so with two goals inside one the whistle and faceoff between them count as live
+      (once: Blue Wings' Oct 25, goals at 1537 and 1580 inside [1535, 1613)); and 26 of the 224 moves are 30 s or
+      longer, which may be a missed faceoff rather than a slow whistle, so live play stays an upper bound.
+    - *Time in offence and defence in feet.* The picture's thirds put the blue lines at 0.25-0.29 and 0.71-0.75 of the
+      span between the nets, not at thirds, so they counted time in both ends 4 to 8 points too high. Now the play's
+      median position in feet: on the 49 games, offence 36.6% to 30.8% and defence 37.8% to 32.1% on average (the
+      moved stoppages included). By team, offence/defence before and after: Turbo Kings 40.1/36.1 to 33.7/30.1 (6
+      games), Beerteam 36.0/37.4 to 30.6/31.5, Blue Wings 34.9/38.4 to 28.5/31.5 (8), Doofers 37.2/35.1 to 31.1/29.9,
+      R 34.8/42.1 to 29.7/35.8, Y 37.5/37.0 to 31.9/32.9. Five games without a work folder stay on the picture
+      (Turbo Kings' Sep 20 to Oct 10, Blue Wings' Sep 13; TK's Sep 13 has no zones), drawn as rings and left out of
+      the trends page's tiles.
+    - *Role per game* (share among our two deepest, D at 0.6+, F at 0.4 and under): a game against the skater's
+      other games correlates 0.90; 44 of 561 player-games are in between or against his usual role.
+    - *Positioning, season numbers only.* A single game's values correlate 0.43-0.57 with the same skater's other
+      games, too little to show; a 4-6 game mean's reliability is 0.66-0.81: a D's share on the left side with the
+      play in our end (0.81), worked out for each end of the picture and averaged, since with our net at the
+      picture's left the camera puts a skater left 0.15 more often than at its right (+-0.075 on the raw share); a
+      D's share inside their blue line with the play in their end (0.66); a forward's depth with the play in our end
+      (0.78), share as our highest forward in their end (0.73) and goal side on rushes against (0.74). The trends
+      page shows the plain mean of a skater's game values in a role, for 4+ games, each game counting once (a game
+      needs 10 s of the moment, 5 s for rushes and for each end's left share; a D game with 5 s at only one end of
+      the picture uses that end alone, 6 of 194): on the 27 defensemen with 4+ games, random split halves over games correlate
+      0.79 (left) and 0.53 (inside) so, against 0.76 and 0.47 with the seconds pooled across games, and the
+      reliabilities above were measured on it. #12 comes out at left 0.726 and inside 0.484 on Turbo Kings (5 games),
+      0.710 and 0.454 on Y (6 games as a D).
+    - *Power plays are in.* The role and positioning use live play outside our penalty kills (and the pulled-goalie
+      and penalty-shot spans), not 5 on 5: the opponents' penalties are timed only in games published from Nov 23,
+      so our power plays could be left out of a few games only. On Turbo Kings' Nov 22 (5 opponents' penalties,
+      about 19% of the positioning frames) leaving them out moved single-game values by up to 0.07 (a D's inside
+      share) and 0.14 (a forward's goal side).
+
+    Measured and not built: a D's share in front of our net (his track drops out there: 0.93 gap seconds per labeled
+    second at the net-front spot, 0.41 elsewhere, and 45% of the last frames before a gap are there against 31% of
+    all), the cushion on rushes (reliability 0.58, and it moves with the rink), D pairs (only 3 pairs had 3+ games of
+    20 s together, and their spacing didn't repeat), and anything about changes on the fly, a shift's age, staying
+    on through a whistle or rest. One team-level finding, not built: when two or more of ours change together with
+    the play in our end, the next 20 s have 15 points more time in our end than matched moments without a change
+    (132 events; game bootstrap +8 to +22 points; goals against in the next 30 s no different). It is an
+    association only: a change may follow the pressure rather than cause it.

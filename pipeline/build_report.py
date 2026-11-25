@@ -17,10 +17,13 @@ def scoreline(sc):
 def player_rows(A, labels, cut=None, game={}):
     """cut: video time where the recording stops mid-play; shifts ending there don't count as shortest. game: its
     "guests" name a sub who wore a roster player's number, its "highlights" the goals for plus_minus (goals for minus
-    goals against while on the ice, from the goals on video, as on the trends page)."""
+    goals against while on the ice, from the goals on video, as on the trends page), its "positions" each skater's
+    role ("D", "F" or None) and the share it came from."""
     goals = [h for h in game.get("highlights", []) if h["type"] == "goal"]
+    pos = (game.get("positions") or {}).get("players") or {}   # each skater's role this game (positioning.py)
     players = []
     for num, g in A.groupby("player"):
+        e = pos.get(str(int(num))) or {}
         full = g[g.t1 < cut - 1] if cut else g
         per = []
         for lab in labels:
@@ -33,7 +36,8 @@ def player_rows(A, labels, cut=None, game={}):
                             shortest=float(full.dur.min()) if len(full) else None,
                             play=float(g.play.sum()) if "play" in g else None, per=per,
                             plus_minus=sum((1 if h["team"] == "for" else -1) for h in goals
-                                           if ((g.t0 <= h["t"]) & (h["t"] < g.t1)).any())))
+                                           if ((g.t0 <= h["t"]) & (h["t"] < g.t1)).any()),
+                            role=e.get("role"), role_share=e.get("role_share")))
     return players
 
 

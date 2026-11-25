@@ -129,6 +129,124 @@
       1728
     ],
     [
+      1781,
+      1814
+    ],
+    [
+      1863,
+      1892
+    ],
+    [
+      1913,
+      1935
+    ],
+    [
+      2120,
+      2161
+    ],
+    [
+      2187,
+      2231
+    ],
+    [
+      2368,
+      2370
+    ],
+    [
+      2560,
+      2639
+    ],
+    [
+      2723,
+      2783
+    ],
+    [
+      2839,
+      2880
+    ],
+    [
+      3019,
+      3057
+    ],
+    [
+      3177,
+      3203
+    ],
+    [
+      3383,
+      3404
+    ],
+    [
+      3619,
+      3665
+    ]
+  ],
+  "stoppages_raw": [
+    [
+      3,
+      38
+    ],
+    [
+      105,
+      151
+    ],
+    [
+      348,
+      376
+    ],
+    [
+      539,
+      567
+    ],
+    [
+      654,
+      677
+    ],
+    [
+      828,
+      849
+    ],
+    [
+      869,
+      891
+    ],
+    [
+      929,
+      966
+    ],
+    [
+      996,
+      1017
+    ],
+    [
+      1231,
+      1289
+    ],
+    [
+      1289,
+      1306
+    ],
+    [
+      1480,
+      1520
+    ],
+    [
+      1578,
+      1610
+    ],
+    [
+      1610,
+      1631
+    ],
+    [
+      1650,
+      1672
+    ],
+    [
+      1672,
+      1728
+    ],
+    [
       1780,
       1814
     ],
@@ -250,8 +368,9 @@
   },
   "sportninja_id": "IszXR6ddZ7tIZmFl",
   "zones": {
-    "offence": 0.3666,
-    "defence": 0.3764
+    "offence": 0.314,
+    "defence": 0.3187,
+    "basis": "ft"
   },
   "ice": {
     "cell": 2,
@@ -365,6 +484,205 @@
           0.324
         ],
         "grid": "000000111234454432110000011111111110000000000000112334554432100000111112222111000000000001123345554422100001122222233221100000000011234455654321100011233333444432110000000112344566654321100112345555556553211000001123445667665321100123467777777765321000011234456677765432111124689aa99998864311001122345678888865422112468accccbaaa97532100112345789aaaa98654322468acdeeedcba986421002234578abdddcb976544468acdefffeedba8642110234568acfhihfca8765568acefffggggeca8643210235679bfjmnmieb987779bdeffgghiijheb865321134568adhmrspkfb88889bdfgggghijlmkgda76532134578adioturlfa8789bdeggggghilnomieb98643234579adinrspjd9778abdefffffgiloomjfca9753223579adgloomhc9778abddddddefhknomifcba864223579acfikkifb98789bcccbbccdgjmnmifcba864323578abdfggfdba989aaaaaaabcdfilnmjfcba8643234689bcdeedcbaa99aaa99aabcdfilnmjfcba8643234689abbcccbbaaaaaa999abcdegimnnkgdba86432356899aaaaaaaaaaaa9999acdefhjlnmjgdba86432356899999999aaabaaa99abdefgijllkifdba86432356899988999aabbbaaaaacdfhhijkjigedba75432356889988899aabccbbaabdegiijjjigfdcb975332346788888899abbcccbbbcefhijjjihfedcb975332345778888899aabccccccdegijjjihgedcba9753323456777888889aabccdddefgijjjigfdccba865333345667778888899abcdddefgiiiigfdcbba9864333445666777788889abccdddefghhgfdcbbaa9764334456777777888889abccccddefffedcbaaa98754434567888888899999abbcccccdeedcbbaaaa98765445678999899aaaaaaabbcbbbbcddcbaa9aaaa9865555689aa99aabbccbaabbbbbbbccccba999aaa987766679abbaabbddedcbbbbbaaabcccba9889aaa99888778abbbbccefgggedccbbbabbcccba87789aa99988899bcccdefhjkjigfdccbbbccddcba87789999888889abcdefhjmnnnligfddccccdeddb98778999888777aabcdfhknpqqomkhgfeddddeeedca8778998877665aabdegiloqrqomkihgfeedeeffeca8888998766554bbcdegikmopomkjihggfeeeeffecb9889998765544cddeffghjklkjihhhhgfeeefffedba999988765543fffffffffghhggghhhgfeeeffffecbaa9987765543hhggfedddeffffgghhhgfeeffgfedcbaa987665443iihgfedccdefffghhhhgfeeffggfedcba977665433iihgfedccdefgghiiihgffeffggffedba876665433ggggfedddeffghijjjihhgffffffffdca876665433eefgffeeeffghhijkkjjihgfffffffeca877665432bceffffffgghhijkkkkkjihgggffffeca987765432abdffggghijjjjjjkkkkkjiihggfeedca9887654229bdegghikmnomljjjjkkkjjihhgfedcba9987654229bdfghiknruurnkiiiijjjiihhgfdccbaa98765422acefghilqvzzvplihhhhhhhhhgfedcbbaa98765332cdfghhilrxBBwqlihgggggggggfedcbbaa98654332efghihilqvyxtokiggffffffffedccbbba97644332hhiiihikortsokihgffffffffeedcbbbbb97643333kkkjihikmoomjhgffffffffffeedcbcccba8654333llkjihiklmligeeeefffffffffedcccdddb9765444llkihghjlljgeddeeeeffffgggfeedeefedb976655kjigfffhjjigedddddeefffgghggfffgggeca98766hggedcdfhhgfeddddddeeffghhhgggghhhgecba987eedcaabceffeedddccddeeffghhhgghhihgfdcba98bba9889acddeeddcccdddeeffghhgghhihgfeddba998887789abcddddccccddddeffgggghhhgfeeedcba777766789abcdddccccccccdefgggghhgfeddddcba566666678abcdddccccccccdeffgggggfdcbbbbba9556666678abddedccbcccccdeeffgggfecbaaaa988555666678acdeeedcccccddeeeefgggfdba9999876455566789acdefeedcccddeeeddefggfdcaa998866445566789abdeffeedddeeeeeddefggfecbba98765445567789abcdeffeedeefffeddefggfedcba987555556677889abcdefeeeeffffeedefffeddcba9765466667778899abdeeeefffffffeeefffedccba8754478887888899abcdeeeffeeeefffffffedcba9765439999888899aabcdeefffeedeffggggfedba9875443aaaa98899aabcdefffffedddefggggfecb98765433aaaa9999aabdefgggggfedccdefgggfeca9765543399a9999abcdeghiiiiihfedccdeffgffdb976543327888899acdfgijkkllkjhfdcbcdefgggeca86543226677889bdfhijklmnoonkhecbbcdfhjkjfc9653221445678acfhjjkklnoqrqnjfdbbdfimqsrmga753211334568adhjklkklmorsrpkgdccehmuBFCvld853211233467aeilmlkjjknprrokgeddfjrBMSPEqf842110233457aejmnljiiiknoomjgeddgktFSZWJuh842110234457adillkigfgiklljhfdcdfjrDPWTHtg8421103344568cfhihfddeghihgfdcbbdgmvEKIzod73210033445579ceedbbbdefffedbbaabcglrvupha531100334445679aaa99abdeedcba9999acehjifb7421100334444567887789bdddca99888999abbb975311000233344566776679bcdca9888889998887653211000223344456666679abba987788999887655432110001223344555566789aa987778999987665443211000112334444555667888766778999887655443321100112233334445556666655678888876655444321100111223333344445544444566777765544444321100011122222333444333333344566654433333321100001111112233333322222233445443222222221100000011111223333221111122334332211111111000000000011122332211111112233321111111110000000000001112222211111111222221100000000000000000000112222211111111122211000000000000"
+      }
+    }
+  },
+  "positions": {
+    "players": {
+      "12": {
+        "role": "D",
+        "role_share": 0.857,
+        "role_sec": 808.25,
+        "left": [
+          [
+            39.125,
+            53.375
+          ],
+          [
+            157.0,
+            251.0
+          ]
+        ],
+        "inside": [
+          188.5,
+          346.625
+        ]
+      },
+      "14": {
+        "role": "F",
+        "role_share": 0.087,
+        "role_sec": 621.375,
+        "depth": [
+          -33.1,
+          225.25
+        ],
+        "high": [
+          77.25,
+          239.625
+        ],
+        "goal_side": [
+          2.875,
+          29.5
+        ]
+      },
+      "29": {
+        "role": "D",
+        "role_share": 0.909,
+        "role_sec": 762.25,
+        "left": [
+          [
+            20.5,
+            27.125
+          ],
+          [
+            82.875,
+            106.625
+          ]
+        ],
+        "inside": [
+          138.125,
+          401.25
+        ]
+      },
+      "32": {
+        "role": "F",
+        "role_share": 0.112,
+        "role_sec": 480.625,
+        "depth": [
+          -45.5,
+          142.75
+        ],
+        "high": [
+          91.875,
+          185.375
+        ],
+        "goal_side": [
+          8.75,
+          27.0
+        ]
+      },
+      "37": {
+        "role": "F",
+        "role_share": 0.195,
+        "role_sec": 691.25,
+        "depth": [
+          -47.9,
+          330.75
+        ],
+        "high": [
+          108.25,
+          228.875
+        ],
+        "goal_side": [
+          16.875,
+          34.75
+        ]
+      },
+      "49": {
+        "role": "D",
+        "role_share": 0.95,
+        "role_sec": 680.875,
+        "left": [
+          [
+            8.75,
+            20.5
+          ],
+          [
+            21.75,
+            145.75
+          ]
+        ],
+        "inside": [
+          127.125,
+          307.75
+        ]
+      },
+      "70": {
+        "role": "F",
+        "role_share": 0.238,
+        "role_sec": 829.375,
+        "depth": [
+          -46.6,
+          213.0
+        ],
+        "high": [
+          139.25,
+          328.25
+        ],
+        "goal_side": [
+          18.25,
+          36.875
+        ]
+      },
+      "82": {
+        "role": "F",
+        "role_share": 0.128,
+        "role_sec": 626.375,
+        "depth": [
+          -44.6,
+          287.375
+        ],
+        "high": [
+          76.25,
+          202.375
+        ],
+        "goal_side": [
+          9.75,
+          28.75
+        ]
+      },
+      "83": {
+        "role": "D",
+        "role_share": 0.851,
+        "role_sec": 817.625,
+        "left": [
+          [
+            17.125,
+            40.625
+          ],
+          [
+            28.875,
+            119.75
+          ]
+        ],
+        "inside": [
+          174.875,
+          403.875
+        ]
+      },
+      "89": {
+        "role": "F",
+        "role_share": 0.042,
+        "role_sec": 498.375,
+        "depth": [
+          -39.3,
+          220.0
+        ],
+        "high": [
+          46.625,
+          164.5
+        ],
+        "goal_side": [
+          7.875,
+          45.25
+        ]
+      },
+      "97": {
+        "role": "F",
+        "role_share": 0.179,
+        "role_sec": 834.5,
+        "depth": [
+          -50.5,
+          359.375
+        ],
+        "high": [
+          103.875,
+          280.625
+        ],
+        "goal_side": [
+          13.625,
+          62.375
+        ]
       }
     }
   }

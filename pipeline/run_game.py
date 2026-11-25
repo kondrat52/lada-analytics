@@ -4167,12 +4167,9 @@ def lineup_windows(W, min_len=15):
     for r in A.itertuples():   # a shift covers the seconds t with t0 <= t < t1
         cnt[int(np.ceil(r.t0)):min(int(np.ceil(r.t1)), T)] += 1
     live = None
-    if os.path.exists(f"{W}/stoppages.json"):
-        live = np.zeros(T, bool)
-        for P in Ps:
-            live[int(P["start"]):int(P["end"])] = True
-        for a, b in json.load(open(f"{W}/stoppages.json")):
-            live[int(a):int(b)] = False
+    if os.path.exists(f"{W}/stoppages.json"):   # moved after highlights.json's goals, as publish moves them
+        import stoppages
+        live = stoppages.live_mask(Ps, stoppages.corrected(W), T)
     def on(t):
         return sorted(int(p) for p in A[(A.t0 <= t) & (A.t1 > t)].player)
     fix, undone = _undone_spans(W, Ps, A, T)
@@ -5235,7 +5232,8 @@ def print_game(gd):
     print(f"{'#':>3}  {'player':<18}{'shifts':>6}{'ice':>7}" + (f"{'live':>7}" if play else "") +
           f"{'+/-':>5}{'avg':>6}{'median':>7}{'long':>6}{'short':>6}  " + "".join(f"{p['label']:>6}" for p in P))
     for p in players:
-        print(f"{p['num']:>3}  {(p['name'] + (' (sub)' if p['sub'] else '')):<18}{p['shifts']:>6}{fmt(p['toi']):>7}" +
+        print(f"{p['num']:>3}  {(p['name'] + (' (sub)' if p['sub'] else '') + (' ' + p['role'] if p.get('role') else '')):<18}"
+              f"{p['shifts']:>6}{fmt(p['toi']):>7}" +
               (f"{fmt(p['play']):>7}" if play else "") + f"{pm(p['plus_minus']):>5}{fmt(p['avg']):>6}{fmt(p['median']):>7}"
               f"{fmt(p['longest']):>6}{fmt(p['shortest']):>6}  " + "".join(f"{fmt(x[1]) if x else '-':>6}" for x in p["per"]))
     nsh, tot = sum(p["shifts"] for p in players), sum(p["toi"] for p in players)
@@ -5315,7 +5313,7 @@ def cmd_publish(a):
                       reviewed=int(sum(len(pd.read_csv(m)) for m in glob.glob(f"{W}/rev_p*/manifest.csv")))))
     if old:  # keep hand-written fields (notes, title tweaks) from an earlier publish
         for k in ("notes", "title", "eyebrow", "highlights", "video_ends_early", "lada_game_id", "opponent_name", "zones",
-                  "shots", "shots_source", "guests", "ice", "sheet_score", "sportninja_id"):
+                  "shots", "shots_source", "guests", "ice", "positions", "sheet_score", "sportninja_id"):
             if old.get(k):
                 game[k] = old[k]
         if game["pipeline"]["crops"] is None and (old.get("pipeline") or {}).get("crops"):
@@ -5328,8 +5326,12 @@ def cmd_publish(a):
         game["notes"] = notes
     if not game.get("lada_game_id"):  # links the game to the LADA app's schedule and scores
         game["lada_game_id"] = lada_id
-    if os.path.exists(f"{W}/stoppages.json"):
-        game["stoppages"] = json.load(open(f"{W}/stoppages.json"))
+    # the motion estimate, kept as stoppages_raw (the game file's stoppages are moved after the goals below, always
+    # from it, so a goal's time changed since can move a start back); an earlier publish's without stoppages.json
+    raw = json.load(open(f"{W}/stoppages.json")) if os.path.exists(f"{W}/stoppages.json") else old.get("stoppages_raw")
+    if raw is not None:
+        game["stoppages"] = raw
+        game["stoppages_raw"] = raw
     if os.path.exists(f"{W}/highlights.json"):  # [{type, team|player, t, clip, poster, note}] from the clips step
         # without the goal checker's shot, pass and on_ice (HL_WORK): the clips' and the lineup check's, not the page's
         game["highlights"] = [{k: v for k, v in h.items() if k not in HL_WORK}
@@ -5350,10 +5352,25 @@ def cmd_publish(a):
         if sheet_.get("score"):
             game["sheet_score"] = {"for": sheet_["score"][0], "against": sheet_["score"][1]}
             game["sportninja_id"] = sheet_.get("sportninja_id")
-    from zones import zone_shares   # time in offence / defence for the trends page (needs the detections)
-    game["zones"] = zone_shares(f"{W}/full", game) or game.get("zones")
-    from ice import ice_maps   # where each skater was, for the game page's ice maps (rinks with a calibration)
-    game["ice"] = ice_maps(W) or game.get("ice")
+    import stoppages   # a goal inside an estimated stoppage moves its start to just after the goal: the published
+    # stoppages, every shift's play time, time in offence and defence and the positioning numbers use the moved ones
+    if game.get("stoppages_raw"):
+        game["stoppages"] = stoppages.after_goals(game["stoppages_raw"], stoppages.goal_times(game.get("highlights")))
+        A = pd.read_csv(f"{gd}/shifts.csv")
+        A["play"] = stoppages.play_column(A, game["periods"], game["stoppages"])
+        A.to_csv(f"{gd}/shifts.csv", index=False)
+    # where the play was every second, in feet on the ice (rinks with a calibration), from the detections: time in
+    # offence / defence for the trends page (the picture's thirds without a calibration) and the positioning
+    from zones import detections, play_position, zone_shares
+    dets = detections(f"{W}/full")
+    play = play_position(f"{W}/full", game, dets) if dets is not None else None
+    game["zones"] = zone_shares(f"{W}/full", game, play, dets) or game.get("zones")
+    del dets
+    from ice import ice_maps, positions   # where each skater was, for the game page's ice maps (rinks with a calibration)
+    D = positions(W)
+    game["ice"] = ice_maps(W, D) or game.get("ice")
+    from positioning import game_positions   # each skater's role, and the parts of the season positioning numbers
+    game["positions"] = game_positions(W, game, play, D) or game.get("positions")
     json.dump(game, open(gj, "w"), indent=2, ensure_ascii=False)
     # every team, not just $TEAM: the root page counts each team's games, and each team's menu lists the teams with games
     sh(PY, f"{HERE}/build_site.py", env={k: v for k, v in os.environ.items() if k not in ("TEAM", "ROSTER_ABSENT")})

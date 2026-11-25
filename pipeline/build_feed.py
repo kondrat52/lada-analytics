@@ -15,6 +15,7 @@ import numpy as np, pandas as pd
 from roster import MEMBERS, SUBS, GOALIE_NAMES, LADA_IDS, ALIASES, TEAM_NAME, TEAM_SHORT, LADA_TEAM_ID, SITE_URL, OPPONENTS
 from roster import guest_key, number_of, name_of, is_sub, final_score
 from ice import GRID_CHARS
+import positioning
 
 SCHEMA = 1
 
@@ -119,8 +120,8 @@ def game_doc(game, A, players, highlights):
                      "shifts": p["shifts"], "toi": _num(p["toi"]), "play": _num(p.get("play")),
                      "avg_shift": _num(p["avg"]), "median_shift": _num(p["median"]),
                      "longest_shift": _num(p["longest"]), "shortest_shift": _num(p.get("shortest")),
-                     "plus_minus": p["plus_minus"],
-                     "periods": [{"label": lab, "shifts": x[0], "toi": _num(x[1]), "avg_shift": _num(x[2])} if x else
+                     "plus_minus": p["plus_minus"], "role": p.get("role"), "role_share": p.get("role_share"),
+                     "periods":[{"label": lab, "shifts": x[0], "toi": _num(x[1]), "avg_shift": _num(x[2])} if x else
                                  {"label": lab, "shifts": 0, "toi": 0, "avg_shift": None}
                                  for lab, x in zip([q["label"] for q in game["periods"]], p["per"])]}
                     for p in sorted(players, key=lambda p: -p["toi"])],
@@ -153,17 +154,33 @@ def trends_doc(rows):
             "goals_on_video": {"for": t["vgf"], "against": t["vga"]}, "score": _score(game),
             "result": "W" if t["vgf"] > t["vga"] else "L" if t["vgf"] < t["vga"] else "T",   # from the goals on video
             "shots": _shots(game),
-            "zones": {"offence": t["offence"], "defence": t["defence"]} if t["offence"] is not None else None,
+            "zones": {"offence": t["offence"], "defence": t["defence"], "basis": t["zone_basis"]}
+                     if t["offence"] is not None else None,
             "skaters": t["skaters"], "avg_shift": _num(t["avg_shift"]), "play_share": _num(t["live_pct"], 4),
             "penalties": {"count": t["penalties"],
                           "short_handed": _num(sum(k["end"] - k["start"] for k in game.get("penalty_kills", []))),
                           "goals_against": t["pk_ga"]},
             "players": [{**_player(p["key"]), "shifts": p["shifts"], "toi": _num(p["toi"]),
                          "avg_shift": _num(p["avg_shift"]), "toi_share": _num(p["toi_share"], 4),
-                         "avg_shift_p1": _num(p["p1"]), "avg_shift_p3": _num(p["p3"]), "plus_minus": p["plus_minus"]}
+                         "avg_shift_p1": _num(p["p1"]), "avg_shift_p3": _num(p["p3"]), "plus_minus": p["plus_minus"],
+                         "role": p["role"], "role_share": p["role_share"]}
                         for p in sorted(players, key=lambda p: -p["toi"])],
         })
     return {"schema": SCHEMA, "team": _team(), "updated": games[0]["date"] if games else None, "games": games}
+
+
+def season_positions(games):
+    """Season roles and positioning numbers (positioning.season) by player key, a second number's games under the
+    primary one and a guest's under his own, as in season.json."""
+    return positioning.season(games, lambda n, g: ALIASES.get(guest_key(n, g), guest_key(n, g)))
+
+
+def _season_role(s):
+    """season.json's role fields for one player (s: his season_positions entry, or None)."""
+    if not s:
+        return {"role": None, "role_share": None, "role_games": None, "positioning": None}
+    return {"role": s["role"], "role_share": s["role_share"], "role_games": s["games"],
+            "positioning": {"D": s["D"], "F": s["F"]} if s["D"] or s["F"] else None}
 
 
 def _per_game(docs_by_game, games):
@@ -206,12 +223,13 @@ def write_feed(site_dir, games, docs_by_game, season):
     }
     json.dump(index, open(f"{api}/index.json", "w"), ensure_ascii=False, indent=1)
     per_game = _per_game(docs_by_game, games)
+    pos = season_positions(games)
     season_doc = {
         "schema": SCHEMA, "team": _team(), "updated": updated, "games": [g["id"] for g in ordered],
         "players": [{**_player(p), "games_played": int(r.gp), "shifts": int(r.shifts), "toi": _num(r.toi),
                      "toi_per_game": _num(r.toi_gp), "play": _num(r.play) if r.play > 0 else None,
                      "avg_shift": _num(r.avg), "longest_shift": _num(r.longest), "shortest_shift": _num(r.shortest),
-                     "plus_minus": int(r.plus_minus),
+                     "plus_minus": int(r.plus_minus), **_season_role(pos.get(int(p))),
                      "games": per_game.get(int(p), [])}
                     for p, r in season.iterrows()],
     }

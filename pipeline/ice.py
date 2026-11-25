@@ -78,9 +78,10 @@ def ice_map(d):
                 grid="".join(GRID_CHARS[v] for v in q.ravel()))
 
 
-def ice_maps(W):
-    """game.json's "ice": the team's map and each player's, or None (no calibration for the rink, no tracks)."""
-    D = positions(W)
+def ice_maps(W, D=None):
+    """game.json's "ice": the team's map and each player's, or None (no calibration for the rink, no tracks).
+    D: positions(W), when already made (publish makes it once for the maps and positioning.py)."""
+    D = positions(W) if D is None else D
     if D is None or not len(D):
         return None
     team = ice_map(D)

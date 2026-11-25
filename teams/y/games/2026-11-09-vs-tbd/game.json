@@ -108,6 +108,184 @@
       744
     ],
     [
+      909,
+      936
+    ],
+    [
+      1001,
+      1029
+    ],
+    [
+      1199,
+      1201
+    ],
+    [
+      1238,
+      1262
+    ],
+    [
+      1298,
+      1331
+    ],
+    [
+      1350,
+      1382
+    ],
+    [
+      1419,
+      1444
+    ],
+    [
+      1444,
+      1461
+    ],
+    [
+      1461,
+      1482
+    ],
+    [
+      1482,
+      1510
+    ],
+    [
+      1527,
+      1553
+    ],
+    [
+      1568,
+      1594
+    ],
+    [
+      1618,
+      1643
+    ],
+    [
+      1660,
+      1718
+    ],
+    [
+      1861,
+      1906
+    ],
+    [
+      1931,
+      1954
+    ],
+    [
+      1954,
+      1972
+    ],
+    [
+      2132,
+      2147
+    ],
+    [
+      2235,
+      2269
+    ],
+    [
+      2409,
+      2411
+    ],
+    [
+      2480,
+      2524
+    ],
+    [
+      2524,
+      2535
+    ],
+    [
+      2581,
+      2606
+    ],
+    [
+      2609,
+      2647
+    ],
+    [
+      2692,
+      2763
+    ],
+    [
+      2763,
+      2781
+    ],
+    [
+      2794,
+      2858
+    ],
+    [
+      2894,
+      2950
+    ],
+    [
+      3169,
+      3255
+    ],
+    [
+      3448,
+      3474
+    ],
+    [
+      3474,
+      3492
+    ],
+    [
+      3492,
+      3543
+    ],
+    [
+      3585,
+      3624
+    ],
+    [
+      3633,
+      3660
+    ],
+    [
+      4063,
+      4090
+    ]
+  ],
+  "stoppages_raw": [
+    [
+      2,
+      4
+    ],
+    [
+      75,
+      103
+    ],
+    [
+      111,
+      139
+    ],
+    [
+      230,
+      249
+    ],
+    [
+      297,
+      317
+    ],
+    [
+      375,
+      409
+    ],
+    [
+      605,
+      638
+    ],
+    [
+      660,
+      682
+    ],
+    [
+      710,
+      744
+    ],
+    [
       864,
       936
     ],
@@ -363,8 +541,9 @@
   },
   "sportninja_id": "4q091KlveAFjLA96",
   "zones": {
-    "offence": 0.2586,
-    "defence": 0.5136
+    "offence": 0.2118,
+    "defence": 0.4732,
+    "basis": "ft"
   },
   "ice": {
     "cell": 2,
@@ -478,6 +657,205 @@
           0.481
         ],
         "grid": "0000011233455544321111123456676643210000000000011234566665432111123567888764311000000000112356788887542111124689abba864211000000001235679abba97531111357acdedca8642100000001124579acdedb8531111359ceggfdb975321000000123468abdffeb852111136adghhgecb97431100000123568aceggeb842111247behiigedca8642110001124579bdfggea632111358cgijihfedb974321100123468acdffec953111247aeiklkjhgfda75321100123579bdfgfda74211247beilmnnmlkieb8542110112469cfhjigd96422247bgjmoqqrttsnic864221011357bfkopnje9643346bglprstvyCFDwne964321012369dipvxunfa643459ejpsuuvyFMROFsha6422101246aeluADyqib64457bglqtuuwAJTZWKvia6422111247afmuBDAsjc85569chlprssuzISYVJuia6321111357bflsyAxrkd9778aehkmopprvDLPMCqg96321112358bfkptvtpkfb99acfhjklmmnqvADAtle96321112368cfjmpqqokgdbbceghijkkklnprsqmhc86421112469cfilmoonlifddefhhiijjkkllmlkheb8642112357adgiklmnnljgfefghiiijkkllkkihfca8642112358bdghjklmmlkiggghhiijjklmlkjhfdb98643213468beghijklmmljhgghhiijklmnmljheca98653223579cefghiklmmlkihhhhiijkmnnnljgeba8765432457acefghiklmmlkjihhhhijkmoonlifdb98776433568acdefgiklmmlkjiiiiiijlnoomkhfca98776433579bddeeghjlllkjjiiiiiijlnooljgecb9876543368acdddefhjkkkjiiiiijjjklnonligedba876543379bcdddefghijihhhiijjjjklnnmjhfedba87654329acdddcdefghhhggghijkjjklmmligeedba8654332cddedcccdefffffffhijjjiijkkjhgedcb97654332hhgfecccddeeeeeefgijjihhhiiihfedcb97543322nmkifdcccdeeeeeeefhihgfffghhgfeecb97543322srokgeccddeeeeedeefggfeeeffggfeedb97643322vtqlhedddeefffeeddeffedddeefffeedca8654322trokgeddeeffggfddcddddddddeeeeeedcb9754322nmkhfeddeefgggfdccccddddddddeeeeeeca864322hgfedddddefghgedccccdddddccddefggfeb964322ccccccddeefgggedcccccddddcccdeghhgfc96432299abccdeeffggfedcccccdddccccdeghhhfc975322789abdeeffgggfeddccccdddccccdefggfec9754326689bceeffggfeeddddddddddcccddefeecb9754335568acdefffffeeeeeeddeeedddcdddddcba87543344679acdeffffeeeefeeffgffeddccccbaa9876433445689acdefggfffffgghhihgeedccbba9988764334556789bdfhiihggggijklkjhfedccba99887764335567789bdhkmmljhhjmpqqomjgfedcba98887754335667789cfkpstrnkknsxzxupligeddcb9887765432566789adhmtyzwqmmrzFHFztokhfedcb9877765322556789beinuzBysnntCKMJCvokhfedca9776654322455679bdhlrwxuplmsAIKGzsnigedcb98665554321445678acfimpqokhinuABytnjfdcba9875444433224455679bdfgiihfefjorsqmifca9887754433333224455679abcddddccdgjkkjgeca87766654333333224455678abbbbbaabceghgfdca9766665433223333344556789abbaaaaacdeeedca9876666543222233334456678abbbba99abcddccba9887766543222222224456789abccba99abbccbbaaa988776653322222224456789bcddcaa9aabbaaaaaaa9887765433222222445678abdedcbaaaaaa9999aaaa9887654433322223456789bdddcbaaaaa988889aaa9887655433333333456789acddcbbaaa98777789aa9877655443333333456789abccccbbba976666789987766554444444434567899abccccba9876556778887665544444555533568999aabcccba976545567887765554444555553357899999abbba98654445678877655554455555423578999999aaaa8765444567888766555555555442356899999999998765444567888766666555554332346789999888888766555567888776666665544322346789999887788876665667888777777665543222345678999877778887766667788777777665432212345678898876677888877777777776777654332112345778888876667888888888877766777654322112346788888876667789999988877666776654321112346788898877667789aaaa99877777776654321112345678899987777889abbba988777777654432211223567899a998888899abbbba9887777665443322212345689abbaa999999aabbbaa99887765544333221234568acddcba9988899abbbaa9987765544433321224579cfggeca98877889aabbaaa9887655444332122458bfjlkheb977666789aabbbbbaa9876554432122358djpsqmgc9765566789aabbcdefec97654432122359fnvyxqjd97655667899abbdfikjhc9654332112359gpyDAtkd97666677889aacehlookfa754322112359gpyCzskda87667778899aceimoplgb753221112348elswuoida87778888889abdgjmmjfb753211112247bglnmieca988888888889aceghhgd97432111122458beffdba98888888777889abcddca8643211112235679aa99888888887777788899aa987542110112234556677777777777777788888888876432110011234444455666667777666788887788765421100011233333445555666666666789887777765321100001223333344555555555555678876666654321000001112222334455555444444566665555543211000000111222233444444433333445554444433210000000011111222334443332222233443333332110000000000111122223333222111222333332221100000000000011111122222211111112222222211000000000000001111111111111111111222221110000000000000000111111111111111111111111100000000000000000011100000111111111111111000000000"
+      }
+    }
+  },
+  "positions": {
+    "players": {
+      "14": {
+        "role": "F",
+        "role_share": 0.149,
+        "role_sec": 697.625,
+        "depth": [
+          -44.3,
+          495.625
+        ],
+        "high": [
+          78.125,
+          158.125
+        ],
+        "goal_side": [
+          9.25,
+          34.0
+        ]
+      },
+      "18": {
+        "role": "D",
+        "role_share": 0.929,
+        "role_sec": 699.75,
+        "left": [
+          [
+            60.75,
+            70.5
+          ],
+          [
+            143.0,
+            220.125
+          ]
+        ],
+        "inside": [
+          75.625,
+          251.5
+        ]
+      },
+      "29": {
+        "role": "D",
+        "role_share": 0.801,
+        "role_sec": 570.75,
+        "left": [
+          [
+            16.625,
+            36.375
+          ],
+          [
+            76.125,
+            239.5
+          ]
+        ],
+        "inside": [
+          118.375,
+          203.375
+        ]
+      },
+      "32": {
+        "role": "F",
+        "role_share": 0.168,
+        "role_sec": 379.25,
+        "depth": [
+          -51.3,
+          359.375
+        ],
+        "high": [
+          38.25,
+          110.25
+        ],
+        "goal_side": [
+          3.625,
+          15.875
+        ]
+      },
+      "37": {
+        "role": "F",
+        "role_share": 0.101,
+        "role_sec": 531.0,
+        "depth": [
+          -44.7,
+          241.125
+        ],
+        "high": [
+          32.75,
+          141.75
+        ],
+        "goal_side": [
+          2.5,
+          20.625
+        ]
+      },
+      "58": {
+        "role": "F",
+        "role_share": 0.264,
+        "role_sec": 615.75,
+        "depth": [
+          -57.4,
+          269.25
+        ],
+        "high": [
+          126.875,
+          228.625
+        ],
+        "goal_side": [
+          23.625,
+          41.875
+        ]
+      },
+      "72": {
+        "role": "F",
+        "role_share": 0.132,
+        "role_sec": 485.125,
+        "depth": [
+          -42.5,
+          297.375
+        ],
+        "high": [
+          73.625,
+          172.375
+        ],
+        "goal_side": [
+          12.25,
+          32.25
+        ]
+      },
+      "74": {
+        "role": "F",
+        "role_share": 0.084,
+        "role_sec": 417.0,
+        "depth": [
+          -46.1,
+          204.625
+        ],
+        "high": [
+          24.375,
+          131.375
+        ],
+        "goal_side": [
+          8.25,
+          35.0
+        ]
+      },
+      "82": {
+        "role": "D",
+        "role_share": 0.864,
+        "role_sec": 667.875,
+        "left": [
+          [
+            22.25,
+            25.75
+          ],
+          [
+            137.875,
+            245.875
+          ]
+        ],
+        "inside": [
+          159.75,
+          292.25
+        ]
+      },
+      "83": {
+        "role": "D",
+        "role_share": 0.886,
+        "role_sec": 651.875,
+        "left": [
+          [
+            9.0,
+            35.25
+          ],
+          [
+            71.125,
+            223.375
+          ]
+        ],
+        "inside": [
+          67.375,
+          231.875
+        ]
+      },
+      "97": {
+        "role": "F",
+        "role_share": 0.213,
+        "role_sec": 706.0,
+        "depth": [
+          -55.2,
+          527.75
+        ],
+        "high": [
+          56.5,
+          143.875
+        ],
+        "goal_side": [
+          16.25,
+          34.75
+        ]
       }
     }
   }
