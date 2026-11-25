@@ -24,15 +24,17 @@ of frames (5 s for rushes and for each orientation's left), as in the evidence p
                where only one has 5 s): the camera puts a skater left more often with our net on one side than on
                the other (+-0.075 on the raw share)
     inside     with the play in their end (V > 25), the share of it inside their blue line (V > 25)
+    deep       the same frames, the share of it 15 ft or more past their blue line (V > 40)
+    and from the season left L his side (side()): "L" at 0.55 and up, "R" at 0.45 and under, "both" in between
   forwards (games where he was F):
     depth      with the play in our end, his median V
     high       with the play in their end and 2+ of our forwards labeled, the share as our highest forward (the
                smallest V of them)
     goal_side  on rushes against (the play coming at our net at 12+ ft/s, between V -45 and +30), the share of it
                goal-side of the play (his V below the play's)
-A single game's values don't repeat well enough to show (a 4-6 game mean's reliability is 0.66-0.81), so the pages
+A single game's values don't repeat well enough to show (a 4-6 game mean's reliability is 0.66-0.83), so the pages
 show season numbers only, for a skater with 4+ games in that role. Measured and dropped (README's TODO): a
-defenseman's share in front of our net (track dropouts bias it), the gap on rushes, pairs."""
+defenseman's share in front of our net (track dropouts bias it), pinches per minute, the gap on rushes, pairs."""
 import json, os, sys
 import numpy as np, pandas as pd
 sys.path.insert(0, os.path.dirname(os.path.abspath(__file__)))
@@ -44,6 +46,8 @@ ROLE_MIN = 80            # such frames (10 s) before a game has a role
 SEASON_D = 0.55          # season role: the frame-weighted share over his games, D above it
 SEASON_GAMES = 4         # games in a role before the season numbers show a skater
 END = 25                 # the blue lines: the play in our end at V < -25, in theirs at V > 25
+DEEP = 40                # a D deep on attack: 15 ft or more past their blue line
+SIDE = 550               # a D's side: his season left at 0.550 and up, or 0.450 and under (in thousandths, as published)
 RUSH_SPEED, RUSH_LO, RUSH_HI = 12, -45, 30
 # a single game's values (game_measures, which the season means take): the frames each needs, as in the evidence pass
 MIN_SIDE, MIN_ZONE, MIN_RUSH = 40, 80, 40
@@ -108,6 +112,7 @@ def parts(F):
         if role[p] == "D":
             e["left"] = [[sec((y.H < 0).sum()), sec(len(y))] for y in (dz[dz.sgn == 1], dz[dz.sgn == -1])]
             e["inside"] = [sec((oz.V > END).sum()), sec(len(oz))]
+            e["deep"] = [sec((oz.V > DEEP).sum()), sec(len(oz))]
         elif role[p] == "F":
             o = oz4[(oz4.player == p) & (oz4.nF >= 2)]
             rush = x[(x.dplay < -RUSH_SPEED) & x.play.between(RUSH_LO, RUSH_HI)]
@@ -138,7 +143,7 @@ def _share(a):
     return a[0] / a[1] if a and a[1] else None
 
 
-MEASURES = {"D": ("left", "inside"), "F": ("depth", "high", "goal_side")}
+MEASURES = {"D": ("left", "inside", "deep"), "F": ("depth", "high", "goal_side")}
 
 
 def game_measures(e):
@@ -151,6 +156,8 @@ def game_measures(e):
         sides = [s for s in e["left"] if s[1] * FPS >= MIN_SIDE]
         v["left"] = (sum(_share(s) for s in sides) / len(sides) if sides else None, sum(s[1] for s in sides))
         v["inside"] = (_share(e["inside"]) if e["inside"][1] * FPS >= MIN_ZONE else None, e["inside"][1])
+        d = e.get("deep") or [0, 0]   # none in a game's parts made before Nov 24, 2026 and not backfilled
+        v["deep"] = (_share(d) if d[1] * FPS >= MIN_ZONE else None, d[1])
     elif e.get("role") == "F":
         v["depth"] = (e["depth"][0] if e["depth"][1] * FPS >= MIN_ZONE else None, e["depth"][1])
         v["high"] = (_share(e["high"]) if e["high"][1] * FPS >= MIN_ZONE else None, e["high"][1])
@@ -172,7 +179,8 @@ def season(games, key_of):
     counting once whatever its seconds: on the 27 defensemen with 4+ games, split halves over games repeat better
     so (left 0.79 against 0.76 with the seconds pooled, inside 0.53 against 0.47), and the evidence pass's
     reliabilities were measured on it. Depth is in ft from our goal line; *_sec adds up the seconds of the games
-    the mean takes. The role is the frame-weighted share over all his games."""
+    the mean takes. A D's side and side_share come from his season left (side()). The role is the frame-weighted
+    share over all his games."""
     acc = {}
     for g in games:
         for n, e in ((g.get("positions") or {}).get("players") or {}).items():
@@ -195,12 +203,28 @@ def season(games, key_of):
                 x = sum(v for v, _ in got) / len(got) if got else None
                 r[role][m] = (None if x is None else round(x + 89, 1)) if m == "depth" else _round(x)
                 r[role][f"{m}_sec"] = round(sum(s for _, s in got), 1)
+                if m == "left":
+                    r[role]["side"], r[role]["side_share"] = side(r[role]["left"])
         out[k] = r
     return out
 
 
 def _round(x):
     return None if x is None else round(x, 3)
+
+
+def side(L):
+    """A D's side from his season left share L (as published, to 0.001): ("L", L) at 0.55 and up, ("R", 1 - L) at
+    0.45 and under, ("both", None) in between, (None, None) without L. Compared in thousandths, so a published 0.45
+    is "R" (as floats, 0.45 <= 1 - 0.55 is false)."""
+    if L is None:
+        return None, None
+    m = round(L * 1000)
+    if m >= SIDE:
+        return "L", m / 1000
+    if m <= 1000 - SIDE:
+        return "R", (1000 - m) / 1000
+    return "both", None
 
 
 if __name__ == "__main__":

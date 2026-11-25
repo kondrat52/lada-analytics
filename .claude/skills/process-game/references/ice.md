@@ -38,10 +38,13 @@ everyone detected on the ice, 6 or more, our net at V = -89), and publish makes 
   under, null in between or under 10 s. The game page tags D or F after the name.
 - the parts of the season positioning numbers, in seconds, which no game page shows (a single game's don't repeat):
   a D's `left` ([seconds on the left, seconds] with the play in our end, once with our net at the picture's left and
-  once at its right) and `inside` (inside their blue line with the play in their end); an F's `depth` ([median V,
-  seconds] in our end), `high` (our highest forward in their end, 2+ forwards labeled) and `goal_side` (on rushes
-  against). The trends page's Positioning tables show the average of his games in a role (each game's value from
-  its parts, counting once), for a skater with 4+ games in it.
+  once at its right), `inside` (inside their blue line with the play in their end) and `deep` (15 ft or more past
+  their blue line, V > 40, in the same frames as `inside`); an F's `depth` ([median V, seconds] in our end), `high`
+  (our highest forward in their end, 2+ forwards labeled) and `goal_side` (on rushes against). The trends page's
+  Positioning tables show the average of his games in a role (each game's value from its parts, counting once), for
+  a skater with 4+ games in it. The defensemen's table has Side (from the season `left`: "Left NN%" at 0.55 and up,
+  "Right NN%" at 0.45 and under, else "Both sides"; season.json's `side` and `side_share`; it sorts by `left` and
+  has no range bar), Inside their blue line and Deep on attack.
 
 To redo them for one game, or for every published game that still has its work folder (and, for every game, the
 stoppages moved after the goals, which needs no work folder), without republishing:

@@ -130,7 +130,7 @@ svg .rdot { fill:var(--team); stroke:var(--board); stroke-width:1.5; }
     <p class="note" id="posnote"></p>
     <h3>Defensemen</h3>
     <div class="tablebox"><table class="pos" id="dtable"><thead><tr></tr></thead><tbody></tbody></table></div>
-    <p class="note small">Left side: how much of his time he is on the left (as we attack) when we defend; inside their blue line: how often he is past their blue line when we attack.</p>
+    <p class="note small">Side: which side he defends and how often he stays there; inside their blue line: how often he is in their zone when we attack; deep on attack: how often he is 15 ft or more past their blue line.</p>
     <h3>Forwards</h3>
     <div class="tablebox"><table class="pos" id="ftable"><thead><tr></tr></thead><tbody></tbody></table></div>
     <p class="note small">Depth: how far from our net he plays when we defend; high forward: how often he is our forward furthest back when we attack; back on rushes: how often he is already back when they rush our net.</p>
@@ -486,10 +486,13 @@ renderPlayers();
   $("#possec").hidden = false;
   $("#posnote").textContent = `Season averages for skaters with ${DATA.season_games} or more games in the role; the dot shows where he sits between the lowest and the highest skater in the table.`;
   const ft = v => `${Math.round(v)} ft`;
+  // a D's side (season.json's side, side_share), sorted by his left share; no range bar: lowest to highest left means nothing
+  const sideText = (v, p) => p.side === "L" ? `Left ${pct(p.side_share)}` : p.side === "R" ? `Right ${pct(p.side_share)}` : "Both sides";
   const TABLES = [
     { id: "#dtable", role: "D", word: "defensemen", cols: [
-      { k: "left", t: "Left side, our end", f: pct, s: "left_sec", w: "with the play in our end" },
-      { k: "inside", t: "Inside their blue line", f: pct, s: "inside_sec", w: "with the play in their end" }] },
+      { k: "left", t: "Side", f: sideText, s: "left_sec", w: "with the play in our end", bar: false },
+      { k: "inside", t: "Inside their blue line", f: pct, s: "inside_sec", w: "with the play in their end" },
+      { k: "deep", t: "Deep on attack", f: pct, s: "deep_sec", w: "with the play in their end" }] },
     { id: "#ftable", role: "F", word: "forwards", cols: [
       { k: "depth", t: "Depth, our end", f: ft, s: "depth_sec", w: "with the play in our end" },
       { k: "high", t: "High forward", f: pct, s: "high_sec", w: "with the play in their end" },
@@ -518,10 +521,13 @@ renderPlayers();
         const nm = td(p.name, "l name"); if (p.sub) nm.appendChild(h("span", "subtag", "sub")); tr.appendChild(nm);
         tr.appendChild(td(String(p.games)));
         T.cols.forEach(c => {
-          const cell = td(p[c.k] == null ? "–" : c.f(p[c.k]));
+          const cell = td(p[c.k] == null ? "–" : c.f(p[c.k], p));
           if (p[c.k] != null) {
-            cell.appendChild(range(p[c.k], ...span[c.k]));
-            cell.title = `The average of his games, over ${mmss(p[c.s])} ${c.w}; the ${T.word} in this table range from ${c.f(span[c.k][0])} to ${c.f(span[c.k][1])}`;
+            cell.title = `The average of his games, over ${mmss(p[c.s])} ${c.w}`;
+            if (c.bar !== false) {
+              cell.appendChild(range(p[c.k], ...span[c.k]));
+              cell.title += `; the ${T.word} in this table range from ${c.f(span[c.k][0])} to ${c.f(span[c.k][1])}`;
+            }
           }
           tr.appendChild(cell);
         });

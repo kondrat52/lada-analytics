@@ -79,8 +79,12 @@
      "games": 7,
      "left": 0.369,
      "left_sec": 1337.6,
+     "side": "R",
+     "side_share": 0.631,
      "inside": 0.351,
-     "inside_sec": 2367.6
+     "inside_sec": 2367.6,
+     "deep": 0.092,
+     "deep_sec": 2367.6
     },
     "F": null
    },
@@ -340,8 +344,12 @@
      "games": 4,
      "left": 0.505,
      "left_sec": 781.9,
+     "side": "both",
+     "side_share": null,
      "inside": 0.414,
-     "inside_sec": 1418.5
+     "inside_sec": 1418.5,
+     "deep": 0.107,
+     "deep_sec": 1418.5
     },
     "F": null
    },
@@ -613,8 +621,12 @@
      "games": 7,
      "left": 0.739,
      "left_sec": 1305.1,
+     "side": "L",
+     "side_share": 0.739,
      "inside": 0.314,
-     "inside_sec": 2148.9
+     "inside_sec": 2148.9,
+     "deep": 0.04,
+     "deep_sec": 2148.9
     },
     "F": null
    },

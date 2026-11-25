@@ -205,8 +205,12 @@
      "games": 5,
      "left": 0.654,
      "left_sec": 585.9,
+     "side": "L",
+     "side_share": 0.654,
      "inside": 0.532,
-     "inside_sec": 1480.5
+     "inside_sec": 1480.5,
+     "deep": 0.201,
+     "deep_sec": 1480.5
     },
     "F": null
    },
@@ -302,8 +306,12 @@
      "games": 7,
      "left": 0.304,
      "left_sec": 1078.2,
+     "side": "R",
+     "side_share": 0.696,
      "inside": 0.416,
-     "inside_sec": 2440.0
+     "inside_sec": 2440.0,
+     "deep": 0.069,
+     "deep_sec": 2440.0
     },
     "F": null
    },
@@ -875,8 +883,12 @@
      "games": 4,
      "left": 0.642,
      "left_sec": 711.4,
+     "side": "L",
+     "side_share": 0.642,
      "inside": 0.458,
-     "inside_sec": 1128.0
+     "inside_sec": 1128.0,
+     "deep": 0.209,
+     "deep_sec": 1128.0
     },
     "F": null
    },
@@ -1458,8 +1470,12 @@
      "games": 7,
      "left": 0.37,
      "left_sec": 805.9,
+     "side": "R",
+     "side_share": 0.63,
      "inside": 0.346,
-     "inside_sec": 1567.5
+     "inside_sec": 1567.5,
+     "deep": 0.084,
+     "deep_sec": 1567.5
     },
     "F": null
    },
@@ -1767,8 +1783,12 @@
      "games": 5,
      "left": 0.353,
      "left_sec": 463.4,
+     "side": "R",
+     "side_share": 0.647,
      "inside": 0.47,
-     "inside_sec": 1024.5
+     "inside_sec": 1024.5,
+     "deep": 0.178,
+     "deep_sec": 1024.5
     },
     "F": null
    },

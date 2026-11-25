@@ -149,11 +149,16 @@ The season's role and positioning, from the games with tracking on the ice (`nul
 | `role_games` | `{D, F}`: games with that `role` in the game files (the rest were unclear or not measured) |
 | `positioning` | `{D, F}`: his season numbers as a defenseman and as a forward, each `null` under 4 games in that role, as on the trends page. Each is the average of his games in that role: every game with enough of the moment measured (10 s; 5 s for rushes and for each end's `left`) counts once, whatever its length. Measured over live play outside our penalty kills, our power plays included (see `role_share`). Not grades: compare a player with the team's others in the same role |
 
-`positioning.D`: `{games, left, left_sec, inside, inside_sec}`. `left`: with the play in our end (behind our blue line),
-the share of his time on the left half of the ice (left as the team attacks); in each game worked out separately for
-the periods with our net at each end of the camera picture, and the two averaged (one alone where only one has 5 s),
-since the camera shows a skater on one side more often at one end than at the other. `inside`: with the play in their
-end, the share of his time inside their blue line. `*_sec`: the seconds of the games the average takes.
+`positioning.D`: `{games, left, left_sec, side, side_share, inside, inside_sec, deep, deep_sec}`. `left`: with the play
+in our end (behind our blue line), the share of his time on the left half of the ice (left as the team attacks); in
+each game worked out separately for the periods with our net at each end of the camera picture, and the two averaged
+(one alone where only one has 5 s), since the camera shows a skater on one side more often at one end than at the
+other. `side`: his side, from `left`: `"L"` at 0.55 and up, `"R"` at 0.45 and under, `"both"` in between (`null`
+without a `left`). `side_share`: how often he is on that side, `left` for `"L"` and `1 - left` for `"R"`, `null` for
+`"both"`; the trends page shows them as "Left 70%", "Right 59%" or "Both sides". `inside`: with the play in their
+end, the share of his time inside their blue line. `deep`: in the same moments, the share of his time 15 ft or more
+past their blue line. It reads about 0.03 higher in games where the team wears white, so it compares teammates, not
+teams. `*_sec`: the seconds of the games the average takes.
 
 `positioning.F`: `{games, depth, depth_sec, high, high_sec, goal_side, goal_side_sec}`. `depth`: with the play in our
 end, how far out from our goal line he usually is, in feet (the average of his games' medians). `high`: with

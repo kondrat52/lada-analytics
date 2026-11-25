@@ -44,8 +44,12 @@
      "games": 5,
      "left": 0.505,
      "left_sec": 731.5,
+     "side": "both",
+     "side_share": null,
      "inside": 0.555,
-     "inside_sec": 1932.9
+     "inside_sec": 1932.9,
+     "deep": 0.187,
+     "deep_sec": 1932.9
     },
     "F": null
    },
@@ -214,8 +218,12 @@
      "games": 6,
      "left": 0.704,
      "left_sec": 828.5,
+     "side": "L",
+     "side_share": 0.704,
      "inside": 0.496,
-     "inside_sec": 2086.4
+     "inside_sec": 2086.4,
+     "deep": 0.201,
+     "deep_sec": 2086.4
     },
     "F": null
    },
@@ -376,8 +384,12 @@
      "games": 4,
      "left": 0.414,
      "left_sec": 705.9,
+     "side": "R",
+     "side_share": 0.586,
      "inside": 0.625,
-     "inside_sec": 1245.6
+     "inside_sec": 1245.6,
+     "deep": 0.275,
+     "deep_sec": 1245.6
     },
     "F": null
    },
@@ -574,8 +586,12 @@
      "games": 5,
      "left": 0.726,
      "left_sec": 756.2,
+     "side": "L",
+     "side_share": 0.726,
      "inside": 0.484,
-     "inside_sec": 1618.2
+     "inside_sec": 1618.2,
+     "deep": 0.197,
+     "deep_sec": 1618.2
     },
     "F": null
    },

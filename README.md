@@ -118,12 +118,13 @@ python pipeline/build_site.py
 9. Each skater's role in a game, from his tracked positions (`pipeline/positioning.py`): over live play outside our
    penalty kills (our power plays included) with 4 or more of ours tracked, the share of the time he was one of our
    two deepest. D at 0.6 and up, F at 0.4 and under, no role in between. The game page tags it.
-10. Positioning, season numbers only (a single game doesn't repeat well enough): for defensemen the share of their
-    time on the left side with the play in our end (worked out for each end of the camera picture and averaged, since
-    the camera puts a skater on one side more at one end) and inside their blue line with the play in their end; for
-    forwards their depth with the play in our end, the share as our highest forward in their end, and goal side of
-    the play on rushes against. Each game keeps the seconds they rest on; the trends page shows the average of his
-    games in a role, for a skater with 4 or more games in it.
+10. Positioning, season numbers only (a single game doesn't repeat well enough): for defensemen their side, from the
+    share of their time on the left side with the play in our end (worked out for each end of the camera picture and
+    averaged, since the camera puts a skater on one side more at one end), and with the play in their end the share
+    inside their blue line and the share 15 ft or more past it; for forwards their depth with the play in our end, the
+    share as our highest forward in their end, and goal side of the play on rushes against. Each game keeps the
+    seconds they rest on; the trends page shows the average of his games in a role, for a skater with 4 or more games
+    in it.
 
 Ice time is real elapsed time on the ice, including stoppages; live play time comes from the stoppage estimate.
 
@@ -408,6 +409,14 @@ logs that line).
       so our power plays could be left out of a few games only. On Turbo Kings' Nov 22 (5 opponents' penalties,
       about 19% of the positioning frames) leaving them out moved single-game values by up to 0.07 (a D's inside
       share) and 0.14 (a forward's goal side).
+    - *A defenseman deep on attack, and his side* (a second pass the same day, on the 49 archived games). `deep`: with
+      the play in their end (the frames of `inside`, the same 10 s minimum a game), the share of his labeled frames
+      15 ft or more past their blue line (V > 40). A season mean's reliability is 0.83, the most repeatable of the
+      positioning numbers, and the ranks hold for cuts of 40 to 50 ft and for the 90th percentile of his depth
+      instead of a share. It reads about 7% low from tracks lost deep in their end, and about 0.03 higher in games
+      where the team wears white, so it compares teammates, not teams. Turbo Kings: #78 0.275 (4 games), #61 0.201
+      (6), #12 0.197 (5), #13 0.187 (5). The left share is shown as his side: "Left" at 0.55 and up, "Right" at 0.45
+      and under (each with how often he is there), "Both sides" in between.
 
     Measured and not built: a D's share in front of our net (his track drops out there: 0.93 gap seconds per labeled
     second at the net-front spot, 0.41 elsewhere, and 45% of the last frames before a gap are there against 31% of
@@ -417,3 +426,10 @@ logs that line).
     the play in our end, the next 20 s have 15 points more time in our end than matched moments without a change
     (132 events; game bootstrap +8 to +22 points; goals against in the next 30 s no different). It is an
     association only: a change may follow the pressure rather than cause it.
+
+    Measured again in the second pass and not published: a D's time near our net. His labeled frames cover 44% of
+    his time when we defend and miss about half of his time at the net. Filling his track's gaps within the shift
+    brings the miss down to 3-10%, but then 45% of the number is interpolated, it reads 0.06 lower in white games and
+    up to 0.1 off by rink, and on Turbo Kings and Y the spread between teammates is no larger than the noise.
+    Publishing it needs the tracker to keep defensemen labeled at the net. Nor pinches per minute (reliability 0.57:
+    it depends on how long a track holds unbroken).
