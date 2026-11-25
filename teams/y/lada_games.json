@@ -136,7 +136,9 @@
     "playHome": false,
     "rinkId": 2071,
     "rinkName": "Snoqualmie A",
-    "boxscoreLink": "https://app.sportninja.com/public/game/IszXR6ddZ7tIZmFl"
+    "boxscoreLink": "https://app.sportninja.com/public/game/IszXR6ddZ7tIZmFl",
+    "teamGoals": 2,
+    "opponentGoals": 1
   },
   "33000": {
     "date": "2026-11-30T20:45:00",

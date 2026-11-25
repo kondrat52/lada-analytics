@@ -8,6 +8,7 @@
  "updated": "2026-11-23",
  "games": [
   "2026-11-23-vs-tm",
+  "2026-11-16-vs-wa",
   "2026-11-09-vs-tbd",
   "2026-11-02-vs-bv",
   "2026-10-26-vs-sb",
@@ -23,32 +24,32 @@
    "number": 83,
    "name": "Lisitsyn",
    "lada_player_id": 5942,
-   "games_played": 10,
-   "shifts": 152,
-   "toi": 19766,
-   "toi_per_game": 1976.6,
-   "play": 13651,
-   "avg_shift": 130.0,
+   "games_played": 11,
+   "shifts": 172,
+   "toi": 21627,
+   "toi_per_game": 1966.1,
+   "play": 14972,
+   "avg_shift": 125.7,
    "longest_shift": 387,
-   "shortest_shift": 25,
-   "plus_minus": -6,
+   "shortest_shift": 23,
+   "plus_minus": -8,
    "role": "D",
-   "role_share": 0.842,
+   "role_share": 0.848,
    "role_games": {
-    "D": 10,
+    "D": 11,
     "F": 0
    },
    "positioning": {
     "D": {
-     "games": 10,
-     "left": 0.45,
-     "left_sec": 1768.9,
+     "games": 11,
+     "left": 0.446,
+     "left_sec": 1927.4,
      "side": "R",
-     "side_share": 0.55,
-     "inside": 0.474,
-     "inside_sec": 3768.1,
-     "deep": 0.14,
-     "deep_sec": 3768.1
+     "side_share": 0.554,
+     "inside": 0.473,
+     "inside_sec": 4162.8,
+     "deep": 0.134,
+     "deep_sec": 4162.8
     },
     "F": null
    },
@@ -65,6 +66,19 @@
      "avg_shift": 123.4,
      "play": 1454,
      "plus_minus": 0
+    },
+    {
+     "id": "2026-11-16-vs-wa",
+     "date": "2026-11-16",
+     "opponent": {
+      "code": "WA",
+      "name": "Warriors"
+     },
+     "toi": 1861,
+     "shifts": 20,
+     "avg_shift": 93.0,
+     "play": 1321,
+     "plus_minus": -2
     },
     {
      "id": "2026-11-09-vs-tbd",
@@ -186,72 +200,35 @@
    ]
   },
   {
-   "number": 58,
-   "name": "Fisenko",
-   "lada_player_id": 17285,
-   "sub": true,
-   "games_played": 1,
-   "shifts": 14,
-   "toi": 1842,
-   "toi_per_game": 1842,
-   "play": 1236,
-   "avg_shift": 131.6,
-   "longest_shift": 209,
-   "shortest_shift": 62,
-   "plus_minus": 1,
-   "role": "F",
-   "role_share": 0.264,
-   "role_games": {
-    "D": 0,
-    "F": 1
-   },
-   "positioning": null,
-   "games": [
-    {
-     "id": "2026-11-09-vs-tbd",
-     "date": "2026-11-09",
-     "opponent": {
-      "code": "TBD",
-      "name": "T.B.D."
-     },
-     "toi": 1842,
-     "shifts": 14,
-     "avg_shift": 131.6,
-     "play": 1236,
-     "plus_minus": 1
-    }
-   ]
-  },
-  {
    "number": 29,
    "name": "Yafunyaev",
    "lada_player_id": 20417,
-   "games_played": 9,
-   "shifts": 140,
-   "toi": 16486,
-   "toi_per_game": 1831.8,
-   "play": 11616,
-   "avg_shift": 117.8,
+   "games_played": 10,
+   "shifts": 156,
+   "toi": 18461,
+   "toi_per_game": 1846.1,
+   "play": 12965,
+   "avg_shift": 118.3,
    "longest_shift": 220,
    "shortest_shift": 30,
-   "plus_minus": -2,
+   "plus_minus": -4,
    "role": "D",
-   "role_share": 0.847,
+   "role_share": 0.844,
    "role_games": {
-    "D": 9,
+    "D": 10,
     "F": 0
    },
    "positioning": {
     "D": {
-     "games": 9,
-     "left": 0.545,
-     "left_sec": 1743.4,
-     "side": "both",
-     "side_share": null,
-     "inside": 0.531,
-     "inside_sec": 3501.6,
+     "games": 10,
+     "left": 0.57,
+     "left_sec": 2049.0,
+     "side": "L",
+     "side_share": 0.57,
+     "inside": 0.538,
+     "inside_sec": 3811.0,
      "deep": 0.2,
-     "deep_sec": 3501.6
+     "deep_sec": 3811.0
     },
     "F": null
    },
@@ -268,6 +245,19 @@
      "avg_shift": 112.2,
      "play": 1260,
      "plus_minus": 0
+    },
+    {
+     "id": "2026-11-16-vs-wa",
+     "date": "2026-11-16",
+     "opponent": {
+      "code": "WA",
+      "name": "Warriors"
+     },
+     "toi": 1975,
+     "shifts": 16,
+     "avg_shift": 123.4,
+     "play": 1349,
+     "plus_minus": -2
     },
     {
      "id": "2026-11-09-vs-tbd",
@@ -376,39 +366,89 @@
    ]
   },
   {
+   "number": 58,
+   "name": "Fisenko",
+   "lada_player_id": 17285,
+   "sub": true,
+   "games_played": 1,
+   "shifts": 14,
+   "toi": 1842,
+   "toi_per_game": 1842,
+   "play": 1236,
+   "avg_shift": 131.6,
+   "longest_shift": 209,
+   "shortest_shift": 62,
+   "plus_minus": 1,
+   "role": "F",
+   "role_share": 0.264,
+   "role_games": {
+    "D": 0,
+    "F": 1
+   },
+   "positioning": null,
+   "games": [
+    {
+     "id": "2026-11-09-vs-tbd",
+     "date": "2026-11-09",
+     "opponent": {
+      "code": "TBD",
+      "name": "T.B.D."
+     },
+     "toi": 1842,
+     "shifts": 14,
+     "avg_shift": 131.6,
+     "play": 1236,
+     "plus_minus": 1
+    }
+   ]
+  },
+  {
    "number": 78,
    "name": "Shakhov",
    "lada_player_id": 20419,
-   "games_played": 5,
-   "shifts": 74,
-   "toi": 9058,
-   "toi_per_game": 1811.6,
-   "play": 6444,
-   "avg_shift": 122.4,
+   "games_played": 6,
+   "shifts": 91,
+   "toi": 10998,
+   "toi_per_game": 1833,
+   "play": 7772,
+   "avg_shift": 120.9,
    "longest_shift": 231,
    "shortest_shift": 44,
-   "plus_minus": -4,
+   "plus_minus": -7,
    "role": "D",
-   "role_share": 0.882,
+   "role_share": 0.868,
    "role_games": {
-    "D": 5,
+    "D": 6,
     "F": 0
    },
    "positioning": {
     "D": {
-     "games": 5,
-     "left": 0.554,
-     "left_sec": 751.0,
+     "games": 6,
+     "left": 0.585,
+     "left_sec": 988.1,
      "side": "L",
-     "side_share": 0.554,
-     "inside": 0.488,
-     "inside_sec": 1813.6,
-     "deep": 0.154,
-     "deep_sec": 1813.6
+     "side_share": 0.585,
+     "inside": 0.503,
+     "inside_sec": 2135.6,
+     "deep": 0.153,
+     "deep_sec": 2135.6
     },
     "F": null
    },
    "games": [
+    {
+     "id": "2026-11-16-vs-wa",
+     "date": "2026-11-16",
+     "opponent": {
+      "code": "WA",
+      "name": "Warriors"
+     },
+     "toi": 1940,
+     "shifts": 17,
+     "avg_shift": 114.1,
+     "play": 1328,
+     "plus_minus": -3
+    },
     {
      "id": "2026-10-26-vs-sb",
      "date": "2026-10-26",
@@ -480,31 +520,31 @@
    "number": 97,
    "name": "Barkov",
    "lada_player_id": 18293,
-   "games_played": 10,
-   "shifts": 133,
-   "toi": 17158,
-   "toi_per_game": 1715.8,
-   "play": 12155,
-   "avg_shift": 129.0,
+   "games_played": 11,
+   "shifts": 148,
+   "toi": 19422,
+   "toi_per_game": 1765.6,
+   "play": 13817,
+   "avg_shift": 131.2,
    "longest_shift": 304,
    "shortest_shift": 35,
-   "plus_minus": -7,
+   "plus_minus": -8,
    "role": "F",
-   "role_share": 0.177,
+   "role_share": 0.186,
    "role_games": {
     "D": 0,
-    "F": 10
+    "F": 11
    },
    "positioning": {
     "D": null,
     "F": {
-     "games": 10,
-     "depth": 39.2,
-     "depth_sec": 2584.8,
-     "high": 0.407,
-     "high_sec": 1955.6,
-     "goal_side": 0.338,
-     "goal_side_sec": 380.0
+     "games": 11,
+     "depth": 39.1,
+     "depth_sec": 2933.2,
+     "high": 0.413,
+     "high_sec": 2217.9,
+     "goal_side": 0.329,
+     "goal_side_sec": 414.4
     }
    },
    "games": [
@@ -520,6 +560,19 @@
      "avg_shift": 144.8,
      "play": 1360,
      "plus_minus": 0
+    },
+    {
+     "id": "2026-11-16-vs-wa",
+     "date": "2026-11-16",
+     "opponent": {
+      "code": "WA",
+      "name": "Warriors"
+     },
+     "toi": 2264,
+     "shifts": 15,
+     "avg_shift": 150.9,
+     "play": 1662,
+     "plus_minus": -1
     },
     {
      "id": "2026-11-09-vs-tbd",
@@ -681,20 +734,20 @@
    "number": 12,
    "name": "Kondratenko",
    "lada_player_id": 20415,
-   "games_played": 8,
-   "shifts": 112,
-   "toi": 13201,
-   "toi_per_game": 1650.1,
-   "play": 9351,
-   "avg_shift": 117.9,
+   "games_played": 9,
+   "shifts": 127,
+   "toi": 14809,
+   "toi_per_game": 1645.4,
+   "play": 10427,
+   "avg_shift": 116.6,
    "longest_shift": 229,
    "shortest_shift": 29,
-   "plus_minus": -4,
+   "plus_minus": -9,
    "role": "D",
-   "role_share": 0.8,
+   "role_share": 0.738,
    "role_games": {
     "D": 7,
-    "F": 1
+    "F": 2
    },
    "positioning": {
     "D": {
@@ -723,6 +776,19 @@
      "avg_shift": 112.7,
      "play": 1315,
      "plus_minus": 1
+    },
+    {
+     "id": "2026-11-16-vs-wa",
+     "date": "2026-11-16",
+     "opponent": {
+      "code": "WA",
+      "name": "Warriors"
+     },
+     "toi": 1608,
+     "shifts": 15,
+     "avg_shift": 107.2,
+     "play": 1076,
+     "plus_minus": -5
     },
     {
      "id": "2026-11-02-vs-bv",
@@ -821,32 +887,32 @@
    "number": 49,
    "name": "Unuchek",
    "lada_player_id": 20418,
-   "games_played": 5,
-   "shifts": 76,
-   "toi": 8028,
-   "toi_per_game": 1605.6,
-   "play": 5801,
-   "avg_shift": 105.6,
+   "games_played": 6,
+   "shifts": 92,
+   "toi": 9635,
+   "toi_per_game": 1605.8,
+   "play": 6904,
+   "avg_shift": 104.7,
    "longest_shift": 234,
    "shortest_shift": 24,
-   "plus_minus": -2,
+   "plus_minus": -5,
    "role": "D",
-   "role_share": 0.952,
+   "role_share": 0.948,
    "role_games": {
-    "D": 5,
+    "D": 6,
     "F": 0
    },
    "positioning": {
     "D": {
-     "games": 5,
-     "left": 0.359,
-     "left_sec": 597.2,
+     "games": 6,
+     "left": 0.375,
+     "left_sec": 702.6,
      "side": "R",
-     "side_share": 0.641,
-     "inside": 0.383,
-     "inside_sec": 1603.1,
-     "deep": 0.037,
-     "deep_sec": 1603.1
+     "side_share": 0.625,
+     "inside": 0.352,
+     "inside_sec": 1813.9,
+     "deep": 0.041,
+     "deep_sec": 1813.9
     },
     "F": null
    },
@@ -863,6 +929,19 @@
      "avg_shift": 111.4,
      "play": 1263,
      "plus_minus": 1
+    },
+    {
+     "id": "2026-11-16-vs-wa",
+     "date": "2026-11-16",
+     "opponent": {
+      "code": "WA",
+      "name": "Warriors"
+     },
+     "toi": 1607,
+     "shifts": 16,
+     "avg_shift": 100.4,
+     "play": 1103,
+     "plus_minus": -3
     },
     {
      "id": "2026-10-26-vs-sb",
@@ -919,47 +998,63 @@
    ]
   },
   {
-   "number": 18,
-   "name": "Petrov",
-   "lada_player_id": 20416,
-   "games_played": 9,
-   "shifts": 122,
-   "toi": 13782,
-   "toi_per_game": 1531.3,
-   "play": 9648,
-   "avg_shift": 113.0,
-   "longest_shift": 237,
-   "shortest_shift": 21,
-   "plus_minus": -6,
+   "number": 14,
+   "name": "Ber",
+   "lada_player_id": 11166,
+   "games_played": 11,
+   "shifts": 132,
+   "toi": 16831,
+   "toi_per_game": 1530.1,
+   "play": 11856,
+   "avg_shift": 127.5,
+   "longest_shift": 271,
+   "shortest_shift": 23,
+   "plus_minus": -2,
    "role": "F",
-   "role_share": 0.503,
+   "role_share": 0.148,
    "role_games": {
-    "D": 4,
-    "F": 5
+    "D": 0,
+    "F": 11
    },
    "positioning": {
-    "D": {
-     "games": 4,
-     "left": 0.669,
-     "left_sec": 739.4,
-     "side": "L",
-     "side_share": 0.669,
-     "inside": 0.449,
-     "inside_sec": 1185.2,
-     "deep": 0.055,
-     "deep_sec": 1185.2
-    },
+    "D": null,
     "F": {
-     "games": 5,
-     "depth": 47.2,
-     "depth_sec": 1111.8,
-     "high": 0.425,
-     "high_sec": 819.9,
-     "goal_side": 0.262,
-     "goal_side_sec": 128.4
+     "games": 11,
+     "depth": 49.0,
+     "depth_sec": 2466.6,
+     "high": 0.418,
+     "high_sec": 1819.5,
+     "goal_side": 0.264,
+     "goal_side_sec": 335.0
     }
    },
    "games": [
+    {
+     "id": "2026-11-23-vs-tm",
+     "date": "2026-11-23",
+     "opponent": {
+      "code": "TM",
+      "name": "Teamy McTeamface"
+     },
+     "toi": 1398,
+     "shifts": 12,
+     "avg_shift": 116.5,
+     "play": 969,
+     "plus_minus": 2
+    },
+    {
+     "id": "2026-11-16-vs-wa",
+     "date": "2026-11-16",
+     "opponent": {
+      "code": "WA",
+      "name": "Warriors"
+     },
+     "toi": 1885,
+     "shifts": 13,
+     "avg_shift": 145,
+     "play": 1234,
+     "plus_minus": -1
+    },
     {
      "id": "2026-11-09-vs-tbd",
      "date": "2026-11-09",
@@ -967,11 +1062,11 @@
       "code": "TBD",
       "name": "T.B.D."
      },
-     "toi": 2015,
-     "shifts": 16,
-     "avg_shift": 125.9,
-     "play": 1279,
-     "plus_minus": 0
+     "toi": 1966,
+     "shifts": 14,
+     "avg_shift": 140.4,
+     "play": 1363,
+     "plus_minus": 1
     },
     {
      "id": "2026-11-02-vs-bv",
@@ -980,10 +1075,10 @@
       "code": "BV",
       "name": "Best Vibes"
      },
-     "toi": 2075,
-     "shifts": 19,
-     "avg_shift": 109.2,
-     "play": 1560,
+     "toi": 1770,
+     "shifts": 17,
+     "avg_shift": 104.1,
+     "play": 1437,
      "plus_minus": -1
     },
     {
@@ -993,11 +1088,11 @@
       "code": "SB",
       "name": "Strange Brews"
      },
-     "toi": 1260,
+     "toi": 1279,
      "shifts": 11,
-     "avg_shift": 114.5,
-     "play": 907,
-     "plus_minus": -3
+     "avg_shift": 116.3,
+     "play": 900,
+     "plus_minus": 0
     },
     {
      "id": "2026-10-19-vs-fl",
@@ -1006,11 +1101,11 @@
       "code": "FL",
       "name": "Flounders"
      },
-     "toi": 1278,
-     "shifts": 12,
-     "avg_shift": 106.5,
-     "play": 957,
-     "plus_minus": 1
+     "toi": 1362,
+     "shifts": 11,
+     "avg_shift": 123.8,
+     "play": 949,
+     "plus_minus": 0
     },
     {
      "id": "2026-10-12-vs-wb",
@@ -1019,11 +1114,11 @@
       "code": "WB",
       "name": "Weekday Benders"
      },
-     "toi": 1659,
-     "shifts": 13,
-     "avg_shift": 127.6,
-     "play": 1243,
-     "plus_minus": -3
+     "toi": 1312,
+     "shifts": 10,
+     "avg_shift": 131.2,
+     "play": 991,
+     "plus_minus": -2
     },
     {
      "id": "2026-10-05-vs-br",
@@ -1032,11 +1127,11 @@
       "code": "BR",
       "name": "BladeRunners"
      },
-     "toi": 1266,
-     "shifts": 12,
-     "avg_shift": 105.5,
-     "play": 820,
-     "plus_minus": -1
+     "toi": 1967,
+     "shifts": 14,
+     "avg_shift": 140.5,
+     "play": 1356,
+     "plus_minus": 1
     },
     {
      "id": "2026-09-28-vs-r",
@@ -1045,11 +1140,11 @@
       "code": "R",
       "name": "LADA R"
      },
-     "toi": 1449,
-     "shifts": 12,
-     "avg_shift": 120.8,
-     "play": 884,
-     "plus_minus": 0
+     "toi": 1211,
+     "shifts": 10,
+     "avg_shift": 121.1,
+     "play": 834,
+     "plus_minus": -2
     },
     {
      "id": "2026-09-21-vs-wa",
@@ -1058,11 +1153,11 @@
       "code": "WA",
       "name": "Warriors"
      },
-     "toi": 1469,
-     "shifts": 14,
-     "avg_shift": 104.9,
-     "play": 1209,
-     "plus_minus": 2
+     "toi": 1286,
+     "shifts": 10,
+     "avg_shift": 128.6,
+     "play": 1017,
+     "plus_minus": 1
     },
     {
      "id": "2026-09-14-vs-tm",
@@ -1071,10 +1166,10 @@
       "code": "TM",
       "name": "Teamy McTeamface"
      },
-     "toi": 1311,
-     "shifts": 13,
-     "avg_shift": 100.8,
-     "play": 789,
+     "toi": 1395,
+     "shifts": 10,
+     "avg_shift": 139.5,
+     "play": 806,
      "plus_minus": -1
     }
    ]
@@ -1231,49 +1326,59 @@
    ]
   },
   {
-   "number": 14,
-   "name": "Ber",
-   "lada_player_id": 11166,
+   "number": 18,
+   "name": "Petrov",
+   "lada_player_id": 20416,
    "games_played": 10,
-   "shifts": 119,
-   "toi": 14946,
-   "toi_per_game": 1494.6,
-   "play": 10622,
-   "avg_shift": 125.6,
-   "longest_shift": 271,
-   "shortest_shift": 23,
-   "plus_minus": -1,
+   "shifts": 132,
+   "toi": 15065,
+   "toi_per_game": 1506.5,
+   "play": 10656,
+   "avg_shift": 114.1,
+   "longest_shift": 237,
+   "shortest_shift": 21,
+   "plus_minus": -6,
    "role": "F",
-   "role_share": 0.155,
+   "role_share": 0.467,
    "role_games": {
-    "D": 0,
-    "F": 10
+    "D": 4,
+    "F": 6
    },
    "positioning": {
-    "D": null,
+    "D": {
+     "games": 4,
+     "left": 0.669,
+     "left_sec": 739.4,
+     "side": "L",
+     "side_share": 0.669,
+     "inside": 0.449,
+     "inside_sec": 1185.2,
+     "deep": 0.055,
+     "deep_sec": 1185.2
+    },
     "F": {
-     "games": 10,
-     "depth": 48.6,
-     "depth_sec": 2156.8,
-     "high": 0.42,
-     "high_sec": 1636.6,
-     "goal_side": 0.271,
-     "goal_side_sec": 310.2
+     "games": 6,
+     "depth": 46.5,
+     "depth_sec": 1382.0,
+     "high": 0.425,
+     "high_sec": 989.8,
+     "goal_side": 0.355,
+     "goal_side_sec": 139.4
     }
    },
    "games": [
     {
-     "id": "2026-11-23-vs-tm",
-     "date": "2026-11-23",
+     "id": "2026-11-16-vs-wa",
+     "date": "2026-11-16",
      "opponent": {
-      "code": "TM",
-      "name": "Teamy McTeamface"
+      "code": "WA",
+      "name": "Warriors"
      },
-     "toi": 1398,
-     "shifts": 12,
-     "avg_shift": 116.5,
-     "play": 969,
-     "plus_minus": 2
+     "toi": 1283,
+     "shifts": 10,
+     "avg_shift": 128.3,
+     "play": 1008,
+     "plus_minus": 0
     },
     {
      "id": "2026-11-09-vs-tbd",
@@ -1282,11 +1387,11 @@
       "code": "TBD",
       "name": "T.B.D."
      },
-     "toi": 1966,
-     "shifts": 14,
-     "avg_shift": 140.4,
-     "play": 1363,
-     "plus_minus": 1
+     "toi": 2015,
+     "shifts": 16,
+     "avg_shift": 125.9,
+     "play": 1279,
+     "plus_minus": 0
     },
     {
      "id": "2026-11-02-vs-bv",
@@ -1295,10 +1400,10 @@
       "code": "BV",
       "name": "Best Vibes"
      },
-     "toi": 1770,
-     "shifts": 17,
-     "avg_shift": 104.1,
-     "play": 1437,
+     "toi": 2075,
+     "shifts": 19,
+     "avg_shift": 109.2,
+     "play": 1560,
      "plus_minus": -1
     },
     {
@@ -1308,11 +1413,11 @@
       "code": "SB",
       "name": "Strange Brews"
      },
-     "toi": 1279,
+     "toi": 1260,
      "shifts": 11,
-     "avg_shift": 116.3,
-     "play": 900,
-     "plus_minus": 0
+     "avg_shift": 114.5,
+     "play": 907,
+     "plus_minus": -3
     },
     {
      "id": "2026-10-19-vs-fl",
@@ -1321,11 +1426,11 @@
       "code": "FL",
       "name": "Flounders"
      },
-     "toi": 1362,
-     "shifts": 11,
-     "avg_shift": 123.8,
-     "play": 949,
-     "plus_minus": 0
+     "toi": 1278,
+     "shifts": 12,
+     "avg_shift": 106.5,
+     "play": 957,
+     "plus_minus": 1
     },
     {
      "id": "2026-10-12-vs-wb",
@@ -1334,11 +1439,11 @@
       "code": "WB",
       "name": "Weekday Benders"
      },
-     "toi": 1312,
-     "shifts": 10,
-     "avg_shift": 131.2,
-     "play": 991,
-     "plus_minus": -2
+     "toi": 1659,
+     "shifts": 13,
+     "avg_shift": 127.6,
+     "play": 1243,
+     "plus_minus": -3
     },
     {
      "id": "2026-10-05-vs-br",
@@ -1347,11 +1452,11 @@
       "code": "BR",
       "name": "BladeRunners"
      },
-     "toi": 1967,
-     "shifts": 14,
-     "avg_shift": 140.5,
-     "play": 1356,
-     "plus_minus": 1
+     "toi": 1266,
+     "shifts": 12,
+     "avg_shift": 105.5,
+     "play": 820,
+     "plus_minus": -1
     },
     {
      "id": "2026-09-28-vs-r",
@@ -1360,11 +1465,11 @@
       "code": "R",
       "name": "LADA R"
      },
-     "toi": 1211,
-     "shifts": 10,
-     "avg_shift": 121.1,
-     "play": 834,
-     "plus_minus": -2
+     "toi": 1449,
+     "shifts": 12,
+     "avg_shift": 120.8,
+     "play": 884,
+     "plus_minus": 0
     },
     {
      "id": "2026-09-21-vs-wa",
@@ -1373,11 +1478,11 @@
       "code": "WA",
       "name": "Warriors"
      },
-     "toi": 1286,
-     "shifts": 10,
-     "avg_shift": 128.6,
-     "play": 1017,
-     "plus_minus": 1
+     "toi": 1469,
+     "shifts": 14,
+     "avg_shift": 104.9,
+     "play": 1209,
+     "plus_minus": 2
     },
     {
      "id": "2026-09-14-vs-tm",
@@ -1386,10 +1491,10 @@
       "code": "TM",
       "name": "Teamy McTeamface"
      },
-     "toi": 1395,
-     "shifts": 10,
-     "avg_shift": 139.5,
-     "play": 806,
+     "toi": 1311,
+     "shifts": 13,
+     "avg_shift": 100.8,
+     "play": 789,
      "plus_minus": -1
     }
    ]
@@ -1398,31 +1503,31 @@
    "number": 89,
    "name": "Olyanich",
    "lada_player_id": 20421,
-   "games_played": 7,
-   "shifts": 76,
-   "toi": 9738,
-   "toi_per_game": 1391.1,
-   "play": 7161,
-   "avg_shift": 128.1,
+   "games_played": 8,
+   "shifts": 91,
+   "toi": 11743,
+   "toi_per_game": 1467.9,
+   "play": 8575,
+   "avg_shift": 129.0,
    "longest_shift": 260,
    "shortest_shift": 28,
-   "plus_minus": -3,
+   "plus_minus": -6,
    "role": "F",
-   "role_share": 0.078,
+   "role_share": 0.088,
    "role_games": {
     "D": 0,
-    "F": 7
+    "F": 8
    },
    "positioning": {
     "D": null,
     "F": {
-     "games": 7,
-     "depth": 50.1,
-     "depth_sec": 1292.8,
-     "high": 0.281,
-     "high_sec": 935.1,
-     "goal_side": 0.21,
-     "goal_side_sec": 191.5
+     "games": 8,
+     "depth": 50.2,
+     "depth_sec": 1617.8,
+     "high": 0.284,
+     "high_sec": 1095.4,
+     "goal_side": 0.196,
+     "goal_side_sec": 226.0
     }
    },
    "games": [
@@ -1438,6 +1543,19 @@
      "avg_shift": 128.8,
      "play": 924,
      "plus_minus": -1
+    },
+    {
+     "id": "2026-11-16-vs-wa",
+     "date": "2026-11-16",
+     "opponent": {
+      "code": "WA",
+      "name": "Warriors"
+     },
+     "toi": 2005,
+     "shifts": 15,
+     "avg_shift": 133.7,
+     "play": 1414,
+     "plus_minus": -3
     },
     {
      "id": "2026-11-02-vs-bv",
@@ -1560,31 +1678,31 @@
    "number": 37,
    "name": "Akulov",
    "lada_player_id": 11110,
-   "games_played": 7,
-   "shifts": 83,
-   "toi": 9553,
-   "toi_per_game": 1364.7,
-   "play": 6514,
-   "avg_shift": 115.1,
+   "games_played": 8,
+   "shifts": 92,
+   "toi": 10728,
+   "toi_per_game": 1341,
+   "play": 7235,
+   "avg_shift": 116.6,
    "longest_shift": 247,
    "shortest_shift": 21,
-   "plus_minus": 1,
+   "plus_minus": 0,
    "role": "F",
-   "role_share": 0.147,
+   "role_share": 0.156,
    "role_games": {
     "D": 0,
-    "F": 7
+    "F": 8
    },
    "positioning": {
     "D": null,
     "F": {
-     "games": 7,
-     "depth": 44.0,
-     "depth_sec": 1398.8,
+     "games": 8,
+     "depth": 42.7,
+     "depth_sec": 1615.2,
      "high": 0.407,
-     "high_sec": 1107.6,
-     "goal_side": 0.265,
-     "goal_side_sec": 196.4
+     "high_sec": 1208.0,
+     "goal_side": 0.283,
+     "goal_side_sec": 217.9
     }
    },
    "games": [
@@ -1600,6 +1718,19 @@
      "avg_shift": 122.2,
      "play": 1034,
      "plus_minus": 1
+    },
+    {
+     "id": "2026-11-16-vs-wa",
+     "date": "2026-11-16",
+     "opponent": {
+      "code": "WA",
+      "name": "Warriors"
+     },
+     "toi": 1175,
+     "shifts": 9,
+     "avg_shift": 130.6,
+     "play": 721,
+     "plus_minus": -1
     },
     {
      "id": "2026-11-09-vs-tbd",
@@ -1685,31 +1816,31 @@
    "number": 82,
    "name": "Podkorytov",
    "lada_player_id": 20420,
-   "games_played": 8,
-   "shifts": 86,
-   "toi": 10277,
-   "toi_per_game": 1284.6,
-   "play": 7243,
-   "avg_shift": 119.5,
-   "longest_shift": 255,
+   "games_played": 9,
+   "shifts": 96,
+   "toi": 11628,
+   "toi_per_game": 1292,
+   "play": 8087,
+   "avg_shift": 121.1,
+   "longest_shift": 266,
    "shortest_shift": 32,
-   "plus_minus": -7,
+   "plus_minus": -10,
    "role": "F",
-   "role_share": 0.285,
+   "role_share": 0.271,
    "role_games": {
     "D": 1,
-    "F": 7
+    "F": 8
    },
    "positioning": {
     "D": null,
     "F": {
-     "games": 7,
+     "games": 8,
      "depth": 44.8,
-     "depth_sec": 1263.5,
-     "high": 0.379,
-     "high_sec": 805.0,
-     "goal_side": 0.327,
-     "goal_side_sec": 144.9
+     "depth_sec": 1470.4,
+     "high": 0.384,
+     "high_sec": 936.4,
+     "goal_side": 0.313,
+     "goal_side_sec": 180.6
     }
    },
    "games": [
@@ -1725,6 +1856,19 @@
      "avg_shift": 119.5,
      "play": 958,
      "plus_minus": -1
+    },
+    {
+     "id": "2026-11-16-vs-wa",
+     "date": "2026-11-16",
+     "opponent": {
+      "code": "WA",
+      "name": "Warriors"
+     },
+     "toi": 1351,
+     "shifts": 10,
+     "avg_shift": 135.1,
+     "play": 844,
+     "plus_minus": -3
     },
     {
      "id": "2026-11-09-vs-tbd",
