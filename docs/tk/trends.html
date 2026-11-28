@@ -91,7 +91,9 @@ p.note.small { font-size:14px; }
 .chart p.note { font-size:14px; margin-top:6px; }
 table.pos { min-width:560px; }
 
-/* a rink per skater, attacking up: each band or lane shaded by the share of his time there (--a), the labels' heights the bands' */
+/* a rink per skater, attacking up: each band or lane shaded by the share of his time there (--a), the labels' heights the bands';
+   the ice's painted markings (svg.ice) lie over the shading and under the numbers, each number haloed in its band's own
+   colour (--halo) where a circle runs behind it, the lanes' and the sides' numbers between the circles and the blue line */
 :root { --posfill:#3d8fd6; }
 @media (prefers-color-scheme: dark) { :root:not([data-theme="light"]) { --posfill:#2f6fc0; } }
 :root[data-theme="dark"] { --posfill:#2f6fc0; }
@@ -104,16 +106,20 @@ table.pos { min-width:560px; }
 .rinks .hd { height:46px; display:flex; flex-direction:column; align-items:center; gap:2px; }
 .rinks .no { font:800 22px/1 var(--display); color:var(--team); }
 .rinks .nm { font:500 14px/1.3 var(--body); max-width:100%; overflow:hidden; text-overflow:ellipsis; white-space:nowrap; }
-.rink { height:217px; border:1.5px solid var(--faint); border-radius:20px; overflow:hidden; background:var(--board); display:flex; flex-direction:column; }
+.rink { height:217px; border:1.5px solid var(--faint); border-radius:20px; overflow:hidden; background:var(--board); display:flex; flex-direction:column; position:relative; isolation:isolate; }
 .rink:focus-visible { outline:2px solid var(--team); outline-offset:2px; }
 .rink .band, .rink .half { position:relative; display:flex; align-items:center; justify-content:center; font:500 15px/1 var(--data); }
 .rink .band::before, .rink .half::before { content:""; position:absolute; inset:0; background:var(--posfill); opacity:var(--a, 0); }
-.rink span { position:relative; } .rink .k { font-weight:600; font-size:17px; }
+.rink .band, .rink .half { --halo:color-mix(in srgb, var(--posfill) calc(var(--a, 0) * 100%), var(--board)); }
+.rink span { position:relative; z-index:1; text-shadow:0 0 2px var(--halo), 0 0 2px var(--halo), 0 0 3px var(--halo), 0 0 3px var(--halo); } .rink .k { font-weight:600; font-size:17px; }
 .rink .deep { height:48px; padding-top:10px; } .rink .line { height:26px; } .rink .out, .rink .mid { height:30px; }
 .rink .blue { height:2px; background:var(--blueline); } .rink .red { height:2px; background:var(--redline); }
-.rink .ours, .rink .theirs { height:74px; display:flex; position:relative; } .rink .half { flex:1; padding-bottom:10px; }
-.rink .theirs .half { padding:10px 0 0; } .rink .top { height:30px; } .rink .low { height:44px; padding-bottom:10px; }
+.rink .ours, .rink .theirs { height:74px; display:flex; position:relative; } .rink .half { flex:1; align-items:flex-start; padding-top:8px; }
+.rink .theirs .half { align-items:flex-end; padding:0 0 8px; } .rink .top { height:30px; } .rink .low { height:44px; padding-bottom:10px; }
 .rink .gl { position:absolute; left:0; right:0; height:1px; background:var(--redline); }
+.rink svg.ice { position:absolute; inset:0; width:100%; height:100%; pointer-events:none; }
+.ice .redl { fill:none; stroke:var(--redline); stroke-width:1; opacity:.4; } .ice .bluel { fill:none; stroke:var(--blueline); stroke-width:1; opacity:.4; }
+.ice .red { fill:var(--redline); opacity:.5; } .ice .blue { fill:var(--blueline); opacity:.5; } .ice .crease { fill:var(--blueline); fill-opacity:.12; }
 
 /* tooltip */
 #tip { position:fixed; z-index:10; pointer-events:none; background:var(--board); color:var(--ink); border:1px solid var(--rule);
@@ -528,12 +534,24 @@ renderPlayers();
     spec.forEach(([t, px, cls, css]) => { const d = h("div", cls || "", t); d.style.cssText = `height:${px}px;${css || ""}`; lab.appendChild(d); });
     return lab;
   };
+  // the ice's markings on a rink w px wide inside its boards and 214 px long, 1 px a foot along it: the zones' 74 px,
+  // the goal lines 10 px in, the end circles 20 px out from them (their tops the edge of the forwards' low band), the
+  // dots outside the blue lines, the center circle and the creases; across, 22 ft of the 85 either side of the middle
+  const ice = w => {
+    const s = el("svg", { viewBox: `0 0 ${w} 214`, class: "ice", "aria-hidden": "true" }), m = w / 2, dx = 22 / 85 * w;
+    el("circle", { cx: m, cy: 107, r: 14, class: "bluel" }, s); el("circle", { cx: m, cy: 107, r: 1.3, class: "blue" }, s);
+    [30.5, 183.5].forEach(y => [m - dx, m + dx].forEach(x => { el("circle", { cx: x, cy: y, r: 14, class: "redl" }, s); el("circle", { cx: x, cy: y, r: 1.5, class: "red" }, s); }));
+    [81, 133].forEach(y => [m - dx, m + dx].forEach(x => el("circle", { cx: x, cy: y, r: 1.5, class: "red" }, s)));
+    el("path", { d: `M ${m - 6} 10.5 A 6 6 0 0 0 ${m + 6} 10.5 Z`, class: "redl crease" }, s);
+    el("path", { d: `M ${m - 6} 203.5 A 6 6 0 0 1 ${m + 6} 203.5 Z`, class: "redl crease" }, s);
+    return s;
+  };
   const card = (p, word, wide, bands, rows) => {
     const c = h("div", "pl" + (wide ? " wide" : "")), hd = h("div", "hd"), nm = h("span", "nm", p.name), r = h("div", "rink");
     if (p.sub) nm.appendChild(h("span", "subtag", "sub"));
     nm.title = p.name;
     hd.append(h("span", "no", String(p.num)), nm);
-    r.append(...bands);
+    r.append(...bands, ice(wide ? 101 : 89));
     const title = `${p.name}, ${n(p.games, "game")} as a ${word}`;
     r.setAttribute("role", "img");
     r.setAttribute("aria-label", `${title}: ` + rows.map(x => `${x.v} ${x.k}`).join(", "));
@@ -557,7 +575,7 @@ renderPlayers();
     const D = rowsOf("D"), box = $("#drinks");
     if (!D.length) { none(box, $("#dnote"), "defensemen"); return; }
     lay(box, labels([["On attack", 48, "cap", "padding-bottom:5px"], ["Deep", 48, "", "padding-top:10px"], ["At their blue line", 26], ["", 2],
-      ["Not in their zone", 30], ["", 2], ["On defence", 30, "cap", "padding-bottom:3px"], ["", 2], ["Left · right", 74, "", "padding-bottom:10px"]]), D.map(p => {
+      ["Not in their zone", 30], ["", 2], ["On defence", 30, "cap", "padding-bottom:3px"], ["", 2], ["Left · right", 74, "", "justify-content:flex-start;padding-top:7px"]]), D.map(p => {
       const deep = p.inside == null ? null : pc(p.deep), out = p.inside == null ? null : pc(1 - p.inside);
       const line = deep == null ? null : Math.max(0, 1 - out - deep);
       const strong = pc(p.side_share);
@@ -582,7 +600,7 @@ renderPlayers();
   (() => {
     const F = rowsOf("F"), box = $("#frinks");
     if (!F.some(p => p.lane_left != null || p.low != null)) { box.remove(); $("#fnote").remove(); return; }
-    lay(box, labels([["On attack", 48, "cap", "padding-bottom:5px"], ["Left · centre · right", 74, "", "padding-top:10px"], ["", 2],
+    lay(box, labels([["On attack", 48, "cap", "padding-bottom:5px"], ["Left · centre · right", 74, "", "justify-content:flex-end;padding-bottom:7px"], ["", 2],
       ["On defence", 30, "cap", "padding-bottom:3px"], ["", 2], ["Not in our zone", 30], ["", 2], ["Top of our zone", 30], ["Low in our zone", 44, "", "padding-bottom:10px"]]), F.map(p => {
       const l = p.lane_right == null ? null : pc(p.lane_left), r = l == null ? null : pc(p.lane_right), c = l == null ? null : Math.max(0, 1 - l - r);
       const wing = l == null ? null : l - r >= .0999 ? "L" : r - l >= .0999 ? "R" : null;

@@ -51,7 +51,9 @@ everyone detected on the ice, 6 or more, our net at V = -89), and publish makes 
   zone (season.json's `side_share` for his `side`, larger type; the plain `left` for "both"). Each forward is a rink
   too: with the play in their end the left, centre and right lanes (`lane_left`, the rest, `lane_right`; his wing
   larger where one side leads by 10 points), with the play in our end Not in our zone (`out`), Top of our zone (the
-  rest) and Low in our zone (`low`). Under them a plain sortable table of the forwards' depth, high forward and
+  rest) and Low in our zone (`low`). Every rink carries the ice's markings over its shading (the end circles and
+  dots, the center circle, the dots outside the blue lines, the creases), the end circles' tops on the edge of the
+  forwards' Low band; a number that a circle runs behind is haloed in its band's colour. Under them a plain sortable table of the forwards' depth, high forward and
   back on rushes (it had range bars, a dot between the lowest and the highest, which were read as a place on the
   ice).
 
