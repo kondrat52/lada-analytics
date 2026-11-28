@@ -17,7 +17,7 @@ archived games a skater's share in one game against his other games correlates 0
 
 The season numbers, kept per game as parts (seconds: numerator and denominator). A season value is the plain mean
 of his games' values in that role, each game counting once (season(), game_measures()); a game's value needs 10 s
-of frames (5 s for rushes and for each orientation's left), as in the evidence pass:
+of frames (5 s for rushes, for each orientation's left and for each orientation's lanes), as in the evidence pass:
   defensemen (games where he was D):
     left       with the play in our end (V < -25), the share of it on the left side (H < 0); worked out separately
                for the periods our net is at the picture's left and at its right, and the two averaged (one alone
@@ -32,6 +32,12 @@ of frames (5 s for rushes and for each orientation's left), as in the evidence p
                smallest V of them)
     goal_side  on rushes against (the play coming at our net at 12+ ft/s, between V -45 and +30), the share of it
                goal-side of the play (his V below the play's)
+    lane_left, lane_right
+               with the play in their end, the share of it in the left third of the ice (H < -14) and in the right
+               third (H > 14); each worked out for the two net orientations and averaged, as a D's left (an
+               orientation needs 5 s, the two together 10 s). The centre lane is the rest
+    low        with the play in our end, the share of it from the tops of our circles down (V <= -54)
+    out        the same frames, the share of it outside our blue line (V > -25). The top of our zone is the rest
 A single game's values don't repeat well enough to show (a 4-6 game mean's reliability is 0.66-0.83), so the pages
 show season numbers only, for a skater with 4+ games in that role. Measured and dropped (README's TODO): a
 defenseman's share in front of our net (track dropouts bias it), pinches per minute, the gap on rushes, pairs."""
@@ -47,6 +53,8 @@ SEASON_D = 0.55          # season role: the frame-weighted share over his games,
 SEASON_GAMES = 4         # games in a role before the season numbers show a skater
 END = 25                 # the blue lines: the play in our end at V < -25, in theirs at V > 25
 DEEP = 40                # a D deep on attack: 15 ft or more past their blue line
+LANE = 14                # a forward's lanes: the left and right thirds of the ice start 14 ft from the middle
+LOW = 54                 # a forward low in our zone: from the tops of the circles down (35 ft out from our goal line)
 SIDE = 550               # a D's side: his season left at 0.550 and up, or 0.450 and under (in thousandths, as published)
 RUSH_SPEED, RUSH_LO, RUSH_HI = 12, -45, 30
 # a single game's values (game_measures, which the season means take): the frames each needs, as in the evidence pass
@@ -119,6 +127,10 @@ def parts(F):
             e["depth"] = [round(float(dz.V.median()), 1) if len(dz) else None, sec(len(dz))]
             e["high"] = [sec((o.frank == 1).sum()), sec(len(o))]
             e["goal_side"] = [sec((rush.V < rush.play).sum()), sec(len(rush))]
+            e["lane"] = [[sec((y.H < -LANE).sum()), sec((y.H > LANE).sum()), sec(len(y))]
+                         for y in (oz[oz.sgn == 1], oz[oz.sgn == -1])]
+            e["low"] = [sec((dz.V <= -LOW).sum()), sec(len(dz))]
+            e["out"] = [sec((dz.V > -END).sum()), sec(len(dz))]
         out[str(p)] = e
     return out
 
@@ -143,14 +155,15 @@ def _share(a):
     return a[0] / a[1] if a and a[1] else None
 
 
-MEASURES = {"D": ("left", "inside", "deep"), "F": ("depth", "high", "goal_side")}
+MEASURES = {"D": ("left", "inside", "deep"), "F": ("depth", "high", "goal_side", "lane_left", "lane_right", "low", "out")}
 
 
 def game_measures(e):
     """One game's values from its parts, each with the seconds it rests on: measure -> (value, seconds), the value
     None under the evidence pass's minimum frames (MIN_SIDE, MIN_ZONE, MIN_RUSH). A D's left is the mean of the two
     net orientations' shares, or the one orientation alone where only one has MIN_SIDE frames (the evidence pass's
-    plain share of a game with only one orientation is that one's)."""
+    plain share of a game with only one orientation is that one's). A forward's lanes likewise, the orientations
+    with MIN_SIDE frames needing MIN_ZONE between them."""
     v = {}
     if e.get("role") == "D":
         sides = [s for s in e["left"] if s[1] * FPS >= MIN_SIDE]
@@ -162,6 +175,15 @@ def game_measures(e):
         v["depth"] = (e["depth"][0] if e["depth"][1] * FPS >= MIN_ZONE else None, e["depth"][1])
         v["high"] = (_share(e["high"]) if e["high"][1] * FPS >= MIN_ZONE else None, e["high"][1])
         v["goal_side"] = (_share(e["goal_side"]) if e["goal_side"][1] * FPS >= MIN_RUSH else None, e["goal_side"][1])
+        # none of these in a game's parts made before Nov 27, 2026 and not backfilled
+        ln = [s for s in e.get("lane") or [] if s[2] * FPS >= MIN_SIDE]
+        n = sum(s[2] for s in ln)
+        ok = n * FPS >= MIN_ZONE
+        v["lane_left"] = (sum(s[0] / s[2] for s in ln) / len(ln) if ok else None, n)
+        v["lane_right"] = (sum(s[1] / s[2] for s in ln) / len(ln) if ok else None, n)
+        for m in ("low", "out"):
+            a = e.get(m) or [0, 0]
+            v[m] = (_share(a) if a[1] * FPS >= MIN_ZONE else None, a[1])
     return v
 
 

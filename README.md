@@ -122,9 +122,12 @@ python pipeline/build_site.py
     share of their time on the left side with the play in our end (worked out for each end of the camera picture and
     averaged, since the camera puts a skater on one side more at one end), and with the play in their end the share
     inside their blue line and the share 15 ft or more past it; for forwards their depth with the play in our end, the
-    share as our highest forward in their end, and goal side of the play on rushes against. Each game keeps the
-    seconds they rest on; the trends page shows the average of his games in a role, for a skater with 4 or more games
-    in it.
+    share as our highest forward in their end, goal side of the play on rushes against, their lane with the play in
+    their end (the share in the left and in the right third of the ice, each end of the picture averaged) and, with
+    the play in our end, the share outside our blue line and the share low in our zone (from the tops of the circles
+    down). Each game keeps the seconds they rest on; the trends page shows the average of his games in a role, for a
+    skater with 4 or more games in it: a small rink per defenseman and per forward, its bands and lanes shaded by the
+    share of his time there, and a table of the forwards' other numbers.
 
 Ice time is real elapsed time on the ice, including stoppages; live play time comes from the stoppage estimate.
 
@@ -415,8 +418,36 @@ logs that line).
       positioning numbers, and the ranks hold for cuts of 40 to 50 ft and for the 90th percentile of his depth
       instead of a share. It reads about 7% low from tracks lost deep in their end, and about 0.03 higher in games
       where the team wears white, so it compares teammates, not teams. Turbo Kings: #78 0.275 (4 games), #61 0.201
-      (6), #12 0.197 (5), #13 0.187 (5). The left share is shown as his side: "Left" at 0.55 and up, "Right" at 0.45
+      (6), #12 0.197 (5), #13 0.187 (5). The left share gives his side: "Left" at 0.55 and up, "Right" at 0.45
       and under (each with how often he is there), "Both sides" in between.
+    - *A rink per defenseman* (Nov 27, after a teammate read the tables' range bars, a dot between the team's lowest
+      and highest, as his place in the zone). The trends page draws each defenseman's season as a small rink
+      attacking up, each band shaded by the share of his time there and carrying its number: with the play in their
+      end deep (`deep`), at their blue line (`inside - deep`) and not in their zone (`1 - inside`), with the play in
+      our end the left and right halves of our zone (`left`, his stronger side larger). No number changed. Within
+      each team the at-their-blue-line share spreads less than `deep` (Y: 31-39% against 4-20%), so `deep` is what
+      tells teammates apart. A dot at each one's average spot was considered and not built: estimated from the
+      published shares (taking his depth as normal), Y's six defensemen average within about 6 ft of each other,
+      all near the blue line. The forwards' table lost its range bars the same day and is plain sortable numbers.
+    - *A rink per forward* (Nov 27, a pass over the 51 games with positions: 363 forward-games, 46 forwards with 4+
+      games). What repeats, as a season mean's reliability among teammates (each value less its team's mean; the
+      same sums give the published depth 0.78, high forward 0.74 and goal side 0.73): his lane with the play in their
+      end, the share in the left third of the ice (`lane_left`, 0.89) and in the right third (`lane_right`, 0.86), the
+      thirds starting 14 ft from the middle; with the play in our end the share outside our blue line (`out`, 0.81)
+      and low in our zone, from the tops of the circles down (`low`, V <= -54, 0.78). The rink draws the rest too:
+      the centre lane (0.54: forwards differ little in it, sd 0.047 against 0.127 for the left third) and the top of
+      our zone (0.70). The camera puts a forward in the left third 0.324 of the time with our net at one end of the
+      picture and 0.258 at the other, so the lanes are worked out for each end and averaged, as a D's left. White
+      games read within 0.012 of the others on all of them. By rink the pooled `low` runs 0.255-0.336 and `out`
+      0.216-0.275, so they compare teammates, not teams. A forward is labeled 70% of his seconds on the ice with the
+      play in our end (a defenseman 44%), but his track drops out more low in our zone (0.74 gap seconds per labeled
+      second, 0.25-0.27 above it): `low` reads about 6 points low (0.285 against 0.349 with the gaps split between
+      the bands before and after) and the top of our zone 4.5 high, the season means with and without the gaps
+      correlating 0.98 (`low`), 0.97 (`out`) and 0.99 (the lanes). Measured and not built: his depth with the play
+      in their end (the share below the dots 0.63, not in their zone 0.52, up to 20 ft past their blue line 0.47, his median depth
+      0.58); his lane with the play in our end (0.91 and 0.92, but the season means correlate 0.88 with the lanes in
+      their end, so the rink shows a lane once); lane by depth cells in our zone (0.67-0.92, ten numbers a rink).
+      Backfilled for the 51 games; nothing else in a `game.json` or `shifts.csv` moved.
 
     Measured and not built: a D's share in front of our net (his track drops out there: 0.93 gap seconds per labeled
     second at the net-front spot, 0.41 elsewhere, and 45% of the last frames before a gap are there against 31% of

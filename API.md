@@ -104,7 +104,7 @@ included: the opponents' penalties are timed only in games published from Nov 23
 skaters tracked, the share in which he was one of our two deepest (nearest our net). `"D"` at 0.6 and up, `"F"` at
 0.4 and under, `null` in between or with under 10 s of such moments. Both are `null` where nothing was measured: a game without tracking on
 the ice (`ice: null`). On the 49 games measured, a skater's share in one game against his other games correlates
-0.90. The positioning numbers behind the trends page's season tables are in `season.json` only: a single game's don't
+0.90. The positioning numbers behind the trends page's season rinks and table are in `season.json` only: a single game's don't
 repeat well enough to show.
 
 ### Ice maps (`ice`)
@@ -155,16 +155,26 @@ each game worked out separately for the periods with our net at each end of the 
 (one alone where only one has 5 s), since the camera shows a skater on one side more often at one end than at the
 other. `side`: his side, from `left`: `"L"` at 0.55 and up, `"R"` at 0.45 and under, `"both"` in between (`null`
 without a `left`). `side_share`: how often he is on that side, `left` for `"L"` and `1 - left` for `"R"`, `null` for
-`"both"`; the trends page shows them as "Left 70%", "Right 59%" or "Both sides". `inside`: with the play in their
-end, the share of his time inside their blue line. `deep`: in the same moments, the share of his time 15 ft or more
-past their blue line. It reads about 0.03 higher in games where the team wears white, so it compares teammates, not
-teams. `*_sec`: the seconds of the games the average takes.
+`"both"`; the trends page draws them as the two halves of our zone on his rink, the stronger side's share larger.
+`inside`: with the play in their end, the share of his time inside their blue line. `deep`: in the same moments,
+the share of his time 15 ft or more past their blue line. It reads about 0.03 higher in games where the team wears
+white, so it compares teammates, not teams. The trends page's rink splits his time with the play in their end
+three ways: deep (`deep`), at their blue line (`inside - deep`) and not in their zone (`1 - inside`). `*_sec`: the
+seconds of the games the average takes.
 
-`positioning.F`: `{games, depth, depth_sec, high, high_sec, goal_side, goal_side_sec}`. `depth`: with the play in our
-end, how far out from our goal line he usually is, in feet (the average of his games' medians). `high`: with
-the play in their end and 2+ of our forwards tracked, the share of his time as the one nearest their blue line.
-`goal_side`: when the play comes at our net (12+ ft/s, from just inside their blue line to inside ours), the share of
-his time between the play and our net.
+`positioning.F`: `{games, depth, depth_sec, high, high_sec, goal_side, goal_side_sec, lane_left, lane_left_sec,
+lane_right, lane_right_sec, low, low_sec, out, out_sec}`. `depth`: with the play in our end, how far out from our
+goal line he usually is, in feet (the average of his games' medians). `high`: with the play in their end and 2+ of
+our forwards tracked, the share of his time as the one nearest their blue line. `goal_side`: when the play comes at
+our net (12+ ft/s, from just inside their blue line to inside ours), the share of his time between the play and our
+net. `lane_left`, `lane_right` (from Nov 27, 2026): with the play in their end, the share of his time in the left
+third of the ice and in the right third (left as the team attacks; the thirds start 14 ft from the middle), worked
+out for each end of the camera picture and averaged, as a defenseman's `left`; the centre lane is `1 - lane_left -
+lane_right`. `out`, `low` (from Nov 27, 2026): with the play in our end, the share of his time outside our blue line
+and the share low in our zone, from the tops of the circles down (35 ft out from our goal line); the top of our zone
+is `1 - out - low`. `low` reads about 0.06 under his real share (his tracking drops out more near our net) and both
+move a few points with the rink, so they compare teammates, not teams. The trends page draws them as his rink: the
+three lanes in their zone, the three bands at our end.
 
 ## `roster.json`
 

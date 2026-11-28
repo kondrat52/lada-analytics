@@ -90,9 +90,30 @@ td .dim { color:var(--faint); }
 p.note.small { font-size:14px; }
 .chart p.note { font-size:14px; margin-top:6px; }
 table.pos { min-width:560px; }
-table.pos td .range { vertical-align:middle; margin-left:10px; }
-svg .rng { stroke:var(--rule); stroke-width:4; stroke-linecap:round; }
-svg .rdot { fill:var(--team); stroke:var(--board); stroke-width:1.5; }
+
+/* a rink per skater, attacking up: each band or lane shaded by the share of his time there (--a), the labels' heights the bands' */
+:root { --posfill:#3d8fd6; }
+@media (prefers-color-scheme: dark) { :root:not([data-theme="light"]) { --posfill:#2f6fc0; } }
+:root[data-theme="dark"] { --posfill:#2f6fc0; }
+.rinkbox { overflow-x:auto; display:grid; gap:18px; justify-items:start; padding-bottom:4px; }
+.rinks { display:flex; gap:10px; align-items:flex-start; width:max-content; }
+.rinks .lab { position:sticky; left:0; z-index:1; background:var(--ice); width:124px; display:flex; flex-direction:column; text-align:right; font:500 14px/1.25 var(--data); }
+.rinks .lab div { display:flex; flex-direction:column; justify-content:center; padding-right:6px; }
+.rinks .lab .cap { justify-content:flex-end; font:600 12px/1.2 var(--data); letter-spacing:.08em; text-transform:uppercase; color:var(--muted); }
+.rinks .pl { width:92px; } .rinks .pl.wide { width:104px; }
+.rinks .hd { height:46px; display:flex; flex-direction:column; align-items:center; gap:2px; }
+.rinks .no { font:800 22px/1 var(--display); color:var(--team); }
+.rinks .nm { font:500 14px/1.3 var(--body); max-width:100%; overflow:hidden; text-overflow:ellipsis; white-space:nowrap; }
+.rink { height:217px; border:1.5px solid var(--faint); border-radius:20px; overflow:hidden; background:var(--board); display:flex; flex-direction:column; }
+.rink:focus-visible { outline:2px solid var(--team); outline-offset:2px; }
+.rink .band, .rink .half { position:relative; display:flex; align-items:center; justify-content:center; font:500 15px/1 var(--data); }
+.rink .band::before, .rink .half::before { content:""; position:absolute; inset:0; background:var(--posfill); opacity:var(--a, 0); }
+.rink span { position:relative; } .rink .k { font-weight:600; font-size:17px; }
+.rink .deep { height:48px; padding-top:10px; } .rink .line { height:26px; } .rink .out, .rink .mid { height:30px; }
+.rink .blue { height:2px; background:var(--blueline); } .rink .red { height:2px; background:var(--redline); }
+.rink .ours, .rink .theirs { height:74px; display:flex; position:relative; } .rink .half { flex:1; padding-bottom:10px; }
+.rink .theirs .half { padding:10px 0 0; } .rink .top { height:30px; } .rink .low { height:44px; padding-bottom:10px; }
+.rink .gl { position:absolute; left:0; right:0; height:1px; background:var(--redline); }
 
 /* tooltip */
 #tip { position:fixed; z-index:10; pointer-events:none; background:var(--board); color:var(--ink); border:1px solid var(--rule);
@@ -129,9 +150,11 @@ svg .rdot { fill:var(--team); stroke:var(--board); stroke-width:1.5; }
     <h2 id="pos-h">Positioning</h2>
     <p class="note" id="posnote"></p>
     <h3>Defensemen</h3>
-    <div class="tablebox"><table class="pos" id="dtable"><thead><tr></tr></thead><tbody></tbody></table></div>
-    <p class="note small">Side: which side he defends and how often he stays there; inside their blue line: how often he is in their zone when we attack; deep on attack: how often he is 15 ft or more past their blue line.</p>
+    <p class="note small" id="dnote">Each rink is one defenseman's season, darker where he spends more of his time: the top on attack, the bottom on defence.</p>
+    <div class="rinkbox" id="drinks"></div>
     <h3>Forwards</h3>
+    <p class="note small" id="fnote">Each rink is one forward's season, darker where he spends more of his time: the top on attack, the bottom on defence.</p>
+    <div class="rinkbox" id="frinks"></div>
     <div class="tablebox"><table class="pos" id="ftable"><thead><tr></tr></thead><tbody></tbody></table></div>
     <p class="note small">Depth: how far from our net he plays when we defend; high forward: how often he is our forward furthest back when we attack; back on rushes: how often he is already back when they rush our net.</p>
   </section>
@@ -297,7 +320,8 @@ const Xc = i => M.l + band * (i + .5);
   const mx = Math.max(3, ...games.map(g => Math.max(g.gf, g.ga + 1)));   // + 1: room for the label under a bar
   const mid = M.t + (CH - M.t - M.b) / 2, k = (CH - M.t - M.b) / 2 / mx;
   const Y = v => mid - v * k;
-  frame(svg, Array.from({ length: 2 * mx + 1 }, (_, i) => i - mx), Y, v => String(Math.abs(v)));
+  const tick = [1, 2, 5, 10].find(s => s * k >= 14) || 20, nt = Math.floor(mx / tick);   // labels 14+ px apart: every goal up to 5, every 2 up to 11
+  frame(svg, Array.from({ length: 2 * nt + 1 }, (_, i) => (i - nt) * tick), Y, v => String(Math.abs(v)));
   el("line", { x1: M.l, x2: CW - M.r, y1: mid, y2: mid, class: "axis" }, svg);
   const bw = Math.min(24, band * .4);
   games.forEach((g, i) => {
@@ -479,35 +503,112 @@ function renderPlayers() {
 }
 renderPlayers();
 
-/* ---------- season positioning: defensemen and forwards, each value against the range of the team's same-role skaters ---------- */
+/* ---------- season positioning: a rink per defenseman and per forward, a sortable table of the forwards' other numbers ---------- */
 (() => {
   const R = DATA.positioning || [];
   if (!R.length) return;
   $("#possec").hidden = false;
-  $("#posnote").textContent = `Season averages for skaters with ${DATA.season_games} or more games in the role; the dot shows where he sits between the lowest and the highest skater in the table.`;
+  $("#posnote").textContent = `Season averages for skaters with ${DATA.season_games} or more games in the role.`;
+  const none = (box, note, word) => { if (note) note.remove(); box.replaceWith(h("p", "note", `No skater has ${DATA.season_games} games as one of our ${word} yet.`)); };
+
+  // a rink per skater, attacking up, most games first: each band or lane shaded by the share of his time there and
+  // carrying its whole percent, the ones that tell teammates apart (key) larger. Where four or more rinks fit beside
+  // the labels the rows wrap, each with its labels; narrower, one row scrolls sideways under labels that stay put.
+  const rowsOf = role => R.filter(p => p[role]).map(p => ({ num: p.num, name: p.name, sub: p.sub, ...p[role] })).sort((a, b) => b.games - a.games || a.num - b.num);
+  const pc = x => x == null ? null : Math.round(x * 100) / 100;   // a share in whole percents
+  const part = (cls, share, key) => {
+    const b = h("div", cls + (key ? " k" : ""));
+    if (share != null) b.style.setProperty("--a", (.06 + .8 * Math.max(0, Math.min(1, share))).toFixed(2));
+    b.appendChild(h("span", "", share == null ? "–" : pct(share)));
+    return b;
+  };
+  const goal = (band, edge) => { band.appendChild(h("i", "gl")).style[edge] = "10px"; return band; };   // the goal line, 10 px in from that end
+  const labels = spec => () => {   // the labels, each as tall as the header or the band beside it
+    const lab = h("div", "lab");
+    spec.forEach(([t, px, cls, css]) => { const d = h("div", cls || "", t); d.style.cssText = `height:${px}px;${css || ""}`; lab.appendChild(d); });
+    return lab;
+  };
+  const card = (p, word, wide, bands, rows) => {
+    const c = h("div", "pl" + (wide ? " wide" : "")), hd = h("div", "hd"), nm = h("span", "nm", p.name), r = h("div", "rink");
+    if (p.sub) nm.appendChild(h("span", "subtag", "sub"));
+    nm.title = p.name;
+    hd.append(h("span", "no", String(p.num)), nm);
+    r.append(...bands);
+    const title = `${p.name}, ${n(p.games, "game")} as a ${word}`;
+    r.setAttribute("role", "img");
+    r.setAttribute("aria-label", `${title}: ` + rows.map(x => `${x.v} ${x.k}`).join(", "));
+    hover(r, () => [rows, title]);
+    c.append(hd, r);
+    return c;
+  };
+  const lay = (box, lab, cards, w) => {
+    const draw = () => {
+      const per = Math.floor((box.clientWidth - 124) / (w + 10)), k = per >= 4 ? Math.ceil(cards.length / per) : 1, each = Math.ceil(cards.length / k);
+      box.replaceChildren(...Array.from({ length: k }, (_, i) => { const row = h("div", "rinks"); row.append(lab(), ...cards.slice(i * each, (i + 1) * each)); return row; }));
+    };
+    draw(); addEventListener("resize", draw);
+  };
+
+  // defensemen. With the play in their end, the share of his time deep (15 ft or more past their blue line), at their
+  // blue line (the rest of his time inside it) and not in their zone; with the play in our end, the share on each side
+  // (season.json's deep, inside, left, side, side_share). Whole percents that add up to 100: deep and not in their
+  // zone as rounded, at their blue line the rest; his stronger side as the season's side_share, the other the rest.
+  (() => {
+    const D = rowsOf("D"), box = $("#drinks");
+    if (!D.length) { none(box, $("#dnote"), "defensemen"); return; }
+    lay(box, labels([["On attack", 48, "cap", "padding-bottom:5px"], ["Deep", 48, "", "padding-top:10px"], ["At their blue line", 26], ["", 2],
+      ["Not in their zone", 30], ["", 2], ["On defence", 30, "cap", "padding-bottom:3px"], ["", 2], ["Left · right", 74, "", "padding-bottom:10px"]]), D.map(p => {
+      const deep = p.inside == null ? null : pc(p.deep), out = p.inside == null ? null : pc(1 - p.inside);
+      const line = deep == null ? null : Math.max(0, 1 - out - deep);
+      const strong = pc(p.side_share);
+      const left = p.left == null ? null : p.side === "L" ? strong : p.side === "R" ? 1 - strong : pc(p.left);
+      const right = left == null ? null : 1 - left;
+      const ours = h("div", "ours");
+      ours.append(part("half", left, p.side === "L"), part("half", right, p.side === "R"));
+      const side = p.side === "L" ? `Left ${pct(left)}` : p.side === "R" ? `Right ${pct(right)}` : left == null ? null : "Both sides";
+      const rows = [];
+      if (deep != null) rows.push({ v: pct(deep), k: "deep: 15 ft or more past their blue line" }, { v: pct(line), k: "at their blue line" });
+      if (out != null) rows.push({ v: pct(out), k: "not in their zone" });
+      if (side) rows.push({ v: side, k: "on defence" });
+      return card(p, "defenseman", false, [goal(part("band deep", deep, true), "top"), part("band line", line), h("div", "blue"), part("band out", out),
+        h("div", "red"), h("div", "band mid"), h("div", "blue"), goal(ours, "bottom")], rows);
+    }), 92);
+  })();
+
+  // forwards. With the play in their end, the share of his time in the left and right thirds of the ice and the
+  // centre lane (the rest), his wing larger where one side leads the other by 10 points; with the play in our end,
+  // the share outside our blue line, low in our zone (from the tops of the circles down) and at the top of it (the
+  // rest) (season.json's lane_left, lane_right, out, low).
+  (() => {
+    const F = rowsOf("F"), box = $("#frinks");
+    if (!F.some(p => p.lane_left != null || p.low != null)) { box.remove(); $("#fnote").remove(); return; }
+    lay(box, labels([["On attack", 48, "cap", "padding-bottom:5px"], ["Left · centre · right", 74, "", "padding-top:10px"], ["", 2],
+      ["On defence", 30, "cap", "padding-bottom:3px"], ["", 2], ["Not in our zone", 30], ["", 2], ["Top of our zone", 30], ["Low in our zone", 44, "", "padding-bottom:10px"]]), F.map(p => {
+      const l = p.lane_right == null ? null : pc(p.lane_left), r = l == null ? null : pc(p.lane_right), c = l == null ? null : Math.max(0, 1 - l - r);
+      const wing = l == null ? null : l - r >= .0999 ? "L" : r - l >= .0999 ? "R" : null;
+      const low = p.out == null ? null : pc(p.low), out = low == null ? null : pc(p.out), top = low == null ? null : Math.max(0, 1 - low - out);
+      const theirs = h("div", "theirs");
+      theirs.append(part("half", l, wing === "L"), part("half", c), part("half", r, wing === "R"));
+      const rows = [];
+      if (l != null) rows.push({ v: `${pct(l)} · ${pct(c)} · ${pct(r)}`, k: "left, centre and right lanes on attack" });
+      if (low != null) rows.push({ v: pct(out), k: "not in our zone" }, { v: pct(top), k: "top of our zone, above the circles" },
+        { v: pct(low), k: "low in our zone, from the tops of the circles down" });
+      return card(p, "forward", true, [goal(theirs, "top"), h("div", "blue"), h("div", "band mid"), h("div", "red"), part("band out", out),
+        h("div", "blue"), part("band top", top), goal(part("band low", low, true), "bottom")], rows);
+    }), 104);
+  })();
+
   const ft = v => `${Math.round(v)} ft`;
-  // a D's side (season.json's side, side_share), sorted by his left share; no range bar: lowest to highest left means nothing
-  const sideText = (v, p) => p.side === "L" ? `Left ${pct(p.side_share)}` : p.side === "R" ? `Right ${pct(p.side_share)}` : "Both sides";
   const TABLES = [
-    { id: "#dtable", role: "D", word: "defensemen", cols: [
-      { k: "left", t: "Side", f: sideText, s: "left_sec", w: "with the play in our end", bar: false },
-      { k: "inside", t: "Inside their blue line", f: pct, s: "inside_sec", w: "with the play in their end" },
-      { k: "deep", t: "Deep on attack", f: pct, s: "deep_sec", w: "with the play in their end" }] },
     { id: "#ftable", role: "F", word: "forwards", cols: [
       { k: "depth", t: "Depth, our end", f: ft, s: "depth_sec", w: "with the play in our end" },
       { k: "high", t: "High forward", f: pct, s: "high_sec", w: "with the play in their end" },
       { k: "goal_side", t: "Back on rushes", f: pct, s: "goal_side_sec", w: "on rushes against" }] },
   ];
-  const range = (v, lo, hi) => {   // a bar from the team's lowest to its highest, the dot at this skater's value
-    const W = 84, s = el("svg", { width: W, height: 14, viewBox: `0 0 ${W} 14`, class: "range", "aria-hidden": "true" });
-    el("line", { x1: 5, x2: W - 5, y1: 7, y2: 7, class: "rng" }, s);
-    el("circle", { cx: 5 + (hi > lo ? (v - lo) / (hi - lo) : .5) * (W - 10), cy: 7, r: 4.5, class: "rdot" }, s);
-    return s;
-  };
   TABLES.forEach(T => {
     const rows = R.filter(p => p[T.role]).map(p => ({ num: p.num, name: p.name, sub: p.sub, games: p[T.role].games, ...p[T.role] }));
     const table = $(T.id), head = table.querySelector("thead tr"), body = table.querySelector("tbody");
-    if (!rows.length) { table.parentElement.replaceWith(h("p", "note", `No skater has ${DATA.season_games} games as one of our ${T.word} yet.`)); return; }
+    if (!rows.length) { none(table.parentElement, null, T.word); return; }
     const span = Object.fromEntries(T.cols.map(c => { const v = rows.map(r => r[c.k]).filter(x => x != null); return [c.k, [Math.min(...v), Math.max(...v)]]; }));
     const cols = [{ k: "num", t: "#", l: true, text: true }, { k: "name", t: "Player", l: true, text: true }, { k: "games", t: "Games" }, ...T.cols];
     let sk = "games", sd = -1;
@@ -521,14 +622,8 @@ renderPlayers();
         const nm = td(p.name, "l name"); if (p.sub) nm.appendChild(h("span", "subtag", "sub")); tr.appendChild(nm);
         tr.appendChild(td(String(p.games)));
         T.cols.forEach(c => {
-          const cell = td(p[c.k] == null ? "–" : c.f(p[c.k], p));
-          if (p[c.k] != null) {
-            cell.title = `The average of his games, over ${mmss(p[c.s])} ${c.w}`;
-            if (c.bar !== false) {
-              cell.appendChild(range(p[c.k], ...span[c.k]));
-              cell.title += `; the ${T.word} in this table range from ${c.f(span[c.k][0])} to ${c.f(span[c.k][1])}`;
-            }
-          }
+          const cell = td(p[c.k] == null ? "–" : c.f(p[c.k]));
+          if (p[c.k] != null) cell.title = `The average of his games, over ${mmss(p[c.s])} ${c.w}; the ${T.word} in this table range from ${c.f(span[c.k][0])} to ${c.f(span[c.k][1])}`;
           tr.appendChild(cell);
         });
         body.appendChild(tr);

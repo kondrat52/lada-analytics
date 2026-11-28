@@ -2,7 +2,7 @@
 api/trends.json, the same measures for apps (build_feed.trends_doc). build_site.py runs it. Time in offence and
 defence come from game.json's `zones` (zones.py, filled in on publish; "basis" "px" marks a game measured on the
 picture's thirds, drawn hollow), shots on goal from its `shots` (shots.py, read off the arena scoreboard), the
-season positioning tables from its `positions` (positioning.py), each value the average of a skater's games."""
+season positioning rinks and table from its `positions` (positioning.py), each value the average of a skater's games."""
 import os, sys, json, glob
 from html import escape
 import numpy as np, pandas as pd
@@ -94,7 +94,7 @@ def team_nav(page):
 
 
 def positioning_rows(games):
-    """The season positioning tables' rows: every skater with SEASON_GAMES+ games as a defenseman or a forward,
+    """The season positioning rows: every skater with SEASON_GAMES+ games as a defenseman or a forward,
     with his season numbers in that role (season.json's positioning)."""
     out = []
     for k, s in season_positions(games).items():

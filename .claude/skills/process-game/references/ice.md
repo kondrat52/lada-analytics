@@ -40,11 +40,20 @@ everyone detected on the ice, 6 or more, our net at V = -89), and publish makes 
   a D's `left` ([seconds on the left, seconds] with the play in our end, once with our net at the picture's left and
   once at its right), `inside` (inside their blue line with the play in their end) and `deep` (15 ft or more past
   their blue line, V > 40, in the same frames as `inside`); an F's `depth` ([median V, seconds] in our end), `high`
-  (our highest forward in their end, 2+ forwards labeled) and `goal_side` (on rushes against). The trends page's
-  Positioning tables show the average of his games in a role (each game's value from its parts, counting once), for
-  a skater with 4+ games in it. The defensemen's table has Side (from the season `left`: "Left NN%" at 0.55 and up,
-  "Right NN%" at 0.45 and under, else "Both sides"; season.json's `side` and `side_share`; it sorts by `left` and
-  has no range bar), Inside their blue line and Deep on attack.
+  (our highest forward in their end, 2+ forwards labeled), `goal_side` (on rushes against), `lane` ([seconds in the
+  left third, in the right third, seconds] with the play in their end, once for each end of the picture), `low`
+  (from the tops of our circles down, V <= -54, with the play in our end) and `out` (outside our blue line, the same
+  frames). The trends page's
+  Positioning section shows the average of his games in a role (each game's value from its parts, counting once), for
+  a skater with 4+ games in it. Each defenseman is a small rink attacking up, most games first, each band shaded by
+  the share of his time there and carrying its number: with the play in their end Deep (`deep`), At their blue line
+  (`inside - deep`) and Not in their zone (`1 - inside`); with the play in our end the left and right halves of our
+  zone (season.json's `side_share` for his `side`, larger type; the plain `left` for "both"). Each forward is a rink
+  too: with the play in their end the left, centre and right lanes (`lane_left`, the rest, `lane_right`; his wing
+  larger where one side leads by 10 points), with the play in our end Not in our zone (`out`), Top of our zone (the
+  rest) and Low in our zone (`low`). Under them a plain sortable table of the forwards' depth, high forward and
+  back on rushes (it had range bars, a dot between the lowest and the highest, which were read as a place on the
+  ice).
 
 To redo them for one game, or for every published game that still has its work folder (and, for every game, the
 stoppages moved after the goals, which needs no work folder), without republishing:

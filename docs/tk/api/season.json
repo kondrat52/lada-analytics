@@ -1086,7 +1086,15 @@
      "high": 0.277,
      "high_sec": 366.8,
      "goal_side": 0.472,
-     "goal_side_sec": 63.5
+     "goal_side_sec": 63.5,
+     "lane_left": 0.425,
+     "lane_left_sec": 488.6,
+     "lane_right": 0.157,
+     "lane_right_sec": 488.6,
+     "low": 0.298,
+     "low_sec": 658.2,
+     "out": 0.245,
+     "out_sec": 658.2
     }
    },
    "games": [
@@ -1211,7 +1219,15 @@
      "high": 0.415,
      "high_sec": 815.0,
      "goal_side": 0.208,
-     "goal_side_sec": 154.9
+     "goal_side_sec": 154.9,
+     "lane_left": 0.059,
+     "lane_left_sec": 1226.2,
+     "lane_right": 0.452,
+     "lane_right_sec": 1226.2,
+     "low": 0.157,
+     "low_sec": 1135.1,
+     "out": 0.26,
+     "out_sec": 1135.1
     }
    },
    "games": [
@@ -1388,7 +1404,15 @@
      "high": 0.47,
      "high_sec": 715.4,
      "goal_side": 0.211,
-     "goal_side_sec": 147.1
+     "goal_side_sec": 147.1,
+     "lane_left": 0.049,
+     "lane_left_sec": 1047.4,
+     "lane_right": 0.566,
+     "lane_right_sec": 1047.4,
+     "low": 0.195,
+     "low_sec": 1212.9,
+     "out": 0.222,
+     "out_sec": 1212.9
     }
    },
    "games": [
@@ -1539,7 +1563,15 @@
      "high": 0.33,
      "high_sec": 764.8,
      "goal_side": 0.171,
-     "goal_side_sec": 97.0
+     "goal_side_sec": 97.0,
+     "lane_left": 0.474,
+     "lane_left_sec": 987.6,
+     "lane_right": 0.087,
+     "lane_right_sec": 987.6,
+     "low": 0.203,
+     "low_sec": 801.1,
+     "out": 0.369,
+     "out_sec": 801.1
     }
    },
    "games": [
@@ -1690,7 +1722,15 @@
      "high": 0.44,
      "high_sec": 454.1,
      "goal_side": 0.413,
-     "goal_side_sec": 64.6
+     "goal_side_sec": 64.6,
+     "lane_left": 0.611,
+     "lane_left_sec": 609.5,
+     "lane_right": 0.075,
+     "lane_right_sec": 609.5,
+     "low": 0.327,
+     "low_sec": 588.0,
+     "out": 0.237,
+     "out_sec": 588.0
     }
    },
    "games": [
@@ -1929,7 +1969,15 @@
      "high": 0.5,
      "high_sec": 787.9,
      "goal_side": 0.504,
-     "goal_side_sec": 120.9
+     "goal_side_sec": 120.9,
+     "lane_left": 0.266,
+     "lane_left_sec": 1098.1,
+     "lane_right": 0.275,
+     "lane_right_sec": 1098.1,
+     "low": 0.298,
+     "low_sec": 687.0,
+     "out": 0.276,
+     "out_sec": 687.0
     }
    },
    "games": [
@@ -2205,7 +2253,15 @@
      "high": 0.314,
      "high_sec": 414.4,
      "goal_side": 0.277,
-     "goal_side_sec": 65.8
+     "goal_side_sec": 65.8,
+     "lane_left": 0.372,
+     "lane_left_sec": 524.2,
+     "lane_right": 0.232,
+     "lane_right_sec": 524.2,
+     "low": 0.308,
+     "low_sec": 575.4,
+     "out": 0.299,
+     "out_sec": 575.4
     }
    },
    "games": [
